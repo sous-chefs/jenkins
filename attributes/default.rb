@@ -38,6 +38,8 @@ default[:jenkins][:server][:port] = 8080
 default[:jenkins][:server][:host] = node[:fqdn]
 default[:jenkins][:server][:url]  = "http://#{node[:jenkins][:server][:host]}:#{node[:jenkins][:server][:port]}"
 
+default[:jenkins][:iptables_allow] = "enable"
+
 #download the latest version of plugins, bypassing update center
 #example: ["git", "URLSCM", ...]
 default[:jenkins][:server][:plugins] = []
@@ -111,3 +113,10 @@ default[:jenkins][:node][:ssh_pass] = nil
 default[:jenkins][:node][:jvm_options] = nil
 #jenkins master defaults to: "#{ENV['HOME']}/.ssh/id_rsa"
 default[:jenkins][:node][:ssh_private_key] = nil
+
+default[:jenkins][:nginx][:proxy]                = "disable"
+default[:jenkins][:nginx][:www_redirect]         = "disable"
+default[:jenkins][:nginx][:listen_ports]         = [ 80 ]
+default[:jenkins][:nginx][:host_name]            = "_"
+default[:jenkins][:nginx][:host_aliases]         = []
+default[:jenkins][:nginx][:client_max_body_size] = "1024m"

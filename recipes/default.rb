@@ -220,3 +220,50 @@ log "plugins updated, restarting jenkins" do
   end
 end
 
+if node[:jenkins][:nginx][:proxy] && node[:jenkins][:nginx][:proxy] == "enable"
+  include_recipe "nginx::source"
+
+  if node[:jenkins][:nginx][:www_redirect] && 
+      node[:jenkins][:nginx][:www_redirect] == "disable"
+    www_redirect = false
+  else
+    www_redirect = true
+  end
+
+  template "#{node[:nginx][:dir]}/sites-available/jenkins.conf" do
+    source      "nginx_jenkins.conf.erb"
+    owner       'root'
+    group       'root'
+    mode        '0644'
+    variables(
+      :host_name        => node[:jenkins][:nginx][:host_name],
+      :host_aliases     => node[:jenkins][:nginx][:host_aliases],
+      :listen_ports     => node[:jenkins][:nginx][:listen_ports],
+      :www_redirect     => www_redirect,
+      :max_upload_size  => node[:jenkins][:nginx][:client_max_body_size]
+    )
+
+    if File.exists?("#{node[:nginx][:dir]}/sites-enabled/jenkins.conf")
+      notifies  :restart, 'service[nginx]'
+    end
+  end
+
+  nginx_site "jenkins.conf" do
+    if node[:jenkins][:nginx][:proxy] && 
+        node[:jenkins][:nginx][:proxy] == "disable"
+      enable false
+    else
+      enable true
+    end
+  end
+end
+
+if platform?("redhat","centos","debian","ubuntu")
+  iptables_rule "port_jenkins" do
+    if node[:jenkins][:iptables_allow] == "disable"
+      enable false
+    else
+      enable true
+    end
+  end
+end
