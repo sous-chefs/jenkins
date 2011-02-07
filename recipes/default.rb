@@ -97,7 +97,7 @@ when "ubuntu", "debian"
   when "ubuntu"
     package_provider = Chef::Provider::Package::Apt
     package "curl"
-    key_url = "http://pkg.jenkins-labs.org/debian/jenkins-labs.org.key"
+    key_url = "http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key"
 
     include_recipe "apt"
     include_recipe "java"
