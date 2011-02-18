@@ -157,6 +157,8 @@ The script to generate groovy that manages a node can be used standalone.  For e
 
 = LICENSE & AUTHOR:
 
+This is a downstream fork of Doug MacEachern's Hudson cookbook (https://github.com/dougm/site-cookbooks) and therefore deserves all the glory.
+
 Author:: Doug MacEachern (<dougm@vmware.com>)
 
 Contributor:: Fletcher Nichol <fnichol@nichol.ca>
