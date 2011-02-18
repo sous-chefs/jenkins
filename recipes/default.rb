@@ -21,7 +21,7 @@
 # limitations under the License.
 #
 
-#include_recipe "java"
+include_recipe "java"
 
 pkey = "#{node[:jenkins][:server][:home]}/.ssh/id_rsa"
 tmp = "/tmp"
@@ -259,6 +259,7 @@ if node[:jenkins][:nginx][:proxy] && node[:jenkins][:nginx][:proxy] == "enable"
 end
 
 if platform?("redhat","centos","debian","ubuntu")
+  include_recipe "iptables"
   iptables_rule "port_jenkins" do
     if node[:jenkins][:iptables_allow] == "disable"
       enable false
