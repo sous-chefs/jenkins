@@ -158,7 +158,9 @@ The script to generate groovy that manages a node can be used standalone.  For e
 = LICENSE & AUTHOR:
 
 Author:: Doug MacEachern (<dougm@vmware.com>)
-Author:: Fletcher Nichol <fnichol@nichol.ca>
+
+Contributor:: Fletcher Nichol <fnichol@nichol.ca>
+Contributor:: Roman Kamyk <rkj@go2.pl>
 
 Copyright:: 2010, VMware, Inc
 
