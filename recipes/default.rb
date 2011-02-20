@@ -21,8 +21,6 @@
 # limitations under the License.
 #
 
-include_recipe "java"
-
 pkey = "#{node[:jenkins][:server][:home]}/.ssh/id_rsa"
 tmp = "/tmp"
 
