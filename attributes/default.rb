@@ -103,7 +103,7 @@ default[:jenkins][:node][:idle_delay] = 1
 #[x] "Environment Variables"
 default[:jenkins][:node][:env] = nil
 
-default[:jenkins][:node][:user] = "jenkins"
+default[:jenkins][:node][:user] = "jenkins-node"
 
 #SSH options
 default[:jenkins][:node][:ssh_host] = node[:fqdn]
