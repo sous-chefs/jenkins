@@ -11,9 +11,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -218,10 +218,40 @@ log "plugins updated, restarting jenkins" do
   end
 end
 
+if node[:jenkins][:apache][:proxy] && node[:jenkins][:apache][:proxy] == "enable"
+  include_recipe "apache2"
+
+  package_provider = Chef::Provider::Package::Apt
+  package "libapache2-mod-proxy-html"
+
+  apache_module "proxy"
+  apache_module "proxy_http"
+
+  template "#{node[:apache][:dir]}/sites-available/jenkins" do
+    source      "apache_jenkins.erb"
+    owner       'root'
+    group       'root'
+    mode        '0644'
+
+    if File.exists?("#{node[:apache][:dir]}/sites-enabled/jenkins")
+      notifies  :restart, 'service[apache2]'
+    end
+  end
+
+  apache_site "jenkins" do
+    if node[:jenkins][:apache][:proxy] &&
+        node[:jenkins][:apache][:proxy] == "disable"
+      enable false
+    else
+      enable true
+    end
+  end
+end
+
 if node[:jenkins][:nginx][:proxy] && node[:jenkins][:nginx][:proxy] == "enable"
   include_recipe "nginx::source"
 
-  if node[:jenkins][:nginx][:www_redirect] && 
+  if node[:jenkins][:nginx][:www_redirect] &&
       node[:jenkins][:nginx][:www_redirect] == "disable"
     www_redirect = false
   else
@@ -247,7 +277,7 @@ if node[:jenkins][:nginx][:proxy] && node[:jenkins][:nginx][:proxy] == "enable"
   end
 
   nginx_site "jenkins.conf" do
-    if node[:jenkins][:nginx][:proxy] && 
+    if node[:jenkins][:nginx][:proxy] &&
         node[:jenkins][:nginx][:proxy] == "disable"
       enable false
     else

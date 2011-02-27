@@ -1,0 +1,13 @@
+<VirtualHost *:80>
+  ProxyPass         /  http://localhost:8080/
+  ProxyPassReverse  /  http://localhost:8080/
+  ProxyRequests     Off
+
+  # Local reverse proxy authorization override
+  # Most unix distribution deny proxy by default
+  # (ie /etc/apache2/mods-enabled/proxy.conf in Ubuntu)
+  <Proxy http://localhost:8080/*>
+    Order deny,allow
+    Allow from all
+  </Proxy>
+</VirtualHost>
