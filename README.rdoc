@@ -163,6 +163,7 @@ Author:: Doug MacEachern (<dougm@vmware.com>)
 
 Contributor:: Fletcher Nichol <fnichol@nichol.ca>
 Contributor:: Roman Kamyk <rkj@go2.pl>
+Contributor:: Darko Fabijan <darko@renderedtext.com>
 
 Copyright:: 2010, VMware, Inc
 
