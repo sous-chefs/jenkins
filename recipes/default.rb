@@ -218,72 +218,12 @@ log "plugins updated, restarting jenkins" do
   end
 end
 
-if node[:jenkins][:apache][:proxy] && node[:jenkins][:apache][:proxy] == "enable"
-  include_recipe "apache2"
-
-  package_provider = Chef::Provider::Package::Apt
-  package "libapache2-mod-proxy-html"
-
-  apache_module "proxy"
-  apache_module "proxy_http"
-
-  template "#{node[:apache][:dir]}/sites-available/jenkins" do
-    source      "apache_jenkins.erb"
-    owner       'root'
-    group       'root'
-    mode        '0644'
-
-    if File.exists?("#{node[:apache][:dir]}/sites-enabled/jenkins")
-      notifies  :restart, 'service[apache2]'
-    end
-  end
-
-  apache_site "jenkins" do
-    if node[:jenkins][:apache][:proxy] &&
-        node[:jenkins][:apache][:proxy] == "disable"
-      enable false
-    else
-      enable true
-    end
-  end
-end
-
-if node[:jenkins][:nginx][:proxy] && node[:jenkins][:nginx][:proxy] == "enable"
-  include_recipe "nginx::source"
-
-  if node[:jenkins][:nginx][:www_redirect] &&
-      node[:jenkins][:nginx][:www_redirect] == "disable"
-    www_redirect = false
-  else
-    www_redirect = true
-  end
-
-  template "#{node[:nginx][:dir]}/sites-available/jenkins.conf" do
-    source      "nginx_jenkins.conf.erb"
-    owner       'root'
-    group       'root'
-    mode        '0644'
-    variables(
-      :host_name        => node[:jenkins][:nginx][:host_name],
-      :host_aliases     => node[:jenkins][:nginx][:host_aliases],
-      :listen_ports     => node[:jenkins][:nginx][:listen_ports],
-      :www_redirect     => www_redirect,
-      :max_upload_size  => node[:jenkins][:nginx][:client_max_body_size]
-    )
-
-    if File.exists?("#{node[:nginx][:dir]}/sites-enabled/jenkins.conf")
-      notifies  :restart, 'service[nginx]'
-    end
-  end
-
-  nginx_site "jenkins.conf" do
-    if node[:jenkins][:nginx][:proxy] &&
-        node[:jenkins][:nginx][:proxy] == "disable"
-      enable false
-    else
-      enable true
-    end
-  end
+# Front Jenkins with an HTTP server
+case node[:jenkins][:http_proxy][:variant]
+when "nginx"
+  include_recipe "jenkins::proxy_nginx"
+when "apache2"
+  include_recipe "jenkins::proxy_apache2"
 end
 
 if platform?("redhat","centos","debian","ubuntu")
