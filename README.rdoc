@@ -10,7 +10,7 @@ Installs and configures Jenkins CI server & node slaves.  Resource providers to 
 
 == Platform:
 
-* 'default' - Server installation - currently supports Red Hat/CentOS 5.x and Ubuntu 9.x/10.4
+* 'default' - Server installation - currently supports Red Hat/CentOS 5.x and Ubuntu 8.x/9.x/10.x
 
 * 'node_ssh' - Any platform that is running sshd.
 
