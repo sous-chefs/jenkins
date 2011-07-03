@@ -100,7 +100,11 @@ when "ubuntu", "debian"
     include_recipe "apt"
     include_recipe "java"
 
-    cookbook_file "/etc/apt/sources.list.d/jenkins.list"
+    cookbook_file "/etc/apt/sources.list.d/jenkins.list" do
+      owner "root"
+      group "root"
+      mode  "0644"
+    end
 
     execute "add-jenkins-key" do
       command "curl #{key_url} | apt-key add -"
