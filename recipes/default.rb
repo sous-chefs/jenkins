@@ -149,6 +149,26 @@ ruby_block "netstat" do
   action :nothing
 end
 
+ruby_block "block_until_operational" do
+  block do
+    until IO.popen("netstat -lnt").entries.select { |entry|
+        entry.split[3] =~ /:#{node[:jenkins][:server][:port]}$/
+      }.size == 1
+      Chef::Log.debug "service[jenkins] not listening on port #{node.jenkins.server.port}"
+      sleep 1
+    end
+
+    loop do
+      url = URI.parse("#{node.jenkins.server.url}/job/test/config.xml")
+      res = Chef::REST::RESTRequest.new(:GET, url, nil).call
+      break if res.kind_of?(Net::HTTPSuccess) or res.kind_of?(Net::HTTPNotFound)
+      Chef::Log.debug "service[jenkins] not responding OK to GET /job/test/config.xml #{res.inspect}"
+      sleep 1
+    end
+  end
+  action :nothing
+end
+
 service "jenkins" do
   supports [ :stop, :start, :restart, :status ]
   #"jenkins status" will exit(0) even when the process is not running
@@ -166,6 +186,7 @@ if node.platform == "ubuntu"
     unless install_starts_service
       notifies :start, "service[jenkins]", :immediately
     end
+    notifies :create, "ruby_block[block_until_operational]", :immediately
     creates "/usr/share/jenkins/jenkins.war"
   end
 else
@@ -206,12 +227,13 @@ package "jenkins" do
   action :nothing
 end
 
-#restart if this run only added new plugins
+# restart if this run only added new plugins
 log "plugins updated, restarting jenkins" do
   #ugh :restart does not work, need to sleep after stop.
   notifies :stop, "service[jenkins]", :immediately
   notifies :create, "ruby_block[netstat]", :immediately
   notifies :start, "service[jenkins]", :immediately
+  notifies :create, "ruby_block[block_until_operational]", :immediately
   only_if do
     if File.exists?(pid_file)
       htime = File.mtime(pid_file)
