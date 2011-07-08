@@ -82,9 +82,10 @@ when "ubuntu", "debian"
     package "openjdk-6-jre"
 
     package "psmisc"
+    key_url = "http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key"
 
     remote_file "#{tmp}/jenkins-ci.org.key" do
-      source "#{node[:jenkins][:mirror]}/debian/jenkins-ci.org.key"
+      source "#{key_url}"
     end
 
     execute "add-jenkins-key" do
@@ -119,6 +120,7 @@ when "ubuntu", "debian"
 
 when "centos", "redhat"
   #see http://jenkins-ci.org/redhat/
+  key_url = "http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key"
 
   remote = "#{node[:jenkins][:mirror]}/latest/redhat/jenkins.rpm"
   package_provider = Chef::Provider::Package::Rpm
@@ -126,7 +128,7 @@ when "centos", "redhat"
   install_starts_service = false
 
   execute "add-jenkins-key" do
-    command "rpm --import #{node[:jenkins][:mirror]}/redhat/jenkins-ci.org.key"
+    command "rpm --import #{key_url}"
     action :nothing
   end
 
