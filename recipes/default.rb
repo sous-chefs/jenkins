@@ -101,7 +101,7 @@ when "ubuntu", "debian"
       uri "http://pkg.jenkins-ci.org/debian"
       distribution "binary/"
       components [""]
-      key = "http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key"
+      key "http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key"
       action :add
     end
   end
