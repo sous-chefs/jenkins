@@ -21,7 +21,8 @@
 # limitations under the License.
 #
 
-default[:jenkins][:mirror] = "http://updates.jenkins-ci.org"
+default[:jenkins][:mirror] = "http://mirrors.jenkins-ci.org"
+default[:jenkins][:package_url] = "http://pkg.jenkins-ci.org"
 default[:jenkins][:java_home] = ENV['JAVA_HOME']
 
 default[:jenkins][:server][:home] = "/var/lib/jenkins"
@@ -38,7 +39,7 @@ default[:jenkins][:server][:port] = 8080
 default[:jenkins][:server][:host] = node[:fqdn]
 default[:jenkins][:server][:url]  = "http://#{node[:jenkins][:server][:host]}:#{node[:jenkins][:server][:port]}"
 
-default[:jenkins][:iptables_allow] = "enable"
+default[:jenkins][:iptables_allow] = "disable"
 
 #download the latest version of plugins, bypassing update center
 #example: ["git", "URLSCM", ...]
@@ -120,3 +121,5 @@ default[:jenkins][:http_proxy][:listen_ports]         = [ 80 ]
 default[:jenkins][:http_proxy][:host_name]            = nil
 default[:jenkins][:http_proxy][:host_aliases]         = []
 default[:jenkins][:http_proxy][:client_max_body_size] = "1024m"
+default[:jenkins][:http_proxy][:basic_auth_username] = "jenkins"
+default[:jenkins][:http_proxy][:basic_auth_password] = "jenkins"

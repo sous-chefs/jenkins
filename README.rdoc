@@ -34,7 +34,7 @@ Where the jenkins_login recipe is simply:
 
   jenkins_cli "login --username #{node[:jenkins][:username]} --password #{node[:jenkins][:password]}"
 
-= ATTRIBUTES: 
+= ATTRIBUTES:
 
 * jenkins[:mirror] - Base URL for downloading Jenkins (server)
 * jenkins[:java_home] - Java install path, used for for cli commands
@@ -53,7 +53,7 @@ Where the jenkins_login recipe is simply:
 * jenkins[:node][:launcher] - Node launch method, "jnlp", "ssh" or "command"
 * jenkins[:node][:availability] - "always" keeps node on-line, "demand" off-lines when idle
 * jenkins[:node][:in_demand_delay] - number of minutes for which jobs must be waiting in the queue before attempting to launch this slave.
-* jenkins[:node][:idle_delay] - number of minutes that this slave must remain idle before taking it off-line. 
+* jenkins[:node][:idle_delay] - number of minutes that this slave must remain idle before taking it off-line.
 * jenkins[:node][:env] - "Node Properties" -> "Environment Variables"
 * jenkins[:node][:user] - user the slave runs as
 * jenkins[:node][:ssh_host] - Hostname or IP Jenkins should connect to when launching an SSH slave
@@ -63,7 +63,7 @@ Where the jenkins_login recipe is simply:
 * jenkins[:node][:ssh_private_key] - jenkins master defaults to: `~/.ssh/id_rsa` (created by the default recipe)
 * jenkins[:node][:jvm_options] - SSH slave JVM options
 * jenkins[:iptables_allow] - if iptables is enabled, add a rule passing 'jenkins[:server][:port]'
-* jenkins[:http_proxy][:variant] - use `nginx` or `apache2` to proxy traffic to jenkins backend (`nil` by default)
+* jenkins[:nginx][:http_proxy][:variant] - use `nginx` or `apache2` to proxy traffic to jenkins backend (`nil` by default)
 * jenkins[:http_proxy][:www_redirect] - add a redirect rule for 'www.*' URL requests ("disable" by default)
 * jenkins[:http_proxy][:listen_ports] - list of HTTP ports for the HTTP proxy to listen on ([80] by default)
 * jenkins[:http_proxy][:host_name] - primary vhost name for the HTTP proxy to respond to (`node[:fqdn]` by default)
@@ -169,6 +169,7 @@ This is a downstream fork of Doug MacEachern's Hudson cookbook (https://github.c
 
 Author:: Doug MacEachern (<dougm@vmware.com>)
 
+Contributor:: AJ Christensen <aj@junglist.gen.nz>
 Contributor:: Fletcher Nichol <fnichol@nichol.ca>
 Contributor:: Roman Kamyk <rkj@go2.pl>
 Contributor:: Darko Fabijan <darko@renderedtext.com>
