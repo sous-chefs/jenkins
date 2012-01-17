@@ -51,4 +51,3 @@ def initialize(name, run_context=nil)
   super
   @action = :create
 end
-

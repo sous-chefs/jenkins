@@ -34,7 +34,7 @@ def action_run
   args[:not_if] = @new_resource.not_if if @new_resource.not_if
   args[:timeout] = @new_resource.timeout if @new_resource.timeout
   args[:cwd] = @new_resource.cwd if @new_resource.cwd
-        
+
   status, stdout, stderr = output_of_command(args[:command], args)
   if status.exitstatus == 0
     @new_resource.block.call(stdout) if @new_resource.block
@@ -46,5 +46,3 @@ def action_run
     handle_command_failures(status, command_output, args)
   end
 end
-
-

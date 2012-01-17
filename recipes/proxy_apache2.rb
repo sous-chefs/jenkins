@@ -21,9 +21,6 @@
 
 include_recipe "apache2"
 
-package_provider = Chef::Provider::Package::Apt
-package "libapache2-mod-proxy-html"
-
 apache_module "proxy"
 apache_module "proxy_http"
 apache_module "vhost_alias"
@@ -36,6 +33,14 @@ else
 end
 
 host_name = node[:jenkins][:http_proxy][:host_name] || node[:fqdn]
+
+template "#{node.apache.dir}/htpasswd" do
+  variables( :username => node.jenkins.http_proxy.basic_auth_username,
+             :password => node.jenkins.http_proxy.basic_auth_password)
+  owner node.apache.user
+  group node.apache.user
+  mode 0600
+end
 
 template "#{node[:apache][:dir]}/sites-available/jenkins" do
   source      "apache_jenkins.erb"

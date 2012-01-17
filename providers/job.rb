@@ -22,7 +22,9 @@
 #
 
 def job_url
-  "#{@new_resource.url}/job/#{@new_resource.job_name}/config.xml"
+  job_url = "#{@new_resource.url}/job/#{@new_resource.job_name}/config.xml"
+  Chef::Log.debug "[jenkins_job] job_url: #{job_url}"
+  job_url
 end
 
 def new_job_url
