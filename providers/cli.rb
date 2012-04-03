@@ -49,6 +49,5 @@ def action_run
   jenkins_execute command do
     cwd home
     block { |stdout| new_resource.block.call(stdout) } if new_resource.block
-    only_if new_resource.only_if
   end
 end
