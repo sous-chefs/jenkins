@@ -65,6 +65,7 @@ node[:jenkins][:server][:plugins].each do |name|
     backup false
     owner node[:jenkins][:server][:user]
     group node[:jenkins][:server][:group]
+    action :create_if_missing
   end
 end
 
