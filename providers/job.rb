@@ -48,10 +48,9 @@ def post_job(url)
   res.error! unless res.kind_of?(Net::HTTPSuccess)
 end
 
-#could also use: jenkins_cli "create-job #{@new_resource.job_name} < #{@new_resource.config}"
 def action_create
   unless job_exists
-    post_job(new_job_url)
+    jenkins_cli "create-job #{@new_resource.job_name} < #{@new_resource.config}"
   end
 end
 
