@@ -32,6 +32,7 @@ if node['jenkins']['http_proxy']['ssl']['enabled']
   include_recipe "apache2::mod_ssl"
 end
 
+apache_module "headers"
 apache_module "proxy"
 apache_module "proxy_http"
 apache_module "vhost_alias"
@@ -40,9 +41,10 @@ if www_redirect || node['jenkins']['http_proxy']['ssl']['redirect_http']
   apache_module "rewrite"
 end
 
+users = search(:users, '*:*')
+
 template "#{node['apache']['dir']}/htpasswd" do
-  variables( :username => node['jenkins']['http_proxy']['basic_auth_username'],
-             :password => node['jenkins']['http_proxy']['basic_auth_password'])
+  variables( :sysadmins => users)
   owner node['apache']['user']
   group node['apache']['user']
   mode '0600'
