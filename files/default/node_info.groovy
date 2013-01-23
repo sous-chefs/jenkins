@@ -23,6 +23,8 @@
 
 import jenkins.slaves.*
 import jenkins.model.*
+import hudson.slaves.*
+import hudson.model.*
 
 def toJSON(node) {
   if (node instanceof Map) {
