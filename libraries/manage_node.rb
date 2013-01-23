@@ -113,6 +113,8 @@ def jenkins_node_manage(args)
   return <<EOF
 import jenkins.model.*
 import jenkins.slaves.*
+import hudson.model.*
+import hudson.slaves.*
 
 app = Jenkins.instance
 env = #{env}
