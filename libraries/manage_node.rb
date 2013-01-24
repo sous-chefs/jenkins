@@ -1,6 +1,5 @@
 #
 # Cookbook Name:: jenkins
-# Based on hudson
 # Library:: manage_node
 #
 # Author:: Doug MacEachern <dougm@vmware.com>

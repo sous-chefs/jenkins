@@ -1,6 +1,5 @@
 #
 # Cookbook Name:: jenkins
-# Based on hudson
 # Attributes:: default
 #
 # Author:: Doug MacEachern <dougm@vmware.com>
