@@ -27,7 +27,7 @@ def jenkins_node_defaults(args)
   args[:remote_fs] ||= nil #required
   args[:executors] ||= 1
   args[:mode] ||= "NORMAL" #"NORMAL" or "EXCLUSIVE"
-  args[:labels] ||= ""
+  args[:labels] ||= []
   args[:launcher] ||= "jnlp" #"jnlp" or "command" or "ssh"
   args[:availability] ||= "Always" #"Always" or "Demand"
   args[:env] = args[:env] ? args[:env].to_hash : nil
@@ -132,7 +132,7 @@ if (env != null) {
 }
 
 slave = new DumbSlave("#{args[:name]}", "#{args[:description]}", "#{remote_fs}",
-                      "#{args[:executors]}", Node.Mode.#{args[:mode]}, "#{args[:labels]}",
+                      "#{args[:executors]}", Node.Mode.#{args[:mode]}, "#{args[:labels].join(" ")}",
                        #{launcher},
                        new RetentionStrategy.#{args[:availability]}(#{rs_args}), props)
 
