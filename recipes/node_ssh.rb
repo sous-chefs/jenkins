@@ -21,61 +21,59 @@
 # limitations under the License.
 #
 
-unless node[:jenkins][:server][:pubkey]
-  host = node[:jenkins][:server][:host]
-  if host == node[:fqdn]
-    host = URI.parse(node[:jenkins][:server][:url]).host
+unless node['jenkins']['server']['pubkey'] || Chef::Config[:solo]
+  host = node['jenkins']['server']['host']
+  if host == node['fqdn']
+    host = URI.parse(node['jenkins']['server']['url']).host
   end
-  jenkins_node = search(:node, "fqdn:#{host}").first
-  node.set[:jenkins][:server][:pubkey] = jenkins_node[:jenkins][:server][:pubkey]
+  jenkins_node = search('node', "fqdn:#{host}").first
+  node.set['jenkins']['server']['pubkey'] = jenkins_node['jenkins']['server']['pubkey']
 end
 
-group node[:jenkins][:node][:user] do
-end
+group node['jenkins']['node']['group']
 
-user node[:jenkins][:node][:user] do
+user node['jenkins']['node']['user'] do
   comment "Jenkins CI node (ssh)"
-  gid node[:jenkins][:node][:user]
-  home node[:jenkins][:node][:home]
+  gid node['jenkins']['node']['user']
+  home node['jenkins']['node']['home']
   shell "/bin/sh"
 end
 
-directory node[:jenkins][:node][:home] do
+directory node['jenkins']['node']['home'] do
+  owner node['jenkins']['node']['user']
+  group node['jenkins']['node']['user']
   action :create
-  owner node[:jenkins][:node][:user]
-  group node[:jenkins][:node][:user]
 end
 
-directory "#{node[:jenkins][:node][:home]}/.ssh" do
+directory "#{node['jenkins']['node']['home']}/.ssh" do
+  owner node['jenkins']['node']['user']
+  group node['jenkins']['node']['user']
+  mode '0700'
   action :create
-  mode 0700
-  owner node[:jenkins][:node][:user]
-  group node[:jenkins][:node][:user]
 end
 
-file "#{node[:jenkins][:node][:home]}/.ssh/authorized_keys" do
+file "#{node['jenkins']['node']['home']}/.ssh/authorized_keys" do
+  content node['jenkins']['server']['pubkey']
+  owner node['jenkins']['node']['user']
+  group node['jenkins']['node']['user']
+  mode '0600'
   action :create
-  mode 0600
-  owner node[:jenkins][:node][:user]
-  group node[:jenkins][:node][:user]
-  content node[:jenkins][:server][:pubkey]
 end
 
-jenkins_node node[:jenkins][:node][:name] do
-  description  node[:jenkins][:node][:description]
-  executors    node[:jenkins][:node][:executors]
-  remote_fs    node[:jenkins][:node][:home]
-  labels       node[:jenkins][:node][:labels]
-  mode         node[:jenkins][:node][:mode]
+jenkins_node node['jenkins']['node']['name'] do
+  description  node['jenkins']['node']['description']
+  executors    node['jenkins']['node']['executors']
+  remote_fs    node['jenkins']['node']['home']
+  labels       node['jenkins']['node']['labels']
+  mode         node['jenkins']['node']['mode']
   launcher     "ssh"
-  mode         node[:jenkins][:node][:mode]
-  availability node[:jenkins][:node][:availability]
-  env          node[:jenkins][:node][:env]
+  availability node['jenkins']['node']['availability']
+  env          node['jenkins']['node']['env']
   #ssh options
-  host         node[:jenkins][:node][:ssh_host]
-  port         node[:jenkins][:node][:ssh_port]
-  username     node[:jenkins][:node][:ssh_user]
-  password     node[:jenkins][:node][:ssh_pass]
-  private_key  node[:jenkins][:node][:ssh_private_key]
-  jvm_options  node[:jenkins][:node][:jvm_options]
+  host         node['jenkins']['node']['ssh_host']
+  port         node['jenkins']['node']['ssh_port']
+  username     node['jenkins']['node']['ssh_user']
+  password     node['jenkins']['node']['ssh_pass']
+  private_key  node['jenkins']['node']['ssh_private_key']
+  jvm_options  node['jenkins']['node']['jvm_options']
 end

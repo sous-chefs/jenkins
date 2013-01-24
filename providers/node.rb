@@ -33,7 +33,7 @@ def action_create
     backup false
   end
 
-  cookbook_file "#{node[:jenkins][:node][:home]}/node_info.groovy" do
+  cookbook_file "#{node['jenkins']['node']['home']}/node_info.groovy" do
     source "node_info.groovy"
   end
 
