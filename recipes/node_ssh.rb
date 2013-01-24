@@ -1,6 +1,5 @@
 #
 # Cookbook Name:: jenkins
-# Based on hudson
 # Recipe:: node_ssh
 #
 # Author:: Doug MacEachern <dougm@vmware.com>

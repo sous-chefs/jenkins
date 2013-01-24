@@ -1,6 +1,5 @@
 #
 # Cookbook Name:: jenkins
-# Based on hudson
 # Resource:: cli
 #
 # Author:: Doug MacEachern <dougm@vmware.com>
