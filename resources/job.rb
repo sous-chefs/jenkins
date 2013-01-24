@@ -31,5 +31,5 @@ def initialize(name, run_context=nil)
   super
   @action = :update
   @job_name = name
-  @url = node[:jenkins][:server][:url]
+  @url = node['jenkins']['server']['url']
 end

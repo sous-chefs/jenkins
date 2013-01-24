@@ -21,10 +21,10 @@
 # limitations under the License.
 #
 
-home = node[:jenkins][:node][:home]
-url  = node[:jenkins][:server][:url]
+home_dir = node['jenkins']['node']['home']
+server_url = node['jenkins']['server']['url']
 
-jenkins_exe = "#{home}\\jenkins-slave.exe"
+jenkins_exe = "#{home_dir}\\jenkins-slave.exe"
 service_name = "jenkinsslave"
 
 directory home do
@@ -33,21 +33,20 @@ end
 
 env "JENKINS_HOME" do
   action :create
-  value home
+  value home_dir
 end
 
 env "JENKINS_URL" do
   action :create
-  value url
+  value server_url
 end
 
 template "#{home}/jenkins-slave.xml" do
   source "jenkins-slave.xml"
   variables(:jenkins_home => home,
-            :jnlp_url => "#{url}/computer/#{node[:jenkins][:node][:name]}/slave-agent.jnlp")
+            :jnlp_url => "#{server_url}/computer/#{node['jenkins']['node']['name']}/slave-agent.jnlp")
 end
 
-#XXX how-to get this directly from the jenkins server?
 remote_file jenkins_exe do
   source "http://maven.dyndns.org/2/com/sun/winsw/winsw/1.8/winsw-1.8-bin.exe"
   not_if { File.exists?(jenkins_exe) }
@@ -58,24 +57,20 @@ execute "#{jenkins_exe} install" do
   only_if { WMI::Win32_Service.find(:first, :conditions => {:name => service_name}).nil? }
 end
 
-service service_name do
-  action :nothing
+jenkins_node node['jenkins']['node']['name'] do
+  description  node['jenkins']['node']['description']
+  executors    node['jenkins']['node']['executors']
+  remote_fs    node['jenkins']['node']['home']
+  labels       node['jenkins']['node']['labels']
+  mode         node['jenkins']['node']['mode']
+  launcher     node['jenkins']['node']['launcher']
+  mode         node['jenkins']['node']['mode']
+  availability node['jenkins']['node']['availability']
 end
 
-jenkins_node node[:jenkins][:node][:name] do
-  description  node[:jenkins][:node][:description]
-  executors    node[:jenkins][:node][:executors]
-  remote_fs    node[:jenkins][:node][:home]
-  labels       node[:jenkins][:node][:labels]
-  mode         node[:jenkins][:node][:mode]
-  launcher     node[:jenkins][:node][:launcher]
-  mode         node[:jenkins][:node][:mode]
-  availability node[:jenkins][:node][:availability]
-end
-
-remote_file "#{home}\\slave.jar" do
-  source "#{url}/jnlpJars/slave.jar"
-  notifies :restart, resources(:service => service_name), :immediately
+remote_file "#{home_dir}\\slave.jar" do
+  source "#{server_url}/jnlpJars/slave.jar"
+  notifies :restart, "service[#{service_name}]", :immediately
 end
 
 service service_name do
