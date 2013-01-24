@@ -42,7 +42,7 @@ env "JENKINS_URL" do
 end
 
 template "#{home}/jenkins-slave.xml" do
-  source "jenkins-slave.xml"
+  source "jenkins-slave.xml.erb"
   variables(:jenkins_home => home,
             :jnlp_url => "#{server_url}/computer/#{node['jenkins']['node']['name']}/slave-agent.jnlp")
 end
