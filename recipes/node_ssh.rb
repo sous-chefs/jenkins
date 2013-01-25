@@ -20,6 +20,8 @@
 # limitations under the License.
 #
 
+include_recipe "java"
+
 unless node['jenkins']['server']['pubkey'] || Chef::Config[:solo]
   host = node['jenkins']['server']['host']
   if host == node['fqdn']
