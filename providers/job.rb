@@ -49,7 +49,8 @@ end
 
 def action_create
   unless job_exists
-    jenkins_cli "create-job #{@new_resource.job_name} < #{@new_resource.config}"
+    jcli = jenkins_cli "create-job #{@new_resource.job_name} < #{@new_resource.config}"
+    new_resource.updated_by_last_action(jcli.updated?)
   end
 end
 
