@@ -20,6 +20,8 @@
 # limitations under the License.
 #
 
+include_recipe "java"
+
 service_name = "jenkins-slave"
 slave_jar = "#{node['jenkins']['node']['home']}/slave.jar"
 
