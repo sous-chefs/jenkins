@@ -45,8 +45,10 @@ def action_run
 
   command = "#{java} -jar #{cli_jar} -s #{url} #{@new_resource.command}"
 
-  jenkins_execute command do
-    cwd home
-    block { |stdout| new_resource.block.call(stdout) } if new_resource.block
-  end
+  je = jenkins_execute command do
+        cwd home
+        block { |stdout| new_resource.block.call(stdout) } if new_resource.block
+      end
+
+  new_resource.updated_by_last_action(je.updated?)
 end
