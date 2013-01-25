@@ -22,13 +22,15 @@
 
 include_recipe "java"
 
-unless node['jenkins']['server']['pubkey'] || Chef::Config[:solo]
-  host = node['jenkins']['server']['host']
-  if host == node['fqdn']
-    host = URI.parse(node['jenkins']['server']['url']).host
+unless Chef::Config[:solo]
+  unless node['jenkins']['server']['pubkey']
+    host = node['jenkins']['server']['host']
+    if host == node['fqdn']
+      host = URI.parse(node['jenkins']['server']['url']).host
+    end
+    jenkins_node = search('node', "fqdn:#{host}").first
+    node.set['jenkins']['server']['pubkey'] = jenkins_node['jenkins']['server']['pubkey']
   end
-  jenkins_node = search('node', "fqdn:#{host}").first
-  node.set['jenkins']['server']['pubkey'] = jenkins_node['jenkins']['server']['pubkey']
 end
 
 group node['jenkins']['node']['group']
