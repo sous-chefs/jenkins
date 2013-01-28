@@ -24,6 +24,7 @@
 #
 
 include_recipe "java"
+include_recipe "runit"
 
 user node['jenkins']['server']['user'] do
   home node['jenkins']['server']['home']
@@ -65,7 +66,10 @@ remote_file File.join(home_dir, "jenkins.war") do
   group node['jenkins']['server']['group']
 end
 
-runit_service "jenkins"
+runit_service "jenkins" do
+  action :enable
+  notifies :create, "ruby_block[block_until_operational]", :immediately
+end
 
 ruby_block "block_until_operational" do
   block do
@@ -100,6 +104,6 @@ log "plugins updated, restarting jenkins" do
     end
   end
   action :nothing
-  notifies :restart, "service[jenkins]", :immediately
+  notifies :restart, "runit_service[jenkins]", :immediately
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
