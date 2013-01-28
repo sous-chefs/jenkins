@@ -21,6 +21,7 @@
 #
 
 include_recipe "java"
+include_recipe "runit"
 
 unless Chef::Config[:solo]
   unless node['jenkins']['server']['pubkey']

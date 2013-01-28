@@ -21,6 +21,7 @@
 #
 
 include_recipe "java"
+include_recipe "runit"
 
 service_name = "jenkins-slave"
 slave_jar = "#{node['jenkins']['node']['home']}/slave.jar"

@@ -7,9 +7,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.6.3"
 
 depends "java"
-depends "runit"
-
-recommends "apt"
+depends "runit", ">= 1.0.0"
 
 suggests "apache2"
 suggests "nginx"
