@@ -59,15 +59,16 @@ node['jenkins']['server']['plugins'].each do |name|
   end
 end
 
+runit_service "jenkins" do
+  action :enable
+end
+
 remote_file File.join(home_dir, "jenkins.war") do
   source "#{node['jenkins']['mirror']}/war/#{node['jenkins']['server']['version']}/jenkins.war"
   checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
   owner node['jenkins']['server']['user']
   group node['jenkins']['server']['group']
-end
-
-runit_service "jenkins" do
-  action :enable
+  notifies :restart, "runit_service[jenkins]", :immediately
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
 
