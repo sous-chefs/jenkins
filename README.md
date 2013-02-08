@@ -1,35 +1,65 @@
 Description
 ===========
 
-This is a massive simplification/refactor of the original [jenkins cookbook](http://community.opscode.com/cookbooks/jenkins)
-written by these awesome people:
+This is a massive simplification/refactor of the original [jenkins cookbook](http://community.opscode.com/cookbooks/jenkins). This README will be rewritten before the next release.
 
-```ruby
-Original Author:: Doug MacEachern (<dougm@vmware.com>)
-Contributor:: AJ Christensen <aj@junglist.gen.nz>
-Contributor:: Fletcher Nichol <fnichol@nichol.ca>
-Contributor:: Roman Kamyk <rkj@go2.pl>
-Contributor:: Darko Fabijan <darko@renderedtext.com>
-```
+Requirements
+============
 
-I plan on rewriting this README once it's closer to release.
+## Platform:
+
+* Ubuntu
+* RHEL/CentOS
+
+Attributes
+==========
 
 TODO
-====
 
-* test coverage including test-kitchen/jamie integration tests
-* reevalute LWRPs and see if Jenkins REST API can be better leveraged.
-* LWRPs for defining pipelines
-* complete rewrite of README based on recent changes
+Recipes
+=======
 
-Proposed Test Scenarios
-=======================
+TODO
 
-* Ensure Jenkins is running and accessible when:
-  * initially installed
-  * plugin is added/updated
-  * new version of WAR is downloaded
+Resource/Provider
+=================
 
-* running and accessible includes:
-  * webui is accessible
-  * jenkins_job can successfully create a new job via API.
+TODO
+
+Usage
+=====
+
+TODO
+
+Testing
+=======
+
+TODO
+
+License and Author
+==================
+
+|                      |                                          |
+|:---------------------|:-----------------------------------------|
+| **Original Author**  | Doug MacEachern (<dougm@vmware.com>)     |
+| **Contributor**      | AJ Christensen <aj@junglist.gen.nz>      |
+| **Contributor**      | Fletcher Nichol <fnichol@nichol.ca>      |
+| **Contributor**      | Roman Kamyk <rkj@go2.pl>                 |
+| **Contributor**      | Darko Fabijan <darko@renderedtext.com>   |
+| **Contributor**      | Seth Chisamore <schisamo@opscode.com>    |
+|                      |                                          |
+| **Copyright**        | Copyright (c) 2010 VMware, Inc.          |
+| **Copyright**        | Copyright (c) 2011 Fletcher Nichol       |
+| **Copyright**        | Copyright (c) 2013 Opscode, Inc.         |
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
