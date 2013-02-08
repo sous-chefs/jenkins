@@ -13,3 +13,9 @@ Berksfile.lock
 Gemfile.lock
 bin/*
 .bundle/*
+
+# Test Kitchen 1.0
+.kitchen
+.kitchen.local.yml
+.jamie
+.jamie.local.yml
