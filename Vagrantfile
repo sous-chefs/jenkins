@@ -53,13 +53,6 @@ Vagrant::Config.run do |config|
             :port => 8080,
             :host => "33.33.33.10",
             :url => "http://33.33.33.10:8080"
-          },
-          :node => {
-            :labels => %w{
-              ubuntu-10-04
-              x64
-              chef-server-builder
-            }
           }
         }
       }
