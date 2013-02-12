@@ -60,4 +60,6 @@ remote_file slave_jar do
   end
 end
 
-runit_service service_name
+runit_service service_name do
+  action :enable
+end
