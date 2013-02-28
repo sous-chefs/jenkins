@@ -8,6 +8,7 @@ version          "0.7.0"
 
 depends "java"
 depends "runit", ">= 1.0.0"
+depends "apt"
 
 suggests "apache2"
 suggests "nginx"
