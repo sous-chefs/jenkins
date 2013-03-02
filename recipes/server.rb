@@ -74,19 +74,17 @@ end
 
 ruby_block "block_until_operational" do
   block do
-    until IO.popen("netstat -lnt").entries.select { |entry|
-        entry.split[3] =~ /:#{node['jenkins']['server']['port']}$/
-      }.size == 1
-      Chef::Log.debug "service[jenkins] not listening on port #{node['jenkins']['server']['port']}"
+    Chef::Log.info "Waiting until Jenkins is listening on port #{node['jenkins']['server']['port']}."
+    until JenkinsHelper.service_listening?(node['jenkins']['server']['port']) do
       sleep 1
+      Chef::Log.debug(".")
     end
 
-    loop do
-      url = URI.parse("#{node['jenkins']['server']['url']}/job/test/config.xml")
-      res = Chef::REST::RESTRequest.new(:GET, url, nil).call
-      break if res.kind_of?(Net::HTTPSuccess) or res.kind_of?(Net::HTTPNotFound)
-      Chef::Log.debug "service[jenkins] not responding OK to GET / #{res.inspect}"
+    Chef::Log.info "Waiting until the Jenkins API is responding."
+    test_url = URI.parse("#{node['jenkins']['server']['url']}/api/json")
+    until JenkinsHelper.endpoint_responding?(test_url) do
       sleep 1
+      Chef::Log.debug(".")
     end
   end
   action :nothing
