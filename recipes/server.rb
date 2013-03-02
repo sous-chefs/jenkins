@@ -1,14 +1,9 @@
 #
+# Author:: Guilhem Lettron <guilhem.lettron@youscribe.com>
 # Cookbook Name:: jenkins
-# Recipe:: default
+# Recipe:: server
 #
-# Author:: AJ Christensen <aj@junglist.gen.nz>
-# Author:: Doug MacEachern <dougm@vmware.com>
-# Author:: Fletcher Nichol <fnichol@nichol.ca>
-# Author:: Seth Chisamore <schisamo@opscode.com>
-#
-# Copyright 2010, VMware, Inc.
-# Copyright 2012, Opscode, Inc.
+# Copyright 2013, Youscribe
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +19,6 @@
 #
 
 include_recipe "java"
-include_recipe "runit"
 
 user node['jenkins']['server']['user'] do
   home node['jenkins']['server']['home']
@@ -65,6 +59,8 @@ ruby_block "store_server_ssh_pubkey" do
   action :nothing
 end
 
+include_recipe "jenkins::server_#{node['jenkins']['server']['install_method']}"
+
 ruby_block "block_until_operational" do
   block do
     Chef::Log.info "Waiting until Jenkins is listening on port #{node['jenkins']['server']['port']}"
@@ -102,18 +98,9 @@ node['jenkins']['server']['plugins'].each do |plugin|
     group node['jenkins']['server']['group']
     backup false
     action :create_if_missing
-    notifies :restart, "runit_service[jenkins]"
+    notifies :write, "log[restart jenkins]"
     notifies :create, "ruby_block[block_until_operational]"
   end
-end
-
-remote_file File.join(home_dir, "jenkins.war") do
-  source "#{node['jenkins']['mirror']}/war/#{node['jenkins']['server']['version']}/jenkins.war"
-  checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
-  owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['group']
-  notifies :restart, "runit_service[jenkins]"
-  notifies :create, "ruby_block[block_until_operational]"
 end
 
 # Only restart if plugins were added
@@ -129,13 +116,12 @@ log "plugins updated, restarting jenkins" do
     end
   end
   action :nothing
-  notifies :restart, "runit_service[jenkins]"
+  notifies :write, "log[restart jenkins]"
   notifies :create, "ruby_block[block_until_operational]"
 end
 
-runit_service "jenkins"
 
 log "ensure jenkins is running" do
-  notifies :start, "runit_service[jenkins]", :immediately
+  notifies :write, "log[start jenkins]", :immediately
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
