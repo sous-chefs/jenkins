@@ -15,7 +15,5 @@ bin/*
 .bundle/*
 
 # Test Kitchen 1.0
-.kitchen
+.kitchen/
 .kitchen.local.yml
-.jamie
-.jamie.local.yml

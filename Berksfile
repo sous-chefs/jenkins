@@ -2,6 +2,6 @@ site :opscode
 
 metadata
 
-group :development do
+group :integration do
   cookbook "apt"
 end
