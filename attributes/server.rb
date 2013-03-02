@@ -22,6 +22,8 @@
 # limitations under the License.
 #
 
+default['jenkins']['server']['install_method'] = "package"
+default['jenkins']['server']['repository'] = true
 default['jenkins']['server']['home']     = "/var/lib/jenkins"
 default['jenkins']['server']['data_dir'] = File.join(node['jenkins']['server']['home'], "jenkins-data")
 default['jenkins']['server']['log_dir']  = "/var/log/jenkins"
