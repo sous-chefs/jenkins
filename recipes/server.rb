@@ -49,38 +49,15 @@ log_dir = node['jenkins']['server']['log_dir']
   end
 end
 
-node['jenkins']['server']['plugins'].each do |name|
-  remote_file File.join(plugins_dir, "#{name}.hpi") do
-    source "#{node['jenkins']['mirror']}/plugins/#{name}/latest/#{name}.hpi"
-    owner node['jenkins']['server']['user']
-    group node['jenkins']['server']['group']
-    backup false
-    action :create_if_missing
-  end
-end
-
-runit_service "jenkins" do
-  action :enable
-end
-
-remote_file File.join(home_dir, "jenkins.war") do
-  source "#{node['jenkins']['mirror']}/war/#{node['jenkins']['server']['version']}/jenkins.war"
-  checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
-  owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['group']
-  notifies :restart, "runit_service[jenkins]", :immediately
-  notifies :create, "ruby_block[block_until_operational]", :immediately
-end
-
 ruby_block "block_until_operational" do
   block do
-    Chef::Log.info "Waiting until Jenkins is listening on port #{node['jenkins']['server']['port']}."
+    Chef::Log.info "Waiting until Jenkins is listening on port #{node['jenkins']['server']['port']}"
     until JenkinsHelper.service_listening?(node['jenkins']['server']['port']) do
       sleep 1
       Chef::Log.debug(".")
     end
 
-    Chef::Log.info "Waiting until the Jenkins API is responding."
+    Chef::Log.info "Waiting until the Jenkins API is responding"
     test_url = URI.parse("#{node['jenkins']['server']['url']}/api/json")
     until JenkinsHelper.endpoint_responding?(test_url) do
       sleep 1
@@ -88,6 +65,25 @@ ruby_block "block_until_operational" do
     end
   end
   action :nothing
+end
+
+node['jenkins']['server']['plugins'].each do |name|
+  remote_file File.join(plugins_dir, "#{name}.hpi") do
+    source "#{node['jenkins']['mirror']}/plugins/#{name}/latest/#{name}.hpi"
+    owner node['jenkins']['server']['user']
+    group node['jenkins']['server']['group']
+    backup false
+    action :create_if_missing
+    notifies :restart, "runit_service[jenkins]"
+  end
+end
+
+remote_file File.join(home_dir, "jenkins.war") do
+  source "#{node['jenkins']['mirror']}/war/#{node['jenkins']['server']['version']}/jenkins.war"
+  checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
+  owner node['jenkins']['server']['user']
+  group node['jenkins']['server']['group']
+  notifies :restart, "runit_service[jenkins]"
 end
 
 # Only restart if plugins were added
@@ -103,6 +99,10 @@ log "plugins updated, restarting jenkins" do
     end
   end
   action :nothing
-  notifies :restart, "runit_service[jenkins]", :immediately
+  notifies :restart, "runit_service[jenkins]"
+end
+
+runit_service "jenkins" do
+  action [:enable, :start]
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
