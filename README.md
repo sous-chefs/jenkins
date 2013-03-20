@@ -16,7 +16,7 @@ Attributes
 
 * `node['jenkins']['http_proxy']['server_auth_method']` - Authentication with
   the server can be done with cas (using `apache2::mod_auth_cas`), or htauth
-  (basic). The default is htauth (basic).
+  (basic). The default is no authentication.
 * `node['jenkins']['http_proxy']['cas_login_url']` - Login url for cas if using
   cas authentication.
 * `node['jenkins']['http_proxy']['cas_validate_url']` - Validation url for cas

@@ -53,3 +53,4 @@ default['jenkins']['http_proxy']['client_max_body_size'] = "1024m"
 default['jenkins']['http_proxy']['basic_auth_username'] = "jenkins"
 default['jenkins']['http_proxy']['basic_auth_password'] = "jenkins"
 default['jenkins']['http_proxy']['cas_validate_server'] = "off"
+default['jenkins']['http_proxy']['server_auth_method'] = nil

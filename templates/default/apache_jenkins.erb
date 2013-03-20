@@ -43,7 +43,7 @@
     AuthType CAS
     require valid-user
   </Location>
-  <% else -%>
+<% when "basic" -%>
   <Location />
     AuthType basic
     AuthName "Jenkins"
