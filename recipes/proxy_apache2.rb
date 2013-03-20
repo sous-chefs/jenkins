@@ -21,6 +21,9 @@
 
 include_recipe "apache2"
 
+if node['jenkins']['http_proxy']['cas_validate_server'] == "cas"
+  apache_module "mod_auth_cas"
+end
 apache_module "proxy"
 apache_module "proxy_http"
 apache_module "vhost_alias"
