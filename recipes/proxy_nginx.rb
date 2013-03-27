@@ -47,7 +47,10 @@ template "#{node['nginx']['dir']}/sites-available/jenkins.conf" do
     :host_aliases     => node['jenkins']['http_proxy']['host_aliases'],
     :listen_ports     => node['jenkins']['http_proxy']['listen_ports'],
     :www_redirect     => www_redirect,
-    :max_upload_size  => node['jenkins']['http_proxy']['client_max_body_size']
+    :max_upload_size  => node['jenkins']['http_proxy']['client_max_body_size'],
+    :redirect_http    => node['jenkins']['http_proxy']['ssl']['redirect_http'],
+    :ssl_enabled      => node['jenkins']['http_proxy']['ssl']['enabled'],
+    :ssl_listen_ports => node['jenkins']['http_proxy']['ssl']['ssl_listen_ports']
   )
 
   if File.exists?("#{node['nginx']['dir']}/sites-enabled/jenkins.conf")
