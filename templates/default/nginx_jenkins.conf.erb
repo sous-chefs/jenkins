@@ -8,8 +8,8 @@ server {
 <% @listen_ports.each do |port| -%>
   listen            <%= port %>;
 <% end -%>
-    server_name     www.<%= @host_name %>;
-    rewrite ^/(.*)  http://<%= @host_name %>/$1 permanent;
+  server_name     www.<%= @host_name %>;
+  rewrite ^/(.*)  http://<%= @host_name %>/$1 permanent;
 }
 <% end -%>
 
