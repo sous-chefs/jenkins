@@ -35,6 +35,7 @@ else
 end
 
 default['jenkins']['node']['user'] = "jenkins-node"
+default['jenkins']['node']['group'] = "jenkins-node"
 default['jenkins']['node']['name'] = node['fqdn']
 default['jenkins']['node']['description'] =
   "#{node['platform']} #{node['platform_version']} " <<
