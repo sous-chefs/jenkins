@@ -29,6 +29,14 @@ end
 
 host_name = node['jenkins']['http_proxy']['host_name'] || node['fqdn']
 
+template "#{node['nginx']['dir']}/htpasswd" do
+  variables( :username => node['jenkins']['http_proxy']['basic_auth_username'],
+             :password => node['jenkins']['http_proxy']['basic_auth_password'])
+  owner node['nginx']['user']
+  group node['nginx']['user']
+  mode '0600'
+end
+
 template "#{node['nginx']['dir']}/sites-available/jenkins.conf" do
   source      "nginx_jenkins.conf.erb"
   owner       'root'
