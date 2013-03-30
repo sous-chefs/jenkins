@@ -92,6 +92,18 @@ suites:
       http_proxy:
         host_name: 33.33.33.10
         variant: apache2
+- name: server-proxy-apache2-ssl
+  run_list:
+  - recipe[jenkins::server]
+  - recipe[jenkins::proxy_apache2]
+  attributes:
+    jenkins:
+      http_proxy:
+        host_name: 33.33.33.10
+        variant: apache2
+        ssl:
+          enabled: true
+          redirect_http: true
 - name: server-proxy-apache2-basicauth
   run_list:
   - recipe[jenkins::server]
