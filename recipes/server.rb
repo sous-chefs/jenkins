@@ -84,6 +84,7 @@ remote_file File.join(home_dir, "jenkins.war") do
   owner node['jenkins']['server']['user']
   group node['jenkins']['server']['group']
   notifies :restart, "runit_service[jenkins]"
+  not_if "test -f /var/lib/jenkins/jenkins.war"
 end
 
 # Only restart if plugins were added
