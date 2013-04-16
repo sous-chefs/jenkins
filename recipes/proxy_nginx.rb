@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "nginx::source"
+include_recipe "nginx"
 
 if node['jenkins']['http_proxy']['www_redirect'] == "enable"
   www_redirect = true
