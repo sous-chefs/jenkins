@@ -102,7 +102,9 @@ log "plugins updated, restarting jenkins" do
   notifies :restart, "runit_service[jenkins]"
 end
 
-runit_service "jenkins" do
-  action [:enable, :start]
+runit_service "jenkins"
+
+log "start jenkins" do
+  notifies :start, "runit_service[jenkins]", :immediately
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
