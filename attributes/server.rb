@@ -54,3 +54,10 @@ default['jenkins']['http_proxy']['basic_auth_username'] = "jenkins"
 default['jenkins']['http_proxy']['basic_auth_password'] = "jenkins"
 default['jenkins']['http_proxy']['cas_validate_server'] = "off"
 default['jenkins']['http_proxy']['server_auth_method'] = nil
+
+default['jenkins']['http_proxy']['ssl']['enabled'] = false
+default['jenkins']['http_proxy']['ssl']['redirect_http'] = false
+default['jenkins']['http_proxy']['ssl']['ssl_listen_ports'] = [ 443 ]
+default['jenkins']['http_proxy']['ssl']['dir'] = "#{default['jenkins']['server']['home']}/ssl"
+default['jenkins']['http_proxy']['ssl']['cert_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.cert"
+default['jenkins']['http_proxy']['ssl']['key_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.key"

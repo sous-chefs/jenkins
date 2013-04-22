@@ -6,50 +6,33 @@
 <% end -%>
 
   RewriteEngine     On
+<% if @www_redirect -%>
   RewriteCond       %{HTTP_HOST} ^www.<%= @host_name %>$ [NC]
   RewriteRule       ^/(.*)$ http://<%= @host_name %>/$1 [R=301,L]
-</VirtualHost>
+<% end %>
 
+</VirtualHost>
 <% end -%>
+
 <VirtualHost *:80>
-  ServerName        <%= @host_name %>
-  ProxyRequests     Off
-<% @host_aliases.each do |a| -%>
-  ServerAlias       <%= a %>
-<% end -%>
+<% if @redirect_http -%>
+  RewriteEngine On
+  # rewrite non ssl -> ssl 
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+<% end %>
 
-  # Local reverse proxy authorization override
-  # Most unix distribution deny proxy by default
-  # (ie /etc/apache2/mods-enabled/proxy.conf in Ubuntu)
-  <Proxy http://localhost:<%= @jenkins_port %>/*>
-    Order deny,allow
-    Allow from all
-  </Proxy>
+<%= render "_apache_common.erb" %>  
 
-  ProxyPreserveHost on
-  ProxyPass         /  http://localhost:<%= @jenkins_port %>/
-  ProxyPassReverse  /  http://localhost:<%= @jenkins_port %>/
-
-<% case node['jenkins']['http_proxy']['server_auth_method'] -%>
-<% when "cas" -%>
-  CASLoginURL <%= node['jenkins']['http_proxy']['cas_login_url'] %>
-  CASValidateURL <%= node['jenkins']['cas_validate_url'] %>
-  CASValidateServer <%= node['jenkins']['http_proxy']['cas_validate_server'] %>
-  <% if node['jenkins']['http_proxy']['cas_root_proxy_url'] -%>
-  CASRootProxiedAs <%= node['jenkins']['http_proxy']['cas_root_proxy_url'] %>
-  <% end -%>
-
-  <Location />
-    AuthType CAS
-    require valid-user
-  </Location>
-<% when "basic" -%>
-  <Location />
-    AuthType basic
-    AuthName "Jenkins"
-    AuthBasicProvider file
-    AuthUserFile <%= File.join(node.apache.dir, "htpasswd") %>
-    require valid-user
-  </Location>
-<% end -%>
 </VirtualHost>
+
+<% if @ssl_enabled -%>
+  <VirtualHost *:<%= @ssl_listen_ports.join ' *:' -%>>
+<%= render "_apache_common.erb" %>  
+
+  SSLEngine on
+  SSLCertificateFile <%= node[:jenkins][:http_proxy][:ssl][:cert_path] %>
+  SSLCertificateKeyFile <%= node[:jenkins][:http_proxy][:ssl][:key_path] %>
+
+</VirtualHost>
+<% end %>
