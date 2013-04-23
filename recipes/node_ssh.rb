@@ -22,14 +22,18 @@
 
 include_recipe "java"
 
-unless Chef::Config[:solo]
-  unless node['jenkins']['server']['pubkey']
-    host = node['jenkins']['server']['host']
-    if host == node['fqdn']
-      host = URI.parse(node['jenkins']['server']['url']).host
+ruby_block "Get public key of jenkins server" do
+  block do
+    unless Chef::Config[:solo]
+      unless node['jenkins']['server']['pubkey']
+        host = node['jenkins']['server']['host']
+        if host == node['fqdn']
+          host = URI.parse(node['jenkins']['server']['url']).host
+        end
+        jenkins_node = search('node', "fqdn:#{host}").first
+        node.set['jenkins']['server']['pubkey'] = jenkins_node['jenkins']['server']['pubkey']
+      end
     end
-    jenkins_node = search('node', "fqdn:#{host}").first
-    node.set['jenkins']['server']['pubkey'] = jenkins_node['jenkins']['server']['pubkey']
   end
 end
 
@@ -37,20 +41,20 @@ group node['jenkins']['node']['group']
 
 user node['jenkins']['node']['user'] do
   comment "Jenkins CI node (ssh)"
-  gid node['jenkins']['node']['user']
+  gid node['jenkins']['node']['group']
   home node['jenkins']['node']['home']
   shell "/bin/sh"
 end
 
 directory node['jenkins']['node']['home'] do
   owner node['jenkins']['node']['user']
-  group node['jenkins']['node']['user']
+  group node['jenkins']['node']['group']
   action :create
 end
 
 directory "#{node['jenkins']['node']['home']}/.ssh" do
   owner node['jenkins']['node']['user']
-  group node['jenkins']['node']['user']
+  group node['jenkins']['node']['group']
   mode '0700'
   action :create
 end
@@ -58,7 +62,7 @@ end
 file "#{node['jenkins']['node']['home']}/.ssh/authorized_keys" do
   content node['jenkins']['server']['pubkey']
   owner node['jenkins']['node']['user']
-  group node['jenkins']['node']['user']
+  group node['jenkins']['node']['group']
   mode '0600'
   action :create
 end

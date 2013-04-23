@@ -26,7 +26,7 @@ server_url = node['jenkins']['server']['url']
 jenkins_exe = "#{home_dir}\\jenkins-slave.exe"
 service_name = "jenkinsslave"
 
-directory home do
+directory home_dir do
   action :create
 end
 
@@ -40,9 +40,9 @@ env "JENKINS_URL" do
   value server_url
 end
 
-template "#{home}/jenkins-slave.xml" do
+template "#{home_dir}/jenkins-slave.xml" do
   source "jenkins-slave.xml.erb"
-  variables(:jenkins_home => home,
+  variables(:jenkins_home => home_dir,
             :jnlp_url => "#{server_url}/computer/#{node['jenkins']['node']['name']}/slave-agent.jnlp")
 end
 
@@ -52,7 +52,7 @@ remote_file jenkins_exe do
 end
 
 execute "#{jenkins_exe} install" do
-  cwd home
+  cwd home_dir
   only_if { WMI::Win32_Service.find(:first, :conditions => {:name => service_name}).nil? }
 end
 
