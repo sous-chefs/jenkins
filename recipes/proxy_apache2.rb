@@ -36,11 +36,8 @@ apache_module "proxy"
 apache_module "proxy_http"
 apache_module "vhost_alias"
 
-if node['jenkins']['http_proxy']['www_redirect'] == "enable"
-  www_redirect = true
+if www_redirect || node['jenkins']['http_proxy']['ssl']['redirect_http']
   apache_module "rewrite"
-else
-  www_redirect = false
 end
 
 template "#{node['apache']['dir']}/htpasswd" do
