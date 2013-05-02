@@ -121,7 +121,7 @@ props = []
 
 def new_ssh_launcher(args) {
   Jenkins.instance.pluginManager.getPlugin("ssh-slaves").classLoader.
-    loadClass("jenkins.plugins.sshslaves.SSHLauncher").
+    loadClass("hudson.plugins.sshslaves.SSHLauncher").
       getConstructor([String, int, String, String, String, String] as Class[]).newInstance(args)
 }
 
