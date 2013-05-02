@@ -21,6 +21,9 @@
 
 include_recipe "apache2"
 
+www_redirect = (node['jenkins']['http_proxy']['www_redirect'] == "enable")
+host_name = node['jenkins']['http_proxy']['host_name'] || node['fqdn']
+
 if node['jenkins']['http_proxy']['cas_validate_server'] == "cas"
   apache_module "mod_auth_cas"
 end
@@ -39,8 +42,6 @@ if node['jenkins']['http_proxy']['www_redirect'] == "enable"
 else
   www_redirect = false
 end
-
-host_name = node['jenkins']['http_proxy']['host_name'] || node['fqdn']
 
 template "#{node['apache']['dir']}/htpasswd" do
   variables( :username => node['jenkins']['http_proxy']['basic_auth_username'],
