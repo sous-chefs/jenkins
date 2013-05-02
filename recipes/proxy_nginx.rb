@@ -21,12 +21,7 @@
 
 include_recipe "nginx::source"
 
-if node['jenkins']['http_proxy']['www_redirect'] == "enable"
-  www_redirect = true
-else
-  www_redirect = false
-end
-
+www_redirect = (node['jenkins']['http_proxy']['www_redirect'] == "enable")
 host_name = node['jenkins']['http_proxy']['host_name'] || node['fqdn']
 
 template "#{node['nginx']['dir']}/htpasswd" do
