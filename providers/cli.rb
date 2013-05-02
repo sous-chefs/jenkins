@@ -23,6 +23,10 @@
 def action_run
   url = @new_resource.url || node['jenkins']['server']['url']
   home = @new_resource.home || node['jenkins']['node']['home']
+  username = @new_resource.username ||  node['jenkins']['cli']['username']
+  password = @new_resource.password ||  node['jenkins']['cli']['password']
+  password_file = @new_resource.password_file ||  node['jenkins']['cli']['password_file']
+  java_params = @new_resource.java_params || node['jenkins']['cli']['java_params']
 
   #recipes will chown to jenkins later if this doesn't already exist
   directory "home for jenkins-cli.jar" do
@@ -42,8 +46,20 @@ def action_run
   else
     java = ::File.join(java_home, "bin", "java")
   end
+  if java_params
+    java << " #{java_params}"
+  end
 
   command = "#{java} -jar #{cli_jar} -s #{url} #{@new_resource.command}"
+  if username
+    command << " --username #{username}"
+  end
+  if password
+    command << " --password #{password}"
+  end
+  if password_file
+    command << " --password_file #{password_file}"
+  end
 
   je = jenkins_execute command do
         cwd home
