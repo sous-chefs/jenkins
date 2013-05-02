@@ -94,6 +94,7 @@ suites:
         variant: apache2
 - name: server-proxy-apache2-ssl
   run_list:
+  - recipe[jenkins-test::generate_certs]
   - recipe[jenkins::server]
   - recipe[jenkins::proxy_apache2]
   attributes:
