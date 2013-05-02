@@ -71,6 +71,18 @@ suites:
       http_proxy:
         host_name: 33.33.33.10
         variant: nginx
+- name: server-proxy-nginx-basicauth
+  run_list:
+  - recipe[jenkins::server]
+  - recipe[jenkins::proxy_nginx]
+  attributes:
+    jenkins:
+      http_proxy:
+        host_name: 33.33.33.10
+        variant: nginx
+        server_auth_method: basic
+        basic_auth_username: foo
+        basic_auth_password: bar
 - name: server-proxy-apache2
   run_list:
   - recipe[jenkins::server]
@@ -90,3 +102,5 @@ suites:
         host_name: 33.33.33.10
         variant: apache2
         server_auth_method: basic
+        basic_auth_username: foo
+        basic_auth_password: bar
