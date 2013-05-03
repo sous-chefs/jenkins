@@ -24,22 +24,39 @@
 #
 
 include_recipe "java"
-include_recipe "runit"
+
+case node['platform']
+when "ubuntu", "debian"
+  include_recipe "runit"
+  service_type  = "runit_service[jenkins]"
+when "amazon", "centos"
+  template "/etc/init.d/jenkins" do
+    source "jenkins.erb"
+    owner "root"
+    group "root"
+    mode "0755"
+  end
+  service_type  = "service[jenkins]"
+end
 
 user node['jenkins']['server']['user'] do
   home node['jenkins']['server']['home']
 end
 
 home_dir = node['jenkins']['server']['home']
+config_dir = node['jenkins']['server']['config_dir']
 data_dir = node['jenkins']['server']['data_dir']
-plugins_dir = File.join(node['jenkins']['server']['data_dir'], "plugins")
+plugins_dir = File.join(node['jenkins']['server']['home'], "plugins")
 log_dir = node['jenkins']['server']['log_dir']
+war_cache = node['jenkins']['server']['war_cache']
 
 [
   home_dir,
+  config_dir,
   data_dir,
   plugins_dir,
-  log_dir
+  log_dir,
+  war_cache
 ].each do |dir_name|
   directory dir_name do
     owner node['jenkins']['server']['user']
@@ -82,7 +99,7 @@ node['jenkins']['server']['plugins'].each do |plugin|
     group node['jenkins']['server']['group']
     backup false
     action :create_if_missing
-    notifies :restart, "runit_service[jenkins]"
+    notifies :restart, service_type
   end
 end
 
@@ -91,7 +108,7 @@ remote_file File.join(home_dir, "jenkins.war") do
   checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
   owner node['jenkins']['server']['user']
   group node['jenkins']['server']['group']
-  notifies :restart, "runit_service[jenkins]"
+  notifies :restart, service_type
 end
 
 # Only restart if plugins were added
@@ -107,10 +124,22 @@ log "plugins updated, restarting jenkins" do
     end
   end
   action :nothing
-  notifies :restart, "runit_service[jenkins]"
+  notifies :restart, service_type
 end
 
-runit_service "jenkins" do
-  action [:enable, :start]
-  notifies :create, "ruby_block[block_until_operational]", :immediately
+case node['platform']
+when "ubuntu", "debian"
+  runit_service "jenkins" do
+    action [:enable, :start]
+    notifies :create, "ruby_block[block_until_operational]", :immediately
+  end
+when "amazon", "centos"
+  service "jenkins" do
+    action :enable
+  end
+
+  service "jenkins" do
+    action :start
+    notifies :create, "ruby_block[block_until_operational]", :delayed
+  end
 end
