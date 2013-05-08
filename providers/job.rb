@@ -26,27 +26,20 @@ def load_current_resource
   @current_resource = Chef::Resource::JenkinsJob.new(@new_resource.name)
 end
 
-def action_create
+def store
   validate_job_config!
-  if !exists? # job does not exist in jenkins
-    post_job(new_job_url)
+  if !exists? # create
     Chef::Log.debug("#{@new_resource} does not exist - creating.")
-    new_resource.updated_by_last_action(true)
-  else # job exists attempt to update
-    action_update
+    post_job(new_job_url)
+  else # update
+    Chef::Log.debug("#{@new_resource} exists - updating")
+    post_job(job_url)
   end
+  new_resource.updated_by_last_action(true)
 end
 
-def action_update
-  validate_job_config!
-  if exists? # job exists
-    post_job(job_url)
-    Chef::Log.debug("#{@new_resource} exists - updating")
-    new_resource.updated_by_last_action(true)
-  else # job does not exist
-    action_create
-  end
-end
+alias_method :action_create, :store
+alias_method :action_update, :store
 
 def action_delete
   jenkins_cli "delete-job #{@new_resource.job_name}"
