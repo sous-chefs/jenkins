@@ -24,11 +24,10 @@
 
 def load_current_resource
   @current_resource = Chef::Resource::JenkinsJob.new(@new_resource.name)
-  validate_job_config!
-  @current_resource
 end
 
 def action_create
+  validate_job_config!
   if !exists? # job does not exist in jenkins
     post_job(new_job_url)
     Chef::Log.debug("#{@new_resource} does not exist - creating.")
@@ -39,6 +38,7 @@ def action_create
 end
 
 def action_update
+  validate_job_config!
   if exists? # job exists
     post_job(job_url)
     Chef::Log.debug("#{@new_resource} exists - updating")
