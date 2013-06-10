@@ -39,7 +39,7 @@ user node['jenkins']['node']['user'] do
   comment "Jenkins CI node (ssh)"
   gid node['jenkins']['node']['user']
   home node['jenkins']['node']['home']
-  shell "/bin/sh"
+  shell node['jenkins']['node']['shell']
 end
 
 directory node['jenkins']['node']['home'] do
