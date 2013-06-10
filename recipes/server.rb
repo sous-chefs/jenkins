@@ -83,6 +83,7 @@ node['jenkins']['server']['plugins'].each do |plugin|
     backup false
     action :create_if_missing
     notifies :restart, "runit_service[jenkins]"
+    notifies :create, "ruby_block[block_until_operational]"
   end
 end
 
@@ -92,6 +93,7 @@ remote_file File.join(home_dir, "jenkins.war") do
   owner node['jenkins']['server']['user']
   group node['jenkins']['server']['group']
   notifies :restart, "runit_service[jenkins]"
+  notifies :create, "ruby_block[block_until_operational]"
 end
 
 # Only restart if plugins were added
@@ -108,11 +110,12 @@ log "plugins updated, restarting jenkins" do
   end
   action :nothing
   notifies :restart, "runit_service[jenkins]"
+  notifies :create, "ruby_block[block_until_operational]"
 end
 
 runit_service "jenkins"
 
-log "start jenkins" do
+log "ensure jenkins is running" do
   notifies :start, "runit_service[jenkins]", :immediately
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
