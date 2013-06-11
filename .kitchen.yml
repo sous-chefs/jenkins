@@ -27,8 +27,8 @@ platforms:
   - recipe[apt]
 - name: ubuntu-10.04
   driver_config:
-    box: opscode-ubuntu-10.04
-    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_chef-11.2.0.box
+    box: opscode_ubuntu-10.04_provisionerless
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_provisionerless.box
     require_chef_omnibus: 11.4.0
     network:
     - [private_network, ip: 33.33.33.10]
@@ -37,20 +37,20 @@ platforms:
       memory: 1024
   run_list:
   - recipe[apt]
-- name: centos-5.8
+- name: centos-5.9
   driver_config:
-    box: opscode-centos-5.8
-    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.8_chef-11.2.0.box
+    box: opscode-centos-5.9
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.9_provisionerless.box
     require_chef_omnibus: 11.4.0
     network:
     - [private_network, ip: 33.33.33.10]
     customize:
       cpus: 2
       memory: 1024
-- name: centos-6.3
+- name: centos-6.4
   driver_config:
-    box: opscode-centos-6.3
-    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.3_chef-11.2.0.box
+    box: centos-6.4
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box
     require_chef_omnibus: 11.4.0
     network:
     - [private_network, ip: 33.33.33.10]
