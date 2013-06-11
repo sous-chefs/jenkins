@@ -34,12 +34,14 @@ home_dir = node['jenkins']['server']['home']
 data_dir = node['jenkins']['server']['data_dir']
 plugins_dir = File.join(node['jenkins']['server']['data_dir'], "plugins")
 log_dir = node['jenkins']['server']['log_dir']
+ssh_dir = File.join(home_dir, ".ssh")
 
 [
   home_dir,
   data_dir,
   plugins_dir,
-  log_dir
+  log_dir,
+  ssh_dir
 ].each do |dir_name|
   directory dir_name do
     owner node['jenkins']['server']['user']
@@ -47,6 +49,20 @@ log_dir = node['jenkins']['server']['log_dir']
     mode '0700'
     recursive true
   end
+end
+
+execute "ssh-keygen -f #{File.join(ssh_dir, "id_rsa")} -N ''" do
+  user node['jenkins']['server']['user']
+  group node['jenkins']['server']['group']
+  not_if { File.exists?(File.join(ssh_dir, "id_rsa")) }
+  notifies :create, "ruby_block[store_server_ssh_pubkey]", :immediately
+end
+
+ruby_block "store_server_ssh_pubkey" do
+  block do
+    node.set['jenkins']['server']['pubkey'] = IO.read(File.join(ssh_dir, "id_rsa.pub"))
+  end
+  action :nothing
 end
 
 ruby_block "block_until_operational" do
