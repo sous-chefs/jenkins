@@ -61,7 +61,12 @@ suites:
 - name: server
   run_list:
   - recipe[jenkins::server]
-  attributes: {}
+  attributes:
+    jenkins:
+      server:
+        plugins:
+        - name: git
+          version: 1.3.0
 - name: server-proxy-nginx
   run_list:
   - recipe[jenkins::server]
