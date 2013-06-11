@@ -54,9 +54,5 @@ template "#{node['nginx']['dir']}/sites-available/jenkins.conf" do
 end
 
 nginx_site "jenkins.conf" do
-  if node['jenkins']['http_proxy']['variant'] == "nginx"
-    enable true
-  else
-    enable false
-  end
+  enable true
 end

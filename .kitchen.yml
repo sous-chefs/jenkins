@@ -70,7 +70,6 @@ suites:
     jenkins:
       http_proxy:
         host_name: 33.33.33.10
-        variant: nginx
 - name: server-proxy-nginx-ssl
   run_list:
   - recipe[jenkins-test::generate_certs]
@@ -80,7 +79,6 @@ suites:
     jenkins:
       http_proxy:
         host_name: 33.33.33.10
-        variant: nginx
         ssl:
           enabled: true
           redirect_http: true
@@ -92,7 +90,6 @@ suites:
     jenkins:
       http_proxy:
         host_name: 33.33.33.10
-        variant: nginx
         server_auth_method: basic
         basic_auth_username: foo
         basic_auth_password: bar
@@ -104,7 +101,6 @@ suites:
     jenkins:
       http_proxy:
         host_name: 33.33.33.10
-        variant: apache2
 - name: server-proxy-apache2-ssl
   run_list:
   - recipe[jenkins-test::generate_certs]
@@ -114,7 +110,6 @@ suites:
     jenkins:
       http_proxy:
         host_name: 33.33.33.10
-        variant: apache2
         ssl:
           enabled: true
           redirect_http: true
@@ -126,7 +121,6 @@ suites:
     jenkins:
       http_proxy:
         host_name: 33.33.33.10
-        variant: apache2
         server_auth_method: basic
         basic_auth_username: foo
         basic_auth_password: bar

@@ -73,9 +73,5 @@ apache_site "000-default" do
 end
 
 apache_site "jenkins" do
-  if node['jenkins']['http_proxy']['variant'] == "apache2"
-    enable true
-  else
-    enable false
-  end
+  enable true
 end

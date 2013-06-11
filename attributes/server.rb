@@ -45,7 +45,6 @@ default['jenkins']['server']['plugins'] = []
 default['jenkins']['server']['jvm_options'] = nil
 default['jenkins']['server']['pubkey'] = nil
 
-default['jenkins']['http_proxy']['variant']              = nil
 default['jenkins']['http_proxy']['www_redirect']         = "disable"
 default['jenkins']['http_proxy']['listen_ports']         = [ 80 ]
 default['jenkins']['http_proxy']['host_name']            = nil
