@@ -32,14 +32,12 @@ user node['jenkins']['server']['user'] do
 end
 
 home_dir = node['jenkins']['server']['home']
-data_dir = node['jenkins']['server']['data_dir']
-plugins_dir = File.join(node['jenkins']['server']['data_dir'], "plugins")
+plugins_dir = File.join(home_dir, "plugins")
 log_dir = node['jenkins']['server']['log_dir']
 ssh_dir = File.join(home_dir, ".ssh")
 
 [
   home_dir,
-  data_dir,
   plugins_dir,
   log_dir,
   ssh_dir
