@@ -23,7 +23,6 @@
 #
 
 default['jenkins']['server']['install_method'] = "package"
-default['jenkins']['server']['repository'] = true
 default['jenkins']['server']['home']     = "/var/lib/jenkins"
 default['jenkins']['server']['data_dir'] = File.join(node['jenkins']['server']['home'], "jenkins-data")
 default['jenkins']['server']['log_dir']  = "/var/log/jenkins"
@@ -33,10 +32,8 @@ case node['platform_family']
 when "debian"
   default['jenkins']['server']['group'] = "nogroup"
   default['jenkins']['server']['install_method'] = "package"
-  default['jenkins']['server']['repository'] = true
 when "rhel"
   default['jenkins']['server']['install_method'] = "package"
-  default['jenkins']['server']['repository'] = true
   default['jenkins']['server']['group'] = node['jenkins']['server']['user']
 else
   default['jenkins']['server']['install_method'] = "war"

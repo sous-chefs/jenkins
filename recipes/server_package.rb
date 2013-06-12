@@ -18,8 +18,31 @@
 # limitations under the License.
 #
 
-if node['jenkins']['server']['repository']
-  include_recipe "jenkins::repository_jenkins-ci"
+case node['platform_family']
+when "debian"
+  include_recipe "apt"
+
+  apt_repository "jenkins" do
+    uri "http://pkg.jenkins-ci.org/debian"
+    distribution "binary/"
+    components [""]
+    key "http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key"
+    action :add
+  end
+
+when "rhel"
+  include_recipe "yum"
+
+  yum_key "RPM-GPG-KEY-jenkins-ci" do
+    url "http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key"
+    action :add
+  end
+
+  yum_repository "jenkins-ci" do
+    url "http://pkg.jenkins-ci.org/redhat"
+    key "RPM-GPG-KEY-jenkins-ci"
+    action :add
+  end
 end
 
 package "jenkins"
