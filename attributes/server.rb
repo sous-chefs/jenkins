@@ -38,7 +38,7 @@ else
   default['jenkins']['server']['group'] = node['jenkins']['server']['user']
 end
 
-default['jenkins']['server']['version'] = :latest
+default['jenkins']['server']['version'] = nil
 default['jenkins']['server']['war_checksum'] = nil
 
 default['jenkins']['server']['port'] = 8080
