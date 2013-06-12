@@ -34,4 +34,4 @@ log "restart jenkins" do
   action :nothing
 end
 
-node.default['jenkins']['server']['init'] = 'init'
+node.override['jenkins']['server']['init'] = 'init'

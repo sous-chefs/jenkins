@@ -48,4 +48,4 @@ remote_file File.join(home_dir, "jenkins.war") do
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
 
-node.set['jenkins']['server']['init'] = 'runit'
+node.override['jenkins']['server']['init'] = 'runit'
