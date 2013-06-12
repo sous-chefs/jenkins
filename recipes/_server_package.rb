@@ -51,10 +51,3 @@ service "jenkins" do
   supports :status => true, :restart => true, :reload => true
   action [ :enable, :start ]
 end
-
-log "restart jenkins" do
-  notifies :restart, "service[jenkins]", :immediately
-  action :nothing
-end
-
-node.override['jenkins']['server']['init'] = 'init'

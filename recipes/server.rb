@@ -106,7 +106,7 @@ node['jenkins']['server']['plugins'].each do |plugin|
     group node['jenkins']['server']['group']
     backup false
     action :create_if_missing
-    notifies :write, "log[restart jenkins]"
+    notifies :restart, "service[jenkins]"
     notifies :create, "ruby_block[block_until_operational]"
   end
 end
@@ -124,12 +124,11 @@ log "plugins updated, restarting jenkins" do
     end
   end
   action :nothing
-  notifies :write, "log[restart jenkins]"
+  notifies :restart, "service[jenkins]"
   notifies :create, "ruby_block[block_until_operational]"
 end
 
-
 log "ensure jenkins is running" do
-  notifies :write, "log[start jenkins]", :immediately
+  notifies :start, "service[jenkins]", :immediately
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
