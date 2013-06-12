@@ -30,6 +30,9 @@ when "debian"
     action :add
   end
 
+  config_path = "/etc/default/jenkins"
+  config_template = "default.erb"
+
 when "rhel"
   include_recipe "yum"
 
@@ -43,12 +46,25 @@ when "rhel"
     key "RPM-GPG-KEY-jenkins-ci"
     action :add
   end
+
+  config_path = "/etc/sysconfig/jenkins"
+  config_template = "sysconfig.erb"
 end
 
 package "jenkins" do
   unless node['jenkins']['server']['version'].nil?
     version node['jenkins']['server']['version']
   end
+end
+
+template config_path do
+  source config_template
+  variables node['jenkins']['server'].to_hash
+  owner "root"
+  group "root"
+  mode "0644"
+  notifies :restart, "service[jenkins]", :immediately
+  notifies :create, "ruby_block[block_until_operational]", :immediately
 end
 
 service "jenkins" do
