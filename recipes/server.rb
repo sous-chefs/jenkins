@@ -67,24 +67,6 @@ end
 
 include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
 
-ruby_block "block_until_operational" do
-  block do
-    Chef::Log.info "Waiting until Jenkins is listening on port #{node['jenkins']['server']['port']}"
-    until JenkinsHelper.service_listening?(node['jenkins']['server']['port']) do
-      sleep 1
-      Chef::Log.debug(".")
-    end
-
-    Chef::Log.info "Waiting until the Jenkins API is responding"
-    test_url = URI.parse("#{node['jenkins']['server']['url']}/api/json")
-    until JenkinsHelper.endpoint_responding?(test_url) do
-      sleep 1
-      Chef::Log.debug(".")
-    end
-  end
-  action :nothing
-end
-
 node['jenkins']['server']['plugins'].each do |plugin|
   version = 'latest'
   if plugin.is_a?(Hash)
@@ -109,24 +91,25 @@ node['jenkins']['server']['plugins'].each do |plugin|
   end
 end
 
-# Only restart if plugins were added
-log "plugins updated, restarting jenkins" do
-  only_if do
-    # This file is touched on service start/restart
-    pid_file = File.join(home_dir, "jenkins.start")
-    if File.exists?(pid_file)
-      htime = File.mtime(pid_file)
-      Dir[File.join(plugins_dir, "*.hpi")].select { |file|
-        File.mtime(file) > htime
-      }.size > 0
+ruby_block "block_until_operational" do
+  block do
+    Chef::Log.info "Waiting until Jenkins is listening on port #{node['jenkins']['server']['port']}"
+    until JenkinsHelper.service_listening?(node['jenkins']['server']['port']) do
+      sleep 1
+      Chef::Log.debug(".")
+    end
+
+    Chef::Log.info "Waiting until the Jenkins API is responding"
+    test_url = URI.parse("#{node['jenkins']['server']['url']}/api/json")
+    until JenkinsHelper.endpoint_responding?(test_url) do
+      sleep 1
+      Chef::Log.debug(".")
     end
   end
   action :nothing
-  notifies :restart, "service[jenkins]"
-  notifies :create, "ruby_block[block_until_operational]"
 end
 
-log "ensure jenkins is running" do
+log "ensure_jenkins_is_running" do
   notifies :start, "service[jenkins]", :immediately
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
