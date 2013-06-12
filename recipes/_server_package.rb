@@ -45,7 +45,11 @@ when "rhel"
   end
 end
 
-package "jenkins"
+package "jenkins" do
+  unless node['jenkins']['server']['version'].nil?
+    version node['jenkins']['server']['version']
+  end
+end
 
 service "jenkins" do
   supports :status => true, :restart => true, :reload => true
