@@ -1,9 +1,10 @@
 #
-# Author:: Guilhem Lettron <guilhem.lettron@youscribe.com>
-# Cookbook Name:: jenkins
-# Recipe:: default
+# Author:: Seth Chisamore <schisamo@opscode.com>
 #
-# Copyright 2013, Youscribe
+# Cookbook Name:: jenkins
+# Recipe:: proxy
+#
+# Copyright 2013, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,3 +18,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+include_recipe "jenkins::_proxy_#{node['jenkins']['http_proxy']['variant']}"
