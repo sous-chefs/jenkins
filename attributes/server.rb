@@ -22,15 +22,14 @@
 # limitations under the License.
 #
 
-default['jenkins']['server']['install_method'] = "package"
-default['jenkins']['server']['home']     = "/var/lib/jenkins"
-default['jenkins']['server']['log_dir']  = "/var/log/jenkins"
+default['jenkins']['server']['home'] = "/var/lib/jenkins"
+default['jenkins']['server']['log_dir'] = "/var/log/jenkins"
 
 default['jenkins']['server']['user'] = "jenkins"
 case node['platform_family']
 when "debian"
-  default['jenkins']['server']['group'] = "nogroup"
   default['jenkins']['server']['install_method'] = "package"
+  default['jenkins']['server']['group'] = "nogroup"
 when "rhel"
   default['jenkins']['server']['install_method'] = "package"
   default['jenkins']['server']['group'] = node['jenkins']['server']['user']
@@ -50,11 +49,11 @@ default['jenkins']['server']['plugins'] = []
 default['jenkins']['server']['jvm_options'] = nil
 default['jenkins']['server']['pubkey'] = nil
 
-default['jenkins']['http_proxy']['www_redirect']         = "disable"
-default['jenkins']['http_proxy']['listen_ports']         = [ 80 ]
-default['jenkins']['http_proxy']['host_name']            = nil
-default['jenkins']['http_proxy']['host_aliases']         = []
 default['jenkins']['http_proxy']['variant'] = "nginx"
+default['jenkins']['http_proxy']['www_redirect'] = "disable"
+default['jenkins']['http_proxy']['listen_ports'] = [ 80 ]
+default['jenkins']['http_proxy']['host_name'] = nil
+default['jenkins']['http_proxy']['host_aliases'] = []
 default['jenkins']['http_proxy']['client_max_body_size'] = "1024m"
 default['jenkins']['http_proxy']['basic_auth_username'] = "jenkins"
 default['jenkins']['http_proxy']['basic_auth_password'] = "jenkins"
