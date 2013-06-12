@@ -1,7 +1,7 @@
 #
 # Author:: Guilhem Lettron <guilhem.lettron@youscribe.com>
 # Cookbook Name:: jenkins
-# Recipe:: server_package
+# Recipe:: _server_package
 #
 # Copyright 2013, Youscribe
 #

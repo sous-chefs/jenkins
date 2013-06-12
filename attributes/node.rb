@@ -26,12 +26,15 @@ case node['platform_family']
 when "windows"
   default['jenkins']['node']['home'] = "C:/jenkins"
   default['jenkins']['node']['log_dir']  = "C:/jenkins"
+  default['jenkins']['node']['agent_type'] = "windows"
 when "mac_os_x"
   default['jenkins']['node']['home'] = "/Users/jenkins"
   default['jenkins']['node']['log_dir']  = "/var/log/jenkins"
+  default['jenkins']['node']['agent_type'] = "jnlp"
 else
   default['jenkins']['node']['home'] = "/home/jenkins"
   default['jenkins']['node']['log_dir']  = "/var/log/jenkins"
+  default['jenkins']['node']['agent_type'] = "jnlp"
 end
 
 default['jenkins']['node']['user'] = "jenkins-node"

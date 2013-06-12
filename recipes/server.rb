@@ -67,7 +67,7 @@ ruby_block "store_server_ssh_pubkey" do
   action :nothing
 end
 
-include_recipe "jenkins::server_#{node['jenkins']['server']['install_method']}"
+include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
 
 ruby_block "block_until_operational" do
   block do

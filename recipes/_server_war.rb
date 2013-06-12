@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: jenkins
-# Recipe:: war
+# Recipe:: _server_war
 #
 # Author:: AJ Christensen <aj@junglist.gen.nz>
 # Author:: Doug MacEachern <dougm@vmware.com>
