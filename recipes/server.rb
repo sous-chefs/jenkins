@@ -55,6 +55,7 @@ end
 ruby_block "store_server_ssh_pubkey" do
   block do
     node.set['jenkins']['server']['pubkey'] = IO.read(File.join(ssh_dir, "id_rsa.pub"))
+    node.save unless Chef::Config[:solo]
   end
   action :nothing
 end
