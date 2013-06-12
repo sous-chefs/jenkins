@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: jenkins
-# Recipe:: node_ssh
+# Recipe:: _node_jnlp
 #
 # Author:: Doug MacEachern <dougm@vmware.com>
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
@@ -21,45 +21,22 @@
 #
 
 include_recipe "java"
+include_recipe "runit"
 
-unless Chef::Config[:solo]
-  unless node['jenkins']['server']['pubkey']
-    host = node['jenkins']['server']['host']
-    if host == node['fqdn']
-      host = URI.parse(node['jenkins']['server']['url']).host
-    end
-    jenkins_node = search('node', "fqdn:#{host}").first
-    node.set['jenkins']['server']['pubkey'] = jenkins_node['jenkins']['server']['pubkey']
-  end
-end
+service_name = "jenkins-slave"
+slave_jar = "#{node['jenkins']['node']['home']}/slave.jar"
 
-group node['jenkins']['node']['group']
+group node['jenkins']['node']['user']
 
 user node['jenkins']['node']['user'] do
-  comment "Jenkins CI node (ssh)"
+  comment "Jenkins CI node (jnlp)"
   gid node['jenkins']['node']['user']
   home node['jenkins']['node']['home']
-  shell node['jenkins']['node']['shell']
 end
 
 directory node['jenkins']['node']['home'] do
   owner node['jenkins']['node']['user']
   group node['jenkins']['node']['user']
-  action :create
-end
-
-directory "#{node['jenkins']['node']['home']}/.ssh" do
-  owner node['jenkins']['node']['user']
-  group node['jenkins']['node']['user']
-  mode '0700'
-  action :create
-end
-
-file "#{node['jenkins']['node']['home']}/.ssh/authorized_keys" do
-  content node['jenkins']['server']['pubkey']
-  owner node['jenkins']['node']['user']
-  group node['jenkins']['node']['user']
-  mode '0600'
   action :create
 end
 
@@ -69,14 +46,20 @@ jenkins_node node['jenkins']['node']['name'] do
   remote_fs    node['jenkins']['node']['home']
   labels       node['jenkins']['node']['labels']
   mode         node['jenkins']['node']['mode']
-  launcher     "ssh"
+  launcher     "jnlp"
+  mode         node['jenkins']['node']['mode']
   availability node['jenkins']['node']['availability']
-  env          node['jenkins']['node']['env']
-  #ssh options
-  host         node['jenkins']['node']['ssh_host']
-  port         node['jenkins']['node']['ssh_port']
-  username     node['jenkins']['node']['ssh_user']
-  password     node['jenkins']['node']['ssh_pass']
-  private_key  node['jenkins']['node']['ssh_private_key']
-  jvm_options  node['jenkins']['node']['jvm_options']
+end
+
+remote_file slave_jar do
+  source "#{node['jenkins']['server']['url']}/jnlpJars/slave.jar"
+  owner node['jenkins']['node']['user']
+  #only restart if slave.jar is updated
+  if ::File.exists?(slave_jar)
+    notifies :restart, "service[#{service_name}]", :immediately
+  end
+end
+
+runit_service service_name do
+  action :enable
 end
