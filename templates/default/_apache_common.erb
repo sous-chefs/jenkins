@@ -13,7 +13,7 @@
     Allow from all
   </Proxy>
 
-  ProxyPreserveHost on
+  ProxyPreserveHost On
   ProxyPass         /  http://localhost:<%= @jenkins_port %>/
   ProxyPassReverse  /  http://localhost:<%= @jenkins_port %>/
 <% @host_aliases.each do |a| -%>
@@ -31,7 +31,7 @@
 
   <Location />
     AuthType CAS
-    require valid-user
+    Require valid-user
   </Location>
 <% when "basic" -%>
   <Location />
@@ -39,7 +39,14 @@
     AuthName "Jenkins"
     AuthBasicProvider file
     AuthUserFile <%= File.join(node.apache.dir, "htpasswd") %>
-    require valid-user
+    Require valid-user
+
+    RequestHeader   unset X-Forwarded-User
+
+    RewriteEngine   On
+    RewriteCond     %{LA-U:REMOTE_USER} (.+)
+    RewriteRule     .* - [E=RU:%1]
+    RequestHeader   set X-Forwarded-User %{RU}e
   </Location>
 <% end -%>
 
