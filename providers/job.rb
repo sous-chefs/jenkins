@@ -72,9 +72,17 @@ def validate_job_config!
 end
 
 def initialize_client
-  require "jenkins_api_client"
+  begin
+    require "jenkins_api_client"
+  rescue LoadError => e
+    Chef::Log.error "Unable to load the 'jenkins_api_client' gem." +
+      " Make sure to run jenkins::server recipe before using the provider"
+    raise e
+  end
   client = JenkinsApi::Client.new(
-    :server_url => @new_resource.url
+    :server_url => @new_resource.url,
+    :username => node['jenkins']['username'],
+    :password => node['jenkins']['password']
   )
   client.logger = Chef::Log
   client
