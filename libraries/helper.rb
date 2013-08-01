@@ -48,4 +48,26 @@ module JenkinsHelper
   rescue EOFError, Errno::ECONNREFUSED
     return false
   end
+
+  def self.latest_version_number(url)
+    require 'nokogiri'
+    require 'open-uri'
+
+    doc = Nokogiri::HTML(open(url))
+    return doc.xpath('//table/tr/td/a')[-2].content.sub("/","")
+  end
+
+  def self.delete_oldest_version(war_dir)
+    if Dir.exist?(war_dir)
+      oldest_version = Dir.entries(war_dir).map { |e|
+        File.join(war_dir, e)
+      }.select { |f|
+        File.file? f
+      }.sort_by { |f|
+        File.basename f
+      }.first
+      
+      File.delete(oldest_version) if oldest_version
+    end
+  end
 end

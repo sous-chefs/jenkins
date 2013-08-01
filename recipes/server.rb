@@ -35,13 +35,15 @@ data_dir = node['jenkins']['server']['data_dir']
 plugins_dir = File.join(node['jenkins']['server']['data_dir'], "plugins")
 log_dir = node['jenkins']['server']['log_dir']
 ssh_dir = File.join(home_dir, ".ssh")
+war_dir = File.join(home_dir, "war")
 
 [
   home_dir,
   data_dir,
   plugins_dir,
   log_dir,
-  ssh_dir
+  ssh_dir,
+  war_dir
 ].each do |dir_name|
   directory dir_name do
     owner node['jenkins']['server']['user']
@@ -107,13 +109,40 @@ node['jenkins']['server']['plugins'].each do |plugin|
   end
 end
 
-remote_file File.join(home_dir, "jenkins.war") do
-  source "#{node['jenkins']['mirror']}/war/#{node['jenkins']['server']['version']}/jenkins.war"
-  checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
-  owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['group']
-  notifies :restart, "runit_service[jenkins]"
-  notifies :create, "ruby_block[block_until_operational]"
+# download the specified version of Jenkins war file only if necessary
+
+# if it is the latest, get the version number on the mirror website 
+if node['jenkins']['server']['version'] == :latest
+  chef_gem 'nokogiri'
+  jenkins_version = JenkinsHelper.latest_version_number("#{node['jenkins']['mirror']}/war")
+else
+  jenkins_version = node['jenkins']['server']['version']
+end
+
+last_jenkins_war = File.join(war_dir,"jenkins_#{jenkins_version}.war")
+
+unless File.exist?(last_jenkins_war)
+  # clean the war_dir from older versions
+  JenkinsHelper.delete_oldest_version(war_dir)
+
+  # link the jenkins.war file to the last version
+  link File.join(home_dir, "jenkins.war") do 
+    to last_jenkins_war
+    action :nothing
+  end
+
+  Chef::Log.info "Downloading the latest war file..."
+  # Download the war file
+  remote_file last_jenkins_war do
+    source "#{node['jenkins']['mirror']}/war/#{jenkins_version}/jenkins.war"
+    checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
+    owner node['jenkins']['server']['user']
+    group node['jenkins']['server']['group']
+    notifies :restart, "runit_service[jenkins]"
+    notifies :create, "link[#{File.join(home_dir, "jenkins.war")}]"
+    notifies :create, "ruby_block[block_until_operational]"
+  end
+
 end
 
 # Only restart if plugins were added
