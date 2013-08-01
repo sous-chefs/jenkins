@@ -7,7 +7,7 @@ platforms:
     box_url: http://cloud-images.ubuntu.com/vagrant/quantal/current/quantal-server-cloudimg-amd64-vagrant-disk1.box
     require_chef_omnibus: 11.4.0
     network:
-    - [hostonly, 33.33.33.10]
+    - [private_network, ip: 33.33.33.10]
     customize:
       cpus: 2
       memory: 1024
@@ -19,7 +19,7 @@ platforms:
     box_url: http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box
     require_chef_omnibus: 11.4.0
     network:
-    - [hostonly, 33.33.33.10]
+    - [private_network, ip: 33.33.33.10]
     customize:
       cpus: 2
       memory: 1024
@@ -27,33 +27,33 @@ platforms:
   - recipe[apt]
 - name: ubuntu-10.04
   driver_config:
-    box: opscode-ubuntu-10.04
-    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_chef-11.2.0.box
+    box: opscode_ubuntu-10.04_provisionerless
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_provisionerless.box
     require_chef_omnibus: 11.4.0
     network:
-    - [hostonly, 33.33.33.10]
+    - [private_network, ip: 33.33.33.10]
     customize:
       cpus: 2
       memory: 1024
   run_list:
   - recipe[apt]
-- name: centos-5.8
+- name: centos-5.9
   driver_config:
-    box: opscode-centos-5.8
-    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.8_chef-11.2.0.box
+    box: opscode-centos-5.9
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.9_provisionerless.box
     require_chef_omnibus: 11.4.0
     network:
-    - [hostonly, 33.33.33.10]
+    - [private_network, ip: 33.33.33.10]
     customize:
       cpus: 2
       memory: 1024
-- name: centos-6.3
+- name: centos-6.4
   driver_config:
-    box: opscode-centos-6.3
-    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.3_chef-11.2.0.box
+    box: centos-6.4
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box
     require_chef_omnibus: 11.4.0
     network:
-    - [hostonly, 33.33.33.10]
+    - [private_network, ip: 33.33.33.10]
     customize:
       cpus: 2
       memory: 1024
@@ -61,7 +61,12 @@ suites:
 - name: server
   run_list:
   - recipe[jenkins::server]
-  attributes: {}
+  attributes:
+    jenkins:
+      server:
+        plugins:
+        - name: git
+          version: 1.3.0
 - name: server-proxy-nginx
   run_list:
   - recipe[jenkins::server]
@@ -70,7 +75,29 @@ suites:
     jenkins:
       http_proxy:
         host_name: 33.33.33.10
-        variant: nginx
+- name: server-proxy-nginx-ssl
+  run_list:
+  - recipe[jenkins-test::generate_certs]
+  - recipe[jenkins::server]
+  - recipe[jenkins::proxy_nginx]
+  attributes:
+    jenkins:
+      http_proxy:
+        host_name: 33.33.33.10
+        ssl:
+          enabled: true
+          redirect_http: true
+- name: server-proxy-nginx-basicauth
+  run_list:
+  - recipe[jenkins::server]
+  - recipe[jenkins::proxy_nginx]
+  attributes:
+    jenkins:
+      http_proxy:
+        host_name: 33.33.33.10
+        server_auth_method: basic
+        basic_auth_username: foo
+        basic_auth_password: bar
 - name: server-proxy-apache2
   run_list:
   - recipe[jenkins::server]
@@ -79,7 +106,18 @@ suites:
     jenkins:
       http_proxy:
         host_name: 33.33.33.10
-        variant: apache2
+- name: server-proxy-apache2-ssl
+  run_list:
+  - recipe[jenkins-test::generate_certs]
+  - recipe[jenkins::server]
+  - recipe[jenkins::proxy_apache2]
+  attributes:
+    jenkins:
+      http_proxy:
+        host_name: 33.33.33.10
+        ssl:
+          enabled: true
+          redirect_http: true
 - name: server-proxy-apache2-basicauth
   run_list:
   - recipe[jenkins::server]
@@ -88,5 +126,6 @@ suites:
     jenkins:
       http_proxy:
         host_name: 33.33.33.10
-        variant: apache2
         server_auth_method: basic
+        basic_auth_username: foo
+        basic_auth_password: bar

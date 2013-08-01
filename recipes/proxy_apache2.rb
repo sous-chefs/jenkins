@@ -21,21 +21,24 @@
 
 include_recipe "apache2"
 
+www_redirect = (node['jenkins']['http_proxy']['www_redirect'] == "enable")
+host_name = node['jenkins']['http_proxy']['host_name'] || node['fqdn']
+
 if node['jenkins']['http_proxy']['cas_validate_server'] == "cas"
   apache_module "mod_auth_cas"
 end
+
+if node['jenkins']['http_proxy']['ssl']['enabled']
+  include_recipe "apache2::mod_ssl"
+end
+
 apache_module "proxy"
 apache_module "proxy_http"
 apache_module "vhost_alias"
 
-if node['jenkins']['http_proxy']['www_redirect'] == "enable"
-  www_redirect = true
+if www_redirect || node['jenkins']['http_proxy']['ssl']['redirect_http']
   apache_module "rewrite"
-else
-  www_redirect = false
 end
-
-host_name = node['jenkins']['http_proxy']['host_name'] || node['fqdn']
 
 template "#{node['apache']['dir']}/htpasswd" do
   variables( :username => node['jenkins']['http_proxy']['basic_auth_username'],
@@ -54,7 +57,10 @@ template "#{node['apache']['dir']}/sites-available/jenkins" do
     :host_name        => host_name,
     :host_aliases     => node['jenkins']['http_proxy']['host_aliases'],
     :www_redirect     => www_redirect,
-    :jenkins_port     => node['jenkins']['server']['port']
+    :jenkins_port     => node['jenkins']['server']['port'],
+    :redirect_http    => node['jenkins']['http_proxy']['ssl']['redirect_http'],
+    :ssl_enabled      => node['jenkins']['http_proxy']['ssl']['enabled'],
+    :ssl_listen_ports => node['jenkins']['http_proxy']['ssl']['ssl_listen_ports']
   )
 
   if File.exists?("#{node['apache']['dir']}/sites-enabled/jenkins")
@@ -67,9 +73,5 @@ apache_site "000-default" do
 end
 
 apache_site "jenkins" do
-  if node['jenkins']['http_proxy']['variant'] == "apache2"
-    enable true
-  else
-    enable false
-  end
+  enable true
 end

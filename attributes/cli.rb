@@ -1,11 +1,13 @@
 #
 # Cookbook Name:: jenkins
-# Resource:: cli
+# Attributes:: cli
 #
 # Author:: Doug MacEachern <dougm@vmware.com>
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
+# Author:: Seth Chisamore <schisamo@opscode.com>
 #
-# Copyright:: 2010, VMware, Inc.
+# Copyright 2010, VMware, Inc.
+# Copyright 2012, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,30 +20,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-actions :run
+default['jenkins']['cli']['java_params'] = nil
+default['jenkins']['cli']['username'] = nil
+default['jenkins']['cli']['password'] = nil
+default['jenkins']['cli']['password_file'] = nil
 
-attribute :url, :kind_of => String
-attribute :home, :kind_of => String
-attribute :command, :kind_of => String
-attribute :timeout, :kind_of => Integer
-attribute :block, :kind_of => Proc
-attribute :jvm_options, :kind_of => String
-attribute :username, :kind_of => String
-attribute :password, :kind_of => String
-attribute :password_file, :kind_of => String
-
-def initialize(name, run_context=nil)
-  super
-  @action = :run
-  @command = name
-end
-
-def block(&block)
-  if block_given? and block
-    @block = block
-  else
-    @block
-  end
-end
