@@ -28,7 +28,7 @@ server_url = node['jenkins']['server']['url']
 jenkins_exe = "#{home_dir}\\jenkins-slave.exe"
 service_name = "jenkinsslave"
 
-directory home do
+directory home_dir do
   action :create
 end
 
