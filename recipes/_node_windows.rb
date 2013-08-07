@@ -20,6 +20,8 @@
 # limitations under the License.
 #
 
+include_recipe "java"
+
 home_dir = node['jenkins']['node']['home']
 server_url = node['jenkins']['server']['url']
 
@@ -78,7 +80,7 @@ template "#{home_dir}/jenkins-slave.xml" do
 end
 
 remote_file jenkins_exe do
-  source "http://download.java.net/maven/2/com/sun/winsw/winsw/1.8/winsw-1.8-bin.exe"
+  source "http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.13/winsw-1.13-bin.exe"
   not_if { File.exists?(jenkins_exe) }
 end
 
