@@ -67,6 +67,16 @@ suites:
         plugins:
         - name: git
           version: 1.3.0
+- name: server_test
+  run_list:
+  - recipe[jenkins-test::server]
+  - recipe[minitest-handler]
+  attributes:
+    jenkins:
+      server:
+        plugins:
+        - name: git
+          version: 1.3.0
 - name: server-proxy-nginx
   run_list:
   - recipe[jenkins::server]
