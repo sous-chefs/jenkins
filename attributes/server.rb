@@ -22,19 +22,23 @@
 # limitations under the License.
 #
 
-default['jenkins']['server']['home']     = "/var/lib/jenkins"
-default['jenkins']['server']['data_dir'] = File.join(node['jenkins']['server']['home'], "jenkins-data")
-default['jenkins']['server']['log_dir']  = "/var/log/jenkins"
+default['jenkins']['server']['home'] = "/var/lib/jenkins"
+default['jenkins']['server']['log_dir'] = "/var/log/jenkins"
 
 default['jenkins']['server']['user'] = "jenkins"
 case node['platform_family']
 when "debian"
+  default['jenkins']['server']['install_method'] = "package"
   default['jenkins']['server']['group'] = "nogroup"
+when "rhel"
+  default['jenkins']['server']['install_method'] = "package"
+  default['jenkins']['server']['group'] = node['jenkins']['server']['user']
 else
+  default['jenkins']['server']['install_method'] = "war"
   default['jenkins']['server']['group'] = node['jenkins']['server']['user']
 end
 
-default['jenkins']['server']['version'] = :latest
+default['jenkins']['server']['version'] = nil
 default['jenkins']['server']['war_checksum'] = nil
 
 default['jenkins']['server']['port'] = 8080
@@ -45,10 +49,11 @@ default['jenkins']['server']['plugins'] = []
 default['jenkins']['server']['jvm_options'] = nil
 default['jenkins']['server']['pubkey'] = nil
 
-default['jenkins']['http_proxy']['www_redirect']         = "disable"
-default['jenkins']['http_proxy']['listen_ports']         = [ 80 ]
-default['jenkins']['http_proxy']['host_name']            = nil
-default['jenkins']['http_proxy']['host_aliases']         = []
+default['jenkins']['http_proxy']['variant'] = "nginx"
+default['jenkins']['http_proxy']['www_redirect'] = "disable"
+default['jenkins']['http_proxy']['listen_ports'] = [ 80 ]
+default['jenkins']['http_proxy']['host_name'] = nil
+default['jenkins']['http_proxy']['host_aliases'] = []
 default['jenkins']['http_proxy']['client_max_body_size'] = "1024m"
 default['jenkins']['http_proxy']['basic_auth_username'] = "jenkins"
 default['jenkins']['http_proxy']['basic_auth_password'] = "jenkins"
