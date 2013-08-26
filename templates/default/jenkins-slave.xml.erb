@@ -39,7 +39,7 @@ THE SOFTWARE.
     The following value assumes that you have java in your PATH.
   -->
   <executable>java</executable>
-  <arguments>-Xrs -jar "<%= @jenkins_home %>\slave.jar" -jnlpUrl <%= @jnlp_url %></arguments>
+  <arguments>-Xrs -jar "<%= @jenkins_home %>\slave.jar" -jnlpUrl <%= @jnlp_url %> <%= !@jnlp_secret || @jnlp_secret.empty? ? '' : "-secret #{@jnlp_secret}" %></arguments>
   <!--
     interactive flag causes the empty black Java window to be displayed.
     I'm still debugging this.

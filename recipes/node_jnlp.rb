@@ -60,6 +60,16 @@ remote_file slave_jar do
   end
 end
 
+secret = ''
+jenkins_cli "node_info for #{node[:jenkins][:node][:name]} to get jnlp secret" do
+  command "groovy node_info.groovy #{node[:jenkins][:node][:name]}"
+  block do |stdout|
+    current_node = JSON.parse( stdout )
+    secret.replace current_node['secret'] if current_node['secret']
+  end
+end
+
 runit_service service_name do
   action :enable
+  options(:secret => secret)
 end
