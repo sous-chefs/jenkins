@@ -31,6 +31,7 @@ attribute :jvm_options, :kind_of => String
 attribute :username, :kind_of => String
 attribute :password, :kind_of => String
 attribute :password_file, :kind_of => String
+attribute :key_file, :kind_of => String
 
 def initialize(name, run_context=nil)
   super
