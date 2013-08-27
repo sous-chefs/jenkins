@@ -28,7 +28,7 @@ server_url = node['jenkins']['server']['url']
 jenkins_exe = "#{home_dir}\\jenkins-slave.exe"
 service_name = "jenkinsslave"
 
-directory home do
+directory home_dir do
   action :create
 end
 
@@ -87,6 +87,36 @@ end
 execute "#{jenkins_exe} install" do
   cwd home_dir
   only_if { WMI::Win32_Service.find(:first, :conditions => {:name => service_name}).nil? }
+end
+
+service_account = node['jenkins']['node']['service_user']
+#
+# The allowed values for account that service can run as are:
+# * LocalSystem => Default. Service runs with the machine account.
+# * .\Administrator => Local Account.
+# * domain\username => Domain Account.
+#
+
+# Make sure account name is converted to a local account name if
+# needed.
+if service_account != "LocalSystem" && !service_account.include?("\\")
+  service_account = ".\\#{service_account}"
+end
+
+service_cred_command = "sc config #{service_name} obj= #{service_account}"
+
+# Password is not necessary if the service is running as LocalSystem
+if service_account != "LocalSystem"
+  service_cred_command += " password= #{node['jenkins']['node']['service_user_password']}"
+end
+
+execute service_cred_command do
+  only_if do
+    service = WMI::Win32_Service.find(:first, :conditions => {:name => service_name})
+    !service.nil? && service.startName != service_account
+  end
+
+  notifies :restart, "service[#{service_name}]", :immediately
 end
 
 service service_name do
