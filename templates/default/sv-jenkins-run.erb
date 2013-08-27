@@ -1,4 +1,5 @@
 #!/bin/sh
+exec 2>&1
 cd <%= node['jenkins']['server']['home'] %>
 touch jenkins.start
 exec chpst -u <%= node['jenkins']['server']['user'] %> -U <%= node['jenkins']['server']['user'] %> \
