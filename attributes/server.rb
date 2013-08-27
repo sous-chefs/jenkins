@@ -32,10 +32,10 @@ when "debian"
   default['jenkins']['server']['group'] = "nogroup"
 when "rhel"
   default['jenkins']['server']['install_method'] = "package"
-  default['jenkins']['server']['group'] = node['jenkins']['server']['user']
+  default['jenkins']['server']['group'] = default['jenkins']['server']['user']
 else
   default['jenkins']['server']['install_method'] = "war"
-  default['jenkins']['server']['group'] = node['jenkins']['server']['user']
+  default['jenkins']['server']['group'] = default['jenkins']['server']['user']
 end
 
 default['jenkins']['server']['version'] = nil
@@ -43,7 +43,7 @@ default['jenkins']['server']['war_checksum'] = nil
 
 default['jenkins']['server']['port'] = 8080
 default['jenkins']['server']['host'] = node['fqdn']
-default['jenkins']['server']['url']  = "http://#{node['jenkins']['server']['host']}:#{node['jenkins']['server']['port']}"
+default['jenkins']['server']['url']  = "http://#{default['jenkins']['server']['host']}:#{default['jenkins']['server']['port']}"
 
 default['jenkins']['server']['plugins'] = []
 default['jenkins']['server']['jvm_options'] = nil
