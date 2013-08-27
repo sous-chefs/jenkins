@@ -26,9 +26,9 @@ platforms:
       memory: 1024
   run_list:
   - recipe[apt]
-- name: opscode-ubuntu-10.04
+- name: ubuntu-10.04
   driver_config:
-    box: opscode_ubuntu-10.04_provisionerless
+    box: opscode-ubuntu-10.04
     box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_provisionerless.box
     network:
     - [private_network, ip: 33.33.33.10]
