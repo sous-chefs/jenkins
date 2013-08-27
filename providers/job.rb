@@ -42,19 +42,19 @@ alias_method :action_create, :store
 alias_method :action_update, :store
 
 def action_delete
-  jenkins_cli "delete-job #{@new_resource.job_name}"
+  jenkins_cli "delete-job '#{@new_resource.job_name}'"
 end
 
 def action_disable
-  jenkins_cli "disable-job #{@new_resource.job_name}"
+  jenkins_cli "disable-job '#{@new_resource.job_name}'"
 end
 
 def action_enable
-  jenkins_cli "enable-job #{@new_resource.job_name}"
+  jenkins_cli "enable-job '#{@new_resource.job_name}'"
 end
 
 def action_build
-  jenkins_cli "build #{@new_resource.job_name}"
+  jenkins_cli "build '#{@new_resource.job_name}'"
 end
 
 private
@@ -75,7 +75,7 @@ end
 
 def exists?
   @exists ||= begin
-    url = URI.parse(job_url)
+    url = URI.parse(URI.escape(job_url))
     response = Chef::REST::RESTRequest.new(:GET, url, nil).call
     Chef::Log.debug("#{@new_resource} GET #{url.request_uri} == #{response.code}")
     response.kind_of?(Net::HTTPSuccess)
@@ -83,7 +83,7 @@ def exists?
 end
 
 def post_job(url)
-  url = URI.parse(url)
+  url = URI.parse(URI.escape(url))
   Chef::Log.debug("#{@new_resource} POST #{url.request_uri} using #{@new_resource.config}")
   body = IO.read(@new_resource.config)
   headers = {"Content-Type" => "text/xml"}
