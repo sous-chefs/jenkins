@@ -37,6 +37,7 @@ module JenkinsHelper
   def self.endpoint_responding?(url)
     response = Chef::REST::RESTRequest.new(:GET, url, nil).call
     if response.kind_of?(Net::HTTPSuccess) ||
+          response.kind_of?(Net::HTTPOK) ||
           response.kind_of?(Net::HTTPRedirection) ||
           response.kind_of?(Net::HTTPForbidden)
       Chef::Log.debug("GET to #{url} successful")
