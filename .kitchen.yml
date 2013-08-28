@@ -1,11 +1,13 @@
 ---
 driver_plugin: vagrant
+driver_config:
+    require_chef_omnibus: 11.4.4
+
 platforms:
 - name: ubuntu-12.10
   driver_config:
-    box: canonical-ubuntu-12.10
-    box_url: http://cloud-images.ubuntu.com/vagrant/quantal/current/quantal-server-cloudimg-amd64-vagrant-disk1.box
-    require_chef_omnibus: 11.4.0
+    box: opscode-ubuntu-12.10
+    box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.10_provisionerless.box
     network:
     - [private_network, ip: 33.33.33.10]
     customize:
@@ -15,9 +17,8 @@ platforms:
   - recipe[apt]
 - name: ubuntu-12.04
   driver_config:
-    box: canonical-ubuntu-12.04
-    box_url: http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box
-    require_chef_omnibus: 11.4.0
+    box: opscode-ubuntu-12.04
+    box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box
     network:
     - [private_network, ip: 33.33.33.10]
     customize:
@@ -27,9 +28,8 @@ platforms:
   - recipe[apt]
 - name: ubuntu-10.04
   driver_config:
-    box: opscode_ubuntu-10.04_provisionerless
+    box: opscode-ubuntu-10.04
     box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_provisionerless.box
-    require_chef_omnibus: 11.4.0
     network:
     - [private_network, ip: 33.33.33.10]
     customize:
@@ -41,7 +41,6 @@ platforms:
   driver_config:
     box: opscode-centos-5.9
     box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.9_provisionerless.box
-    require_chef_omnibus: 11.4.0
     network:
     - [private_network, ip: 33.33.33.10]
     customize:
@@ -49,22 +48,36 @@ platforms:
       memory: 1024
 - name: centos-6.4
   driver_config:
-    box: centos-6.4
+    box: opscode-centos-6.4
     box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box
-    require_chef_omnibus: 11.4.0
     network:
     - [private_network, ip: 33.33.33.10]
     customize:
       cpus: 2
       memory: 1024
 suites:
-- name: server
+- name: server_package
+  run_list:
+  - recipe[jenkins::server]
+  attributes:
+    jenkins:
+      install_method: package
+      server:
+        plugins:
+        - name: git-client
+          version: 1.0.5
+        - name: git
+          version: 1.3.0
+- name: server_war
   run_list:
   - recipe[jenkins::server]
   attributes:
     jenkins:
       server:
+        install_method: war
         plugins:
+        - name: git-client
+          version: 1.0.5
         - name: git
           version: 1.3.0
 - name: server_test
@@ -80,19 +93,21 @@ suites:
 - name: server-proxy-nginx
   run_list:
   - recipe[jenkins::server]
-  - recipe[jenkins::proxy_nginx]
+  - recipe[jenkins::proxy]
   attributes:
     jenkins:
       http_proxy:
+        variant: nginx
         host_name: 33.33.33.10
 - name: server-proxy-nginx-ssl
   run_list:
   - recipe[jenkins-test::generate_certs]
   - recipe[jenkins::server]
-  - recipe[jenkins::proxy_nginx]
+  - recipe[jenkins::proxy]
   attributes:
     jenkins:
       http_proxy:
+        variant: nginx
         host_name: 33.33.33.10
         ssl:
           enabled: true
@@ -100,10 +115,11 @@ suites:
 - name: server-proxy-nginx-basicauth
   run_list:
   - recipe[jenkins::server]
-  - recipe[jenkins::proxy_nginx]
+  - recipe[jenkins::proxy]
   attributes:
     jenkins:
       http_proxy:
+        variant: nginx
         host_name: 33.33.33.10
         server_auth_method: basic
         basic_auth_username: foo
@@ -111,19 +127,21 @@ suites:
 - name: server-proxy-apache2
   run_list:
   - recipe[jenkins::server]
-  - recipe[jenkins::proxy_apache2]
+  - recipe[jenkins::proxy]
   attributes:
     jenkins:
       http_proxy:
+        variant: apache2
         host_name: 33.33.33.10
 - name: server-proxy-apache2-ssl
   run_list:
   - recipe[jenkins-test::generate_certs]
   - recipe[jenkins::server]
-  - recipe[jenkins::proxy_apache2]
+  - recipe[jenkins::proxy]
   attributes:
     jenkins:
       http_proxy:
+        variant: apache2
         host_name: 33.33.33.10
         ssl:
           enabled: true
@@ -131,10 +149,11 @@ suites:
 - name: server-proxy-apache2-basicauth
   run_list:
   - recipe[jenkins::server]
-  - recipe[jenkins::proxy_apache2]
+  - recipe[jenkins::proxy]
   attributes:
     jenkins:
       http_proxy:
+        variant: apache2
         host_name: 33.33.33.10
         server_auth_method: basic
         basic_auth_username: foo

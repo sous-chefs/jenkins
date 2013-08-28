@@ -16,6 +16,7 @@
   ProxyPreserveHost on
   ProxyPass         /  http://localhost:<%= @jenkins_port %>/
   ProxyPassReverse  /  http://localhost:<%= @jenkins_port %>/
+  ProxyPassReverse  /  http://<%= @host_name %>/
 <% @host_aliases.each do |a| -%>
   ProxyPassReverse  /  http://<%= a%>
 <% end -%>

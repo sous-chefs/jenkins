@@ -40,22 +40,6 @@ env "JENKINS_URL" do
   value server_url
 end
 
-template "#{home}/jenkins-slave.xml" do
-  source "jenkins-slave.xml.erb"
-  variables(:jenkins_home => home,
-            :jnlp_url => "#{server_url}/computer/#{node['jenkins']['node']['name']}/slave-agent.jnlp")
-end
-
-remote_file jenkins_exe do
-  source "http://maven.dyndns.org/2/com/sun/winsw/winsw/1.8/winsw-1.8-bin.exe"
-  not_if { File.exists?(jenkins_exe) }
-end
-
-execute "#{jenkins_exe} install" do
-  cwd home
-  only_if { WMI::Win32_Service.find(:first, :conditions => {:name => service_name}).nil? }
-end
-
 jenkins_node node['jenkins']['node']['name'] do
   description  node['jenkins']['node']['description']
   executors    node['jenkins']['node']['executors']
@@ -70,6 +54,37 @@ end
 remote_file "#{home_dir}\\slave.jar" do
   source "#{server_url}/jnlpJars/slave.jar"
   notifies :restart, "service[#{service_name}]", :immediately
+end
+
+cookbook_file "#{node[:jenkins][:node][:home]}/node_info.groovy" do
+  source "node_info.groovy"
+end
+
+secret = ''
+jenkins_cli "node_info for #{node['jenkins']['node']['name']} to get jnlp secret" do
+  command "groovy node_info.groovy #{node['jenkins']['node']['name']}"
+  block do |stdout|
+    current_node = JSON.parse( stdout )
+    secret.replace current_node['secret'] if current_node['secret']
+  end
+end
+
+template "#{home_dir}/jenkins-slave.xml" do
+  source "jenkins-slave.xml.erb"
+  variables(:jenkins_home => home_dir,
+            :jnlp_url => "#{server_url}/computer/#{node['jenkins']['node']['name']}/slave-agent.jnlp",
+            :jnlp_secret => secret)
+  notifies :restart, "service[#{service_name}]"
+end
+
+remote_file jenkins_exe do
+  source "http://download.java.net/maven/2/com/sun/winsw/winsw/1.8/winsw-1.8-bin.exe"
+  not_if { File.exists?(jenkins_exe) }
+end
+
+execute "#{jenkins_exe} install" do
+  cwd home_dir
+  only_if { WMI::Win32_Service.find(:first, :conditions => {:name => service_name}).nil? }
 end
 
 service service_name do

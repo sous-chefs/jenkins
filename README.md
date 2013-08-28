@@ -16,11 +16,13 @@ Chef 0.10.10+ and Ohai 6.10+ for platform_family use.
 * Ubuntu
 * RHEL/CentOS
 
-### Node (Slave) Recipes
+### Node (Slave) Recipe
 
-* `node_ssh` - Any platform that is running `sshd`.
-* `node_jnlp` - Most Unix platforms.
-* `node_windows` - Windows platforms only. Depends on .NET Framework.
+Agent Flavor:
+
+* `ssh` - Any Unix platform that is running `sshd`.
+* `jnlp` - Most Unix platforms.
+* `windows` - Windows platforms only. Depends on .NET Framework.
 
 Attributes
 ==========
@@ -35,6 +37,8 @@ Attributes
 
 ### Master/Server related Attributes
 
+* `node['jenkins']['server']['install_method']` - Whether Jenkins is installed 
+  from packages or run from a WAR file.
 * `node['jenkins']['server']['home']` - Location of `JENKINS_HOME` directory.
 * `node['jenkins']['server']['user']` - User the Jenkins server runs as.
 * `node['jenkins']['server']['group']` - Jenkins user primary group.
@@ -46,6 +50,8 @@ Attributes
 `{'name' => 'git', 'version' => '1.4.0'}` if a specific version is required.
 * `node['jenkins']['server']['jvm_options']` - Additional tuning parameters 
   to pass the underlying JVM process.
+* `node['jenkins']['http_proxy']['variant']` - use `nginx` or `apache2` to 
+  proxy traffic to jenkins backend (`nginx` by default)
 * `node['jenkins']['http_proxy']['www_redirect']` - add a redirect rule for 
   'www.*' URL requests ("disable" by default)
 * `node['jenkins']['http_proxy']['listen_ports']` - list of HTTP ports for the 
@@ -74,6 +80,9 @@ Attributes
 
 ### Node/Slave related Attributes
 
+* `node['jenkins']['node']['agent_type']` - Type of agent to communicate with 
+  this slave/node. Valid values include `jnlp`, `ssh` and `windows`. (default 
+  is `jnlp`)
 * `node['jenkins']['node']['name']` - Name of the node within Jenkins.
 * `node['jenkins']['node']['description']` - Jenkins node description.
 * `node['jenkins']['node']['executors']` - Number of node executors.
@@ -109,34 +118,35 @@ Recipes
 server
 ------
 
-Creates all required directories and downloads the latest version of the 
-Jenkins WAR file from http://jenkins-ci.org. The server process is configured 
-to run as a runit service. The recipe also generates an ssh private key and 
-stores the ssh public key in the `node['jenkins']['server']['pubkey']` 
-attribute for use by the node recipes.
+Creates all required directories, installs Jenkins and generates an ssh private 
+key and stores the ssh public key in the `node['jenkins']['server']['pubkey']` 
+attribute for use by the node recipes. The installation method is controlled by 
+the `node['jenkins']['server']['install_method']` attribute. The following 
+install methods are supported:
 
-node_ssh
---------
+* __package__ - Installs Jenkins from the official jenkins-ci.org packages.
+* __war__ - Downloads the latest version of the Jenkins WAR file from 
+  http://jenkins-ci. The server process is configured to run as a runit 
+  service.
 
-Creates the user and group for the Jenkins slave to run as and sets 
+node
+----
+
+The type of agent that is used to communicate with the slave is determined by 
+the attribute `node['jenkins']['node']['agent_type']`. The following agent 
+types are supported:
+
+* __ssh__ - Creates the user and group for the Jenkins slave to run as and sets 
 `.ssh/authorized_keys` to the `node['jenkins']['server']['pubkey']` attribute.  
 The [jenkins-cli.jar](http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI) 
 is downloaded from the Jenkins server and used to manage the nodes via the 
 [groovy](http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Script+Console) cli 
 command. Jenkins is configured to launch a slave agent on the node using it's 
 [SSH slave plugin](http://wiki.jenkins-ci.org/display/JENKINS/SSH+Slaves+plugin).
-
-node_jnlp
----------
-
-Creates the user and group for the Jenkins slave to run as and 
+* __jnlp__ - Creates the user and group for the Jenkins slave to run as and 
 `/jnlpJars/slave.jar` is downloaded from the Jenkins server. The slave process 
 is configured to run as a runit service.
-
-node_windows
-------------
-
-Creates the home directory for the node slave and sets `JENKINS_HOME` and 
+* __windows__ - Creates the home directory for the node slave and sets `JENKINS_HOME` and 
 `JENKINS_URL` system environment variables.  The 
 [winsw](http://weblogs.java.net/blog/2008/09/29/winsw-windows-service-wrapper-less-restrictive-license) 
 Windows service wrapper will be downloaded and installed, along with generating 
@@ -149,17 +159,16 @@ the service is not running.  The 'jenkinsslave' service will be restarted if
 had you chosen the option to 
 [Let Jenkins control this slave as a Windows service](http://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+as+a+Windows+service).
 
-proxy_nginx
------------
+proxy
+-----
 
-Uses the [nginx](http://ckbk.it/nginx) cookbook to install and configure an 
-HTTP front-end proxy.
+Installs a proxy and creates a vhost to route traffic to the installed Jenkins 
+server. The type of HTTP proxy that is installed and configured is determined 
+by the `node['jenkins']['http_proxy']['variant']` attribute. The following HTTP
+proxy variants are supported:
 
-proxy_apache2
--------------
-
-Uses the [apache2](http://ckbk.it/apache2) cookbook to install and configure an 
-HTTP front-end proxy.
+* __apache2__
+* __nginx__
 
 Resource/Provider
 =================

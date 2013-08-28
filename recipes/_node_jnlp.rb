@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: jenkins
-# Recipe:: node_jnlp
+# Recipe:: _node_jnlp
 #
 # Author:: Doug MacEachern <dougm@vmware.com>
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
@@ -26,17 +26,17 @@ include_recipe "runit"
 service_name = "jenkins-slave"
 slave_jar = "#{node['jenkins']['node']['home']}/slave.jar"
 
-group node['jenkins']['node']['user']
+group node['jenkins']['node']['group']
 
 user node['jenkins']['node']['user'] do
   comment "Jenkins CI node (jnlp)"
-  gid node['jenkins']['node']['user']
+  gid node['jenkins']['node']['group']
   home node['jenkins']['node']['home']
 end
 
 directory node['jenkins']['node']['home'] do
   owner node['jenkins']['node']['user']
-  group node['jenkins']['node']['user']
+  group node['jenkins']['node']['group']
   action :create
 end
 
@@ -60,6 +60,16 @@ remote_file slave_jar do
   end
 end
 
+secret = ''
+jenkins_cli "node_info for #{node['jenkins']['node']['name']} to get jnlp secret" do
+  command "groovy node_info.groovy #{node['jenkins']['node']['name']}"
+  block do |stdout|
+    current_node = JSON.parse( stdout )
+    secret.replace current_node['secret'] if current_node['secret']
+  end
+end
+
 runit_service service_name do
   action :enable
+  options(:secret => secret)
 end
