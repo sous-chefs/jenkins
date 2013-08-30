@@ -30,9 +30,6 @@ when "debian"
     action :add
   end
 
-  config_path = "/etc/default/jenkins"
-  config_template = "default.erb"
-
 when "rhel"
   include_recipe "yum"
 
@@ -47,8 +44,6 @@ when "rhel"
     action :add
   end
 
-  config_path = "/etc/sysconfig/jenkins"
-  config_template = "sysconfig.erb"
 end
 
 package "jenkins" do
@@ -57,8 +52,8 @@ package "jenkins" do
   end
 end
 
-template config_path do
-  source config_template
+template node['jenkins']['server']['config_path'] do
+  source node['jenkins']['server']['config_template']
   variables node['jenkins']['server'].to_hash
   owner "root"
   group "root"
