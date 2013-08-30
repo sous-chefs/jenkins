@@ -1,9 +1,8 @@
 require_relative 'helpers'
 
-describe 'jenkins_test::node_jnlp' do
+describe 'jenkins::_node_jnlp' do
 
-  # Include helpers
-  include Helpers::Jenkins_test
+  include Helpers::Jenkins
 
   # Tests around users and groups
   describe "users and groups" do

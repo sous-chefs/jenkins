@@ -1,5 +1,5 @@
 module Helpers
-  module Jenkins_test
+  module Jenkins
     include MiniTest::Chef::Assertions
     include MiniTest::Chef::Context
     include MiniTest::Chef::Resources

@@ -80,13 +80,25 @@ suites:
           version: 1.0.5
         - name: git
           version: 1.3.0
-- name: server_test
+- name: server_package_test
   run_list:
-  - recipe[jenkins-test::server]
+  - recipe[jenkins::server]
   - recipe[minitest-handler]
   attributes:
     jenkins:
       server:
+        install_method: package
+        plugins:
+        - name: git
+          version: 1.3.0
+- name: server_war_test
+  run_list:
+  - recipe[jenkins::server]
+  - recipe[minitest-handler]
+  attributes:
+    jenkins:
+      server:
+        install_method: war
         plugins:
         - name: git
           version: 1.3.0

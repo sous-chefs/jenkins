@@ -30,9 +30,13 @@ case node['platform_family']
 when "debian"
   default['jenkins']['server']['install_method'] = "package"
   default['jenkins']['server']['group'] = "nogroup"
+  default['jenkins']['server']['config_path'] = "/etc/default/jenkins"
+  default['jenkins']['server']['config_template'] = "default.erb"
 when "rhel"
   default['jenkins']['server']['install_method'] = "package"
   default['jenkins']['server']['group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['config_path'] = "/etc/sysconfig/jenkins"
+  default['jenkins']['server']['config_template'] = "sysconfig.erb"
 else
   default['jenkins']['server']['install_method'] = "war"
   default['jenkins']['server']['group'] = default['jenkins']['server']['user']
