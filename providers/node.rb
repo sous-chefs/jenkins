@@ -99,5 +99,6 @@ def platform_labels
   platform_labels << node['kernel']['machine'] # x86_64
   platform_labels << node['os'] # linux
   platform_labels << node['os_version'] # 2.6.32-38-server
+  platform_labels << node['virtualization']['system'] # xen
   platform_labels
 end
