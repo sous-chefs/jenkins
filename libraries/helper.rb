@@ -47,6 +47,7 @@ module JenkinsHelper
       return false
     end
   rescue EOFError, Errno::ECONNREFUSED
+    Chef::Log.debug("GET to #{url} failed with connection refused")
     return false
   end
 end
