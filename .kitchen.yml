@@ -59,10 +59,11 @@ suites:
 - name: server_package
   run_list:
   - recipe[jenkins::server]
+  - recipe[minitest-handler]
   attributes:
     jenkins:
-      install_method: package
       server:
+        install_method: package
         plugins:
         - name: git-client
           version: 1.0.5
@@ -71,6 +72,7 @@ suites:
 - name: server_war
   run_list:
   - recipe[jenkins::server]
+  - recipe[minitest-handler]
   attributes:
     jenkins:
       server:
