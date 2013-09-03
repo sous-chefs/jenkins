@@ -80,7 +80,7 @@ def jenkins_node_manage(args)
 
   if args[:env]
     map = args[:env].collect { |k,v| %Q("#{k}":"#{v}") }.join(",")
-    env = "new jenkins.EnvVars([#{map}])"
+    env = "new hudson.EnvVars([#{map}])"
   else
     env = "null"
   end
