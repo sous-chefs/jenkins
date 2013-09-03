@@ -121,4 +121,5 @@ end
 
 service service_name do
   action :start
+  only_if { !WMI::Win32_Service.find(:first, :conditions => {:name => service_name}).nil? }
 end
