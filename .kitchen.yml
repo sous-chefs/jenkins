@@ -150,3 +150,12 @@ suites:
         server_auth_method: basic
         basic_auth_username: foo
         basic_auth_password: bar
+- name: node
+  run_list:
+  - recipe[jenkins::server]
+  - recipe[jenkins::node]
+  attributes:
+    jenkins:
+      node:
+        env:
+          foo: bar
