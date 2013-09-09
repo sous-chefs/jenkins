@@ -27,6 +27,9 @@ when "windows"
   default['jenkins']['node']['home'] = "C:/jenkins"
   default['jenkins']['node']['log_dir']  = "C:/jenkins"
   default['jenkins']['node']['agent_type'] = "windows"
+
+  default['jenkins']['node']['service_user'] = "LocalSystem"
+  default['jenkins']['node']['service_user_password'] = nil
 when "mac_os_x"
   default['jenkins']['node']['home'] = "/Users/jenkins"
   default['jenkins']['node']['log_dir']  = "/var/log/jenkins"
