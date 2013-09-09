@@ -63,8 +63,8 @@ Attributes
 * `node['jenkins']['http_proxy']['client_max_body_size']` - max client upload 
   size ("1024m" by default, nginx only). 
 * `node['jenkins']['http_proxy']['server_auth_method']` - Authentication with
-  the server can be done with cas (using `apache2::mod_auth_cas`), or htauth
-  (basic). The default is no authentication.
+  the server can be done with cas (using `apache2::mod_auth_cas`), or basic
+  (using `htpasswd`). The default is no authentication.
 * `node['jenkins']['http_proxy']['basic_auth_username']` - Username to use for
   HTTP Basic Authenitcation.
 * `node['jenkins']['http_proxy']['basic_auth_password']` - Password to use with
