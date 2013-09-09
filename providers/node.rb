@@ -23,7 +23,7 @@
 def load_current_resource
   @current_resource = Chef::Resource::JenkinsNode.new(@new_resource.name)
   # Inject some useful platform labels
-  @new_resource.labels((new_resource.labels + platform_labels).uniq)
+  @new_resource.labels((@new_resource.labels + platform_labels).uniq)
   @current_resource
 end
 
