@@ -112,4 +112,8 @@ end
 log "ensure_jenkins_is_running" do
   notifies :start, "service[jenkins]", :immediately
   notifies :create, "ruby_block[block_until_operational]", :immediately
+  not_if {
+      test_url = URI.parse("#{node['jenkins']['server']['url']}/api/json")
+      JenkinsHelper.endpoint_responding?(test_url)
+  }
 end
