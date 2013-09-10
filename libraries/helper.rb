@@ -22,24 +22,23 @@
 require 'chef/mixin/shell_out'
 require 'chef/rest'
 
+# Helper to determine if Jenkins is up and running/responding
 module JenkinsHelper
   extend Chef::Mixin::ShellOut
 
   def self.service_listening?(port)
-    netstat_command = "netstat -lnt"
+    netstat_command = 'netstat -lnt'
     cmd = shell_out!(netstat_command)
     Chef::Log.debug("`#{netstat_command}` returned: \n\n #{cmd.stdout}")
-    cmd.stdout.each_line.select do |l|
-      l.split[3] =~ /#{port}/
-    end.any?
+    cmd.stdout.each_line.any? { |l| l.split[3] =~ /#{port}/ }
   end
 
   def self.endpoint_responding?(url)
     response = Chef::REST::RESTRequest.new(:GET, url, nil).call
     if response.kind_of?(Net::HTTPSuccess) ||
-          response.kind_of?(Net::HTTPOK) ||
-          response.kind_of?(Net::HTTPRedirection) ||
-          response.kind_of?(Net::HTTPForbidden)
+       response.kind_of?(Net::HTTPOK) ||
+       response.kind_of?(Net::HTTPRedirection) ||
+       response.kind_of?(Net::HTTPForbidden)
       Chef::Log.debug("GET to #{url} successful")
       return true
     else

@@ -19,21 +19,23 @@
 # limitations under the License.
 #
 
-include_recipe "nginx"
+include_recipe 'nginx::default'
 
-www_redirect = (node['jenkins']['http_proxy']['www_redirect'] == "enable")
+www_redirect = (node['jenkins']['http_proxy']['www_redirect'] == 'enable')
 host_name = node['jenkins']['http_proxy']['host_name'] || node['fqdn']
 
 template "#{node['nginx']['dir']}/htpasswd" do
-  variables( :username => node['jenkins']['http_proxy']['basic_auth_username'],
-             :password => node['jenkins']['http_proxy']['basic_auth_password'])
+  variables(
+    :username => node['jenkins']['http_proxy']['basic_auth_username'],
+    :password => node['jenkins']['http_proxy']['basic_auth_password']
+  )
   owner node['nginx']['user']
   group node['nginx']['user']
   mode '0600'
 end
 
 template "#{node['nginx']['dir']}/sites-available/jenkins.conf" do
-  source      "nginx_jenkins.conf.erb"
+  source      'nginx_jenkins.conf.erb'
   owner       'root'
   group       'root'
   mode        '0644'
@@ -53,6 +55,6 @@ template "#{node['nginx']['dir']}/sites-available/jenkins.conf" do
   end
 end
 
-nginx_site "jenkins.conf" do
+nginx_site 'jenkins.conf' do
   enable true
 end

@@ -22,23 +22,22 @@
 
 actions :create, :update, :delete, :build, :disable, :enable
 
-attribute :url, :kind_of => String
+attribute :url,      :kind_of => String
 attribute :job_name, :kind_of => String
-attribute :config, :kind_of => String
+attribute :config,   :kind_of => String
 
-def initialize(name, run_context=nil)
+def initialize(name, run_context = nil)
   super
   @action = :update
   @job_name = name
   jenkins_node = jenkins_attributes_from_node(run_context)
-  @url = (jenkins_node[:server] && jenkins_node[:server][:url]) || "http://localhost:8080"
+  @url = (jenkins_node[:server] && jenkins_node[:server][:url]) || 'http://localhost:8080'
 end
 
 private
-
-def jenkins_attributes_from_node(run_context)
-  jenkins_attr = if run_context && run_context.node
-    run_context.node[:jenkins]
+  def jenkins_attributes_from_node(run_context)
+    jenkins_attr = if run_context && run_context.node
+                     run_context.node[:jenkins]
+                   end
+    jenkins_attr || {}
   end
-  jenkins_attr || {}
-end

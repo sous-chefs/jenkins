@@ -1,140 +1,131 @@
----
 driver_plugin: vagrant
 driver_config:
-  require_chef_omnibus: 11.6.0
-  network:
-  - [private_network, ip: 33.33.33.10]
+  require_chef_omnibus: true
   customize:
     cpus: 2
     memory: 1024
+
 platforms:
-- name: ubuntu-12.10
-  driver_config:
-    box: opscode-ubuntu-12.10
-    box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.10_provisionerless.box
-  run_list:
-  - recipe[apt]
-- name: ubuntu-12.04
-  driver_config:
-    box: opscode-ubuntu-12.04
-    box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box
-  run_list:
-  - recipe[apt]
-- name: ubuntu-10.04
-  driver_config:
-    box: opscode-ubuntu-10.04
-    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_provisionerless.box
-  run_list:
-  - recipe[apt]
-- name: centos-5.9
-  driver_config:
-    box: opscode-centos-5.9
-    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.9_provisionerless.box
-- name: centos-6.4
-  driver_config:
-    box: opscode-centos-6.4
-    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box
+  - name: ubuntu-12.10
+    run_list:
+      - recipe[apt]
+  # - name: ubuntu-12.04
+  #   run_list:
+  #   - recipe[apt]
+  # - name: ubuntu-10.04
+  #   run_list:
+  #     - recipe[apt]
+  # - name: centos-5.9
+  # - name: centos-6.4
+
 suites:
-- name: server_package
-  run_list:
-  - recipe[jenkins::server]
-  - recipe[minitest-handler]
-  attributes:
-    jenkins:
-      server:
-        install_method: package
-        plugins:
-        - name: git-client
-          version: 1.0.5
-        - name: git
-          version: 1.3.0
-- name: server_war
-  run_list:
-  - recipe[jenkins::server]
-  - recipe[minitest-handler]
-  attributes:
-    jenkins:
-      server:
-        install_method: war
-        plugins:
-        - name: git-client
-          version: 1.0.5
-        - name: git
-          version: 1.3.0
-- name: server-proxy-nginx
-  run_list:
-  - recipe[jenkins::server]
-  - recipe[jenkins::proxy]
-  attributes:
-    jenkins:
-      http_proxy:
-        variant: nginx
-        host_name: 33.33.33.10
-- name: server-proxy-nginx-ssl
-  run_list:
-  - recipe[jenkins-test::generate_certs]
-  - recipe[jenkins::server]
-  - recipe[jenkins::proxy]
-  attributes:
-    jenkins:
-      http_proxy:
-        variant: nginx
-        host_name: 33.33.33.10
-        ssl:
-          enabled: true
-          redirect_http: true
-- name: server-proxy-nginx-basicauth
-  run_list:
-  - recipe[jenkins::server]
-  - recipe[jenkins::proxy]
-  attributes:
-    jenkins:
-      http_proxy:
-        variant: nginx
-        host_name: 33.33.33.10
-        server_auth_method: basic
-        basic_auth_username: foo
-        basic_auth_password: bar
-- name: server-proxy-apache2
-  run_list:
-  - recipe[jenkins::server]
-  - recipe[jenkins::proxy]
-  attributes:
-    jenkins:
-      http_proxy:
-        variant: apache2
-        host_name: 33.33.33.10
-- name: server-proxy-apache2-ssl
-  run_list:
-  - recipe[jenkins-test::generate_certs]
-  - recipe[jenkins::server]
-  - recipe[jenkins::proxy]
-  attributes:
-    jenkins:
-      http_proxy:
-        variant: apache2
-        host_name: 33.33.33.10
-        ssl:
-          enabled: true
-          redirect_http: true
-- name: server-proxy-apache2-basicauth
-  run_list:
-  - recipe[jenkins::server]
-  - recipe[jenkins::proxy]
-  attributes:
-    jenkins:
-      http_proxy:
-        variant: apache2
-        host_name: 33.33.33.10
-        server_auth_method: basic
-        basic_auth_username: foo
-        basic_auth_password: bar
-- name: node
-  run_list:
-  - recipe[jenkins::server]
-  - recipe[jenkins::node]
-  attributes:
-    jenkins:
-      node:
-        env:
-          foo: bar
+  # - name: plugins
+  #   run_list:
+  #     - recipe[jenkins::server]
+  #   attributes:
+  #     jenkins:
+  #       server:
+  #         install_method: package
+  #         plugins:
+  #           - name: git
+  #             version: 1.0.5
+  #           - name: git-client
+  #             version: 1.3.0
+  - name: server_package
+    run_list:
+      - recipe[jenkins::server]
+    attributes:
+      jenkins:
+        server:
+          install_method: package
+
+  # - name: server_war
+  #   run_list:
+  #     - recipe[jenkins::server]
+  #     - recipe[minitest-handler]
+  #   attributes:
+  #     jenkins:
+  #       server:
+  #         install_method: war
+  #         plugins:
+  #           - name: git-client
+  #             version: 1.0.5
+  #           - name: git
+  #             version: 1.3.0
+  # - name: server-proxy-nginx
+  #   run_list:
+  #     - recipe[jenkins::server]
+  #     - recipe[jenkins::proxy]
+  #   attributes:
+  #     jenkins:
+  #       http_proxy:
+  #         variant: nginx
+  #         host_name: 33.33.33.10
+  # - name: server-proxy-nginx-ssl
+  #   run_list:
+  #     - recipe[fake::generate_certs]
+  #     - recipe[jenkins::server]
+  #     - recipe[jenkins::proxy]
+  #   attributes:
+  #     jenkins:
+  #       http_proxy:
+  #         variant: nginx
+  #         host_name: 33.33.33.10
+  #         ssl:
+  #           enabled: true
+  #           redirect_http: true
+  # - name: server-proxy-nginx-basicauth
+  #   run_list:
+  #     - recipe[jenkins::server]
+  #     - recipe[jenkins::proxy]
+  #   attributes:
+  #     jenkins:
+  #       http_proxy:
+  #         variant: nginx
+  #         host_name: 33.33.33.10
+  #         server_auth_method: basic
+  #         basic_auth_username: foo
+  #         basic_auth_password: bar
+  # - name: server-proxy-apache2
+  #   run_list:
+  #     - recipe[jenkins::server]
+  #     - recipe[jenkins::proxy]
+  #   attributes:
+  #     jenkins:
+  #       http_proxy:
+  #         variant: apache2
+  #         host_name: 33.33.33.10
+  # - name: server-proxy-apache2-ssl
+  #   run_list:
+  #     - recipe[fake::generate_certs]
+  #     - recipe[jenkins::server]
+  #     - recipe[jenkins::proxy]
+  #   attributes:
+  #     jenkins:
+  #       http_proxy:
+  #         variant: apache2
+  #         host_name: 33.33.33.10
+  #         ssl:
+  #           enabled: true
+  #           redirect_http: true
+  # - name: server-proxy-apache2-basicauth
+  #   run_list:
+  #     - recipe[jenkins::server]
+  #     - recipe[jenkins::proxy]
+  #   attributes:
+  #     jenkins:
+  #       http_proxy:
+  #         variant: apache2
+  #         host_name: 33.33.33.10
+  #         server_auth_method: basic
+  #         basic_auth_username: foo
+  #         basic_auth_password: bar
+  # - name: node
+  #   run_list:
+  #     - recipe[jenkins::server]
+  #     - recipe[jenkins::node]
+  #   attributes:
+  #     jenkins:
+  #       node:
+  #         env:
+  #           foo: bar

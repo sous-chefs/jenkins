@@ -19,13 +19,10 @@
 # limitations under the License.
 #
 
-if platform_family?("debian", "rhel")
-  include_recipe "iptables"
-  iptables_rule "port_jenkins" do
-    if node['jenkins']['iptables_allow'] == "enable"
-      enable true
-    else
-      enable false
-    end
+if platform_family?('debian', 'rhel')
+  include_recipe 'iptables::default'
+
+  iptables_rule 'port_jenkins' do
+    enable node['jenkins']['iptables_allow'] == 'enable'
   end
 end
