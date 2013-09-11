@@ -24,20 +24,18 @@ describe 'jenkins::_server_package' do
   # Tests around directories
   describe "directories" do
 
-    # NOTE: We do not check the group for the jenkins home directory since
-    #       the package installer modifies it.
+    # NOTE: We do not check the group/permissions for the jenkins home directory since
+    #       the package installer can modify it.
     it "should create the jenkins home directory" do
       directory(node['jenkins']['server']['home']).must_exist.with(
-        :owner, node['jenkins']['server']['user']).and(
-        :mode, '0700')
+        :owner, node['jenkins']['server']['user'])
     end
 
-    # NOTE: We do not check the group for the jenkins log directory since
-    #       the package installer modifies it.
-    it "should create the jenkins home directory" do
+    # NOTE: We do not check the group/permissions for the jenkins log directory since
+    #       the package installer can modify it.
+    it "should create the jenkins log directory" do
       directory(node['jenkins']['server']['log_dir']).must_exist.with(
-        :owner, node['jenkins']['server']['user']).and(
-        :mode, '0700')
+        :owner, node['jenkins']['server']['user'])
     end
 
   end
