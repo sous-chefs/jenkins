@@ -21,33 +21,33 @@
 #
 
 def jenkins_node_defaults(args)
-  args[:name] ||= nil #required
-  args[:description] ||= ""
-  args[:remote_fs] ||= nil #required
+  args[:name] ||= nil # required
+  args[:description] ||= ''
+  args[:remote_fs] ||= nil # required
   args[:executors] ||= 1
-  args[:mode] ||= "NORMAL" #"NORMAL" or "EXCLUSIVE"
+  args[:mode] ||= 'NORMAL' # 'NORMAL' or 'EXCLUSIVE'
   args[:labels] ||= []
-  args[:launcher] ||= "jnlp" #"jnlp" or "command" or "ssh"
-  args[:availability] ||= "Always" #"Always" or "Demand"
+  args[:launcher] ||= 'jnlp' # 'jnlp' or 'command' or 'ssh'
+  args[:availability] ||= 'Always' # 'Always' or 'Demand'
   args[:env] = args[:env] ? args[:env].to_hash : nil
   args[:mode].upcase!
   args[:availability].capitalize!
 
-  if args[:availability] == "Demand"
+  if args[:availability] == 'Demand'
     args[:in_demand_delay] ||= 0
     args[:idle_delay] ||= 1
   end
 
   case args[:launcher]
-  when "jnlp"
-  when "command"
-    args[:command] ||= ""
-  when "ssh"
+  when 'jnlp'
+  when 'command'
+    args[:command] ||= ''
+  when 'ssh'
     args[:host] ||= args[:name]
     args[:port] ||= 22
-    args[:username] ||= ""
-    args[:private_key] ||= ""
-    args[:jvm_options] ||= ""
+    args[:username] ||= ''
+    args[:private_key] ||= ''
+    args[:jvm_options] ||= ''
     args[:host_dsa_public] ||= nil
     args[:host_rsa_public] ||= nil
   end
@@ -66,50 +66,34 @@ def jenkins_node_compare(current_node, new_node)
   default.keys.each do |key|
     val = new_node[key] || default[key]
     if !val.nil? && current_node[key.to_s] != val
-      Chef::Log::debug("#{new_node[:name]} node.#{key} changed (#{current_node[key.to_s]} != #{val})")
+      Chef::Log.debug("#{new_node[:name]} node.#{key} changed (#{current_node[key.to_s]} != #{val})")
       return true
     end
   end
-  Chef::Log::debug("#{new_node[:name]} node unchanged")
+  Chef::Log.debug("#{new_node[:name]} node unchanged")
   false
 end
 
-#generate a groovy script to create/update nodes
+# generate a groovy script to create/update nodes
+# rubocop:disable MethodLength
 def jenkins_node_manage(args)
   args = jenkins_node_defaults(args)
-
-  if args[:env]
-    map = args[:env].collect { |k,v| %Q("#{k}":"#{v}") }.join(",")
-    env = "new hudson.EnvVars([#{map}])"
-  else
-    env = "null"
-  end
+  env = args[:env] ? "new hudson.EnvVars([#{args[:env].map { |k, v| %Q("#{k}":"#{v}") }.join(",")}])" : 'null'
 
   case args[:launcher]
-  when "jnlp"
-    launcher = "new JNLPLauncher()"
-  when "command"
+  when 'jnlp'
+    launcher = 'new JNLPLauncher()'
+  when 'command'
     launcher = %Q(new CommandLauncher("#{args[:command]}", env))
-  when "ssh"
-    if args[:password] == nil
-      password = "null"
-    else
-      password = %Q("#{args[:password]}")
-    end
-
-    launcher = %Q(new_ssh_launcher(["#{args[:host]}", #{args[:port]}, "#{args[:username]}", #{password},
-                                    "#{args[:private_key]}", "#{args[:jvm_options]}"] as Object[]))
+  when 'ssh'
+    password = args[:password].nil? ? 'null' : %Q("#{args[:password]}")
+    launcher = %Q(new_ssh_launcher(["#{args[:host]}", #{args[:port]}, "#{args[:username]}", #{password}, "#{args[:private_key]}", "#{args[:jvm_options]}"] as Object[]))
   end
 
   remote_fs = args[:remote_fs].gsub('\\', '\\\\\\') # C:\jenkins -> C:\\jenkins
+  rs_args = args[:availability] == 'Demand' ? "#{args[:in_demand_delay]}, #{args[:idle_delay]}" : ''
 
-  if args[:availability] == "Demand"
-    rs_args = "#{args[:in_demand_delay]}, #{args[:idle_delay]}"
-  else
-    rs_args = ""
-  end
-
-  return <<EOF
+  <<-EOF
 import jenkins.model.*
 import jenkins.slaves.*
 import hudson.model.*
@@ -120,8 +104,8 @@ env = #{env}
 props = []
 
 def new_ssh_launcher(args) {
-  Jenkins.instance.pluginManager.getPlugin("ssh-slaves").classLoader.
-    loadClass("hudson.plugins.sshslaves.SSHLauncher").
+  Jenkins.instance.pluginManager.getPlugin('ssh-slaves').classLoader.
+    loadClass('hudson.plugins.sshslaves.SSHLauncher').
       getConstructor([String, int, String, String, String, String] as Class[]).newInstance(args)
 }
 
@@ -149,11 +133,9 @@ app.setNodes(nodes)
 EOF
 end
 
-#ruby manage_node.rb name slave-hostname remote_fs /home/jenkins ... | java -jar jenkins-cli.jar -s http://jenkins:8080/ groovy =
-if File.basename($0) == File.basename(__FILE__)
-  args = Hash.new
-  ARGV.each_slice(2) do |k,v|
-    args[k.to_sym] = v
-  end
+# ruby manage_node.rb name slave-hostname remote_fs /home/jenkins ... | java -jar jenkins-cli.jar -s http://jenkins:8080/ groovy =
+if File.basename($PROGRAM_NAME) == File.basename(__FILE__)
+  args = {}
+  ARGV.each_slice(2) { |k, v| args[k.to_sym] = v }
   puts jenkins_node_manage(args)
 end

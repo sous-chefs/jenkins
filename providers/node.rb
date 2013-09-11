@@ -32,7 +32,6 @@ def action_update
 end
 
 def action_create
-
   gscript = "#{new_resource.remote_fs}/manage_#{new_resource.name}.groovy"
 
   file gscript do
@@ -41,19 +40,19 @@ def action_create
   end
 
   cookbook_file "#{node['jenkins']['node']['home']}/node_info.groovy" do
-    source "node_info.groovy"
+    source 'node_info.groovy'
   end
 
   jenkins_cli "groovy node_info.groovy #{new_resource.name}" do
     block do |stdout|
       current_node = JSON.parse(stdout)
       node_exists = current_node.keys.size > 0
-      if !node_exists && new_resource.action.to_s == "update"
+      if !node_exists && new_resource.action.to_s == 'update'
         Chef::Application.fatal! "Cannot update #{new_resource} - node does not exist!"
       end
       new_node = new_resource.to_hash
       if !node_exists || jenkins_node_compare(current_node, new_node)
-        ::File.open(gscript, "w") {|f| f.write jenkins_node_manage(new_node) }
+        ::File.open(gscript, 'w') { |f| f.write jenkins_node_manage(new_node) }
       end
     end
   end
@@ -62,7 +61,7 @@ def action_create
     only_if { ::File.exists?(gscript) }
   end
 
-  ruby_block "new_resource.updated" do
+  ruby_block 'new_resource.updated' do
     block { new_resource.updated_by_last_action(true) }
     only_if { ::File.exists?(gscript) }
   end
