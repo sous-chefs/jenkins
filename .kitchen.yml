@@ -133,6 +133,7 @@ suites:
   run_list:
   - recipe[jenkins::server]
   - recipe[jenkins::node]
+  - recipe[minitest-handler]
   attributes:
     jenkins:
       node:
