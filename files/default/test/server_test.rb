@@ -37,6 +37,28 @@ describe 'jenkins::server' do
       end
     end
 
+    it "configures ssl properly if configured to" do
+      if node['jenkins']['http_proxy']['ssl']['enabled']
+        case node['jenkins']['http_proxy']['variant']
+        when "apache"
+          file(File.join(node['apache']['dir'], "sites-available/jenkins")).must_include(
+            "SSLCertificateFile #{node['jenkins']['http_proxy']['ssl']['cert_path']}")
+          file(File.join(node['apache']['dir'], "sites-available/jenkins")).must_include(
+            "SSLCertificateKeyFile #{node['jenkins']['http_proxy']['ssl']['key_path']}")
+          if node['jenkins']['http_proxy']['ca_cert_path']
+            file(File.join(node['apache']['dir'], "sites-available/jenkins")).must_include(
+              "SSLCACertificateFile #{node['jenkins']['http_proxy']['ssl']['ca_cert_path']}")
+          end
+
+        when "nginx"
+          file(File.join(node['nginx']['dir'], "sites-available/jenkins.conf")).must_include(
+            "ssl_certificate     #{node['jenkins']['http_proxy']['ssl']['cert_path']}")
+          file(File.join(node['nginx']['dir'], "sites-available/jenkins.conf")).must_include(
+            "ssl_certificate_key #{node['jenkins']['http_proxy']['ssl']['key_path']}")
+        end
+      end
+    end
+
   end
 
   # Tests around directories

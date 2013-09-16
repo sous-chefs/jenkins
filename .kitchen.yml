@@ -75,6 +75,7 @@ suites:
   - recipe[jenkins-test::generate_certs]
   - recipe[jenkins::server]
   - recipe[jenkins::proxy]
+  - recipe[minitest-handler]
   attributes:
     jenkins:
       http_proxy:
@@ -109,6 +110,7 @@ suites:
   - recipe[jenkins-test::generate_certs]
   - recipe[jenkins::server]
   - recipe[jenkins::proxy]
+  - recipe[minitest-handler]
   attributes:
     jenkins:
       http_proxy:
@@ -117,6 +119,7 @@ suites:
         ssl:
           enabled: true
           redirect_http: true
+          ca_cert_path: /var/lib/jenkins/ssl/jenkins.cert
 - name: server-proxy-apache2-basicauth
   run_list:
   - recipe[jenkins::server]

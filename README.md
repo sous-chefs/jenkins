@@ -66,9 +66,9 @@ Attributes
   the server can be done with cas (using `apache2::mod_auth_cas`), or basic
   (using `htpasswd`). The default is no authentication.
 * `node['jenkins']['http_proxy']['basic_auth_username']` - Username to use for
-  HTTP Basic Authenitcation.
+  HTTP Basic Authentication.
 * `node['jenkins']['http_proxy']['basic_auth_password']` - Password to use with
-  HTTP Basic Authenitcation.
+  HTTP Basic Authentication.
 * `node['jenkins']['http_proxy']['cas_login_url']` - Login url for cas if using
   cas authentication.
 * `node['jenkins']['http_proxy']['cas_validate_url']` - Validation url for cas
@@ -77,6 +77,14 @@ Attributes
   the server cert. Defaults to off.
 * `node['jenkins']['http_proxy']['cas_root_proxy_url']` - If set, sets the url
   that the cas server redirects to after auth.
+* `node['jenkins']['http_proxy']['ssl']['enabled']` - Configures jenkins to use SSL. This
+  cookbook expects you to provide your own certificates. You can tell Jenkins where your
+  certificates with the below attributes.
+* `node['jenkins']['http_proxy']['ssl']['cert_path']` - The path to your SSL certificate.
+* `node['jenkins']['http_proxy']['ssl']['key_path']` - The path to your SSL key.
+* `node['jenkins']['http_proxy']['ssl']['ca_cert_path']` - If set, configures apache
+  to use an intermediate certificate authority. Nginx does not use this attribute and expects any
+  intermediate certificates to be appended in the same file as your SSL certificate.
 
 ### Node/Slave related Attributes
 
