@@ -80,7 +80,9 @@ node['jenkins']['server']['plugins'].each do |plugin|
   # the `*.jpi` extension. Although plugins downloaded from the Jenkins Mirror
   # have an `*.hpi` extension we will save the plugins with a `*.jpi` extension
   # to match Update Center's behavior.
-  remote_file File.join(plugins_dir, "#{name}.jpi") do
+  plugin_name = version.nil? ? name : "#{name}-#{version}"
+
+  remote_file File.join(plugins_dir, "#{plugin_name}.jpi") do
     source "#{node['jenkins']['mirror']}/plugins/#{name}/#{version}/#{name}.hpi"
     owner node['jenkins']['server']['user']
     group node['jenkins']['server']['group']
