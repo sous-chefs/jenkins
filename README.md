@@ -226,6 +226,27 @@ The `:create` and `:update` actions require a jenkins job config.xml.  Example:
       notifies :build, resources(:jenkins_job => job_name), :immediately
     end
 
+jenkins_plugin
+--------------
+
+This resource can be used to install and remove Jenkins plugins directly (e.g.
+bypassing the update center).  It supports the following actions:
+
+    :install, :remove
+
+Example:
+
+    jenkins_plugin 'greenballs'
+    
+    jenkins_plugin 'ant' do
+      action :install
+      version '1.2'
+    end
+    
+    jenkins_plugin 'envinject' do
+      action :remove
+    end
+
 Jenkins Node Authentication
 ===========================
 
