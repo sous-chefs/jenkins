@@ -23,14 +23,26 @@ end
 
 def load_current_resource
   @current_resource = Chef::Resource::JenkinsPlugin.new(@new_resource.name)
+  @current_resource.version(current_version)
   @current_resource
 end
 
 action :install do
-  if plugin_exists?
+  @new_resource.version('latest') unless @new_resource.version
+
+  Chef::Log.debug "#{@new_resource}: current version=#{@current_resource.version}, requested version=#{@new_resource.version}"
+
+  # TODO: If @new_resource.version == 'latest', lookup the new version
+  # and assign it to @new_resource.version
+
+  if @current_resource.version && @new_resource.version != 'latest' && @current_resource.version != @new_resource.version
+    converge_by("upgrade #{@new_resource} from #{@current_resource.version} to #{@new_resource.version}") do
+      do_upgrade_plugin
+    end
+  elsif plugin_exists?
     Chef::Log.debug "#{@new_resource} already exists"
   else
-    converge_by("install #{@new_resource}") do
+    converge_by("install #{@new_resource} version #{@new_resource.version}") do
       do_install_plugin
     end
   end
@@ -48,6 +60,18 @@ end
 
 
 private
+
+def current_version
+  current_version = nil
+  manifest_file = ::File.join(plugins_dir, @current_resource.name, 'META-INF', 'MANIFEST.MF')
+  if ::File.exist?(manifest_file)
+    manifest = IO.read(manifest_file)
+    if manifest =~ /^Plugin-Version:\s*(.+)$/
+      current_version = $1.strip
+    end
+  end
+  current_version
+end
 
 def plugin_exists?
   ::File.exists?(plugin_file_path)
@@ -68,7 +92,7 @@ end
 
 def do_install_plugin
   name = @new_resource.name
-  version = @new_resource.version || 'latest'
+  version = @new_resource.version
 
   # Plugins installed from the Jenkins Update Center are written to disk with
   # the `*.jpi` extension. Although plugins downloaded from the Jenkins Mirror
@@ -83,6 +107,10 @@ def do_install_plugin
     notifies :restart, "service[jenkins]"
     notifies :create, "ruby_block[block_until_operational]"
   end
+end
+
+def do_upgrade_plugin
+  do_install_plugin
 end
 
 def do_remove_plugin
