@@ -71,6 +71,7 @@ node['jenkins']['server']['plugins'].each do |plugin|
   if plugin.is_a?(Hash)
     name = plugin['name']
     version = plugin['version'] if plugin['version']
+    url = plugin['url'] if plugin['url']
   else
     name = plugin
   end
@@ -78,6 +79,7 @@ node['jenkins']['server']['plugins'].each do |plugin|
   jenkins_plugin name do
     action :install
     version version if version
+    url url if url
   end
 end
 

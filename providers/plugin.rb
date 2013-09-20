@@ -91,15 +91,14 @@ end
 
 
 def do_install_plugin
-  name = @new_resource.name
-  version = @new_resource.version
+  plugin_url = @new_resource.url
 
   # Plugins installed from the Jenkins Update Center are written to disk with
   # the `*.jpi` extension. Although plugins downloaded from the Jenkins Mirror
   # have an `*.hpi` extension we will save the plugins with a `*.jpi` extension
   # to match Update Center's behavior.
   remote_file plugin_file_path do
-    source "#{node['jenkins']['mirror']}/plugins/#{name}/#{version}/#{name}.hpi"
+    source plugin_url
     owner node['jenkins']['server']['user']
     group node['jenkins']['server']['group']
     backup false

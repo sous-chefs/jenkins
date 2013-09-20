@@ -243,6 +243,11 @@ Example:
       version '1.2'
     end
     
+    jenkins_plugin 'custom_plugin' do
+      version '0.3'
+      url 'http://myrepo/jenkins/plugins/0.3/custom_plugin.hpi'
+    end
+    
     jenkins_plugin 'envinject' do
       action :remove
     end
