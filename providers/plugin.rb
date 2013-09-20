@@ -107,6 +107,11 @@ def do_install_plugin
     notifies :restart, "service[jenkins]"
     notifies :create, "ruby_block[block_until_operational]"
   end
+  file "#{plugin_file_path}.pinned" do
+    action :create_if_missing
+    owner node['jenkins']['server']['user']
+    group node['jenkins']['server']['group']
+  end
 end
 
 def do_upgrade_plugin
