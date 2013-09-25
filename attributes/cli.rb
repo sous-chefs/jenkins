@@ -25,4 +25,3 @@ default['jenkins']['cli']['java_params'] = nil
 default['jenkins']['cli']['username'] = nil
 default['jenkins']['cli']['password'] = nil
 default['jenkins']['cli']['password_file'] = nil
-

@@ -20,16 +20,16 @@
 # limitations under the License.
 #
 
-include_recipe "java"
-include_recipe "runit"
+include_recipe 'java::default'
+include_recipe 'runit::default'
 
-service_name = "jenkins-slave"
+service_name = 'jenkins-slave'
 slave_jar = "#{node['jenkins']['node']['home']}/slave.jar"
 
 group node['jenkins']['node']['group']
 
 user node['jenkins']['node']['user'] do
-  comment "Jenkins CI node (jnlp)"
+  comment 'Jenkins CI node (jnlp)'
   gid node['jenkins']['node']['group']
   home node['jenkins']['node']['home']
 end
@@ -46,7 +46,7 @@ jenkins_node node['jenkins']['node']['name'] do
   remote_fs    node['jenkins']['node']['home']
   labels       node['jenkins']['node']['labels']
   mode         node['jenkins']['node']['mode']
-  launcher     "jnlp"
+  launcher     'jnlp'
   availability node['jenkins']['node']['availability']
   env          node['jenkins']['node']['env']
 end
@@ -54,7 +54,7 @@ end
 remote_file slave_jar do
   source "#{node['jenkins']['server']['url']}/jnlpJars/slave.jar"
   owner node['jenkins']['node']['user']
-  #only restart if slave.jar is updated
+  # only restart if slave.jar is updated
   if ::File.exists?(slave_jar)
     notifies :restart, "service[#{service_name}]", :immediately
   end
@@ -64,7 +64,7 @@ secret = ''
 jenkins_cli "node_info for #{node['jenkins']['node']['name']} to get jnlp secret" do
   command "groovy node_info.groovy #{node['jenkins']['node']['name']}"
   block do |stdout|
-    current_node = JSON.parse( stdout )
+    current_node = JSON.parse(stdout)
     secret.replace current_node['secret'] if current_node['secret']
   end
 end

@@ -23,26 +23,26 @@
 #
 
 case node['platform_family']
-when "windows"
-  default['jenkins']['node']['home'] = "C:/jenkins"
-  default['jenkins']['node']['log_dir']  = "C:/jenkins"
-  default['jenkins']['node']['agent_type'] = "windows"
+when 'windows'
+  default['jenkins']['node']['home'] = 'C:/jenkins'
+  default['jenkins']['node']['log_dir']  = 'C:/jenkins'
+  default['jenkins']['node']['agent_type'] = 'windows'
 
-  default['jenkins']['node']['service_user'] = "LocalSystem"
+  default['jenkins']['node']['service_user'] = 'LocalSystem'
   default['jenkins']['node']['service_user_password'] = nil
-when "mac_os_x"
-  default['jenkins']['node']['home'] = "/Users/jenkins"
-  default['jenkins']['node']['log_dir']  = "/var/log/jenkins"
-  default['jenkins']['node']['agent_type'] = "jnlp"
+when 'mac_os_x'
+  default['jenkins']['node']['home'] = '/Users/jenkins'
+  default['jenkins']['node']['log_dir']  = '/var/log/jenkins'
+  default['jenkins']['node']['agent_type'] = 'jnlp'
 else
-  default['jenkins']['node']['home'] = "/home/jenkins"
-  default['jenkins']['node']['log_dir']  = "/var/log/jenkins"
-  default['jenkins']['node']['agent_type'] = "jnlp"
+  default['jenkins']['node']['home'] = '/home/jenkins'
+  default['jenkins']['node']['log_dir']  = '/var/log/jenkins'
+  default['jenkins']['node']['agent_type'] = 'jnlp'
 end
 
-default['jenkins']['node']['user'] = "jenkins-node"
-default['jenkins']['node']['group'] = "jenkins-node"
-default['jenkins']['node']['shell'] = "/bin/sh"
+default['jenkins']['node']['user'] = 'jenkins-node'
+default['jenkins']['node']['group'] = 'jenkins-node'
+default['jenkins']['node']['shell'] = '/bin/sh'
 default['jenkins']['node']['name'] = node['fqdn']
 default['jenkins']['node']['description'] =
   "#{node['platform']} #{node['platform_version']} " <<
@@ -59,12 +59,12 @@ default['jenkins']['node']['idle_delay'] = 1
 # Usage
 #    normal - Utilize this slave as much as possible
 #    exclusive - Leave this machine for tied jobs only
-default['jenkins']['node']['mode'] = "normal"
+default['jenkins']['node']['mode'] = 'normal'
 
 # Availability
 #    always - Keep this slave on-line as much as possible
 #    demand - Take this slave on-line when in demand and off-line when idle
-default['jenkins']['node']['availability'] = "always"
+default['jenkins']['node']['availability'] = 'always'
 
 # SSH options
 default['jenkins']['node']['ssh_host'] = node['fqdn']
