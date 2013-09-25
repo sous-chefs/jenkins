@@ -36,13 +36,13 @@ action :install do
   # and assign it to @new_resource.version
 
   if @current_resource.version && @new_resource.version != 'latest' && @current_resource.version != @new_resource.version
-    converge_by("upgrade #{@new_resource} from #{@current_resource.version} to #{@new_resource.version}") do
+    converge_by("Upgrading #{@new_resource} from #{@current_resource.version} to #{@new_resource.version}") do
       do_upgrade_plugin
     end
   elsif plugin_exists?
     Chef::Log.debug "#{@new_resource} already exists"
   else
-    converge_by("install #{@new_resource} version #{@new_resource.version}") do
+    converge_by("Installing #{@new_resource} version #{@new_resource.version}") do
       do_install_plugin
     end
   end
