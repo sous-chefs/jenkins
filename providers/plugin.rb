@@ -98,8 +98,8 @@ private
       group node['jenkins']['server']['group']
       backup false
       action :create
-      notifies :restart, 'service[jenkins'
-      notifies :create, 'ruby_block[block_until_operational'
+      notifies :restart, 'service[jenkins]'
+      notifies :create, 'ruby_block[block_until_operational]'
     end
 
     file "#{plugin_file_path}.pinned" do
