@@ -68,26 +68,18 @@ end
 include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
 
 node['jenkins']['server']['plugins'].each do |plugin|
-  version = 'latest'
   if plugin.is_a?(Hash)
     name = plugin['name']
     version = plugin['version'] if plugin['version']
+    url = plugin['url'] if plugin['url']
   else
     name = plugin
   end
 
-  # Plugins installed from the Jenkins Update Center are written to disk with
-  # the `*.jpi` extension. Although plugins downloaded from the Jenkins Mirror
-  # have an `*.hpi` extension we will save the plugins with a `*.jpi` extension
-  # to match Update Center's behavior.
-  remote_file File.join(plugins_dir, "#{name}.jpi") do
-    source "#{node['jenkins']['mirror']}/plugins/#{name}/#{version}/#{name}.hpi"
-    owner node['jenkins']['server']['user']
-    group node['jenkins']['server']['group']
-    backup false
-    action :create_if_missing
-    notifies :restart, 'service[jenkins]'
-    notifies :create, 'ruby_block[block_until_operational]'
+  jenkins_plugin name do
+    action  :install
+    version version if version
+    url     url if url
   end
 end
 
