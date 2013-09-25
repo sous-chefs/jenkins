@@ -3,12 +3,12 @@ if node['jenkins']['node']['ssh_private_key']
 
   directory ssh_dir do
     recursive true
-    owner node['jenkins']['node']['user']
-    group node['jenkins']['node']['group']
-    mode 0700
+    owner     node['jenkins']['node']['user']
+    group     node['jenkins']['node']['group']
+    mode      '0700'
   end
 
-  execute "Create SSL Certificates" do
+  execute 'Create SSL Certificates' do
     cwd ssh_dir
     command <<-EOH
     ssh-keygen -f #{node['jenkins']['node']['ssh_private_key']} -N ''
@@ -19,6 +19,6 @@ if node['jenkins']['node']['ssh_private_key']
   file node['jenkins']['node']['ssh_private_key'] do
     owner node['jenkins']['node']['user']
     group node['jenkins']['node']['group']
-    mode 0600
+    mode  '0600'
   end
 end
