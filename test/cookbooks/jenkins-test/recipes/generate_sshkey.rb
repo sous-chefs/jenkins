@@ -13,7 +13,7 @@ if node['jenkins']['node']['ssh_private_key']
     command <<-EOH
     ssh-keygen -f #{node['jenkins']['node']['ssh_private_key']} -N ''
     EOH
-    not_if { ::File.exists?(node['jenkins']['node']['ssh_private_key']) }
+    creates node['jenkins']['node']['ssh_private_key']
   end
 
   file node['jenkins']['node']['ssh_private_key'] do
