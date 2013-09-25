@@ -116,9 +116,13 @@ suites:
     run_list:
     - recipe[jenkins::server]
     - recipe[jenkins::node]
+    - recipe[jenkins-test::generate_sshkey]
+    - recipe[jenkins-test::generate_user]
     - recipe[minitest-handler]
     attributes:
       jenkins:
         node:
+          home: /home/jenkins
+          ssh_private_key: /home/jenkins/.ssh/id_rsa
           env:
             foo: bar
