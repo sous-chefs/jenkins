@@ -22,11 +22,12 @@
 require 'chef/mixin/shell_out'
 require 'chef/rest'
 
+# Helper library for testing Jenkins responses
 module JenkinsHelper
   extend Chef::Mixin::ShellOut
 
   def self.service_listening?(port)
-    netstat_command = "netstat -lnt"
+    netstat_command = 'netstat -lnt'
     cmd = shell_out!(netstat_command)
     Chef::Log.debug("`#{netstat_command}` returned: \n\n #{cmd.stdout}")
     cmd.stdout.each_line.select do |l|

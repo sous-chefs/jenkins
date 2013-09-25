@@ -22,6 +22,6 @@
 # limitations under the License.
 #
 
-default['jenkins']['mirror'] = "http://mirrors.jenkins-ci.org"
+default['jenkins']['mirror'] = 'http://mirrors.jenkins-ci.org'
 default['jenkins']['java_home'] = ENV['JAVA_HOME']
-default['jenkins']['iptables_allow'] = "disable"
+default['jenkins']['iptables_allow'] = 'disable'

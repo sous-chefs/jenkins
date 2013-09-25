@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 
-def action_run
+def action_run # rubocop:disable MethodLength
   url = @new_resource.url || node['jenkins']['server']['url']
   home = @new_resource.home || node['jenkins']['node']['home']
   username = @new_resource.username ||  node['jenkins']['cli']['username']
@@ -29,27 +29,26 @@ def action_run
   key_file = @new_resource.key_file || node['jenkins']['cli']['key_file']
   jvm_options = @new_resource.jvm_options || node['jenkins']['cli']['jvm_options']
 
-  #recipes will chown to jenkins later if this doesn't already exist
-  directory "home for jenkins-cli.jar" do
+  # recipes will chown to jenkins later if this doesn't already exist
+  directory 'home for jenkins-cli.jar' do
     action :create
     path node['jenkins']['node']['home']
   end
 
-  cli_jar = ::File.join(home, "jenkins-cli.jar")
+  cli_jar = ::File.join(home, 'jenkins-cli.jar')
   remote_file cli_jar do
     source "#{url}/jnlpJars/jenkins-cli.jar"
     not_if { ::File.exists?(cli_jar) }
   end
 
   java_home = node['jenkins']['java_home'] || (node.attribute?('java') ? node['java']['jdk_dir'] : nil)
-  if java_home == nil
-    java = "java"
+  if java_home.nil?
+    java = 'java'
   else
-    java = '"' << ::File.join(java_home, "bin", "java") << '"'
+    java = '"' << ::File.join(java_home, 'bin', 'java') << '"'
   end
-  if jvm_options
-    java << " #{jvm_options}"
-  end
+
+  java << " #{jvm_options}" if jvm_options
 
   if key_file
     command = "#{java} -jar #{cli_jar} -i #{key_file} -s #{url} #{@new_resource.command}"
@@ -57,20 +56,14 @@ def action_run
     command = "#{java} -jar #{cli_jar} -s #{url} #{@new_resource.command}"
   end
 
-  if username
-    command << " --username #{username}"
-  end
-  if password
-    command << " --password #{password}"
-  end
-  if password_file
-    command << " --password_file #{password_file}"
-  end
+  command << " --username #{username}" if username
+  command << " --password #{password}" if password
+  command << " --password_file #{password_file}" if password_file
 
-  je = jenkins_execute command do
-        cwd home
-        block { |stdout| new_resource.block.call(stdout) } if new_resource.block
-      end
+  je = jenkins_execute(command) do
+    cwd home
+    block { |stdout| new_resource.block.call(stdout) } if new_resource.block
+  end
 
   new_resource.updated_by_last_action(je.updated?)
 end
