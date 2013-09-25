@@ -19,34 +19,34 @@
 #
 
 case node['platform_family']
-when "debian"
-  include_recipe "apt"
+when 'debian'
+  include_recipe 'apt::default'
 
-  apt_repository "jenkins" do
-    uri "http://pkg.jenkins-ci.org/debian"
-    distribution "binary/"
-    components [""]
-    key "http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key"
+  apt_repository 'jenkins' do
+    uri 'http://pkg.jenkins-ci.org/debian'
+    distribution 'binary/'
+    components ['']
+    key 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key'
     action :add
   end
 
-when "rhel"
-  include_recipe "yum"
+when 'rhel'
+  include_recipe 'yum'
 
-  yum_key "RPM-GPG-KEY-jenkins-ci" do
-    url "http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key"
+  yum_key 'RPM-GPG-KEY-jenkins-ci' do
+    url 'http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key'
     action :add
   end
 
-  yum_repository "jenkins-ci" do
-    url "http://pkg.jenkins-ci.org/redhat"
-    key "RPM-GPG-KEY-jenkins-ci"
+  yum_repository 'jenkins-ci' do
+    url 'http://pkg.jenkins-ci.org/redhat'
+    key 'RPM-GPG-KEY-jenkins-ci'
     action :add
   end
 
 end
 
-package "jenkins" do
+package 'jenkins' do
   unless node['jenkins']['server']['version'].nil?
     version node['jenkins']['server']['version']
   end
@@ -55,14 +55,14 @@ end
 template node['jenkins']['server']['config_path'] do
   source node['jenkins']['server']['config_template']
   variables node['jenkins']['server'].to_hash
-  owner "root"
-  group "root"
-  mode "0644"
-  notifies :restart, "service[jenkins]", :immediately
-  notifies :create, "ruby_block[block_until_operational]", :immediately
+  owner 'root'
+  group 'root'
+  mode '0644'
+  notifies :restart, 'service[jenkins]', :immediately
+  notifies :create, 'ruby_block[block_until_operational]', :immediately
 end
 
-service "jenkins" do
+service 'jenkins' do
   supports :status => true, :restart => true, :reload => true
-  action [ :enable, :start ]
+  action  [:enable, :start]
 end

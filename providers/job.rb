@@ -86,7 +86,7 @@ def post_job(url)
   url = URI.parse(URI.escape(url))
   Chef::Log.debug("#{@new_resource} POST #{url.request_uri} using #{@new_resource.config}")
   body = IO.read(@new_resource.config)
-  headers = {"Content-Type" => "text/xml"}
+  headers = { 'Content-Type' => 'text/xml' }
   response = Chef::REST::RESTRequest.new(:POST, url, body, headers).call
   response.error! unless response.kind_of?(Net::HTTPSuccess)
 end
