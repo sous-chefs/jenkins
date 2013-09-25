@@ -58,7 +58,7 @@ remote_file "#{home_dir}\\slave.jar" do
   notifies :restart, "service[#{service_name}]", :immediately
 end
 
-cookbook_file "#{node[:jenkins][:node][:home]}/node_info.groovy" do
+cookbook_file "#{node['jenkins']['node']['home']}/node_info.groovy" do
   source "node_info.groovy"
 end
 
