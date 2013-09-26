@@ -29,8 +29,11 @@
 <%= render "_apache_common.erb" %>
 
   SSLEngine on
-  SSLCertificateFile <%= node[:jenkins][:http_proxy][:ssl][:cert_path] %>
-  SSLCertificateKeyFile <%= node[:jenkins][:http_proxy][:ssl][:key_path] %>
+  SSLCertificateFile <%= node['jenkins']['http_proxy']['ssl']['cert_path'] %>
+  SSLCertificateKeyFile <%= node['jenkins']['http_proxy']['ssl']['key_path'] %>
+  <% if node['jenkins']['http_proxy']['ssl']['ca_cert_path'] -%>
+  SSLCACertificateFile <%= node['jenkins']['http_proxy']['ssl']['ca_cert_path'] %>
+  <% end -%>
 
 </VirtualHost>
 <% end -%>

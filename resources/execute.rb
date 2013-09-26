@@ -27,14 +27,14 @@ attribute :cwd, :kind_of => String
 attribute :timeout, :kind_of => Integer
 attribute :block, :kind_of => Proc
 
-def initialize(name, run_context=nil)
+def initialize(name, run_context = nil)
   super
   @action = :run
   @command = name
 end
 
 def block(&block)
-  if block_given? and block
+  if block_given? && block
     @block = block
   else
     @block
