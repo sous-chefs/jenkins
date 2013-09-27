@@ -60,6 +60,11 @@ Attributes
 * `node['jenkins']['http_proxy']['ssl']['cert_path']` - The path to your SSL certificate.
 * `node['jenkins']['http_proxy']['ssl']['key_path']` - The path to your SSL key.
 * `node['jenkins']['http_proxy']['ssl']['ca_cert_path']` - If set, configures apache to use an intermediate certificate authority. Nginx does not use this attribute and expects any intermediate certificates to be appended in the same file as your SSL certificate.
+* `node['jenkins']['username']` - The jenkins username.
+* `node['jenkins']['password']` - The jenkins password.
+* `node['jenkins']['user_full_name']` - The jenkins user's full name.
+* `node['jenkins']['user_email']` - The jenkins user's email.
+* `node['jenkins']['user_permissions']` - The permissions for the user. By default, this user has all permissions enabled.
 
 ### Node/Slave related Attributes
 
