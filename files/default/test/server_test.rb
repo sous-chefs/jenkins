@@ -28,7 +28,7 @@ describe 'jenkins::server' do
 
         file(File.join(plugins_dir, "#{name}.jpi")).must_exist.with(
           :owner, node['jenkins']['server']['user']).and(
-          :group, node['jenkins']['server']['group'])
+          :group, node['jenkins']['server']['plugins_dir_group'])
       end
     end
 
@@ -56,19 +56,31 @@ describe 'jenkins::server' do
 
   # Tests around directories
   describe 'directories' do
-    # NOTE: We check the home_dir and log_dir in respective install method tests.
-    #       This is because the directory owner changes based on installation method.
-    it 'should create the jenkins plugins and ssh directories' do
+    it 'should create the jenkins home, log, plugins and ssh directories' do
       home_dir = node['jenkins']['server']['home']
       plugins_dir = File.join(home_dir, 'plugins')
+      log_dir = node['jenkins']['server']['log_dir']
       ssh_dir = File.join(home_dir, '.ssh')
 
-      [plugins_dir, ssh_dir].each do |dir_name|
-        directory(dir_name).must_exist.with(
+      directory(home_dir).must_exist.with(
           :owner, node['jenkins']['server']['user']).and(
-          :group, node['jenkins']['server']['group']).and(
-          :mode, '0700')
-      end
+          :group, node['jenkins']['server']['home_dir_group']).and(
+          :mode, node['jenkins']['server']['dir_permissions'])
+
+      directory(plugins_dir).must_exist.with(
+          :owner, node['jenkins']['server']['user']).and(
+          :group, node['jenkins']['server']['plugins_dir_group']).and(
+          :mode, node['jenkins']['server']['dir_permissions'])
+
+      directory(log_dir).must_exist.with(
+          :owner, node['jenkins']['server']['user']).and(
+          :group, node['jenkins']['server']['log_dir_group']).and(
+          :mode, node['jenkins']['server']['log_dir_permissions'])
+
+      directory(ssh_dir).must_exist.with(
+          :owner, node['jenkins']['server']['user']).and(
+          :group, node['jenkins']['server']['ssh_dir_group']).and(
+          :mode, node['jenkins']['server']['ssh_dir_permissions'])
     end
   end
 

@@ -10,7 +10,7 @@ describe 'jenkins::_server_war' do
 
       file(File.join(home_dir, 'jenkins.war')).must_exist.with(
         :owner, node['jenkins']['server']['user']).and(
-        :group, node['jenkins']['server']['group'])
+        :group, node['jenkins']['server']['home_dir_group'])
     end
 
     it 'should create the run file for the jenkins runit service' do
@@ -19,23 +19,6 @@ describe 'jenkins::_server_war' do
 
     it 'should make sure the run script is executable for jenkins runit' do
       assert_sh('file /etc/sv/jenkins/run | grep executable')
-    end
-  end
-
-  # Tests around directories
-  describe 'directories' do
-    it 'should create the jenkins home directory' do
-      directory(node['jenkins']['server']['home']).must_exist.with(
-        :owner, node['jenkins']['server']['user']).and(
-        :group, node['jenkins']['server']['group']).and(
-        :mode, '0700')
-    end
-
-    it 'should create the jenkins log directory' do
-      directory(node['jenkins']['server']['log_dir']).must_exist.with(
-        :owner, node['jenkins']['server']['user']).and(
-        :group, node['jenkins']['server']['group']).and(
-        :mode, '0700')
     end
   end
 
