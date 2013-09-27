@@ -70,3 +70,37 @@ default['jenkins']['http_proxy']['ssl']['ssl_listen_ports'] = [443]
 default['jenkins']['http_proxy']['ssl']['dir'] = "#{default['jenkins']['server']['home']}/ssl"
 default['jenkins']['http_proxy']['ssl']['cert_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.cert"
 default['jenkins']['http_proxy']['ssl']['key_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.key"
+
+# The username to log into jenkins dashboard (admin user)
+default['jenkins']['username'] = nil
+# The full name of jenkins (admin) user
+default['jenkins']['user_full_name'] = nil
+# The email address of jenkins (admin) user
+default['jenkins']['user_email'] = nil
+# The password to log into jenkins dashboard (admin user)
+default['jenkins']['password'] = nil
+# The permissions for the admin user
+default['jenkins']['user_permissions'] = [
+  'Computer.Configure',
+  'Computer.Connect',
+  'Computer.Create',
+  'Computer.Delete',
+  'Computer.Disconnect',
+  'Hudson.Administer',
+  'Hudson.ConfigureUpdateCenter',
+  'Hudson.Read',
+  'Hudson.RunScripts',
+  'Hudson.UploadPlugins',
+  'Item.Build',
+  'Item.Cancel',
+  'Item.Configure',
+  'Item.Create',
+  'Item.Delete',
+  'Item.Discover',
+  'Item.Read',
+  'Item.Workspace',
+  'View.Configure',
+  'View.Create',
+  'View.Delete',
+  'View.Read'
+]

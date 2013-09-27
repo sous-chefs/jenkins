@@ -67,6 +67,10 @@ end
 
 include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
 
+if node['jenkins']['username'] && node['jenkins']['password']
+  include_recipe 'jenkins::user'
+end
+
 node['jenkins']['server']['plugins'].each do |plugin|
   if plugin.is_a?(Hash)
     name = plugin['name']
