@@ -55,11 +55,7 @@ template "#{node['apache']['dir']}/sites-available/jenkins" do
   mode        '0644'
   variables(
     :host_name        => host_name,
-    :host_aliases     => node['jenkins']['http_proxy']['host_aliases'],
     :www_redirect     => www_redirect,
-    :redirect_http    => node['jenkins']['http_proxy']['ssl']['redirect_http'],
-    :ssl_enabled      => node['jenkins']['http_proxy']['ssl']['enabled'],
-    :ssl_listen_ports => node['jenkins']['http_proxy']['ssl']['ssl_listen_ports']
   )
 
   if File.exists?("#{node['apache']['dir']}/sites-enabled/jenkins")
