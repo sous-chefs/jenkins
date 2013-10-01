@@ -57,6 +57,7 @@ template "#{node['apache']['dir']}/sites-available/jenkins" do
     :host_name        => host_name,
     :host_aliases     => node['jenkins']['http_proxy']['host_aliases'],
     :www_redirect     => www_redirect,
+    :jenkins_port     => node['jenkins']['server']['port'],
     :redirect_http    => node['jenkins']['http_proxy']['ssl']['redirect_http'],
     :ssl_enabled      => node['jenkins']['http_proxy']['ssl']['enabled'],
     :ssl_listen_ports => node['jenkins']['http_proxy']['ssl']['ssl_listen_ports']
