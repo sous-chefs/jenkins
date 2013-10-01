@@ -4,7 +4,7 @@ maintainer_email 'cookbooks@opscode.com'
 license          'Apache 2.0'
 description      'Installs and configures Jenkins CI server & slaves'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.0.0'
+version          '1.1.0'
 
 recipe 'default', 'Does nothing'
 recipe 'iptables', 'Configures iptables to allow incoming connections to the jenkins instance'
