@@ -38,8 +38,8 @@ directory "#{node['jenkins']['server']['home']}/users/#{node['jenkins']['usernam
 end
 
 # Obtain the hash of the password.
-chef_gem "bcrypt-ruby"
-require "bcrypt"
+chef_gem 'bcrypt-ruby'
+require 'bcrypt'
 
 # Generate the password hash
 password_hash = ::BCrypt::Password.create(node['jenkins']['password'])
