@@ -80,7 +80,7 @@ template "#{home_dir}/jenkins-slave.xml" do
 end
 
 remote_file jenkins_exe do
-  source 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.13/winsw-1.13-bin.exe'
+  source node['jenkins']['node']['winsw_url']
   not_if { File.exists?(jenkins_exe) }
 end
 
