@@ -41,7 +41,7 @@ def action_run # rubocop:disable MethodLength
     not_if { ::File.exists?(cli_jar) }
   end
 
-  java_home = node['jenkins']['java_home'] || (node.attribute?('java') ? node['java']['jdk_dir'] : nil)
+  java_home = node['jenkins']['java_home'] || (node.attribute?('java') ? node['java']['java_home'] : nil)
   if java_home.nil?
     java = 'java'
   else
