@@ -16,8 +16,8 @@ depends 'java'
 depends 'runit', '>= 1.0.0'
 depends 'apt'
 depends 'yum'
-depends "xml"
-depends "build-essential"
+depends 'xml'
+depends 'build-essential'
 
 depends 'apache2'
 depends 'nginx'

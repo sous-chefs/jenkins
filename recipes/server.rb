@@ -110,7 +110,7 @@ end
 # required by the nokogiri rubygem (which is required by jenkins_api_client)
 #
 node.set['build_essential']['compiletime'] = true
-include_recipe "build-essential"
+include_recipe 'build-essential'
 include_recipe 'xml::default'
 
 node['xml']['packages'].each do |xml_pack|
