@@ -79,4 +79,6 @@ jenkins_node node['jenkins']['node']['name'] do
   password     node['jenkins']['node']['ssh_pass']
   private_key  node['jenkins']['node']['ssh_private_key']
   jvm_options  node['jenkins']['node']['jvm_options']
+  prefix_start_slave_cmd node['jenkins']['node']['prefix_start_slave_cmd']
+  suffix_start_slave_cmd node['jenkins']['node']['suffix_start_slave_cmd']
 end
