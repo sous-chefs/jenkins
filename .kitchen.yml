@@ -47,7 +47,7 @@ suites:
   - name: job-provider
     run_list:
     - recipe[jenkins::server]
-    - recipe[jenkins-test::job]
+    - recipe[jenkins-test::generate_job]
     attributes:
       jenkins:
         server:

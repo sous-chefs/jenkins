@@ -40,8 +40,7 @@ alias_method :action_create, :store
 alias_method :action_update, :store
 
 def action_delete
-  @jenkins_client.job.delete(@new_resource.job_name) \
-    if @jenkins_client.job.exists?(@new_resource.job_name)
+  @jenkins_client.job.delete(@new_resource.job_name) if @jenkins_client.job.exists?(@new_resource.job_name)
 end
 
 def action_disable
