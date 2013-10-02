@@ -22,42 +22,51 @@
 # limitations under the License.
 #
 
-default['jenkins']['server']['home']     = "/var/lib/jenkins"
-default['jenkins']['server']['data_dir'] = File.join(node['jenkins']['server']['home'], "jenkins-data")
-default['jenkins']['server']['log_dir']  = "/var/log/jenkins"
+default['jenkins']['server']['home'] = '/var/lib/jenkins'
+default['jenkins']['server']['log_dir'] = '/var/log/jenkins'
 
-default['jenkins']['server']['user'] = "jenkins"
+default['jenkins']['server']['user'] = 'jenkins'
 case node['platform_family']
-when "debian"
-  default['jenkins']['server']['group'] = "nogroup"
+when 'debian'
+  default['jenkins']['server']['install_method'] = 'package'
+  default['jenkins']['server']['group'] = 'nogroup'
+  default['jenkins']['server']['config_path'] = '/etc/default/jenkins'
+  default['jenkins']['server']['config_template'] = 'default.erb'
+when 'rhel'
+  default['jenkins']['server']['install_method'] = 'package'
+  default['jenkins']['server']['group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['config_path'] = '/etc/sysconfig/jenkins'
+  default['jenkins']['server']['config_template'] = 'sysconfig.erb'
 else
-  default['jenkins']['server']['group'] = node['jenkins']['server']['user']
+  default['jenkins']['server']['install_method'] = 'war'
+  default['jenkins']['server']['group'] = default['jenkins']['server']['user']
 end
 
-default['jenkins']['server']['version'] = :latest
+default['jenkins']['server']['version'] = nil
 default['jenkins']['server']['war_checksum'] = nil
 
 default['jenkins']['server']['port'] = 8080
 default['jenkins']['server']['host'] = node['fqdn']
-default['jenkins']['server']['url']  = "http://#{node['jenkins']['server']['host']}:#{node['jenkins']['server']['port']}"
+default['jenkins']['server']['url']  = "http://#{default['jenkins']['server']['host']}:#{default['jenkins']['server']['port']}"
 
 default['jenkins']['server']['plugins'] = []
 default['jenkins']['server']['jvm_options'] = nil
 default['jenkins']['server']['pubkey'] = nil
 
-default['jenkins']['http_proxy']['www_redirect']         = "disable"
-default['jenkins']['http_proxy']['listen_ports']         = [ 80 ]
-default['jenkins']['http_proxy']['host_name']            = nil
-default['jenkins']['http_proxy']['host_aliases']         = []
-default['jenkins']['http_proxy']['client_max_body_size'] = "1024m"
-default['jenkins']['http_proxy']['basic_auth_username'] = "jenkins"
-default['jenkins']['http_proxy']['basic_auth_password'] = "jenkins"
-default['jenkins']['http_proxy']['cas_validate_server'] = "off"
+default['jenkins']['http_proxy']['variant'] = 'nginx'
+default['jenkins']['http_proxy']['www_redirect'] = 'disable'
+default['jenkins']['http_proxy']['listen_ports'] = [80]
+default['jenkins']['http_proxy']['host_name'] = nil
+default['jenkins']['http_proxy']['host_aliases'] = []
+default['jenkins']['http_proxy']['client_max_body_size'] = '1024m'
+default['jenkins']['http_proxy']['basic_auth_username'] = 'jenkins'
+default['jenkins']['http_proxy']['basic_auth_password'] = 'jenkins'
+default['jenkins']['http_proxy']['cas_validate_server'] = 'off'
 default['jenkins']['http_proxy']['server_auth_method'] = nil
 
 default['jenkins']['http_proxy']['ssl']['enabled'] = false
 default['jenkins']['http_proxy']['ssl']['redirect_http'] = false
-default['jenkins']['http_proxy']['ssl']['ssl_listen_ports'] = [ 443 ]
+default['jenkins']['http_proxy']['ssl']['ssl_listen_ports'] = [443]
 default['jenkins']['http_proxy']['ssl']['dir'] = "#{default['jenkins']['server']['home']}/ssl"
 default['jenkins']['http_proxy']['ssl']['cert_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.cert"
 default['jenkins']['http_proxy']['ssl']['key_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.key"

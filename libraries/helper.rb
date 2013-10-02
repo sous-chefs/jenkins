@@ -22,11 +22,12 @@
 require 'chef/mixin/shell_out'
 require 'chef/rest'
 
+# Helper library for testing Jenkins responses
 module JenkinsHelper
   extend Chef::Mixin::ShellOut
 
   def self.service_listening?(port)
-    netstat_command = "netstat -lnt"
+    netstat_command = 'netstat -lnt'
     cmd = shell_out!(netstat_command)
     Chef::Log.debug("`#{netstat_command}` returned: \n\n #{cmd.stdout}")
     cmd.stdout.each_line.select do |l|
@@ -37,6 +38,7 @@ module JenkinsHelper
   def self.endpoint_responding?(url)
     response = Chef::REST::RESTRequest.new(:GET, url, nil).call
     if response.kind_of?(Net::HTTPSuccess) ||
+          response.kind_of?(Net::HTTPOK) ||
           response.kind_of?(Net::HTTPRedirection) ||
           response.kind_of?(Net::HTTPForbidden)
       Chef::Log.debug("GET to #{url} successful")
@@ -46,6 +48,7 @@ module JenkinsHelper
       return false
     end
   rescue EOFError, Errno::ECONNREFUSED
+    Chef::Log.debug("GET to #{url} failed with connection refused")
     return false
   end
 end

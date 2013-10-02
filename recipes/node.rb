@@ -1,10 +1,10 @@
 #
+# Author:: Seth Chisamore <schisamo@opscode.com>
+#
 # Cookbook Name:: jenkins
-# Recipe:: iptables
+# Recipe:: node
 #
-# Author:: Fletcher Nichol <fnichol@nichol.ca>
-#
-# Copyright 2011, Fletcher Nichol.
+# Copyright 2013, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,13 +19,4 @@
 # limitations under the License.
 #
 
-if platform_family?('debian', 'rhel')
-  include_recipe 'iptables'
-  iptables_rule 'port_jenkins' do
-    if node['jenkins']['iptables_allow'] == 'enable'
-      enable true
-    else
-      enable false
-    end
-  end
-end
+include_recipe "jenkins::_node_#{node['jenkins']['node']['agent_type']}"

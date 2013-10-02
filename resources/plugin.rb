@@ -1,10 +1,8 @@
 #
 # Cookbook Name:: jenkins
-# Recipe:: iptables
+# Resource:: plugin
 #
-# Author:: Fletcher Nichol <fnichol@nichol.ca>
-#
-# Copyright 2011, Fletcher Nichol.
+# Copyright 2013, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,13 +17,17 @@
 # limitations under the License.
 #
 
-if platform_family?('debian', 'rhel')
-  include_recipe 'iptables'
-  iptables_rule 'port_jenkins' do
-    if node['jenkins']['iptables_allow'] == 'enable'
-      enable true
-    else
-      enable false
-    end
+actions :install, :remove
+default_action :install
+
+attribute :version, :kind_of => String
+attribute :url, :kind_of => String
+
+# If url isn't specified, a default URL based on the plugin name and version is returned
+def url(arg = nil)
+  if arg.nil? && @url.nil?
+    "#{node['jenkins']['mirror']}/plugins/#{name}/#{version}/#{name}.hpi"
+  else
+    set_or_return(:url, arg, :kind_of => String)
   end
 end

@@ -1,6 +1,6 @@
   ServerName        <%= @host_name %>
   ProxyRequests     Off
-<% @host_aliases.each do |a| -%>
+<% node['jenkins']['http_proxy']['host_aliases'].each do |a| -%>
   ServerAlias       <%= a %>
 <% end -%>
 
@@ -8,15 +8,16 @@
   # Local reverse proxy authorization override
   # Most unix distribution deny proxy by default
   # (ie /etc/apache2/mods-enabled/proxy.conf in Ubuntu)
-  <Proxy http://localhost:<%= @jenkins_port %>/*>
+  <Proxy http://localhost:<%= node['jenkins']['server']['port'] %>/*>
     Order deny,allow
     Allow from all
   </Proxy>
 
   ProxyPreserveHost on
-  ProxyPass         /  http://localhost:<%= @jenkins_port %>/
-  ProxyPassReverse  /  http://localhost:<%= @jenkins_port %>/
-<% @host_aliases.each do |a| -%>
+  ProxyPass         /  http://localhost:<%= node['jenkins']['server']['port'] %>/
+  ProxyPassReverse  /  http://localhost:<%= node['jenkins']['server']['port'] %>/
+  ProxyPassReverse  /  http://<%= @host_name %>/
+<% node['jenkins']['http_proxy']['host_aliases'].each do |a| -%>
   ProxyPassReverse  /  http://<%= a%>
 <% end -%>
 
@@ -38,7 +39,7 @@
     AuthType basic
     AuthName "Jenkins"
     AuthBasicProvider file
-    AuthUserFile <%= File.join(node.apache.dir, "htpasswd") %>
+    AuthUserFile <%= File.join(node['apache']['dir'], 'htpasswd') %>
     require valid-user
   </Location>
 <% end -%>

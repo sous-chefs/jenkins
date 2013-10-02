@@ -70,6 +70,9 @@ else {
   }
   else if (launcher instanceof JNLPLauncher) {
     node["launcher"] = "jnlp"
+    if (jenkins.slaves.JnlpSlaveAgentProtocol.declaredFields.find { it.name == 'SLAVE_SECRET' }) {
+      node["secret"] = jenkins.slaves.JnlpSlaveAgentProtocol.SLAVE_SECRET.mac( slave.name )
+    }
   }
   else {
     node["launcher"] = "ssh"

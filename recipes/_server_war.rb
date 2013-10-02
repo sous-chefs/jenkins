@@ -1,7 +1,8 @@
 #
 # Cookbook Name:: jenkins
-# Attributes:: default
+# Recipe:: _server_war
 #
+# Author:: AJ Christensen <aj@junglist.gen.nz>
 # Author:: Doug MacEachern <dougm@vmware.com>
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
 # Author:: Seth Chisamore <schisamo@opscode.com>
@@ -22,6 +23,17 @@
 # limitations under the License.
 #
 
-default['jenkins']['mirror'] = 'http://mirrors.jenkins-ci.org'
-default['jenkins']['java_home'] = ENV['JAVA_HOME']
-default['jenkins']['iptables_allow'] = 'disable'
+include_recipe 'runit::default'
+
+war_version = node['jenkins']['server']['version'].nil? ? 'latest' : node['jenkins']['server']['version']
+
+remote_file File.join(node['jenkins']['server']['home'], 'jenkins.war') do
+  source "#{node['jenkins']['mirror']}/war/#{war_version}/jenkins.war"
+  checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
+  owner node['jenkins']['server']['user']
+  group node['jenkins']['server']['group']
+  notifies :restart, 'service[jenkins]'
+  notifies :create, 'ruby_block[block_until_operational]'
+end
+
+runit_service 'jenkins'

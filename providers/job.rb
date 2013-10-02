@@ -29,13 +29,6 @@ end
 
 def store
   validate_job_config!
-#  if !exists? # create
-#    Chef::Log.debug("#{@new_resource} does not exist - creating.")
-#    post_job(new_job_url)
-#  else # update
-#    Chef::Log.debug("#{@new_resource} exists - updating")
-#    post_job(job_url)
-#  end
   @jenkins_client.job.create(
     @new_resource.job_name,
     IO.read(@new_resource.config)

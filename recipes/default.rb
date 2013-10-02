@@ -1,10 +1,9 @@
 #
+# Author:: Guilhem Lettron <guilhem.lettron@youscribe.com>
 # Cookbook Name:: jenkins
-# Recipe:: iptables
+# Recipe:: default
 #
-# Author:: Fletcher Nichol <fnichol@nichol.ca>
-#
-# Copyright 2011, Fletcher Nichol.
+# Copyright 2013, Youscribe
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,14 +17,3 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-if platform_family?('debian', 'rhel')
-  include_recipe 'iptables'
-  iptables_rule 'port_jenkins' do
-    if node['jenkins']['iptables_allow'] == 'enable'
-      enable true
-    else
-      enable false
-    end
-  end
-end

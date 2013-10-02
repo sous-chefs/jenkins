@@ -31,15 +31,16 @@ attribute :jvm_options, :kind_of => String
 attribute :username, :kind_of => String
 attribute :password, :kind_of => String
 attribute :password_file, :kind_of => String
+attribute :key_file, :kind_of => String
 
-def initialize(name, run_context=nil)
+def initialize(name, run_context = nil)
   super
   @action = :run
   @command = name
 end
 
 def block(&block)
-  if block_given? and block
+  if block_given? && block
     @block = block
   else
     @block
