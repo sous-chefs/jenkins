@@ -29,7 +29,7 @@ end
 
 def store
   validate_job_config!
-  @jenkins_client.job.create(
+  @jenkins_client.job.create_or_update(
     @new_resource.job_name,
     IO.read(@new_resource.config)
   )
