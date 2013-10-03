@@ -95,7 +95,7 @@ private
     remote_file plugin_file_path do
       source plugin_url
       owner node['jenkins']['server']['user']
-      group node['jenkins']['server']['group']
+      group node['jenkins']['server']['plugins_dir_group']
       backup false
       action :create
       notifies :restart, 'service[jenkins]'

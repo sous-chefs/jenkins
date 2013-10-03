@@ -31,7 +31,7 @@ remote_file File.join(node['jenkins']['server']['home'], 'jenkins.war') do
   source "#{node['jenkins']['mirror']}/war/#{war_version}/jenkins.war"
   checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
   owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['group']
+  group node['jenkins']['server']['home_dir_group']
   notifies :restart, 'service[jenkins]'
   notifies :create, 'ruby_block[block_until_operational]'
 end
