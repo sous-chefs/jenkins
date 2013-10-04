@@ -62,6 +62,25 @@ template node['jenkins']['server']['config_path'] do
   notifies :create, "ruby_block[block_until_operational]", :immediately
 end
 
+home_dir = node['jenkins']['server']['home']
+plugins_dir = File.join(home_dir, "plugins")
+log_dir = node['jenkins']['server']['log_dir']
+ssh_dir = File.join(home_dir, ".ssh")
+
+[
+  home_dir,
+  plugins_dir,
+  log_dir,
+  ssh_dir
+].each do |dir_name|
+  directory dir_name do
+    owner node['jenkins']['server']['user']
+    group node['jenkins']['server']['group']
+    mode node['jenkins']['server']['dir_mode']
+    recursive true
+  end
+end
+
 service "jenkins" do
   supports :status => true, :restart => true, :reload => true
   action [ :enable, :start ]
