@@ -70,6 +70,8 @@ suites:
       http_proxy:
         variant: nginx
         host_name: 33.33.33.10
+    nginx:
+      server_names_hash_bucket_size: 128
 - name: server-proxy-nginx-ssl
   run_list:
   - recipe[jenkins-test::generate_certs]
@@ -83,6 +85,8 @@ suites:
         ssl:
           enabled: true
           redirect_http: true
+    nginx:
+      server_names_hash_bucket_size: 128
 - name: server-proxy-nginx-basicauth
   run_list:
   - recipe[jenkins::server]
@@ -95,6 +99,8 @@ suites:
         server_auth_method: basic
         basic_auth_username: foo
         basic_auth_password: bar
+    nginx:
+      server_names_hash_bucket_size: 128
 - name: server-proxy-apache2
   run_list:
   - recipe[jenkins::server]
