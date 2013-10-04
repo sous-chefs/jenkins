@@ -29,7 +29,7 @@ describe 'jenkins::_server_package' do
     it "should create the jenkins home directory" do
       directory(node['jenkins']['server']['home']).must_exist.with(
         :owner, node['jenkins']['server']['user']).and(
-        :mode, '0700')
+        :mode, node['jenkins']['server']['dir_mode'])
     end
 
     # NOTE: We do not check the group for the jenkins log directory since
@@ -37,7 +37,7 @@ describe 'jenkins::_server_package' do
     it "should create the jenkins home directory" do
       directory(node['jenkins']['server']['log_dir']).must_exist.with(
         :owner, node['jenkins']['server']['user']).and(
-        :mode, '0700')
+        :mode, node['jenkins']['server']['dir_mode'])
     end
 
   end

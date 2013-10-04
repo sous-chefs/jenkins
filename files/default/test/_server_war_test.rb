@@ -33,14 +33,14 @@ describe 'jenkins::_server_war' do
       directory(node['jenkins']['server']['home']).must_exist.with(
         :owner, node['jenkins']['server']['user']).and(
         :group, node['jenkins']['server']['group']).and(
-        :mode, '0700')
+        :mode, node['jenkins']['server']['dir_mode'])
     end
 
     it "should create the jenkins log directory" do
       directory(node['jenkins']['server']['log_dir']).must_exist.with(
         :owner, node['jenkins']['server']['user']).and(
         :group, node['jenkins']['server']['group']).and(
-        :mode, '0700')
+        :mode, node['jenkins']['server']['dir_mode'])
     end
 
   end

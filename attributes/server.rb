@@ -24,6 +24,7 @@
 
 default['jenkins']['server']['home'] = "/var/lib/jenkins"
 default['jenkins']['server']['log_dir'] = "/var/log/jenkins"
+default['jenkins']['server']['dir_mode'] = "0700"
 
 default['jenkins']['server']['user'] = "jenkins"
 case node['platform_family']

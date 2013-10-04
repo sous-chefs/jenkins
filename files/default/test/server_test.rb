@@ -53,7 +53,7 @@ describe 'jenkins::server' do
         directory(dir_name).must_exist.with(
           :owner, node['jenkins']['server']['user']).and(
           :group, node['jenkins']['server']['group']).and(
-          :mode, '0700')
+          :mode, node['jenkins']['server']['dir_mode'])
       end
     end
 

@@ -36,6 +36,8 @@ plugins_dir = File.join(home_dir, "plugins")
 log_dir = node['jenkins']['server']['log_dir']
 ssh_dir = File.join(home_dir, ".ssh")
 
+include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
+
 [
   home_dir,
   plugins_dir,
@@ -45,7 +47,7 @@ ssh_dir = File.join(home_dir, ".ssh")
   directory dir_name do
     owner node['jenkins']['server']['user']
     group node['jenkins']['server']['group']
-    mode '0700'
+    mode node['jenkins']['server']['dir_mode']
     recursive true
   end
 end
@@ -64,8 +66,6 @@ ruby_block "store_server_ssh_pubkey" do
   end
   action :nothing
 end
-
-include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
 
 node['jenkins']['server']['plugins'].each do |plugin|
   version = 'latest'
