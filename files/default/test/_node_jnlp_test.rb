@@ -71,7 +71,7 @@ describe 'jenkins::_node_jnlp' do
 
     # Make sure the slave is listed as a node for the jenkins server
     it "should be listed as a node for the jenkins server" do
-      assert_sh("java -jar #{node['jenkins']['node']['home']}/jenkins-cli.jar -s #{node['jenkins']['server']['url']} get-node `hostname`")
+      assert_sh("java -jar #{node['jenkins']['node']['home']}/jenkins-cli.jar -s #{node['jenkins']['server']['url']} get-node #{node['jenkins']['node']['name']}")
     end
 
   end
