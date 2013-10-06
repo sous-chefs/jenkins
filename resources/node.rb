@@ -32,6 +32,7 @@ attribute :availability, :equal_to => %w(always demand)
 attribute :in_demand_delay, :kind_of => Integer
 attribute :idle_delay, :kind_of => Integer
 attribute :env, :kind_of => Hash
+attribute :cookbook, :kind_of => String, :default => 'jenkins'
 
 # XXX LWRPs cannot be subclassed?
 # case launcher
