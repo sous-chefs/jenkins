@@ -2,6 +2,17 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v1.2.0
+------
+### Improvement
+- **[COOK-3710](https://tickets.opscode.com/browse/COOK-3710)** - Allow winsw url to be changed with a node attribute
+
+### Bug
+- **[COOK-3709](https://tickets.opscode.com/browse/COOK-3709)** - Use correct attribute value for `java_home`
+- **[COOK-3701](https://tickets.opscode.com/browse/COOK-3701)** - Fix a refactor bug where a template variable was removed that was used in a nested template
+- **[COOK-3594](https://tickets.opscode.com/browse/COOK-3594)** - Fix MiniTest Chef Handler tests for directory permissions
+
+
 v1.1.0
 ------
 ### Bug
