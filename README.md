@@ -82,6 +82,9 @@ Attributes
 * `node['jenkins']['node']['ssh_private_key']` - Jenkins Master defaults to: `JENKINS_HOME/.ssh/id_rsa` (created by the `jenkins::server` recipe).
 * `node['jenkins']['node']['jvm_options']` - Additional tuning parameters to pass the underlying JVM process.
 
+#### Windows Node/Slave related Attributes
+
+* `node['jenkins']['node']['winsw_url']` - The url for the winsw exe to download.
 
 Recipes
 -------

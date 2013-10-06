@@ -30,6 +30,7 @@ when 'windows'
 
   default['jenkins']['node']['service_user'] = 'LocalSystem'
   default['jenkins']['node']['service_user_password'] = nil
+  default['jenkins']['node']['winsw_url'] = 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.13/winsw-1.13-bin.exe'
 when 'mac_os_x'
   default['jenkins']['node']['home'] = '/Users/jenkins'
   default['jenkins']['node']['log_dir']  = '/var/log/jenkins'
