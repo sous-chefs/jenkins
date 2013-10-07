@@ -23,17 +23,17 @@
 # limitations under the License.
 #
 
-include_recipe "runit"
+include_recipe 'runit::default'
 
-war_version = node['jenkins']['server']['version'].nil? ? "latest" : node['jenkins']['server']['version']
+war_version = node['jenkins']['server']['version'].nil? ? 'latest' : node['jenkins']['server']['version']
 
-remote_file File.join(node['jenkins']['server']['home'], "jenkins.war") do
+remote_file File.join(node['jenkins']['server']['home'], 'jenkins.war') do
   source "#{node['jenkins']['mirror']}/war/#{war_version}/jenkins.war"
   checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
   owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['group']
-  notifies :restart, "service[jenkins]"
-  notifies :create, "ruby_block[block_until_operational]"
+  group node['jenkins']['server']['home_dir_group']
+  notifies :restart, 'service[jenkins]'
+  notifies :create, 'ruby_block[block_until_operational]'
 end
 
-runit_service "jenkins"
+runit_service 'jenkins'

@@ -1,4 +1,5 @@
 module Helpers
+  # MiniTest helpers
   module Jenkins
     include MiniTest::Chef::Assertions
     include MiniTest::Chef::Context

@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 
-include_recipe "java"
+include_recipe 'java::default'
 
 unless Chef::Config[:solo]
   unless node['jenkins']['server']['pubkey']
@@ -36,7 +36,7 @@ end
 group node['jenkins']['node']['group']
 
 user node['jenkins']['node']['user'] do
-  comment "Jenkins CI node (ssh)"
+  comment 'Jenkins CI node (ssh)'
   gid node['jenkins']['node']['group']
   home node['jenkins']['node']['home']
   shell node['jenkins']['node']['shell']
@@ -69,10 +69,10 @@ jenkins_node node['jenkins']['node']['name'] do
   remote_fs    node['jenkins']['node']['home']
   labels       node['jenkins']['node']['labels']
   mode         node['jenkins']['node']['mode']
-  launcher     "ssh"
+  launcher     'ssh'
   availability node['jenkins']['node']['availability']
   env          node['jenkins']['node']['env']
-  #ssh options
+  # ssh options
   host         node['jenkins']['node']['ssh_host']
   port         node['jenkins']['node']['ssh_port']
   username     node['jenkins']['node']['ssh_user']
