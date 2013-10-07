@@ -133,6 +133,22 @@ jenkins_node node['fqdn'] do
 end
 ```
 
+In the event that this provider is being used to setup multiple nodes per system, you'll want to make use of the 'home' parameter to the jenkins_node provider:
+
+```ruby
+%w(user1 user2 user3).each do |user|
+  jenkins_node "#{user}-#{node['fqdn']}" do
+    description  "Node for #{user} to do things, stuff and whatnot"
+    executors    5
+    remote_fs    "/home/#{user}"
+    home         "/home/#{user}"
+    launcher     'command'
+    command      "ssh -i my_key #{user}@#{node[:fqdn]} java -jar #{remote_fs}/slave.jar"
+    env          'ANT_HOME' => '/usr/local/ant', 'M2_REPO' => '/dev/null'
+  end
+end
+```
+
 ### jenkins_job
 This resource manages jenkins jobs, supporting the following actions:
 
