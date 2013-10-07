@@ -23,7 +23,7 @@ template "#{node['jenkins']['server']['home']}/config.xml" do
   source 'jenkins-config.xml.erb'
   owner node['jenkins']['server']['user']
   group node['jenkins']['server']['group']
-  mode 0644
+  mode '0644'
   variables(
     :username => node['jenkins']['username'],
     :user_permissions => node['jenkins']['user_permissions']
@@ -48,7 +48,7 @@ template "#{node['jenkins']['server']['home']}/users/#{node['jenkins']['username
   source 'jenkins-user-config.xml.erb'
   owner node['jenkins']['server']['user']
   group node['jenkins']['server']['group']
-  mode 0644
+  mode '0644'
   variables(
     :user_full_name => node['jenkins']['user_full_name'],
     :user_email => node['jenkins']['user_email'],
