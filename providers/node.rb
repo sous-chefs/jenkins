@@ -42,6 +42,7 @@ def action_create
 
   cookbook_file "#{node['jenkins']['node']['home']}/node_info.groovy" do
     source 'node_info.groovy'
+    cookbook 'jenkins'
   end
 
   jenkins_cli "groovy node_info.groovy #{new_resource.name}" do
