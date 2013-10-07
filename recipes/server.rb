@@ -36,23 +36,39 @@ plugins_dir = File.join(home_dir, 'plugins')
 log_dir = node['jenkins']['server']['log_dir']
 ssh_dir = File.join(home_dir, '.ssh')
 
-[
-  home_dir,
-  plugins_dir,
-  log_dir,
-  ssh_dir
-].each do |dir_name|
-  directory dir_name do
-    owner node['jenkins']['server']['user']
-    group node['jenkins']['server']['group']
-    mode '0700'
-    recursive true
-  end
+directory home_dir do
+  owner node['jenkins']['server']['user']
+  group node['jenkins']['server']['home_dir_group']
+  mode node['jenkins']['server']['dir_permissions']
+  recursive true
 end
+
+directory plugins_dir do
+  owner node['jenkins']['server']['user']
+  group node['jenkins']['server']['plugins_dir_group']
+  mode node['jenkins']['server']['dir_permissions']
+  recursive true
+end
+
+directory log_dir do
+  owner node['jenkins']['server']['user']
+  group node['jenkins']['server']['log_dir_group']
+  mode node['jenkins']['server']['log_dir_permissions']
+  recursive true
+end
+
+directory ssh_dir do
+  owner node['jenkins']['server']['user']
+  group node['jenkins']['server']['ssh_dir_group']
+  mode node['jenkins']['server']['ssh_dir_permissions']
+  recursive true
+end
+
+include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
 
 execute "ssh-keygen -f #{File.join(ssh_dir, "id_rsa")} -N ''" do
   user node['jenkins']['server']['user']
-  group node['jenkins']['server']['group']
+  group node['jenkins']['server']['ssh_dir_group']
   not_if { File.exists?(File.join(ssh_dir, 'id_rsa')) }
   notifies :create, 'ruby_block[store_server_ssh_pubkey]', :immediately
 end
@@ -65,7 +81,6 @@ ruby_block 'store_server_ssh_pubkey' do
   action :nothing
 end
 
-include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
 
 if node['jenkins']['username'] && node['jenkins']['password']
   include_recipe 'jenkins::user'

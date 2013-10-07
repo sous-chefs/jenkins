@@ -26,20 +26,36 @@ default['jenkins']['server']['home'] = '/var/lib/jenkins'
 default['jenkins']['server']['log_dir'] = '/var/log/jenkins'
 
 default['jenkins']['server']['user'] = 'jenkins'
+default['jenkins']['server']['dir_permissions'] = 00755
+default['jenkins']['server']['ssh_dir_permissions'] = 00700
 case node['platform_family']
 when 'debian'
   default['jenkins']['server']['install_method'] = 'package'
-  default['jenkins']['server']['group'] = 'nogroup'
   default['jenkins']['server']['config_path'] = '/etc/default/jenkins'
   default['jenkins']['server']['config_template'] = 'default.erb'
+  default['jenkins']['server']['log_dir_permissions'] = 00755
+  default['jenkins']['server']['home_dir_group'] = 'adm'
+  default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['log_dir_group'] = 'adm'
+  default['jenkins']['server']['ssh_dir_group'] = 'nogroup'
 when 'rhel'
   default['jenkins']['server']['install_method'] = 'package'
   default['jenkins']['server']['group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['config_path'] = '/etc/sysconfig/jenkins'
   default['jenkins']['server']['config_template'] = 'sysconfig.erb'
+  default['jenkins']['server']['log_dir_permissions'] = 00750
+  default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
 else
   default['jenkins']['server']['install_method'] = 'war'
   default['jenkins']['server']['group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['log_dir_permissions'] = 00755
+  default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
 end
 
 default['jenkins']['server']['version'] = nil
