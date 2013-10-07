@@ -55,7 +55,7 @@ template "#{node['apache']['dir']}/sites-available/jenkins" do
   mode        '0644'
   variables(
     :host_name        => host_name,
-    :www_redirect     => www_redirect,
+    :www_redirect     => www_redirect
   )
 
   if File.exists?("#{node['apache']['dir']}/sites-enabled/jenkins")
