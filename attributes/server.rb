@@ -88,19 +88,19 @@ default['jenkins']['http_proxy']['ssl']['cert_path'] = "#{default['jenkins']['ht
 default['jenkins']['http_proxy']['ssl']['key_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.key"
 
 # The username to log into jenkins dashboard (admin user)
-default['jenkins']['username'] = nil
+default['jenkins']['server']['username'] = nil
 
 # The password to log into jenkins dashboard (admin user)
-default['jenkins']['password'] = nil
+default['jenkins']['server']['password'] = nil
 
 # The full name of jenkins (admin) user
-default['jenkins']['user_full_name'] = nil
+default['jenkins']['server']['user_full_name'] = nil
 
 # The email address of jenkins (admin) user
-default['jenkins']['user_email'] = nil
+default['jenkins']['server']['user_email'] = nil
 
 # The permissions for the admin user. By default the user has all permissions.
-default['jenkins']['user_permissions'] = [
+default['jenkins']['server']['user_permissions'] = [
   'Computer.Configure',
   'Computer.Connect',
   'Computer.Create',

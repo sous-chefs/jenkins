@@ -82,7 +82,7 @@ ruby_block 'store_server_ssh_pubkey' do
 end
 
 
-if node['jenkins']['username'] && node['jenkins']['password']
+if node['jenkins']['server']['username'] && node['jenkins']['server']['password']
   include_recipe 'jenkins::user'
 end
 
