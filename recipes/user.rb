@@ -22,18 +22,26 @@
 template "#{node['jenkins']['server']['home']}/config.xml" do
   source 'jenkins-config.xml.erb'
   owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['group']
+  group node['jenkins']['server']['user']
   mode '0644'
   variables(
+    :jenkins_version => node['jenkins']['server']['version'],
     :username => node['jenkins']['server']['username'],
     :user_permissions => node['jenkins']['server']['user_permissions']
   )
-  notifies :restart, 'service[jenkins]'
+  notifies :restart, 'service[jenkins]', :immediately
+  notifies :create, 'ruby_block[block_until_operational]', :immediately
+end
+
+directory "#{node['jenkins']['server']['home']}/users" do
+  owner node['jenkins']['server']['user']
+  group node['jenkins']['server']['user_dir_group']
+  recursive true
 end
 
 directory "#{node['jenkins']['server']['home']}/users/#{node['jenkins']['server']['username']}" do
   owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['group']
+  group node['jenkins']['server']['user_dir_group']
   recursive true
 end
 
@@ -47,12 +55,13 @@ password_hash = ::BCrypt::Password.create(node['jenkins']['server']['password'])
 template "#{node['jenkins']['server']['home']}/users/#{node['jenkins']['server']['username']}/config.xml" do
   source 'jenkins-user-config.xml.erb'
   owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['group']
+  group node['jenkins']['server']['user_dir_group']
   mode '0644'
   variables(
     :user_full_name => node['jenkins']['server']['user_full_name'],
     :user_email => node['jenkins']['server']['user_email'],
     :password_hash => password_hash
   )
-  notifies :restart, 'service[jenkins]'
+  notifies :restart, 'service[jenkins]', :immediately
+  notifies :create, 'ruby_block[block_until_operational]', :immediately
 end

@@ -36,6 +36,7 @@ when 'debian'
   default['jenkins']['server']['log_dir_permissions'] = 00755
   default['jenkins']['server']['home_dir_group'] = 'adm'
   default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['user_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['log_dir_group'] = 'adm'
   default['jenkins']['server']['ssh_dir_group'] = 'nogroup'
 when 'rhel'
@@ -46,6 +47,7 @@ when 'rhel'
   default['jenkins']['server']['log_dir_permissions'] = 00750
   default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['user_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
 else
@@ -54,6 +56,7 @@ else
   default['jenkins']['server']['log_dir_permissions'] = 00755
   default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['user_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
 end
