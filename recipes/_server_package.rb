@@ -23,10 +23,10 @@ when 'debian'
   include_recipe 'apt::default'
 
   apt_repository 'jenkins' do
-    uri 'http://pkg.jenkins-ci.org/debian'
+    uri node['jenkins']['server']['repo_url']
     distribution 'binary/'
     components ['']
-    key 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key'
+    key node['jenkins']['server']['repo_key']
     action :add
   end
 
@@ -34,12 +34,12 @@ when 'rhel'
   include_recipe 'yum'
 
   yum_key 'RPM-GPG-KEY-jenkins-ci' do
-    url 'http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key'
+    url node['jenkins']['server']['repo_key']
     action :add
   end
 
   yum_repository 'jenkins-ci' do
-    url 'http://pkg.jenkins-ci.org/redhat'
+    url node['jenkins']['server']['repo_url']
     key 'RPM-GPG-KEY-jenkins-ci'
     action :add
   end
