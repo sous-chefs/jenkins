@@ -2,6 +2,12 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v1.2.2
+------
+### Bug
+- **[COOK-3742](https://tickets.opscode.com/browse/COOK-3742)** - Remove trailing comma (restores compatability with Ruby 1.8)
+
+
 v1.2.0
 ------
 ### Improvement
