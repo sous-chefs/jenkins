@@ -52,12 +52,8 @@ def action_run # rubocop:disable MethodLength
   java << " #{jvm_options}" if jvm_options
 
   command = "#{java} -jar #{cli_jar}"
-  if key_file
-    command << " -i #{key_file}"
-  end
-  if no_certificate_check
-    command << " -noCertificateCheck"
-  end
+  command << " -i #{key_file}" if key_file
+  command << ' -noCertificateCheck' if no_certificate_check
   command << " -s #{url} #{@new_resource.command}"
 
   command << " --username #{username}" if username
@@ -67,13 +63,13 @@ def action_run # rubocop:disable MethodLength
   je = jenkins_execute(command) do
     cwd home
     if new_resource.block
-      block { |stdout|
+      block do |stdout|
         if no_certificate_check
           # ignore the warning message from jenkins-cli
           stdout.gsub!("Skipping HTTPS certificate checks altogether. Note that this is not secure at all.\n", '')
         end
         new_resource.block.call(stdout)
-      }
+      end
     end
   end
 
