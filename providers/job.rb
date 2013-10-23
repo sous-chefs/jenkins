@@ -61,7 +61,7 @@ private
 
 def validate_job_config!
   unless ::File.exist?(@new_resource.config)
-    raise "'#{@new_resource.config}' does not exist or is not a valid Jenkins config file!"
+    fail "'#{@new_resource.config}' does not exist or is not a valid Jenkins config file!"
   end
 end
 
