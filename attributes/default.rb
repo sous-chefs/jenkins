@@ -23,5 +23,6 @@
 #
 
 default['jenkins']['mirror'] = 'http://mirrors.jenkins-ci.org'
+default['jenkins']['pkg_mirror'] = 'http://pkg.jenkins-ci.org'
 default['jenkins']['java_home'] = ENV['JAVA_HOME']
 default['jenkins']['iptables_allow'] = 'disable'

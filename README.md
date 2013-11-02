@@ -29,6 +29,7 @@ Attributes
 ### Common Attributes
 
 * `node['jenkins']['mirror']` - Base URL for downloading all code (WAR file and plugins).
+* `node['jenkins']['pkg_mirror']` - Base URL for for the Debian and Redhat repository (.deb and .rpm).
 * `node['jenkins']['java_home']` - Java install path, used for for cli commands.
 * `node['jenkins']['iptables_allow']` - If iptables is enabled, add a rule passing `node['jenkins']['server']['port']`.
 
