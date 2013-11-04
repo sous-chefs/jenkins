@@ -24,17 +24,15 @@
 
 def load_current_resource
   @current_resource = Chef::Resource::JenkinsJob.new(@new_resource.name)
+  @jenkins_client = initialize_client
 end
 
 def store
   validate_job_config!
-  if !exists? # create
-    Chef::Log.debug("#{@new_resource} does not exist - creating.")
-    post_job(new_job_url)
-  else # update
-    Chef::Log.debug("#{@new_resource} exists - updating")
-    post_job(job_url)
-  end
+  @jenkins_client.job.create_or_update(
+    @new_resource.job_name,
+    IO.read(@new_resource.config)
+  )
   new_resource.updated_by_last_action(true)
 end
 
@@ -42,19 +40,19 @@ alias_method :action_create, :store
 alias_method :action_update, :store
 
 def action_delete
-  jenkins_cli "delete-job '#{@new_resource.job_name}'"
+  @jenkins_client.job.delete(@new_resource.job_name) if @jenkins_client.job.exists?(@new_resource.job_name)
 end
 
 def action_disable
-  jenkins_cli "disable-job '#{@new_resource.job_name}'"
+  @jenkins_client.job.disable(@new_resource.job_name)
 end
 
 def action_enable
-  jenkins_cli "enable-job '#{@new_resource.job_name}'"
+  @jenkins_client.job.enable(@new_resource.job_name)
 end
 
 def action_build
-  jenkins_cli "build '#{@new_resource.job_name}'"
+  @jenkins_client.job.build(@new_resource.job_name, @new_resource.build_params)
 end
 
 private
@@ -65,28 +63,19 @@ def validate_job_config!
   end
 end
 
-def job_url
-  "#{@new_resource.url}/job/#{@new_resource.job_name}/config.xml"
-end
-
-def new_job_url
-  "#{@new_resource.url}/createItem?name=#{@new_resource.job_name}"
-end
-
-def exists?
-  @exists ||= begin
-    url = URI.parse(URI.escape(job_url))
-    response = Chef::REST::RESTRequest.new(:GET, url, nil).call
-    Chef::Log.debug("#{@new_resource} GET #{url.request_uri} == #{response.code}")
-    response.kind_of?(Net::HTTPSuccess)
+def initialize_client
+  begin
+    require 'jenkins_api_client'
+  rescue LoadError => e
+    Chef::Log.error 'Unable to load the jenkins_api_client gem.' +
+      ' Make sure to run jenkins::server recipe before using the provider'
+    raise e
   end
-end
-
-def post_job(url)
-  url = URI.parse(URI.escape(url))
-  Chef::Log.debug("#{@new_resource} POST #{url.request_uri} using #{@new_resource.config}")
-  body = IO.read(@new_resource.config)
-  headers = { 'Content-Type' => 'text/xml' }
-  response = Chef::REST::RESTRequest.new(:POST, url, body, headers).call
-  response.error! unless response.kind_of?(Net::HTTPSuccess)
+  client = JenkinsApi::Client.new(
+    :server_url => @new_resource.url,
+    :username => node['jenkins']['username'],
+    :password => node['jenkins']['password']
+  )
+  client.logger = Chef::Log
+  client
 end

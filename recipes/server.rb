@@ -119,3 +119,16 @@ log 'ensure_jenkins_is_running' do
   notifies :start, 'service[jenkins]', :immediately
   notifies :create, 'ruby_block[block_until_operational]', :immediately
 end
+
+# Include the `xml::default` recipe that installs the xml devel packages
+# required by the nokogiri rubygem (which is required by jenkins_api_client)
+#
+node.set['build_essential']['compiletime'] = true
+include_recipe 'build-essential'
+include_recipe 'xml::default'
+
+node['xml']['packages'].each do |xml_pack|
+  resources("package[#{xml_pack}]").run_action(:install)
+end
+
+chef_gem 'jenkins_api_client'

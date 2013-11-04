@@ -25,6 +25,7 @@ actions :create, :update, :delete, :build, :disable, :enable
 attribute :url, :kind_of => String
 attribute :job_name, :kind_of => String
 attribute :config, :kind_of => String
+attribute :build_params, :kind_of => Hash, :default => {}
 
 def initialize(name, run_context = nil)
   super
