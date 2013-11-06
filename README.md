@@ -81,6 +81,8 @@ Attributes
 * `node['jenkins']['node']['ssh_pass']` - SSH slave password (not required when server is installed via `jenkins::server` recipe).
 * `node['jenkins']['node']['ssh_private_key']` - Jenkins Master defaults to: `JENKINS_HOME/.ssh/id_rsa` (created by the `jenkins::server` recipe).
 * `node['jenkins']['node']['jvm_options']` - Additional tuning parameters to pass the underlying JVM process.
+* `node['jenkins']['node']['prefix_start_slave_cmd']` - Prefix for the command Jenkins will run when starting the slave
+* `node['jenkins']['node']['suffix_start_slave_cmd']` - Suffix for the command Jenkins will run when starting the slave
 
 ### Windows Node/Slave related Attributes
 

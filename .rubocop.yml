@@ -11,4 +11,4 @@ HashSyntax:
 LineLength:
   Enabled: false
 MethodLength:
-  Max: 30
+  Max: 40

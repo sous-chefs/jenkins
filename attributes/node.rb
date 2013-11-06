@@ -73,3 +73,5 @@ default['jenkins']['node']['ssh_port'] = 22
 default['jenkins']['node']['ssh_user'] = default['jenkins']['node']['user']
 default['jenkins']['node']['ssh_pass'] = nil
 default['jenkins']['node']['ssh_private_key'] = nil
+default['jenkins']['node']['prefix_start_slave_cmd'] = nil
+default['jenkins']['node']['suffix_start_slave_cmd'] = nil
