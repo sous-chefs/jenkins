@@ -43,6 +43,11 @@ Attributes
 * `node['jenkins']['server']['plugins']` - Download the latest version of plugins in this Array, bypassing update center. The members of the Array can either be strings if the latest version desired OR a Hash of the form
 `{'name' => 'git', 'version' => '1.4.0'}` if a specific version is required.
 * `node['jenkins']['server']['jvm_options']` - Additional tuning parameters to pass the underlying JVM process.
+* `node['jenkins']['server']['username']` - The jenkins username.
+* `node['jenkins']['server']['password']` - The jenkins password.
+* `node['jenkins']['server']['user_full_name']` - The jenkins user's full name.
+* `node['jenkins']['server']['user_email']` - The jenkins user's email.
+* `node['jenkins']['server']['user_permissions']` - The permissions for the user. By default, this user has all permissions enabled.
 * `node['jenkins']['http_proxy']['variant']` - use `nginx` or `apache2` to proxy traffic to jenkins backend (`nginx` by default)
 * `node['jenkins']['http_proxy']['www_redirect']` - add a redirect rule for 'www.*' URL requests ("disable" by default)
 * `node['jenkins']['http_proxy']['listen_ports']` - list of HTTP ports for the HTTP proxy to listen on ([80] by default).

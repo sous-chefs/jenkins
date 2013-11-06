@@ -81,6 +81,11 @@ ruby_block 'store_server_ssh_pubkey' do
   action :nothing
 end
 
+
+if node['jenkins']['server']['username'] && node['jenkins']['server']['password']
+  include_recipe 'jenkins::user'
+end
+
 node['jenkins']['server']['plugins'].each do |plugin|
   if plugin.is_a?(Hash)
     name = plugin['name']

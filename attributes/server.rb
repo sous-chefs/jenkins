@@ -36,6 +36,7 @@ when 'debian'
   default['jenkins']['server']['log_dir_permissions'] = 00755
   default['jenkins']['server']['home_dir_group'] = 'adm'
   default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['user_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['log_dir_group'] = 'adm'
   default['jenkins']['server']['ssh_dir_group'] = 'nogroup'
 when 'rhel'
@@ -46,6 +47,7 @@ when 'rhel'
   default['jenkins']['server']['log_dir_permissions'] = 00750
   default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['user_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
 else
@@ -54,6 +56,7 @@ else
   default['jenkins']['server']['log_dir_permissions'] = 00755
   default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['user_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
 end
@@ -86,3 +89,41 @@ default['jenkins']['http_proxy']['ssl']['ssl_listen_ports'] = [443]
 default['jenkins']['http_proxy']['ssl']['dir'] = "#{default['jenkins']['server']['home']}/ssl"
 default['jenkins']['http_proxy']['ssl']['cert_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.cert"
 default['jenkins']['http_proxy']['ssl']['key_path'] = "#{default['jenkins']['http_proxy']['ssl']['dir']}/jenkins.key"
+
+# The username to log into jenkins dashboard (admin user)
+default['jenkins']['server']['username'] = nil
+
+# The password to log into jenkins dashboard (admin user)
+default['jenkins']['server']['password'] = nil
+
+# The full name of jenkins (admin) user
+default['jenkins']['server']['user_full_name'] = nil
+
+# The email address of jenkins (admin) user
+default['jenkins']['server']['user_email'] = nil
+
+# The permissions for the admin user. By default the user has all permissions.
+default['jenkins']['server']['user_permissions'] = [
+  'Computer.Configure',
+  'Computer.Connect',
+  'Computer.Create',
+  'Computer.Delete',
+  'Computer.Disconnect',
+  'Hudson.Administer',
+  'Hudson.ConfigureUpdateCenter',
+  'Hudson.Read',
+  'Hudson.RunScripts',
+  'Hudson.UploadPlugins',
+  'Item.Build',
+  'Item.Cancel',
+  'Item.Configure',
+  'Item.Create',
+  'Item.Delete',
+  'Item.Discover',
+  'Item.Read',
+  'Item.Workspace',
+  'View.Configure',
+  'View.Create',
+  'View.Delete',
+  'View.Read'
+]

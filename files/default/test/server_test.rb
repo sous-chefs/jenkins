@@ -52,11 +52,44 @@ describe 'jenkins::server' do
         end
       end
     end
+
+    it 'configures the jenkins user correctly' do
+      if node['jenkins']['server']['username'] && node['jenkins']['server']['password']
+        jenkins_config_xml = File.join(node['jenkins']['server']['home'], 'config.xml')
+        user_config_xml = File.join(
+          node['jenkins']['server']['home'],
+          'users',
+          node['jenkins']['server']['username'],
+          'config.xml'
+        )
+
+        file(jenkins_config_xml).must_include("<useSecurity>true</useSecurity>")
+
+        node['jenkins']['server']['user_permissions'].each do |permission|
+          file(jenkins_config_xml).must_include(
+            "<permission>hudson.model.#{permission}:#{node['jenkins']['server']['username']}</permission>"
+          )
+        end
+
+        file(user_config_xml).must_exist.with(
+          :owner, node['jenkins']['server']['user']).and(
+          :group, node['jenkins']['server']['user_dir_group'])
+
+        if node['jenkins']['server']['user_full_name']
+          file(user_config_xml).must_include(
+            "<fullName>#{node['jenkins']['server']['user_full_name']}</fullName>")
+        end
+        if node['jenkins']['server']['user_email']
+          file(user_config_xml).must_include(
+            "<emailAddress>#{node['jenkins']['server']['user_email']}</emailAddress>")
+        end
+      end
+    end
   end
 
   # Tests around directories
   describe 'directories' do
-    it 'should create the jenkins home, log, plugins and ssh directories' do
+    it 'should create the jenkins home, log, plugins, users and ssh directories' do
       home_dir = node['jenkins']['server']['home']
       plugins_dir = File.join(home_dir, 'plugins')
       log_dir = node['jenkins']['server']['log_dir']
@@ -81,6 +114,13 @@ describe 'jenkins::server' do
           :owner, node['jenkins']['server']['user']).and(
           :group, node['jenkins']['server']['ssh_dir_group']).and(
           :mode, node['jenkins']['server']['ssh_dir_permissions'])
+      if node['jenkins']['server']['username'] && node['jenkins']['server']['password']
+        jenkins_user_dir = File.join(home_dir, 'users', node['jenkins']['server']['username'])
+        directory(jenkins_user_dir).must_exist.with(
+          :owner, node['jenkins']['server']['user']).and(
+          :group, node['jenkins']['server']['user_dir_group']).and(
+          :mode, node['jenkins']['server']['dir_permissions'])
+      end
     end
   end
 

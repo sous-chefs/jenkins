@@ -119,6 +119,18 @@ suites:
           server_auth_method: basic
           basic_auth_username: foo
           basic_auth_password: bar
+  - name: server-jenkins-auth
+    run_list:
+    - recipe[jenkins::server]
+    - recipe[minitest-handler]
+    attributes:
+      jenkins:
+        server:
+          install_method: package
+          username: admin
+          password: bacon
+          user_full_name: Jenkins Admin
+          user_email: jenkins@example.com
   - name: node
     run_list:
     - recipe[jenkins::server]
