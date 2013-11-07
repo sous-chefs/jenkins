@@ -1,6 +1,7 @@
 #!/bin/sh
 exec 2>&1
 cd <%= node['jenkins']['server']['home'] %>
+source /etc/profile
 touch jenkins.start
 exec chpst -u <%= node['jenkins']['server']['user'] %> -U <%= node['jenkins']['server']['user'] %> \
   env HOME=<%= node['jenkins']['server']['home'] %> \
