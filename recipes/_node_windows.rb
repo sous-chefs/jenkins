@@ -34,7 +34,7 @@ end
 
 env 'JENKINS_HOME' do
   action :create
-  value home_dir
+  value node['jenkins']['node']['home']
 end
 
 env 'JENKINS_URL' do

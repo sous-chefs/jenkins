@@ -41,6 +41,7 @@ else
   default['jenkins']['node']['agent_type'] = 'jnlp'
 end
 
+default['jenkins']['node']['home_dir'] = node['jenkins']['node']['home']
 default['jenkins']['node']['user'] = 'jenkins-node'
 default['jenkins']['node']['group'] = 'jenkins-node'
 default['jenkins']['node']['shell'] = '/bin/sh'

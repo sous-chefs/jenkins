@@ -28,15 +28,21 @@
 include_recipe 'java::default'
 
 user node['jenkins']['server']['user'] do
-  home node['jenkins']['server']['home']
+  home node['jenkins']['server']['home_dir']
 end
 
-home_dir = node['jenkins']['server']['home']
-plugins_dir = File.join(home_dir, 'plugins')
+plugins_dir = File.join(node['jenkins']['server']['home'], 'plugins')
 log_dir = node['jenkins']['server']['log_dir']
-ssh_dir = File.join(home_dir, '.ssh')
+ssh_dir = File.join(node['jenkins']['server']['home_dir'], '.ssh')
 
-directory home_dir do
+directory node['jenkins']['server']['home'] do
+  owner node['jenkins']['server']['user']
+  group node['jenkins']['server']['home_dir_group']
+  mode node['jenkins']['server']['dir_permissions']
+  recursive true
+end
+
+directory node['jenkins']['server']['home_dir'] do
   owner node['jenkins']['server']['user']
   group node['jenkins']['server']['home_dir_group']
   mode node['jenkins']['server']['dir_permissions']
