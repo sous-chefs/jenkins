@@ -30,8 +30,8 @@ def jenkins_node_defaults(args)
   args[:launcher] ||= 'jnlp' # 'jnlp' or 'command' or 'ssh'
   args[:availability] ||= 'Always' # 'Always' or 'Demand'
   args[:env] = args[:env] ? args[:env].to_hash : nil
-  args[:mode].upcase!
-  args[:availability].capitalize!
+  args[:mode] = args[:mode].upcase
+  args[:availability] = args[:availability].capitalize
 
   if args[:availability] == 'Demand'
     args[:in_demand_delay] ||= 0
