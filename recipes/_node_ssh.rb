@@ -48,14 +48,20 @@ directory node['jenkins']['node']['home'] do
   action :create
 end
 
-directory "#{node['jenkins']['node']['home']}/.ssh" do
+directory node['jenkins']['node']['home_dir'] do
+  owner node['jenkins']['node']['user']
+  group node['jenkins']['node']['group']
+  action :create
+end
+
+directory "#{node['jenkins']['node']['home_dir']}/.ssh" do
   owner node['jenkins']['node']['user']
   group node['jenkins']['node']['group']
   mode '0700'
   action :create
 end
 
-file "#{node['jenkins']['node']['home']}/.ssh/authorized_keys" do
+file "#{node['jenkins']['node']['home_dir']}/.ssh/authorized_keys" do
   content node['jenkins']['server']['pubkey']
   owner node['jenkins']['node']['user']
   group node['jenkins']['node']['group']

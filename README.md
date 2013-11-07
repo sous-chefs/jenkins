@@ -36,6 +36,7 @@ Attributes
 
 * `node['jenkins']['server']['install_method']` - Whether Jenkins is installed from packages or run from a WAR file.
 * `node['jenkins']['server']['home']` - Location of `JENKINS_HOME` directory.
+* `node['jenkins']['server']['home']` - Location of the jenkins user `HOME` directory.
 * `node['jenkins']['server']['user']` - User the Jenkins server runs as.
 * `node['jenkins']['server']['group']` - Jenkins user primary group.
 * `node['jenkins']['server']['port']` - TCP port Jenkins server listens on.
@@ -67,7 +68,8 @@ Attributes
 * `node['jenkins']['node']['name']` - Name of the node within Jenkins.
 * `node['jenkins']['node']['description']` - Jenkins node description.
 * `node['jenkins']['node']['executors']` - Number of node executors.
-* `node['jenkins']['node']['home]` - Home directory ("Remote FS root") of the node.
+* `node['jenkins']['node']['home']` - JENKINS_HOME directory ("Remote FS root") of the node.
+* `node['jenkins']['node']['home_dir']` - Home directory for the jenkins user.
 * `node['jenkins']['node']['labels']` - Node labels.
 * `node['jenkins']['node']['mode']` - Node usage mode, `normal` or `exclusive` (tied jobs only).
 * `node['jenkins']['node']['availability']` - `always` keeps node on-line, `demand` off-lines when idle.

@@ -7,7 +7,7 @@ describe 'jenkins::server' do
   describe 'users and groups' do
     # Check if the jenkins user was created with the correct home path
     it 'should create the jenkins user with the correct home path' do
-      user('jenkins').must_exist.with(:home, node['jenkins']['server']['home'])
+      user('jenkins').must_exist.with(:home, node['jenkins']['server']['home_dir'])
     end
   end
 
@@ -60,9 +60,14 @@ describe 'jenkins::server' do
       home_dir = node['jenkins']['server']['home']
       plugins_dir = File.join(home_dir, 'plugins')
       log_dir = node['jenkins']['server']['log_dir']
-      ssh_dir = File.join(home_dir, '.ssh')
+      ssh_dir = File.join(node['jenkins']['server']['home_dir'], '.ssh')
 
       directory(home_dir).must_exist.with(
+          :owner, node['jenkins']['server']['user']).and(
+          :group, node['jenkins']['server']['home_dir_group']).and(
+          :mode, node['jenkins']['server']['dir_permissions'])
+
+      directory(node['jenkins']['server']['home_dir']).must_exist.with(
           :owner, node['jenkins']['server']['user']).and(
           :group, node['jenkins']['server']['home_dir_group']).and(
           :mode, node['jenkins']['server']['dir_permissions'])

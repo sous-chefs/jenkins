@@ -23,6 +23,7 @@
 #
 
 default['jenkins']['server']['home'] = '/var/lib/jenkins'
+default['jenkins']['server']['home_dir'] = node['jenkins']['server']['home']
 default['jenkins']['server']['log_dir'] = '/var/log/jenkins'
 
 default['jenkins']['server']['user'] = 'jenkins'
