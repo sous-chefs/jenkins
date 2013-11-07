@@ -45,6 +45,7 @@ def jenkins_node_defaults(args)
   when 'ssh'
     args[:host] ||= args[:name]
     args[:port] ||= 22
+    args[:credentials_description] ||= args[:name]
     args[:username] ||= ''
     args[:private_key] ||= ''
     args[:jvm_options] ||= ''
@@ -97,8 +98,9 @@ def jenkins_node_manage(args) # rubocop:disable MethodLength
       password = %Q("#{args[:password]}")
     end
 
-    launcher = %Q(new_ssh_launcher(["#{args[:host]}", #{args[:port]}, "#{args[:username]}", #{password},
-                                    "#{args[:private_key]}", "#{args[:jvm_options]}"] as Object[]))
+    launcher = %Q(new_ssh_launcher("#{args[:host]}", #{args[:port]}, "#{args[:credentials_description]}",
+                                    "#{args[:username]}", #{password},
+                                    "#{args[:private_key]}", "#{args[:jvm_options]}"))
   end
 
   remote_fs = args[:remote_fs].gsub('\\', '\\\\\\') # C:\jenkins -> C:\\jenkins
@@ -119,10 +121,25 @@ app = Jenkins.instance
 env = #{env}
 props = []
 
-def new_ssh_launcher(args) {
-  Jenkins.instance.pluginManager.getPlugin('ssh-slaves').classLoader.
-    loadClass('hudson.plugins.sshslaves.SSHLauncher').
-      getConstructor([String, int, String, String, String, String] as Class[]).newInstance(args)
+def new_ssh_launcher(String host, int port, String credentialsDescription, String username, String password, String privateKey, String jvmOptions) {
+  if (Jenkins.instance.pluginManager.getPlugin('ssh-credentials')) {
+    def sshCredentials = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(com.cloudbees.jenkins.plugins.sshcredentials.SSHUser)
+    def credentials = sshCredentials.find { it.username == username && it.description == credentialsDescription }
+    if (credentials == null) {
+      def privateKeySource = privateKey == '' || privateKey == null ? new com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey.UsersPrivateKeySource() : new com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey.DirectEntryPrivateKeySource(privateKey)
+      def passphrase = ''
+      credentials = new com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey(
+        com.cloudbees.plugins.credentials.CredentialsScope.GLOBAL, null,
+        username, privateKeySource, passphrase, credentialsDescription)
+
+      def store = com.cloudbees.plugins.credentials.CredentialsProvider.lookupStores(Jenkins.instance).iterator().next()
+      store.addCredentials(com.cloudbees.plugins.credentials.domains.Domain.global(), credentials)
+    }
+
+    new hudson.plugins.sshslaves.SSHLauncher(host, port, credentials, jvmOptions, null, null, null)
+  } else {
+    new hudson.plugins.sshslaves.SSHLauncher(host, port, username, password, privateKey, jvmOptions)
+  }
 }
 
 if (env != null) {

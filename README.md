@@ -80,6 +80,7 @@ Attributes
 * `node['jenkins']['node']['ssh_user']` - SSH slave user name (only required if Jenkins server and slave user is different).
 * `node['jenkins']['node']['ssh_pass']` - SSH slave password (not required when server is installed via `jenkins::server` recipe).
 * `node['jenkins']['node']['ssh_private_key']` - Jenkins Master defaults to: `JENKINS_HOME/.ssh/id_rsa` (created by the `jenkins::server` recipe).
+* `node['jenkins']['node']['ssh_credentials_description']` - The description given to the SSH credentials in Jenkins' credentials manager. (default is `chef`)
 * `node['jenkins']['node']['jvm_options']` - Additional tuning parameters to pass the underlying JVM process.
 
 ### Windows Node/Slave related Attributes
