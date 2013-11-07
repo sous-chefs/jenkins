@@ -69,6 +69,7 @@ Attributes
 * `node['jenkins']['node']['executors']` - Number of node executors.
 * `node['jenkins']['node']['home]` - Home directory ("Remote FS root") of the node.
 * `node['jenkins']['node']['labels']` - Node labels.
+* `node['jenkins']['node']['add_platform_labels']` - Add useful labels based on the platform. (default is `true`)
 * `node['jenkins']['node']['mode']` - Node usage mode, `normal` or `exclusive` (tied jobs only).
 * `node['jenkins']['node']['availability']` - `always` keeps node on-line, `demand` off-lines when idle.
 * `node['jenkins']['node']['in_demand_delay']` - number of minutes for which jobs must be waiting in the queue before attempting to launch this slave.
