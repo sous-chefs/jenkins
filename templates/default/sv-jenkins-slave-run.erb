@@ -1,7 +1,6 @@
 #!/bin/sh
 exec 2>&1
 cd <%= node['jenkins']['node']['home'] %>
-source /etc/profile
 exec chpst -u <%= node['jenkins']['node']['user'] %> \
   java -jar <%= node['jenkins']['node']['home'] %>/slave.jar \
   -jnlpUrl <%= node['jenkins']['server']['url'] %>/computer/<%= node['jenkins']['node']['name'] %>/slave-agent.jnlp \
