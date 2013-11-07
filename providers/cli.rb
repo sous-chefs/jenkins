@@ -39,6 +39,8 @@ def action_run # rubocop:disable MethodLength
   remote_file cli_jar do
     source "#{url}/jnlpJars/jenkins-cli.jar"
     not_if { ::File.exists?(cli_jar) }
+    group node['jenkins']['server']['group']
+    owner node['jenkins']['server']['user']
   end
 
   java_home = node['jenkins']['java_home'] || (node.attribute?('java') ? node['java']['java_home'] : nil)
