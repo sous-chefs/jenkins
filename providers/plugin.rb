@@ -102,10 +102,12 @@ private
       notifies :create, 'ruby_block[block_until_operational]'
     end
 
-    file "#{plugin_file_path}.pinned" do
-      action :create_if_missing
-      owner node['jenkins']['server']['user']
-      group node['jenkins']['server']['group']
+    if @new_resource.pinned
+      file "#{plugin_file_path}.pinned" do
+        action :create_if_missing
+        owner node['jenkins']['server']['user']
+        group node['jenkins']['server']['group']
+      end
     end
   end
 
