@@ -44,7 +44,6 @@ when 'rhel'
   default['jenkins']['server']['group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['config_path'] = '/etc/sysconfig/jenkins'
   default['jenkins']['server']['config_template'] = 'sysconfig.erb'
-  default['jenkins']['server']['java_options'] = '-Djava.awt.headless=true'
   default['jenkins']['server']['log_dir_permissions'] = 00750
   default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
