@@ -38,6 +38,7 @@ when 'debian'
   default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['log_dir_group'] = 'adm'
   default['jenkins']['server']['ssh_dir_group'] = 'nogroup'
+  default['jenkins']['server']['jvm_options'] = nil
 when 'rhel'
   default['jenkins']['server']['install_method'] = 'package'
   default['jenkins']['server']['group'] = default['jenkins']['server']['user']
@@ -48,6 +49,7 @@ when 'rhel'
   default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['jvm_options'] = '-Djava.awt.headless=true'
 else
   default['jenkins']['server']['install_method'] = 'war'
   default['jenkins']['server']['group'] = default['jenkins']['server']['user']
@@ -56,6 +58,7 @@ else
   default['jenkins']['server']['plugins_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['log_dir_group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
+  default['jenkins']['server']['jvm_options'] = nil
 end
 
 default['jenkins']['server']['version'] = nil
@@ -66,7 +69,6 @@ default['jenkins']['server']['host'] = node['fqdn']
 default['jenkins']['server']['url']  = "http://#{default['jenkins']['server']['host']}:#{default['jenkins']['server']['port']}"
 
 default['jenkins']['server']['plugins'] = []
-default['jenkins']['server']['jvm_options'] = nil
 default['jenkins']['server']['pubkey'] = nil
 
 default['jenkins']['http_proxy']['variant'] = 'nginx'
