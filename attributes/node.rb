@@ -50,6 +50,7 @@ default['jenkins']['node']['description'] =
   "[#{node['kernel']['os']} #{node['kernel']['release']} #{node['kernel']['machine']}] " <<
   "slave on #{node['hostname']}"
 default['jenkins']['node']['labels'] = (node['tags'] || [])
+default['jenkins']['node']['add_platform_labels'] = true
 
 default['jenkins']['node']['env'] = nil
 default['jenkins']['node']['jvm_options'] = nil
