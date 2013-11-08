@@ -70,6 +70,7 @@ default['jenkins']['node']['availability'] = 'always'
 # SSH options
 default['jenkins']['node']['ssh_host'] = node['fqdn']
 default['jenkins']['node']['ssh_port'] = 22
+default['jenkins']['node']['ssh_credentials_description'] = 'chef'
 default['jenkins']['node']['ssh_user'] = default['jenkins']['node']['user']
 default['jenkins']['node']['ssh_pass'] = nil
 default['jenkins']['node']['ssh_private_key'] = nil

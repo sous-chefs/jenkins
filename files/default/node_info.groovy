@@ -37,6 +37,17 @@ def toJSON(node) {
   }
 }
 
+def sshCredentialsDescription(slave) {
+  if (Jenkins.instance.pluginManager.getPlugin('ssh-credentials')) {
+    try {
+      return slave.launcher.credentials.description
+    } catch (NullPointerException e) {
+      // this is if the ssh credentials are broken from before COOK-3795 was fixed
+      return null
+    }
+  } else { return null }
+}
+
 slave = Jenkins.instance.getNode(this.args[0]) as Slave
 
 if (slave == null) {
@@ -78,6 +89,7 @@ else {
     node["launcher"] = "ssh"
     node["host"] = launcher.host
     node["port"] = launcher.port
+    node["credentials_description"] = sshCredentialsDescription(slave)
     node["username"] = launcher.username
     if (launcher.password != null) {
       node["password"] = launcher.password
