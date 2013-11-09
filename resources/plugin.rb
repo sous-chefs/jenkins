@@ -22,6 +22,7 @@ default_action :install
 
 attribute :version, :kind_of => String
 attribute :url, :kind_of => String
+attribute :pinned, :kind_of => [TrueClass, FalseClass], :default => true
 
 # If url isn't specified, a default URL based on the plugin name and version is returned
 def url(arg = nil)
