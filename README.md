@@ -35,6 +35,7 @@ Attributes
 ### Master/Server related Attributes
 
 * `node['jenkins']['server']['install_method']` - Whether Jenkins is installed from packages or run from a WAR file.
+* `node['jenkins']['server']['use_stable']` - Download stable version of WAR, applicable only to WAR install method.
 * `node['jenkins']['server']['home']` - Location of `JENKINS_HOME` directory.
 * `node['jenkins']['server']['user']` - User the Jenkins server runs as.
 * `node['jenkins']['server']['group']` - Jenkins user primary group.

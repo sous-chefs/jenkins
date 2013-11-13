@@ -28,7 +28,12 @@ include_recipe 'runit::default'
 war_version = node['jenkins']['server']['version'].nil? ? 'latest' : node['jenkins']['server']['version']
 
 remote_file File.join(node['jenkins']['server']['home'], 'jenkins.war') do
-  source "#{node['jenkins']['mirror']}/war/#{war_version}/jenkins.war"
+  if node['jenkins']['server']['use_stable']
+    source "#{node['jenkins']['mirror']}/war-stable/#{war_version}/jenkins.war"
+  else
+    source "#{node['jenkins']['mirror']}/war/#{war_version}/jenkins.war"
+  end
+
   checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
   owner node['jenkins']['server']['user']
   group node['jenkins']['server']['home_dir_group']
