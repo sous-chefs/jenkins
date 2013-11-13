@@ -40,6 +40,7 @@ when 'debian'
   default['jenkins']['server']['ssh_dir_group'] = 'nogroup'
 when 'rhel'
   default['jenkins']['server']['install_method'] = 'package'
+  default['jenkins']['server']['use_stable'] = true
   default['jenkins']['server']['group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['config_path'] = '/etc/sysconfig/jenkins'
   default['jenkins']['server']['config_template'] = 'sysconfig.erb'
