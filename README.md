@@ -118,8 +118,9 @@ This resource can be used to execute the Jenkins cli from your recipes. For exam
 ```ruby
 %w(git URLSCM build-publisher).each do |plugin|
   jenkins_cli "install-plugin #{plugin}"
-  jenkins_cli "safe-restart"
 end
+
+jenkins_cli "safe-restart"
 ```
 
 ### jenkins_node
