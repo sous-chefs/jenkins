@@ -41,6 +41,7 @@
     AuthBasicProvider file
     AuthUserFile <%= File.join(node['apache']['dir'], 'htpasswd') %>
     require valid-user
+    RequestHeader unset Authorization
   </Location>
 <% end -%>
 
