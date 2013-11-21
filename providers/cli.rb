@@ -28,6 +28,7 @@ def action_run # rubocop:disable MethodLength
   password_file = @new_resource.password_file ||  node['jenkins']['cli']['password_file']
   key_file = @new_resource.key_file || node['jenkins']['cli']['key_file']
   jvm_options = @new_resource.jvm_options || node['jenkins']['cli']['jvm_options']
+  command_timeout = @new_resource.timeout || node['jenkins']['cli']['timeout']
 
   # recipes will chown to jenkins later if this doesn't already exist
   directory 'home for jenkins-cli.jar' do
@@ -61,6 +62,7 @@ def action_run # rubocop:disable MethodLength
   command << " --password_file #{password_file}" if password_file
 
   je = jenkins_execute(command) do
+    timeout command_timeout if command_timeout
     cwd home
     block { |stdout| new_resource.block.call(stdout) } if new_resource.block
   end
