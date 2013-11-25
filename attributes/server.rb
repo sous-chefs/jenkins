@@ -60,6 +60,7 @@ end
 
 default['jenkins']['server']['version'] = nil
 default['jenkins']['server']['war_checksum'] = nil
+default['jenkins']['server']['use_stable'] = false
 
 default['jenkins']['server']['port'] = 8080
 default['jenkins']['server']['host'] = node['fqdn']
