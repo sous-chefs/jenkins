@@ -40,7 +40,6 @@ when 'debian'
   default['jenkins']['server']['ssh_dir_group'] = 'nogroup'
 when 'rhel'
   default['jenkins']['server']['install_method'] = 'package'
-  default['jenkins']['server']['use_stable'] = true
   default['jenkins']['server']['group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['config_path'] = '/etc/sysconfig/jenkins'
   default['jenkins']['server']['config_template'] = 'sysconfig.erb'
@@ -61,6 +60,7 @@ end
 
 default['jenkins']['server']['version'] = nil
 default['jenkins']['server']['war_checksum'] = nil
+default['jenkins']['server']['use_stable'] = false
 
 default['jenkins']['server']['port'] = 8080
 default['jenkins']['server']['host'] = node['fqdn']
