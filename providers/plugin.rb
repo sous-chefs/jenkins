@@ -59,6 +59,7 @@ action :remove do
 end
 
 private
+
   def current_version
     current_version = nil
     manifest_file = ::File.join(plugins_dir, @current_resource.name, 'META-INF', 'MANIFEST.MF')

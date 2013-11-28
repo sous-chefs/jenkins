@@ -75,7 +75,7 @@ def jenkins_node_compare(current_node, new_node)
 end
 
 # generate a groovy script to create/update nodes
-def jenkins_node_manage(args) # rubocop:disable MethodLength
+def jenkins_node_manage(args) # rubocop:disable MethodLength, CyclomaticComplexity
   args = jenkins_node_defaults(args)
 
   if args[:env]
@@ -148,6 +148,7 @@ app.setNodes(nodes)
 
 EOF
 end
+# rubocop:enable MethodLength CyclomaticComplexity
 
 # ruby manage_node.rb name slave-hostname remote_fs /home/jenkins ... | java -jar jenkins-cli.jar -s http://jenkins:8080/ groovy =
 if File.basename($PROGRAM_NAME) == File.basename(__FILE__)

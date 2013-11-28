@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 
-def action_run # rubocop:disable MethodLength
+def action_run # rubocop:disable MethodLength, CyclomaticComplexity
   url = @new_resource.url || node['jenkins']['server']['url']
   home = @new_resource.home || node['jenkins']['node']['home']
   username = @new_resource.username ||  node['jenkins']['cli']['username']
@@ -66,4 +66,4 @@ def action_run # rubocop:disable MethodLength
   end
 
   new_resource.updated_by_last_action(je.updated?)
-end
+end # rubocop:enable MethodLength, CyclomaticComplexity
