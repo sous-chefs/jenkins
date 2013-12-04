@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator>
+    <daysToKeep>7</daysToKeep>
+    <numToKeep>-1</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command># Move into the jenkins directory
+cd /var/lib/jenkins
+
+#Add all top level xml files.
+git add *.xml
+
+# Add all job config.xml files.
+git add jobs/*/config.xml
+
+# Add all user config.xml files.
+git add users/*/config.xml
+
+# Add all user content files.
+git add userContent/*
+
+# Remove files from the remote repo that have been removed locally.
+COUNT=`git log --pretty=format: --name-only --diff-filter=B | wc -l`
+if [ $COUNT -ne 0 ]
+  then git log --pretty=format: --name-only --diff-filter=B | xargs git rm
+fi
+
+# Commit the differences
+git commit -a -m "Automated commit of jenkins chaos"
+
+# Push the commit up to the remote repository.
+git push origin master
+
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

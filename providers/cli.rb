@@ -20,50 +20,21 @@
 # limitations under the License.
 #
 
-def action_run # rubocop:disable MethodLength
-  url = @new_resource.url || node['jenkins']['server']['url']
-  home = @new_resource.home || node['jenkins']['node']['home']
-  username = @new_resource.username ||  node['jenkins']['cli']['username']
-  password = @new_resource.password ||  node['jenkins']['cli']['password']
-  password_file = @new_resource.password_file ||  node['jenkins']['cli']['password_file']
-  key_file = @new_resource.key_file || node['jenkins']['cli']['key_file']
-  jvm_options = @new_resource.jvm_options || node['jenkins']['cli']['jvm_options']
-
-  # recipes will chown to jenkins later if this doesn't already exist
-  directory 'home for jenkins-cli.jar' do
-    action :create
-    path node['jenkins']['node']['home']
+#
+# @todo Deprecate this in the next major release.
+#
+action :run do
+  replace = Chef::Resource::JenkinsCommand.new(new_resource.name, run_context)
+  new_resource.instance_variables.each do |instance_variable|
+    value = new_resource.instance_variable_get(instance_variable)
+    replace.instance_variable_set(instance_variable, value)
   end
 
-  cli_jar = ::File.join(home, 'jenkins-cli.jar')
-  remote_file cli_jar do
-    source "#{url}/jnlpJars/jenkins-cli.jar"
-    not_if { ::File.exists?(cli_jar) }
-  end
+  Chef::Log.warn <<-EOH
+[DEPRECATED] jenkins_cli is deprecated. Please use jenkins_command instead:
 
-  java_home = node['jenkins']['java_home'] || (node.attribute?('java') ? node['java']['java_home'] : nil)
-  if java_home.nil?
-    java = 'java'
-  else
-    java = '"' << ::File.join(java_home, 'bin', 'java') << '"'
-  end
+#{replace.to_text}
+EOH
 
-  java << " #{jvm_options}" if jvm_options
-
-  if key_file
-    command = "#{java} -jar #{cli_jar} -i #{key_file} -s #{url} #{@new_resource.command}"
-  else
-    command = "#{java} -jar #{cli_jar} -s #{url} #{@new_resource.command}"
-  end
-
-  command << " --username #{username}" if username
-  command << " --password #{password}" if password
-  command << " --password_file #{password_file}" if password_file
-
-  je = jenkins_execute(command) do
-    cwd home
-    block { |stdout| new_resource.block.call(stdout) } if new_resource.block
-  end
-
-  new_resource.updated_by_last_action(je.updated?)
+  replace.run_action(:execute)
 end

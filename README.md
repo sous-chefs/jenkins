@@ -137,28 +137,48 @@ end
 ```
 
 ### jenkins_job
-This resource manages jenkins jobs, supporting the following actions:
+This resource manages Jenkins jobs, supporting the following actions:
 
-    :create, :update, :delete, :build, :disable, :enable
+    :create, :delete, :disable, :enable
 
-The `:create` and `:update` actions require a jenkins job `config.xml`. Example:
+The resource is fully idempotent and convergent. It also supports whyrun mode.
+
+The `:create` action requires a Jenkins job `config.xml`. This config file must exist on the target node and contain a valid Jenkins job configuration file. Because the Jenkins CLI actually reads and generates it's own copy of this file, **do NOT** write this configuration inside of the Jenkins job. We recommend putting them in a temporary directory:
 
 ```ruby
-git_branch = 'master'
-job_name = "sigar-#{branch}-#{node[:os]}-#{node[:kernel][:machine]}"
+xml = File.join(Chef::Config[:file_cache_path], 'bacon-config.xml')
 
-job_config = File.join(node[:jenkins][:node][:home], "#{job_name}-config.xml")
-
-jenkins_job job_name do
-  action :nothing
-  config job_config
+# You could also use a `cookbook_file` or pure `file` resource to generate
+# content at this path.
+template xml do
+  source 'custom-config.xml.erb'
 end
 
-template job_config do
-  source    'sigar-jenkins-config.xml'
-  variables :job_name => job_name, :branch => git_branch, :node => node[:fqdn]
-  notifies  :update, resources(:jenkins_job => job_name), :immediately
-  notifies  :build, resources(:jenkins_job => job_name), :immediately
+# Create a jenkins job (default action is `:create`)
+jenkins_job 'bacon' do
+  config xml
+end
+```
+
+```ruby
+jenkins_job 'bacon' do
+  action :delete
+end
+```
+
+You can disable a Jenkins job by specifying the `:disable` option. This will disable an existing job, if and only if that job exists and is enabled. If the job does not exist, an exception is raised.
+
+```ruby
+jenkins_job 'bacon' do
+  action :disable
+end
+```
+
+You can enable a Jenkins job by specifying the `:enable` option. This will enable an existing job, if and only if that job exists and is disabled. If the job does not exist, an exception is raised.
+
+```ruby
+jenkins_job 'bacon' do
+  action :enable
 end
 ```
 
