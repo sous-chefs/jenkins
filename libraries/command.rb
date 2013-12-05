@@ -73,7 +73,7 @@ class Chef
 
     def action_execute
       converge_by("Execute #{new_resource}") do
-        executor.execute!(command)
+        executor.execute!(new_resource.command)
       end
     end
   end
