@@ -67,7 +67,9 @@ class Chef
     #
     # This provider supports why-run mode.
     #
-    def whyrun_supported?; true; end
+    def whyrun_supported?
+      true
+    end
 
     def action_execute
       converge_by("Execute #{new_resource}") do

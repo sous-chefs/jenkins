@@ -183,29 +183,54 @@ end
 ```
 
 ### jenkins_plugin
-This resource can be used to install and remove Jenkins plugins directly (e.g. bypassing the update center).  It supports the following actions:
+This resource manages Jenkins plugins, supporting the following actions:
 
-    :install, :remove
+    :install, :uninstall, :enable, :disable
 
-Example:
+This uses the Jenkins CLI to install plugins. By default, it does a cold deploy, meaning the plugin is installed while Jenkins is still running. **This LWRP does not install plugin dependencies - you must specify all plugin dependencies or Jenkins may not startup correctly!**
+
+The `:install` action idempotely installs a Jenkins plugin on the current node. The name attribute corresponds to the name of the plugin on the Jenkins Update Center. You can also specify a particular version of the plugin to install. Finally, you can specify a full source URL or local path (on the node) to a plugin.
 
 ```ruby
+# Install the latest version of the greenballs plugin
 jenkins_plugin 'greenballs'
 
-jenkins_plugin 'ant' do
-  action :install
-  version '1.2'
+# Install version 1.3 of the greenballs plugin
+jenkins_plugin 'greenballs' do
+  version '1.3'
 end
 
-jenkins_plugin 'custom_plugin' do
-  version '0.3'
-  url 'http://myrepo/jenkins/plugins/0.3/custom_plugin.hpi'
-end
-
-jenkins_plugin 'envinject' do
-  action :remove
+# Install a plugin from a given hpi (or jpi)
+jenkins_plugin 'greenballs' do
+  source 'http://updates.jenkins-ci.org/download/plugins/greenballs/1.10/greenballs.hpi'
 end
 ```
+
+The `:uninstall` action removes (uninstalls) a Jenkins plugin idempotently on the current node.
+
+```ruby
+jenkins_plugin 'greenballs' do
+  action :uninstall
+end
+```
+
+The `:enable` action enables a plugin. If the plugin is not installed, an exception is raised. If the plugin is already enabled, no action is taken.
+
+```ruby
+jenkins_plugin 'greenballs' do
+  action :enable
+end
+```
+
+The `:disable` action disables a plugin. If the plugin is not installed, an exception is raised. If the plugin is already disabled, no action is taken.
+
+```ruby
+jenkins_plugin 'greenballs' do
+  action :disable
+end
+```
+
+**NOTE** You may need to restart the Jenkins server after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins servers differently) this LWRP does **NOT** restart Jenkins for you.
 
 
 Jenkins Node Authentication

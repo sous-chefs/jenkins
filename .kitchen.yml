@@ -7,8 +7,6 @@ driver:
 provisioner:
   name: chef_zero
   require_chef_omnibus: 11.8.0
-  client_rb:
-    log_location: /var/log/chef.log
 
 platforms:
   - name: ubuntu-13.04
@@ -20,3 +18,5 @@ suites:
     run_list: jenkins_test::cli
   - name: job
     run_list: jenkins_test::job
+  - name: plugin
+    run_list: jenkins_test::plugin

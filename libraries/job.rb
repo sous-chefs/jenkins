@@ -113,7 +113,9 @@ class Chef
     #
     # This provider supports why-run mode.
     #
-    def whyrun_supported?; true; end
+    def whyrun_supported?
+      true
+    end
 
     #
     # Idempotently create a new Jenkins job with the current resource's name

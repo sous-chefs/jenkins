@@ -75,7 +75,7 @@ module Jenkins
       command = Mixlib::ShellOut.new(command)
       command.run_command
       command.error!
-      command.stdout
+      command.stdout.strip
     end
 
     #
