@@ -14,8 +14,6 @@ platforms:
       box: opscode-ubuntu-13.04
 
 suites:
-  - name: cli
-    run_list: jenkins_test::cli
   - name: job
     run_list: jenkins_test::job
   - name: plugin
