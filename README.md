@@ -111,15 +111,27 @@ Installs a proxy and creates a vhost to route traffic to the installed Jenkins s
 
 Resource/Provider
 -----------------
-### jenkins_cli
+### jenkins_command
+This resource executes arbitrary commands against the [Jenkins CLI](https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI), supporting the following actions:
 
-This resource can be used to execute the Jenkins cli from your recipes. For example, install plugins via update center and restart Jenkins:
+    :execute
+
+Here's an [example list of Jenkins commands](https://gist.github.com/sethvargo/7814182), although these can change with major version releases. For example, to perform a Jenkins safe restart:
 
 ```ruby
-%w(git URLSCM build-publisher).each do |plugin|
-  jenkins_cli "install-plugin #{plugin}"
-  jenkins_cli "safe-restart"
-end
+jenkins_command 'safe-restart'
+```
+
+To reload the configuration from disk:
+
+```ruby
+jenkins_command 'reload-configuration'
+```
+
+To prevent Jenkins from starting any new builds (in preparation for a shutdown):
+
+```ruby
+jenkins_command 'quiet-down'
 ```
 
 ### jenkins_node
