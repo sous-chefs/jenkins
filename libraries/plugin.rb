@@ -252,9 +252,11 @@ class Chef
       response = executor.execute!('list-plugins', new_resource.name)
       return nil if response.nil? || response.empty?
 
-      {
+      @current_plugin = {
         version: response.split(' ').last
       }
+
+      @current_plugin
     end
 
     #
