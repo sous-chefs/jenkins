@@ -247,22 +247,39 @@ end
 **NOTE** You may need to restart the Jenkins server after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins servers differently) this LWRP does **NOT** restart Jenkins for you.
 
 
-Jenkins Node Authentication
----------------------------
-If your Jenkins instance requires authentication, you'll either need to embed user:pass in `node['jenkins']['server']['url']` or issue a jenkins-cli.jar login command prior to using the `jenkins::node_*` recipes. For example, define a role like so:
+Caveats
+-------
+### Authentication
+If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to set a special node attribute:
 
 ```ruby
-name 'jenkins_ssh_node'
-description 'cli login & register ssh slave with Jenkins'
-run_list([
-  'mycompany-jenkins::jenkins_login',
-  'jenkins::node_ssh'
+node['jenkins']['cli']['private_key']
 ```
 
-Where the jenkins_login recipe is simply:
+The underlying executor class (which all LWRPs use) intelligently adds authentication information to the Jenkins CLI commands if this attribute is set. The method used to generate and populate this private key is left to the user:
 
 ```ruby
-jenkins_cli "login --username #{node['jenkins']['username']} --password #{node['jenkins']['password']}"
+# Using search
+master = search(:node, 'fqdn:master.ci.example.com').first
+node.set['jenkins']['cli']['private_key'] = master['jenkins']['private_key']
+
+# Using encrypted data bags and chef-sugar
+private_key = encrypted_data_bag_item('jenkins', 'keys')['private_key']
+node.set['jenkins']['cli']['private_key'] = private_key
+```
+
+
+### Proxies
+If you need to pass through a proxy server to communicate between your masters and slaves, you will need to set a special node attribute:
+
+```ruby
+node['jenkins']['cli']['proxy']
+```
+
+The underlying executor class (which all LWRPs use) intelligently passes proxy information to the Jenkins CLI commands if this attribute is set. It should be set in the form `HOST:PORT`:
+
+```ruby
+node.set['jenkins']['cli']['proxy'] = '1.2.3.4:5678'
 ```
 
 
