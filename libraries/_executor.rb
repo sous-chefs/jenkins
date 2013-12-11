@@ -90,6 +90,29 @@ module Jenkins
       nil
     end
 
+    #
+    # Execute the given inline groovy script, raising exceptions if something
+    # fails.
+    #
+    # @param [String] script
+    #   the script to run
+    #
+    # @return [String]
+    #   the standard out from the command
+    #
+    def groovy!(script)
+      execute!("groovy = <<-GROOVY_SCRIPT\n#{script}\nGROOVY_SCRIPT")
+    end
+
+    #
+    # Same as {groovy!}, but quietly returns +nil+ if the command fails.
+    #
+    # @see groovy!
+    #
+    def groovy(script)
+      execute("groovy = <<-GROOVY_SCRIPT\n#{script}\nGROOVY_SCRIPT")
+    end
+
     private
 
     #

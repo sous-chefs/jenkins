@@ -7,6 +7,7 @@ driver:
 provisioner:
   name: chef_zero
   require_chef_omnibus: 11.8.0
+  data_path: test/shared
 
 platforms:
   - name: ubuntu-13.04
@@ -20,3 +21,11 @@ suites:
     run_list: jenkins_test::job
   - name: plugin
     run_list: jenkins_test::plugin
+
+  #
+  # User suites
+  #
+  - name: jenkins_user_create
+    run_list: jenkins_user::create
+  - name: jenkins_user_delete
+    run_list: jenkins_user::delete

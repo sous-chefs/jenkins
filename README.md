@@ -246,6 +246,35 @@ end
 
 **NOTE** You may need to restart the Jenkins server after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins servers differently) this LWRP does **NOT** restart Jenkins for you.
 
+### jenkins_user
+This resource manages Jenkins users, supporting the following actions:
+
+    :create, :delete
+
+This uses the Jenkins groovy API to create users.
+
+The `:create` action idempotently creates a Jenkins user on the current node. The id attribute corresponds to the username of the id of the user on the target node. You may also specify a name, email, and list of SSH keys.
+
+```ruby
+# Create a Jenkins user
+jenkins_user 'grumpy'
+
+# Create a Jenkins user with specific attributes
+jenkins_user 'grumpy' do
+  full_name    'Grumpy Dwarf'
+  email        'grumpy@example.com'
+  public_keys  ['ssh-rsa AAAAB3NzaC1y...']
+end
+```
+
+The `:delete` action removes a Jenkins user from the system.
+
+```ruby
+jenkins_user 'grumpy' do
+  action :delete
+end
+```
+
 
 Caveats
 -------
