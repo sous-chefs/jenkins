@@ -30,7 +30,7 @@ module Jenkins
     # @return [Jenkins::Executor]
     #
     def executor
-      ensure_cli_present!
+      ensure_cli_present! unless ::File.exists?(cli)
 
       options = {}.tap do |h|
         h[:cli]   = cli
