@@ -74,6 +74,7 @@ end
 template "#{home_dir}/jenkins-slave.xml" do
   source 'jenkins-slave.xml.erb'
   variables(:jenkins_home => home_dir,
+            :no_certificate_check => node['jenkins']['node']['no_certificate_check'],
             :jnlp_url => "#{server_url}/computer/#{node['jenkins']['node']['name']}/slave-agent.jnlp",
             :jnlp_secret => secret)
   notifies :restart, "service[#{service_name}]"
