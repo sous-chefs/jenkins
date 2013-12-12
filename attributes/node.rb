@@ -56,6 +56,7 @@ default['jenkins']['node']['jvm_options'] = nil
 default['jenkins']['node']['executors'] = 1
 default['jenkins']['node']['in_demand_delay'] = 0
 default['jenkins']['node']['idle_delay'] = 1
+default['jenkins']['node']['no_certificate_check'] = false
 
 # Usage
 #    normal - Utilize this slave as much as possible

@@ -28,6 +28,7 @@ def action_run # rubocop:disable MethodLength
   password_file = @new_resource.password_file ||  node['jenkins']['cli']['password_file']
   key_file = @new_resource.key_file || node['jenkins']['cli']['key_file']
   jvm_options = @new_resource.jvm_options || node['jenkins']['cli']['jvm_options']
+  no_certificate_check = @new_resource.no_certificate_check || node['jenkins']['node']['no_certificate_check']
 
   # recipes will chown to jenkins later if this doesn't already exist
   directory 'home for jenkins-cli.jar' do
@@ -50,11 +51,10 @@ def action_run # rubocop:disable MethodLength
 
   java << " #{jvm_options}" if jvm_options
 
-  if key_file
-    command = "#{java} -jar #{cli_jar} -i #{key_file} -s #{url} #{@new_resource.command}"
-  else
-    command = "#{java} -jar #{cli_jar} -s #{url} #{@new_resource.command}"
-  end
+  command = "#{java} -jar #{cli_jar}"
+  command << " -i #{key_file}" if key_file
+  command << ' -noCertificateCheck' if no_certificate_check
+  command << " -s #{url} #{@new_resource.command}"
 
   command << " --username #{username}" if username
   command << " --password #{password}" if password
@@ -62,7 +62,18 @@ def action_run # rubocop:disable MethodLength
 
   je = jenkins_execute(command) do
     cwd home
-    block { |stdout| new_resource.block.call(stdout) } if new_resource.block
+    if new_resource.block
+      block do |stdout|
+        if no_certificate_check
+          # ignore the warning message from jenkins-cli
+          # stdout is passed to the block below, which parses the CLI response.
+          # If the response string is expected to be JSON, the HTTPS warning
+          # message will cause the JSON parse to fail.
+          stdout.gsub!(/Skipping HTTPS certificate checks altogether\. Note that this is not secure at all\.\r?\n/, '')
+        end
+        new_resource.block.call(stdout)
+      end
+    end
   end
 
   new_resource.updated_by_last_action(je.updated?)
