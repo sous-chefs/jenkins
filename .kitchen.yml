@@ -21,8 +21,18 @@ suites:
   - name: jenkins_command_execute
     run_list: jenkins_command::execute
 
-  - name: job
-    run_list: jenkins_test::job
+  #
+  # Job suites
+  #
+  - name: jenkins_job_create
+    run_list: jenkins_job::create
+  - name: jenkins_job_delete
+    run_list: jenkins_job::delete
+  - name: jenkins_job_disable
+    run_list: jenkins_job::disable
+  - name: jenkins_job_enable
+    run_list: jenkins_job::enable
+
   - name: plugin
     run_list: jenkins_test::plugin
 

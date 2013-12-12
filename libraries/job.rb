@@ -40,17 +40,29 @@ class Chef
       @allowed_actions.push(:create, :delete, :disable, :enable)
 
       # Set the name attribute and default attributes
-      @name   = name
+      @name = name
 
       # State attributes that are set by the provider
       @exists  = false
       @enabled = false
     end
 
+    #
+    # The name of the job.
+    #
+    # @param [String] arg
+    # @return [String]
+    #
     def name(arg = nil)
       set_or_return(:name, arg, kind_of: String)
     end
 
+    #
+    # The path to the configuration file on disk.
+    #
+    # @param [String] arg
+    # @return [String] arg
+    #
     def config(arg = nil)
       set_or_return(:config, arg, kind_of: String)
     end

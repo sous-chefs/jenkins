@@ -14,7 +14,7 @@ module Serverspec
       end
 
       def exists?
-        !xml.empty?
+        !!xml
       end
 
       def has_email?(email)
@@ -38,7 +38,7 @@ module Serverspec
         contents = ::File.read("/var/lib/jenkins/users/#{id}/config.xml")
         @xml = REXML::Document.new(contents)
       rescue Errno::ENOENT
-        @xml = {}
+        @xml = nil
       end
 
       def try(&block)
