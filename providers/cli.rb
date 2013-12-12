@@ -69,7 +69,7 @@ def action_run # rubocop:disable MethodLength
           # stdout is passed to the block below, which parses the CLI response.
           # If the response string is expected to be JSON, the HTTPS warning
           # message will cause the JSON parse to fail.
-          stdout.gsub!("Skipping HTTPS certificate checks altogether. Note that this is not secure at all.\n", '')
+          stdout.gsub!(/Skipping HTTPS certificate checks altogether\. Note that this is not secure at all\.\r?\n/, '')
         end
         new_resource.block.call(stdout)
       end
