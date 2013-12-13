@@ -25,7 +25,7 @@ www_redirect = (node['jenkins']['http_proxy']['www_redirect'] == 'enable')
 host_name = node['jenkins']['http_proxy']['host_name'] || node['fqdn']
 
 if node['jenkins']['http_proxy']['cas_validate_server'] == 'cas'
-  apache_module 'mod_auth_cas'
+  include_recipe 'apache2::mod_auth_cas'
 end
 
 if node['jenkins']['http_proxy']['ssl']['enabled']
