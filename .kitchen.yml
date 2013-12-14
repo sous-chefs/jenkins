@@ -33,8 +33,17 @@ suites:
   - name: jenkins_job_enable
     run_list: jenkins_job::enable
 
-  - name: plugin
-    run_list: jenkins_test::plugin
+  #
+  # Plugin suites
+  #
+  - name: jenkins_plugin_disable
+    run_list: jenkins_plugin::disable
+  - name: jenkins_plugin_enable
+    run_list: jenkins_plugin::enable
+  - name: jenkins_plugin_install
+    run_list: jenkins_plugin::install
+  - name: jenkins_plugin_uninstall
+    run_list: jenkins_plugin::uninstall
 
   #
   # User suites

@@ -119,7 +119,7 @@ class Chef
 
       if current_plugin
         @current_resource.installed = true
-        @current_resource.version(current_plugin[:version])
+        @current_resource.version(current_plugin[:plugin_version])
       else
         @current_resource.installed = false
       end
@@ -136,7 +136,20 @@ class Chef
       # This block stores the actual command to execute, since its the same
       # for upgrades and installs.
       block = Proc.new do
-        executor.execute!('install-plugin', plugin_source, '-name', new_resource.name)
+        # Use the remote_file resource to download and cache the plugin (see
+        # comment below for more information).
+        name   = "#{new_resource.name}-#{new_resource.version}.plugin"
+        path   = ::File.join(Chef::Config[:file_cache_path], name)
+        plugin = Chef::Resource::RemoteFile.new(path, run_context)
+        plugin.source(plugin_source)
+        plugin.backup(false)
+        plugin.run_action(:create)
+
+        # Install the plugin from our local cache on disk. There is a bug in
+        # Jenkins that prevents Jenkins from following 302 redirects, so we
+        # use Chef to download the plugin and then use Jenkins to install it.
+        # It's a bit backwards, but so is Jenkins.
+        executor.execute!('install-plugin', plugin.path, '-name', new_resource.name)
       end
 
       if current_resource.installed?
@@ -247,14 +260,19 @@ class Chef
     def current_plugin
       return @current_plugin if @current_plugin
 
-      Chef::Log.debug "Load #{new_resource} plugin information"
+      manifest = ::File.join(plugins_directory, new_resource.name, 'META-INF', 'MANIFEST.MF')
+      Chef::Log.debug "Load #{new_resource} plugin information from #{manifest}"
 
-      response = executor.execute!('list-plugins', new_resource.name)
-      return nil if response.nil? || response.empty?
+      return nil unless ::File.exists?(manifest)
 
-      @current_plugin = {
-        version: response.split(' ').last
-      }
+      @current_plugin = Hash[*::File.readlines(manifest).map do |line|
+        next if line.strip.empty?
+
+        config, value = line.split(' ', 2)
+        config = config.gsub('-', '_').downcase.to_sym
+
+        [config, value]
+      end.compact.flatten]
 
       @current_plugin
     end
