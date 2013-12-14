@@ -13,7 +13,7 @@ module Serverspec
         super
       end
 
-      def exists?
+      def jenkins_job?
         !!xml
       end
 
