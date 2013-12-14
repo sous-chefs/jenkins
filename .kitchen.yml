@@ -1,8 +1,5 @@
 driver:
   name: vagrant
-  provider: vmware_fusion
-  memory: 2048
-  cpus: 2
 
 provisioner:
   name: chef_zero
