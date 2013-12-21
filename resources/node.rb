@@ -29,6 +29,7 @@ attribute :mode, :equal_to => %w(normal exclusive)
 attribute :labels, :kind_of => Array
 attribute :launcher, :equal_to => %w(jnlp command ssh)
 attribute :availability, :equal_to => %w(always demand)
+attribute :home, :kind_of => String, :default => node['jenkins']['node']['home']
 attribute :in_demand_delay, :kind_of => Integer
 attribute :idle_delay, :kind_of => Integer
 attribute :env, :kind_of => Hash
