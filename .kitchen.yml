@@ -12,9 +12,8 @@ provisioner:
   data_path: test/shared
 
 platforms:
-  - name: ubuntu-13.04
-    driver:
-      box: opscode-ubuntu-13.04
+  - name: ubuntu-12.04
+    run_list: apt::default
 
 suites:
   #
