@@ -23,6 +23,7 @@
 #
 #
 class Chef
+  #
   class Resource::JenkinsUser < Resource
     identity_attr :id
 
@@ -107,6 +108,7 @@ end
 #
 #
 class Chef
+  #
   class Provider::JenkinsUser < Provider
     require 'json'
 

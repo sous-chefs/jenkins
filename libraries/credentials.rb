@@ -26,6 +26,7 @@ require 'chef/provider'
 #
 #
 class Chef
+  #
   class Resource::JenkinsCredentials < Resource
     require 'securerandom'
 
@@ -102,6 +103,7 @@ end
 #
 #
 class Chef
+  #
   class Provider::JenkinsCredentials < Provider
     require 'json'
     require 'openssl'
@@ -125,7 +127,7 @@ class Chef
     # Create the given credentials.
     #
     def action_create
-      if current_resource.exists? && has_correct_config?
+      if current_resource.exists? && correct_config?
         Chef::Log.debug("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
@@ -207,7 +209,7 @@ class Chef
     # @return [String]
     #
     def credentials_groovy
-      raise NotImplementedError, 'You must implement #credentials_groovy.'
+      fail NotImplementedError, 'You must implement #credentials_groovy.'
     end
 
     #
@@ -274,7 +276,7 @@ class Chef
     #
     # @return [Boolean]
     #
-    def has_correct_config?
+    def correct_config?
       wanted_credentials = {
         description: new_resource.description,
         username: new_resource.username

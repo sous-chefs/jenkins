@@ -1,5 +1,6 @@
 module RSpec
   module Core
+    #
     module DSL
       def jenkins_credentials(username)
         Serverspec::Type::JenkinsCredentials.new(username)

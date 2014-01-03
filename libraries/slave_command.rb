@@ -25,6 +25,7 @@ require_relative 'slave'
 #
 #
 class Chef
+  #
   class Resource::JenkinsCommandSlave < Resource::JenkinsSlave
     provides :jenkins_command_slave
 
@@ -47,7 +48,6 @@ class Chef
     def command(arg = nil)
       set_or_return(:command, arg, kind_of: String)
     end
-
   end
 end
 
@@ -55,6 +55,7 @@ end
 #
 #
 class Chef
+  #
   class Provider::JenkinsCommandSlave < Provider::JenkinsSlave
     include Jenkins::Helper
 
@@ -62,10 +63,7 @@ class Chef
       @current_resource ||= Resource::JenkinsCommandSlave.new(new_resource.name)
 
       set_base_attributes
-
-      if current_slave
-        @current_resource.command(current_slave[:command])
-      end
+      @current_resource.command(current_slave[:command]) if current_slave
     end
 
     protected

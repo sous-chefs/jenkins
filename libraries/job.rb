@@ -23,6 +23,7 @@
 #
 #
 class Chef
+  #
   class Resource::JenkinsJob < Resource
     identity_attr :name
 
@@ -93,7 +94,9 @@ end
 #
 #
 class Chef
+  #
   class Provider::JenkinsJob < Provider
+    #
     class JobDoesNotExist < StandardError
       def initialize(job, action)
         super "The Jenkins job `#{job}` does not exist. In order to " \
@@ -153,7 +156,7 @@ class Chef
         end
       end
 
-      if has_correct_config?
+      if correct_config?
         Chef::Log.debug("#{new_resource} config up to date - skipping")
       else
         converge_by("Update #{new_resource} config") do
@@ -187,7 +190,7 @@ class Chef
     #
     def action_disable
       unless current_resource.exists?
-        raise JobDoesNotExist.new(new_resource.name, :disable)
+        fail JobDoesNotExist.new(new_resource.name, :disable)
       end
 
       if current_resource.enabled?
@@ -209,7 +212,7 @@ class Chef
     #
     def action_enable
       unless current_resource.exists?
-        raise JobDoesNotExist.new(new_resource.name, :enable)
+        fail JobDoesNotExist.new(new_resource.name, :enable)
       end
 
       if current_resource.enabled?
@@ -260,7 +263,7 @@ class Chef
     #
     # @return [Boolean]
     #
-    def has_correct_config?
+    def correct_config?
       current = StringIO.new
       wanted  = StringIO.new
 
@@ -287,7 +290,7 @@ class Chef
         begin
           REXML::Document.new(::File.read(new_resource.config))
         rescue REXML::ParseException
-          fail("#{new_resource} config `#{new_resource.config}` is not valid XML!")
+          raise("#{new_resource} config `#{new_resource.config}` is not valid XML!")
         end
       end
     end

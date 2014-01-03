@@ -17,9 +17,9 @@ end
 
 # Create a set of credentials on the master
 c = jenkins_private_key_credentials node['jenkins']['server']['user'] do
-      id '38537014-ec66-49b5-aff2-aed1c19e2989'
-      private_key jenkins_master_pk
-    end
+  id '38537014-ec66-49b5-aff2-aed1c19e2989'
+  private_key jenkins_master_pk
+end
 
 # Test SSH slave creation - credentials from resource
 jenkins_ssh_slave 'starscream' do

@@ -20,8 +20,8 @@
 #
 
 module Jenkins
+  #
   module Helper
-
     UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/
 
     #
@@ -117,6 +117,7 @@ module Jenkins
     end
 
     private
+
     #
     # The path to the private key for the Jenkins master on disk. This method
     # also ensure the private key is written to disk.

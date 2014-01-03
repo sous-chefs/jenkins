@@ -25,8 +25,8 @@ require_relative 'slave'
 #
 #
 class Chef
+  #
   class Resource::JenkinsJNLPSlave < Resource::JenkinsSlave
-
     provides :jenkins_jnlp_slave
 
     def initialize(name, run_context = nil)
@@ -36,7 +36,6 @@ class Chef
       @resource_name = :jenkins_jnlp_slave
       @provider = Provider::JenkinsJNLPSlave
     end
-
   end
 end
 
@@ -44,8 +43,8 @@ end
 #
 #
 class Chef
+  #
   class Provider::JenkinsJNLPSlave < Provider::JenkinsSlave
-
     def load_current_resource
       @current_resource ||= Resource::JenkinsJNLPSlave.new(new_resource.name)
 
@@ -59,8 +58,7 @@ class Chef
     # @see http://javadoc.jenkins-ci.org/hudson/slaves/JNLPLauncher.html
     #
     def launcher_groovy
-      "launcher = new hudson.slaves.JNLPLauncher()"
+      'launcher = new hudson.slaves.JNLPLauncher()'
     end
-
   end
 end

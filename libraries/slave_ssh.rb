@@ -25,6 +25,7 @@ require_relative 'slave'
 #
 #
 class Chef
+  #
   class Resource::JenkinsSSHSlave < Resource::JenkinsSlave
     provides :jenkins_ssh_slave
 
@@ -85,10 +86,9 @@ class Chef
     # @param [String] arg
     # @return [String]
     #
-    def jvm_options(arg=nil)
+    def jvm_options(arg = nil)
       set_or_return(:jvm_options, arg, kind_of: String)
     end
-
   end
 end
 
@@ -96,8 +96,8 @@ end
 #
 #
 class Chef
+  #
   class Provider::JenkinsSSHSlave < Provider::JenkinsSlave
-
     def load_current_resource
       @current_resource ||= Resource::JenkinsSSHSlave.new(new_resource.name)
 
@@ -143,9 +143,9 @@ class Chef
     # @see Chef::Resource::JenkinsSlave#attribute_to_property_map
     #
     def attribute_to_property_map
-      map = {host: 'slave.launcher.host',
-             port: 'slave.launcher.port',
-             jvm_options: 'slave.launcher.jvmOptions'}
+      map = { host: 'slave.launcher.host',
+              port: 'slave.launcher.port',
+              jvm_options: 'slave.launcher.jvmOptions' }
       if new_resource.credentials.match(UUID_REGEX)
         map[:credentials] = 'slave.launcher.credentialsId'
       else
@@ -153,6 +153,5 @@ class Chef
       end
       map
     end
-
   end
 end

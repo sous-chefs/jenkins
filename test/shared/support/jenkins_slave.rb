@@ -50,7 +50,7 @@ module Serverspec
 
       def has_availability?(availability)
         # returns something like `hudson.slaves.RetentionStrategy$Always`
-        retention_class = try { xml.elements['//retentionStrategy'].attributes["class"] }
+        retention_class = try { xml.elements['//retentionStrategy'].attributes['class'] }
         type = retention_class.split('$').last
         availability.downcase === type.downcase
       end
@@ -64,7 +64,7 @@ module Serverspec
       end
 
       def has_environment?(environment)
-        environment.all? do |k,v|
+        environment.all? do |k, v|
           value_in_jenkins = REXML::XPath.first(xml,
                                                 "//*/string[text()='#{k}']/following-sibling::string[1]").text
           v.to_s === value_in_jenkins
@@ -128,7 +128,7 @@ module Serverspec
       end
 
       def credentials_xml_for_id(credentials_id)
-        contents = ::File.read("/var/lib/jenkins/credentials.xml")
+        contents = ::File.read('/var/lib/jenkins/credentials.xml')
         doc = REXML::Document.new(contents)
         REXML::XPath.first(doc, "//*[id/text() = '#{credentials_id}']/")
       rescue Errno::ENOENT

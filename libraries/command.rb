@@ -23,6 +23,7 @@
 #
 #
 class Chef
+  #
   class Resource::JenkinsCommand < Resource
     identity_attr :command
 
@@ -56,6 +57,7 @@ end
 #
 #
 class Chef
+  #
   class Provider::JenkinsCommand < Provider
     include Jenkins::Helper
 

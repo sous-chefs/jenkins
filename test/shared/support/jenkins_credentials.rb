@@ -33,7 +33,7 @@ module Serverspec
         !(try { xml.elements['password'].text }).nil?
       end
 
-      def has_private_key?(private_key, passphrase=nil)
+      def has_private_key?(private_key, passphrase = nil)
         pk_in_jenkins = xml.elements['privateKeySource/privateKey'].text
 
         if pk_in_jenkins
@@ -53,7 +53,7 @@ module Serverspec
       def xml
         return @xml if @xml
 
-        contents = ::File.read("/var/lib/jenkins/credentials.xml")
+        contents = ::File.read('/var/lib/jenkins/credentials.xml')
         doc = REXML::Document.new(contents)
         @xml = REXML::XPath.first(doc, "//*[username/text() = '#{username}']/")
       rescue Errno::ENOENT

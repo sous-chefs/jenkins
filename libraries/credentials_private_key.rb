@@ -25,8 +25,8 @@ require_relative 'slave'
 #
 #
 class Chef
+  #
   class Resource::JenkinsPrivateKeyCredentials < Resource::JenkinsCredentials
-
     provides :jenkins_private_key_credentials
 
     def initialize(name, run_context = nil)
@@ -69,6 +69,7 @@ end
 #
 #
 class Chef
+  #
   class Provider::JenkinsPrivateKeyCredentials < Provider::JenkinsCredentials
     def load_current_resource
       @current_resource ||= Resource::JenkinsPrivateKeyCredentials.new(new_resource.name)

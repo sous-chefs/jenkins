@@ -26,6 +26,7 @@ require 'chef/provider'
 #
 #
 class Chef
+  #
   class Resource::JenkinsSlave < Resource
     identity_attr :name
 
@@ -188,7 +189,7 @@ class Chef
     # @example Ruby 1.8 style Hash
     #   {'ENV_VARIABLE' => 'VALUE'}
     #
-    def environment(arg=nil)
+    def environment(arg = nil)
       set_or_return(:environment, arg, kind_of: Hash)
     end
 
@@ -238,6 +239,7 @@ end
 #
 #
 class Chef
+  #
   class Provider::JenkinsSlave < Provider
     require 'json'
 
@@ -260,7 +262,7 @@ class Chef
     # Create the given slave.
     #
     def action_create
-      if current_resource.exists? && has_correct_config?
+      if current_resource.exists? && correct_config?
         Chef::Log.debug("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
@@ -330,7 +332,7 @@ class Chef
     def action_delete
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
-          executor.execute!("delete-node", new_resource.name)
+          executor.execute!('delete-node', new_resource.name)
         end
       else
         Chef::Log.debug("#{new_resource} does not exist - skipping")
@@ -345,7 +347,7 @@ class Chef
         Chef::Log.debug("#{new_resource} connected - skipping")
       else
         converge_by("Connect #{new_resource}") do
-          executor.execute!("connect-node", new_resource.name)
+          executor.execute!('connect-node', new_resource.name)
         end
       end
     end
@@ -356,7 +358,7 @@ class Chef
     def action_disconnect
       if current_resource.connected?
         converge_by("Disconnect #{new_resource}") do
-          executor.execute!("disconnect-node", new_resource.name)
+          executor.execute!('disconnect-node', new_resource.name)
         end
       else
         Chef::Log.debug("#{new_resource} not connected - skipping")
@@ -371,7 +373,7 @@ class Chef
         Chef::Log.debug("#{new_resource} online - skipping")
       else
         converge_by("Online #{new_resource}") do
-          executor.execute!("online-node", new_resource.name)
+          executor.execute!('online-node', new_resource.name)
         end
       end
     end
@@ -384,7 +386,7 @@ class Chef
         converge_by("Offline #{new_resource}") do
           command_pieces  = [new_resource.name]
           command_pieces << "-m '#{new_resource.offline_reason}'" if new_resource.offline_reason
-          executor.execute!("offline-node", command_pieces)
+          executor.execute!('offline-node', command_pieces)
         end
       else
         Chef::Log.debug("#{new_resource} offline - skipping")
@@ -420,7 +422,7 @@ class Chef
     # @return [String]
     #
     def launcher_groovy
-      raise NotImplementedError, 'You must implement #launcher_groovy.'
+      fail NotImplementedError, 'You must implement #launcher_groovy.'
     end
 
     #
@@ -512,7 +514,7 @@ class Chef
     #
     # @return [Boolean]
     #
-    def has_correct_config?
+    def correct_config?
       wanted_slave = {
         name: new_resource.name,
         description: new_resource.description,
@@ -553,7 +555,7 @@ class Chef
       @auto_labels << node['platform'] # ubuntu
       @auto_labels << node['platform_family'] # debian
       @auto_labels << node['platform_version'] # 10.04
-      @auto_labels << [ node['platform'], node['platform_version']].join('-') # ubuntu-10.04
+      @auto_labels << [node['platform'], node['platform_version']].join('-') # ubuntu-10.04
       @auto_labels << node['kernel']['machine'] # x86_64
       @auto_labels << node['os'] # linux
       @auto_labels << node['os_version'] # 2.6.32-38-server
