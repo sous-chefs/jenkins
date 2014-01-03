@@ -3,6 +3,7 @@
 #
 module Serverspec
   module Type
+    # rubocop:disable PredicateName, CaseEquality
     class JenkinsSlave < Base
       require 'json'
       require 'net/http'

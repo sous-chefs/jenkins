@@ -3,6 +3,7 @@
 #
 module Serverspec
   module Type
+    # rubocop:disable PredicateName, CaseEquality
     class JenkinsCredentials < Base
       require 'openssl'
       require 'rexml/document'
