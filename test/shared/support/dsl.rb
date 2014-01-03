@@ -13,6 +13,10 @@ module RSpec
         Serverspec::Type::JenkinsPlugin.new(name)
       end
 
+      def jenkins_slave(name)
+        Serverspec::Type::JenkinsSlave.new(name)
+      end
+
       def jenkins_user(id)
         Serverspec::Type::JenkinsUser.new(id)
       end

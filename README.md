@@ -291,6 +291,133 @@ end
 
 **NOTE** You may need to restart the Jenkins server after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins servers differently) this LWRP does **NOT** restart Jenkins for you.
 
+### jenkins_slave
+This resource manages Jenkins slaves, supporting the following actions:
+
+    :create, :delete, :connect, :disconnect, :online, :offline
+
+The following slave launch methods are supported:
+
+* __JNLP/Java Web Start__ - Starts a slave by launching an agent program through JNLP. The launch in this case is initiated by the slave, thus slaves need not be IP reachable from the master (e.g. behind the firewall.) It is still possible to start a launch without GUI, for example as a Windows service.
+* __SSH__ - Jenkins has a built-in SSH client implementation that it can use to talk to remote `sshd` daemon and start a slave agent. This is the most convenient and preferred method for Unix slaves, which normally has `sshd` out-of-the-box.
+* __Command__ - Starts a slave by having Jenkins execute a command from the master. Use this when the master is capable of remotely executing a process on a slave, such as through ssh/rsh.
+
+The `jenkins_slave` resource is actually the base resource for several resources that map directly back to a launch method:
+
+* `jenkins_jnlp_slave`
+* `jenkins_ssh_slave`
+* `jenkins_command_slave`
+
+The `:create` action idempotely creates a Jenkins slave on the master. The name attribute corresponds to the name of the slave (which is also used to uniquely identify the slave).
+
+```ruby
+# Create a basic JNLP slave
+jenkins_jnlp_slave 'grimlock' do
+  description 'full of cesium salami'
+  remote_fs '/home/jenkins'
+  labels ['transformer', 'autobot', 'dinobot']
+end
+
+# Create a slave launched via SSH
+jenkins_ssh_slave 'starscream' do
+  description 'should be the leader'
+  remote_fs '/home/starscream'
+  labels %w{ transformer decepticon seeker }
+  # SSH specific attributes
+  host 'localhost'
+  username 'starscream'
+end
+
+# A slave's executors, usage mode and availability can also be configured
+jenkins_jnlp_slave 'soundwave' do
+  description 'casettes are still cool'
+  remote_fs '/home/jenkins'
+  executors 5
+  usage_mode 'exclusive'
+  availability 'demand'
+  in_demand_delay 1
+  idle_delay 3
+  labels %w{ transformer decepticon badass }
+end
+
+# Create a slave with a full environment
+jenkins_jnlp_slave 'shrapnel' do
+  description 'bugs are cool'
+  remote_fs '/home/jenkins'
+  labels %w{ transformer decepticon insecticon }
+  environment(
+    FOO: 'bar',
+    BAZ: 'qux'
+  )
+end
+```
+
+The `:delete` action idempotently removes a slave from the cluster. You can use the base `jenkins_slave` resource or any of it's children to perform the deletion.
+
+```ruby
+jenkins_slave 'grimlock' do
+  action :delete
+end
+
+jenkins_ssh_slave 'starscream' do
+  action :delete
+end
+```
+
+The `:connect` action idempotently forces the master to reconnect to the specified slave. You can use the base `jenkins_slave` resource or any of it's children to perform the connection.
+
+```ruby
+jenkins_slave 'grimlock' do
+  action :connect
+end
+
+jenkins_ssh_slave 'starscream' do
+  action :connect
+end
+```
+
+The `:disconnect` action idempotently forces the master to disconnect the specified slave. You can use the base `jenkins_slave` resource or any of it's children to perform the connection.
+
+```ruby
+jenkins_slave 'grimlock' do
+  action :disconnect
+end
+
+jenkins_ssh_slave 'starscream' do
+  action :disconnect
+end
+```
+
+The `:online` action idempotently brings a slave back online. You can use the base `jenkins_slave` resource or any of it's children to bring the slave online.
+
+```ruby
+jenkins_slave 'grimlock' do
+  action :online
+end
+
+jenkins_ssh_slave 'starscream' do
+  action :online
+end
+```
+
+The `:offline` action idempotently takes a slave temporarily offline. An optional reason for going offline can be provided with the `offline_reason` attribute. You can use the base `jenkins_slave` resource or any of it's children to take a slave offline.
+
+```ruby
+jenkins_slave 'grimlock' do
+  action :offline
+end
+
+jenkins_ssh_slave 'starscream' do
+  offline_reason 'ran out of energon'
+  action :offline
+end
+```
+
+**NOTE** It's worth noting the somewhat confusing differences between _disconnecting_ and _off-lining_ a slave:
+
+* __Disconnect__ - Instantly closes the channel of communication between the master and slave. Currently executing jobs will be terminated immediately. If a slave is configured with an availability of `always` the master will attempt to reconnect to the slave.
+* __Offline__ - Keeps the channel of communication between the master and slave open. Currently executing jobs will be allowed to finish, but no new jobs will be scheduled on the slave.
+
 ### jenkins_user
 This resource manages Jenkins users, supporting the following actions:
 
