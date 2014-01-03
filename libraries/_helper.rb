@@ -100,6 +100,22 @@ module Jenkins
       end
     end
 
+    #
+    # Helper which given a Hash converts any blank string values to nil. This
+    # is useful in Ruby -> Groovy -> Jenkins conversion where values that are
+    # serialized as nil/null are sometimes converted to empty strings.
+    #
+    # @param [Hash] hash
+    # @return [Hash]
+    #
+    def convert_blank_values_to_nil(hash)
+      mapped_hash = hash.dup.map do |k, v|
+        v = nil if v.kind_of?(String) && v.empty?
+        [k, v]
+      end
+      Hash[mapped_hash]
+    end
+
     private
     #
     # The path to the private key for the Jenkins master on disk. This method

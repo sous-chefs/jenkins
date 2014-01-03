@@ -503,12 +503,7 @@ class Chef
 
       # Values that were serialized as nil/null are deserialized as an
       # empty string! :( Let's ensure we convert back to nil.
-      @current_slave = Hash[@current_slave.map do |k,v|
-                         if v.kind_of?(String) && v.empty?
-                           v = nil
-                         end
-                         [k, v]
-                       end]
+      @current_slave = convert_blank_values_to_nil(@current_slave)
     end
 
     #
