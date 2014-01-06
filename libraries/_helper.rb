@@ -206,29 +206,5 @@ module Jenkins
       remote_file.mode('0755')
       remote_file.run_action(:create)
     end
-
-    #
-    # The path to the +slave.jar+ on disk (which may or may not exist).
-    #
-    # @return [String]
-    #
-    def slave_jar
-      File.join(Chef::Config[:file_cache_path], 'slave.jar')
-    end
-
-    #
-    # Idempotently download the remote +slave.jar+ file for the Jenkins
-    # server. This method will raise an exception if the Jenkins master is
-    # unavailable or is not accepting requests.
-    #
-    def ensure_slave_jar_present!
-      source = File.join(url, 'jnlpJars', 'slave.jar')
-
-      remote_file = Chef::Resource::RemoteFile.new(cli, run_context)
-      remote_file.source(source)
-      remote_file.backup(false)
-      remote_file.mode('0755')
-      remote_file.run_action(:create)
-    end
   end
 end

@@ -21,6 +21,7 @@
 
 require 'chef/resource'
 require 'chef/provider'
+require 'json'
 
 #
 #
@@ -28,7 +29,7 @@ require 'chef/provider'
 class Chef
   #
   class Resource::JenkinsSlave < Resource
-    identity_attr :name
+    identity_attr :slave_name
 
     attr_writer :exists
     attr_writer :connected
@@ -46,13 +47,15 @@ class Chef
                             :online, :offline)
 
       # Set the name attribute and default attributes
-      @name            = name
+      @slave_name      = name
       @remote_fs       = '/home/jenkins'
       @executors       = 1
       @usage_mode      = 'normal'
       @labels          = []
       @in_demand_delay = 0
       @idle_delay      = 1
+      @user            = 'jenkins'
+      @group           = 'jenkins'
 
       # State attributes that are set by the provider
       @exists    = false
@@ -61,13 +64,13 @@ class Chef
     end
 
     #
-    # The name of the slave.
+    # The slave_name of the slave.
     #
     # @param [String] arg
     # @return [String]
     #
-    def name(arg = nil)
-      set_or_return(:name, arg, kind_of: String)
+    def slave_name(arg = nil)
+      set_or_return(:slave_name, arg, kind_of: String)
     end
 
     #
@@ -204,6 +207,48 @@ class Chef
     end
 
     #
+    # The user that the slave process runs as.
+    #
+    # @param [String] arg
+    # @return [String]
+    #
+    def user(arg = nil)
+      set_or_return(
+        :user,
+        arg,
+        kind_of: String,
+        regex: Chef::Config[:user_valid_regex]
+      )
+    end
+
+    #
+    # Group slave prcess runs as. On *nix systems the group will be
+    # created if it does not exist.
+    #
+    # @param [String] arg
+    # @return [String]
+    #
+    def group(arg = nil)
+      set_or_return(
+        :group,
+        arg,
+        kind_of: String,
+        regex: Chef::Config[:group_valid_regex]
+      )
+    end
+
+    #
+    # Additional tuning parameters to pass the JVM process used to
+    # launch the slave.
+    #
+    # @param [String] arg
+    # @return [String]
+    #
+    def jvm_options(arg = nil)
+      set_or_return(:jvm_options, arg, kind_of: String)
+    end
+
+    #
     # Determine if the slave exists on the master. This value is set by
     # the provider when the current resource is loaded.
     #
@@ -241,8 +286,6 @@ end
 class Chef
   #
   class Provider::JenkinsSlave < Provider
-    require 'json'
-
     include Jenkins::Helper
 
     #
@@ -318,7 +361,7 @@ class Chef
             #{launcher_groovy}
 
             // Build the slave object
-            slave = new DumbSlave(#{convert_to_groovy(new_resource.name)},
+            slave = new DumbSlave(#{convert_to_groovy(new_resource.slave_name)},
                                   #{convert_to_groovy(new_resource.description)},
                                   #{convert_to_groovy(new_resource.remote_fs)},
                                   #{convert_to_groovy(new_resource.executors.to_s)},
@@ -344,7 +387,7 @@ class Chef
     def action_delete
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
-          executor.execute!('delete-node', new_resource.name)
+          executor.execute!('delete-node', new_resource.slave_name)
         end
       else
         Chef::Log.debug("#{new_resource} does not exist - skipping")
@@ -359,7 +402,7 @@ class Chef
         Chef::Log.debug("#{new_resource} connected - skipping")
       else
         converge_by("Connect #{new_resource}") do
-          executor.execute!('connect-node', new_resource.name)
+          executor.execute!('connect-node', new_resource.slave_name)
         end
       end
     end
@@ -370,7 +413,7 @@ class Chef
     def action_disconnect
       if current_resource.connected?
         converge_by("Disconnect #{new_resource}") do
-          executor.execute!('disconnect-node', new_resource.name)
+          executor.execute!('disconnect-node', new_resource.slave_name)
         end
       else
         Chef::Log.debug("#{new_resource} not connected - skipping")
@@ -385,7 +428,7 @@ class Chef
         Chef::Log.debug("#{new_resource} online - skipping")
       else
         converge_by("Online #{new_resource}") do
-          executor.execute!('online-node', new_resource.name)
+          executor.execute!('online-node', new_resource.slave_name)
         end
       end
     end
@@ -396,7 +439,7 @@ class Chef
     def action_offline
       if current_resource.online?
         converge_by("Offline #{new_resource}") do
-          command_pieces  = [new_resource.name]
+          command_pieces  = [new_resource.slave_name]
           command_pieces << "-m '#{new_resource.offline_reason}'" if new_resource.offline_reason
           executor.execute!('offline-node', command_pieces)
         end
@@ -436,6 +479,88 @@ class Chef
       {}
     end
 
+    #
+    # The path (url) of the +slave.jar+ on the Jenkins master.
+    #
+    # @return [String]
+    #
+    def slave_jar_url
+      path = ::File.join('jnlpJars', 'slave.jar')
+      URI.join(url, path).to_s
+    end
+
+    #
+    # The path to the +slave.jar+ on disk (which may or may not exist).
+    #
+    # @return [String]
+    #
+    def slave_jar
+      ::File.join(Chef::Config[:file_cache_path], 'slave.jar')
+    end
+
+    # Embedded Resources
+
+    #
+    # Creates a `group` resource that represents the system group
+    # specified the `group` attribute. The caller will need to call
+    # `run_action` on the resource.
+    #
+    # @return [Chef::Resource::Group]
+    #
+    def group_resource
+      return @group_resource if @group_resource
+      @group_resource = Chef::Resource::Group.new(new_resource.group, run_context)
+      @group_resource
+    end
+
+    #
+    # Creates a `user` resource that represents the system user
+    # specified the `user` attribute. The caller will need to call
+    # `run_action` on the resource.
+    #
+    # @return [Chef::Resource::User]
+    #
+    def user_resource
+      return @user_resource if @user_resource
+      @user_resource = Chef::Resource::User.new(new_resource.user, run_context)
+      @user_resource.gid(new_resource.group)
+      @user_resource.comment('Jenkins slave user - Created by Chef')
+      @user_resource.home(new_resource.remote_fs)
+      @user_resource
+    end
+
+    #
+    # Creates a `directory` resource that represents the directory
+    # specified the `remote_fs` attribute. The caller will need to call
+    # `run_action` on the resource.
+    #
+    # @return [Chef::Resource::Directory]
+    #
+    def remote_fs_dir_resource
+      return @remote_fs_dir_resource if @remote_fs_dir_resource
+      @remote_fs_dir_resource = Chef::Resource::Directory.new(new_resource.remote_fs, run_context)
+      @remote_fs_dir_resource.owner(new_resource.user)
+      @remote_fs_dir_resource.group(new_resource.group)
+      @remote_fs_dir_resource.recursive(true)
+      @remote_fs_dir_resource
+    end
+
+    #
+    # Creates a `remote_file` resource that represents the remote
+    # +slave.jar+ file on the Jenkins master. The caller will need to
+    # call `run_action` on the resource.
+    #
+    # @return [Chef::Resource::RemoteFile]
+    #
+    def slave_jar_resource
+      return @slave_jar_resource if @slave_jar_resource
+      @slave_jar_resource = Chef::Resource::RemoteFile.new(slave_jar, run_context)
+      @slave_jar_resource.source(slave_jar_url)
+      @slave_jar_resource.backup(false)
+      @slave_jar_resource.mode('0755')
+      @slave_jar_resource
+    end
+
     private
 
     #
@@ -457,7 +582,7 @@ class Chef
         import jenkins.model.*
         import jenkins.slaves.*
 
-        slave = Jenkins.instance.getNode('#{new_resource.name}') as Slave
+        slave = Jenkins.instance.getNode('#{new_resource.slave_name}') as Slave
 
         if(slave == null) {
           return null
@@ -510,7 +635,7 @@ class Chef
     #
     def correct_config?
       wanted_slave = {
-        name: new_resource.name,
+        name: new_resource.slave_name,
         description: new_resource.description,
         remote_fs: new_resource.remote_fs,
         executors: new_resource.executors,

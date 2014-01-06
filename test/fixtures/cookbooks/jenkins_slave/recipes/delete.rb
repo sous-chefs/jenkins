@@ -5,14 +5,23 @@ include_recipe 'jenkins_slave::create'
 
 %w{
   grimlock
-  starscream
-  skywarp
-  thundercracker
   soundwave
   shrapnel
 }.each do |slave_name|
 
-  jenkins_slave slave_name do
+  jenkins_jnlp_slave slave_name do
+    action :delete
+  end
+
+end
+
+%w{
+  starscream
+  skywarp
+  thundercracker
+}.each do |slave_name|
+
+  jenkins_ssh_slave slave_name do
     action :delete
   end
 

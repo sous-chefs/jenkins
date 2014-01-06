@@ -320,7 +320,7 @@ end
 jenkins_ssh_slave 'starscream' do
   description 'should be the leader'
   remote_fs '/home/starscream'
-  labels %w{ transformer decepticon seeker }
+  labels ['transformer', 'decepticon', 'seeker']
   # SSH specific attributes
   host 'localhost'
   username 'starscream'
@@ -335,14 +335,14 @@ jenkins_jnlp_slave 'soundwave' do
   availability 'demand'
   in_demand_delay 1
   idle_delay 3
-  labels %w{ transformer decepticon badass }
+  labels ['transformer', 'decepticon', 'badass']
 end
 
 # Create a slave with a full environment
 jenkins_jnlp_slave 'shrapnel' do
   description 'bugs are cool'
   remote_fs '/home/jenkins'
-  labels %w{ transformer decepticon insecticon }
+  labels ['transformer', 'decepticon', 'insecticon']
   environment(
     FOO: 'bar',
     BAZ: 'qux'
@@ -350,10 +350,10 @@ jenkins_jnlp_slave 'shrapnel' do
 end
 ```
 
-The `:delete` action idempotently removes a slave from the cluster. You can use the base `jenkins_slave` resource or any of it's children to perform the deletion.
+The `:delete` action idempotently removes a slave from the cluster. Any services used to manage the underlying slave process will also be disabled.
 
 ```ruby
-jenkins_slave 'grimlock' do
+jenkins_jnlp_slave 'grimlock' do
   action :delete
 end
 
