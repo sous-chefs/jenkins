@@ -136,19 +136,64 @@ jenkins_command 'quiet-down'
 
 **NOTE** You must add your own `not_if`/`only_if` guards to the `jenkins_command` to prevent duplicate commands from executing. Just like Chef's core `execute` resource, the `jenkins_command` resource has no way of being idempotent.
 
-### jenkins_node
-This resource can be used to configure nodes as the `node_ssh` and `node_windows` recipes do or "Launch slave via execution of command on the Master":
+### jenkins_credentials
+This resource manages Jenkins credentials, supporting the following actions:
+
+    :create, :delete
+
+The following type of credentials are supported:
+
+* __Password__ - Basic username + password credentials.
+* __Private Key__ - Credentials that use a username + private key (optionally protected with a passphrase).
+
+The `jenkins_credentials` resource is actually the base resource for several resources that map directly back to a credentials type:
+
+* `jenkins_password_credentials`
+* `jenkins_private_key_credentials`
+
+This uses the Jenkins Groovy API to create/delete credentials. It also supports whyrun mode.
+
+The `:create` action idempotently creates a set of Jenkins credentials on the current node. The `username` attribute (also the name attribute) corresponds to the username of the credentials on the target node. You may also specify a `description` which is useful in credential identification.
 
 ```ruby
-jenkins_node node['fqdn'] do
-  description  'My node for things, stuff and whatnot'
-  executors    5
-  remote_fs    '/var/jenkins'
-  launcher     'command'
-  command      "ssh -i my_key #{node[:fqdn]} java -jar #{remote_fs}/slave.jar"
-  env          'ANT_HOME' => '/usr/local/ant', 'M2_REPO' => '/dev/null'
+# Create password credentials
+jenkins_credentials 'weaksauce' do
+  description 'passwords are for suckers'
+  password 'superseekret'
+end
+
+# Create private key credentials
+jenkins_private_key_credentials 'neckbeard' do
+  description 'this is more like it'
+  private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
+end
+
+# Private keys with a passphrase will also work
+jenkins_private_key_credentials 'super_neckbeard' do
+  description 'can haz passphrase'
+  private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
+  passphrase 'secret'
 end
 ```
+
+The `:delete` action idempotently removes a set of Jenkins credentials from the system. You can use the base `jenkins_credentials` resource or any of it's children to perform the deletion.
+
+```ruby
+jenkins_credentials 'weaksauce' do
+  action :delete
+end
+
+jenkins_private_key_credentials 'neckbeard' do
+  action :delete
+end
+```
+
+**NOTE** Credentials in Jenkins can be created with 2 different "scopes" which determines where the credentials can be used:
+
+* __GLOBAL__ - This credential is available to the object on which the credential is associated and all objects that are children of that object. Typically you would use global-scoped credentials for things that are needed by jobs.
+* __SYSTEM__ - This credential is only available to the object on which the credential is associated. Typically you would use system-scoped credentials for things like email auth, slave connection, etc, i.e. where the Jenkins instance itself is using the credential. Unlike the global scope, this significantly restricts where the credential can be used, thereby providing a higher degree of confidentiality to the credential.
+
+The credentials created with the `jenkins_credentials` are assigned a `GLOBAL` scope.
 
 ### jenkins_job
 This resource manages Jenkins jobs, supporting the following actions:

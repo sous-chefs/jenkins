@@ -23,6 +23,14 @@ suites:
     run_list: jenkins_command::execute
 
   #
+  # Credentials suites
+  #
+  - name: jenkins_credentials_create
+    run_list: jenkins_credentials::create
+  - name: jenkins_credentials_delete
+    run_list: jenkins_credentials::delete
+
+  #
   # Job suites
   #
   - name: jenkins_job_create

@@ -21,6 +21,9 @@
 
 module Jenkins
   module Helper
+
+    UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/
+
     #
     # Helper method for creating an accessing a new {Jenkins::Executor} from
     # the node object. Since the {Jenkins::Executor} is a pure Ruby class and
@@ -41,6 +44,60 @@ module Jenkins
       end
 
       Jenkins::Executor.new(options)
+    end
+
+    #
+    # A Groovy snippet that will set the requested local Groovy variable
+    # to an instance of the credentials represented by `username`.
+    # Returns the Groovy `null` if no credentials are found.
+    #
+    # @param [String] username
+    # @param [String] groovy_variable_name
+    # @return [String]
+    #
+    def credentials_for_username_groovy(username, groovy_variable_name)
+      <<-EOH.gsub(/ ^{8}/, '')
+        import jenkins.model.*
+        import com.cloudbees.plugins.credentials.*
+        import com.cloudbees.plugins.credentials.common.*
+        import com.cloudbees.plugins.credentials.domains.*;
+
+        username_matcher = CredentialsMatchers.withUsername("#{username}")
+        available_credentials = CredentialsProvider.lookupCredentials(StandardUsernameCredentials.class,
+                                                                      Jenkins.getInstance(),
+                                                                      hudson.security.ACL.SYSTEM,
+                                                                      new SchemeRequirement("ssh"))
+
+        #{groovy_variable_name} = CredentialsMatchers.firstOrNull(available_credentials,
+                                                                  username_matcher)
+      EOH
+    end
+
+    #
+    # Helper method for converting a Ruby value to it's equivalent in
+    # Groovy.
+    #
+    # @return [String]
+    #
+    def convert_to_groovy(val)
+      case val
+      when nil
+        'null'
+      when String
+        %Q{"#{val}"}
+      when Array
+        list_members = val.map do |v|
+          convert_to_groovy(v)
+        end
+        "[#{list_members.join(',')}]"
+      when Hash
+        map_members = val.map do |k, v|
+          %Q("#{k}":#{convert_to_groovy(v)})
+        end
+        "[#{map_members.join(',')}]"
+      else # Integer, TrueClass/FalseClass etc.
+        val
+      end
     end
 
     private
