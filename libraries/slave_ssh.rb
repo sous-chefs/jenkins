@@ -101,7 +101,6 @@ class Chef
     def load_current_resource
       @current_resource ||= Resource::JenkinsSSHSlave.new(new_resource.name)
 
-      set_base_attributes
 
       if current_slave
         @current_resource.host(current_slave[:host])

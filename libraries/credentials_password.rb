@@ -57,11 +57,11 @@ class Chef
     def load_current_resource
       @current_resource ||= Resource::JenkinsPasswordCredentials.new(new_resource.name)
 
-      set_base_attributes
-
       if current_credentials
         @current_resource.password(current_credentials[:password])
       end
+
+      super
     end
 
     protected

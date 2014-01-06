@@ -113,7 +113,12 @@ class Chef
     def load_current_resource
       @current_resource ||= Resource::JenkinsCredentials.new(new_resource.name)
 
-      set_base_attributes
+      if current_credentials
+        @current_resource.exists = true
+        @current_resource.id(current_credentials[:id])
+        @current_resource.description(current_credentials[:description])
+        @current_resource.username(current_credentials[:username])
+      end
     end
 
     #
@@ -185,20 +190,6 @@ class Chef
     end
 
     protected
-
-    #
-    # Helper method for setting base attributes on current_credentials
-    # instance. This should be called from a descendant's
-    # `#load_current_resource` method.
-    #
-    def set_base_attributes
-      if current_credentials
-        @current_resource.exists = true
-        @current_resource.id(current_credentials[:id])
-        @current_resource.description(current_credentials[:description])
-        @current_resource.username(current_credentials[:username])
-      end
-    end
 
     #
     # Returns a Groovy snippet that creates an instance of the

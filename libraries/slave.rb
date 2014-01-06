@@ -255,7 +255,19 @@ class Chef
     def load_current_resource
       @current_resource ||= Resource::JenkinsSlave.new(new_resource.name)
 
-      set_base_attributes
+      if current_slave
+        @current_resource.exists     = true
+        @current_resource.connected  = current_slave[:connected]
+        @current_resource.online     = current_slave[:online]
+
+        @current_resource.slave_name(new_resource.slave_name)
+        @current_resource.description(current_slave[:description])
+        @current_resource.remote_fs(current_slave[:remote_fs])
+        @current_resource.executors(current_slave[:executors])
+        @current_resource.labels(current_slave[:labels])
+      end
+
+      @current_resource
     end
 
     #
@@ -394,24 +406,6 @@ class Chef
     end
 
     protected
-
-    #
-    # Helper method for setting base attributes on current_slave
-    # instance. This should be called from a descendant's
-    # `#load_current_resource` method.
-    #
-    def set_base_attributes
-      if current_slave
-        @current_resource.exists    = true
-        @current_resource.connected = current_slave[:connected]
-        @current_resource.online    = current_slave[:online]
-
-        @current_resource.description(current_slave[:description])
-        @current_resource.remote_fs(current_slave[:remote_fs])
-        @current_resource.executors(current_slave[:executors])
-        @current_resource.labels(current_slave[:labels])
-      end
-    end
 
     #
     # Returns a Groovy snippet that creates an instance of the slave's

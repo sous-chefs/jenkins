@@ -74,7 +74,7 @@ class Chef
     def load_current_resource
       @current_resource ||= Resource::JenkinsPrivateKeyCredentials.new(new_resource.name)
 
-      set_base_attributes
+      super
 
       if current_credentials
         @current_resource.private_key(current_credentials[:private_key])
