@@ -330,7 +330,7 @@ class Chef
             availability = #{convert_to_groovy(new_resource.availability)}
             usage_mode = #{convert_to_groovy(new_resource.usage_mode)}
             env_map = #{convert_to_groovy(new_resource.environment)}
-            labels = #{convert_to_groovy((auto_labels + new_resource.labels).sort.join("\s"))}
+            labels = #{convert_to_groovy(new_resource.labels.sort.join("\s"))}
 
             // Compute the usage mode
             if (usage_mode == 'normal') {
@@ -667,28 +667,6 @@ class Chef
         c.delete(:connected)
         c.delete(:online)
       end == wanted_slave
-    end
-
-    #
-    # Generates a set of useful labels based on the current `node`
-    # object.
-    #
-    # @return [Array<String>]
-    #
-    def auto_labels
-      return @auto_labels if @auto_labels
-
-      @auto_labels  = []
-      @auto_labels << node['platform'] # ubuntu
-      @auto_labels << node['platform_family'] # debian
-      @auto_labels << node['platform_version'] # 10.04
-      @auto_labels << [node['platform'], node['platform_version']].join('-') # ubuntu-10.04
-      @auto_labels << node['kernel']['machine'] # x86_64
-      @auto_labels << node['os'] # linux
-      @auto_labels << node['os_version'] # 2.6.32-38-server
-      @auto_labels << node['virtualization']['system'] if node.attribute?('virtualization') # xen
-      @auto_labels += node['tags']
-      @auto_labels.flatten.sort
     end
   end
 end
