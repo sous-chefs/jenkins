@@ -405,7 +405,7 @@ class Chef
     #
     def action_connect
       if current_resource.exists? && current_resource.connected?
-        Chef::Log.debug("#{new_resource} connected - skipping")
+        Chef::Log.debug("#{new_resource} already connected - skipping")
       else
         converge_by("Connect #{new_resource}") do
           executor.execute!('connect-node', new_resource.slave_name)
@@ -422,7 +422,7 @@ class Chef
           executor.execute!('disconnect-node', new_resource.slave_name)
         end
       else
-        Chef::Log.debug("#{new_resource} not connected - skipping")
+        Chef::Log.debug("#{new_resource} already disconnected - skipping")
       end
     end
 
@@ -431,7 +431,7 @@ class Chef
     #
     def action_online
       if current_resource.exists? && current_resource.online?
-        Chef::Log.debug("#{new_resource} online - skipping")
+        Chef::Log.debug("#{new_resource} already online - skipping")
       else
         converge_by("Online #{new_resource}") do
           executor.execute!('online-node', new_resource.slave_name)
@@ -452,7 +452,7 @@ class Chef
           executor.execute!('offline-node', command_pieces)
         end
       else
-        Chef::Log.debug("#{new_resource} offline - skipping")
+        Chef::Log.debug("#{new_resource} already offline - skipping")
       end
     end
 
