@@ -15,15 +15,6 @@ Chef 0.10.10+ and Ohai 6.10+ for platform_family use.
 * Ubuntu
 * RHEL/CentOS
 
-### Node (Slave) Recipe
-
-Agent Flavor:
-
-* `ssh` - Any Unix platform that is running `sshd`.
-* `jnlp` - Most Unix platforms.
-* `windows` - Windows platforms only. Depends on .NET Framework.
-
-
 Attributes
 ----------
 ### Common Attributes
@@ -61,31 +52,6 @@ Attributes
 * `node['jenkins']['http_proxy']['ssl']['key_path']` - The path to your SSL key.
 * `node['jenkins']['http_proxy']['ssl']['ca_cert_path']` - If set, configures apache to use an intermediate certificate authority. Nginx does not use this attribute and expects any intermediate certificates to be appended in the same file as your SSL certificate.
 
-### Node/Slave related Attributes
-
-* `node['jenkins']['node']['agent_type']` - Type of agent to communicate with this slave/node. Valid values include `jnlp`, `ssh` and `windows`. (default is `jnlp`)
-* `node['jenkins']['node']['name']` - Name of the node within Jenkins.
-* `node['jenkins']['node']['description']` - Jenkins node description.
-* `node['jenkins']['node']['executors']` - Number of node executors.
-* `node['jenkins']['node']['home]` - Home directory ("Remote FS root") of the node.
-* `node['jenkins']['node']['labels']` - Node labels.
-* `node['jenkins']['node']['mode']` - Node usage mode, `normal` or `exclusive` (tied jobs only).
-* `node['jenkins']['node']['availability']` - `always` keeps node on-line, `demand` off-lines when idle.
-* `node['jenkins']['node']['in_demand_delay']` - number of minutes for which jobs must be waiting in the queue before attempting to launch this slave.
-* `node['jenkins']['node']['idle_delay']` - number of minutes that this slave must remain idle before taking it off-line.
-* `node['jenkins']['node']['env']` - "Node Properties" -> "Environment Variables".
-* `node['jenkins']['node']['user']` - user the slave runs as.
-* `node['jenkins']['node']['ssh_host']` - Hostname or IP Jenkins Master should connect to when launching an SSH slave.
-* `node['jenkins']['node']['ssh_port']` - SSH port Jenkins Master should connect to when launching a slave.
-* `node['jenkins']['node']['ssh_user']` - SSH slave user name (only required if Jenkins server and slave user is different).
-* `node['jenkins']['node']['ssh_pass']` - SSH slave password (not required when server is installed via `jenkins::server` recipe).
-* `node['jenkins']['node']['ssh_private_key']` - Jenkins Master defaults to: `JENKINS_HOME/.ssh/id_rsa` (created by the `jenkins::server` recipe).
-* `node['jenkins']['node']['jvm_options']` - Additional tuning parameters to pass the underlying JVM process.
-
-### Windows Node/Slave related Attributes
-
-* `node['jenkins']['node']['winsw_url']` - The url for the winsw exe to download.
-
 Recipes
 -------
 ### server
@@ -93,14 +59,6 @@ Creates all required directories, installs Jenkins and generates an ssh private 
 
 * __package__ - Installs Jenkins from the official jenkins-ci.org packages.
 * __war__ - Downloads the latest version of the Jenkins WAR file from http://jenkins-ci. The server process is configured to run as a runit service.
-
-### node
-The type of agent that is used to communicate with the slave is determined by the attribute `node['jenkins']['node']['agent_type']`. The following agent types are supported:
-
-* __ssh__ - Creates the user and group for the Jenkins slave to run as and sets `.ssh/authorized_keys` to the `node['jenkins']['server']['pubkey']` attribute. The [jenkins-cli.jar](http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI) is downloaded from the Jenkins server and used to manage the nodes via the [groovy](http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Script+Console) cli command. Jenkins is configured to launch a slave agent on the node using it's [SSH slave plugin](http://wiki.jenkins-ci.org/display/JENKINS/SSH+Slaves+plugin).
-* __jnlp__ - Creates the user and group for the Jenkins slave to run as and `/jnlpJars/slave.jar` is downloaded from the Jenkins server. The slave process is configured to run as a runit service.
-* __windows__ - Creates the home directory for the node slave and sets `JENKINS_HOME` and `JENKINS_URL` system environment variables. The [winsw](http://weblogs.java.net/blog/2008/09/29/winsw-windows-service-wrapper-less-restrictive-license) Windows service wrapper will be downloaded and installed, along with generating `jenkins-slave.xml` from a template. Jenkins is configured with the node as a [jnlp](http://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds) slave and `/jnlpJars/slave.jar` is downloaded from the Jenkins server. The `jenkinsslave` service will be started the first time the recipe is run or if the service is not running. The 'jenkinsslave' service will be restarted if `/jnlpJars/slave.jar` has changed. The end results is functionally the same
-had you chosen the option to [Let Jenkins control this slave as a Windows service](http://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+as+a+Windows+service).
 
 ### proxy
 Installs a proxy and creates a vhost to route traffic to the installed Jenkins server. The type of HTTP proxy that is installed and configured is determined by the `node['jenkins']['http_proxy']['variant']` attribute. The following HTTP proxy variants are supported:
