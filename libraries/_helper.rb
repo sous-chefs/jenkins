@@ -20,7 +20,6 @@
 #
 
 module Jenkins
-  #
   module Helper
     # Matches Version 4 UUID per RFC 4122
     # Example: 38537014-ec66-49b5-aff2-aed1c19e2989

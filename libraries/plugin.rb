@@ -19,11 +19,7 @@
 # limitations under the License.
 #
 
-#
-#
-#
 class Chef
-  #
   class Resource::JenkinsPlugin < Resource
     identity_attr :name
 
@@ -98,13 +94,8 @@ class Chef
   end
 end
 
-#
-#
-#
 class Chef
-  #
   class Provider::JenkinsPlugin < Provider
-    #
     class PluginNotInstalled < StandardError
       def initialize(plugin, action)
         super "The Jenkins plugin `#{plugin}` is not installed. In order " \

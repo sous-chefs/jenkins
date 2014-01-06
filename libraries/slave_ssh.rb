@@ -23,11 +23,7 @@ require 'base64'
 require 'openssl'
 require_relative 'slave'
 
-#
-#
-#
 class Chef
-  #
   class Resource::JenkinsSSHSlave < Resource::JenkinsSlave
     provides :jenkins_ssh_slave
 
@@ -84,11 +80,7 @@ class Chef
   end
 end
 
-#
-#
-#
 class Chef
-  #
   class Provider::JenkinsSSHSlave < Provider::JenkinsSlave
     def load_current_resource
       @current_resource ||= Resource::JenkinsSSHSlave.new(new_resource.name)

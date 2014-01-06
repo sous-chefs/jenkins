@@ -24,7 +24,6 @@ require 'shellwords'
 require 'uri'
 
 module Jenkins
-  #
   class Executor
     #
     # The list of options passed to the executor.

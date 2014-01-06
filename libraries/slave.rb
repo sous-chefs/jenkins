@@ -23,11 +23,7 @@ require 'chef/resource'
 require 'chef/provider'
 require 'json'
 
-#
-#
-#
 class Chef
-  #
   class Resource::JenkinsSlave < Resource
     identity_attr :slave_name
 
@@ -287,11 +283,7 @@ class Chef
   end
 end
 
-#
-#
-#
 class Chef
-  #
   class Provider::JenkinsSlave < Provider
     include Jenkins::Helper
 

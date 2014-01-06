@@ -22,11 +22,7 @@
 require 'uri'
 require_relative 'slave_jnlp'
 
-#
-#
-#
 class Chef
-  #
   class Resource::JenkinsWindowsSlave < Resource::JenkinsJNLPSlave
     provides :jenkins_jnlp_slave, on_platforms: ['windows']
 
@@ -68,11 +64,7 @@ class Chef
   end
 end
 
-#
-#
-#
 class Chef
-  #
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJNLPSlave
     def load_current_resource
       @current_resource ||= Resource::JenkinsWindowsSlave.new(new_resource.name)

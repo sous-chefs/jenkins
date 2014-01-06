@@ -16,3 +16,5 @@ ClassLength:
   Enabled: false
 MethodLength:
   Enabled: false
+Documentation:
+  Enabled: false

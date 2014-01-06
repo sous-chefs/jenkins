@@ -22,11 +22,7 @@
 require 'chef/resource'
 require 'chef/provider'
 
-#
-#
-#
 class Chef
-  #
   class Resource::JenkinsCredentials < Resource
     require 'securerandom'
 
@@ -99,11 +95,7 @@ class Chef
   end
 end
 
-#
-#
-#
 class Chef
-  #
   class Provider::JenkinsCredentials < Provider
     require 'json'
     require 'openssl'

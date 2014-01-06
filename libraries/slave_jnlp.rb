@@ -22,11 +22,7 @@
 require 'uri'
 require_relative 'slave'
 
-#
-#
-#
 class Chef
-  #
   class Resource::JenkinsJNLPSlave < Resource::JenkinsSlave
     provides :jenkins_jnlp_slave
 
@@ -53,11 +49,7 @@ class Chef
   end
 end
 
-#
-#
-#
 class Chef
-  #
   class Provider::JenkinsJNLPSlave < Provider::JenkinsSlave
     def load_current_resource
       @current_resource ||= Resource::JenkinsJNLPSlave.new(new_resource.name)

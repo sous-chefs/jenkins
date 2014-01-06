@@ -19,11 +19,7 @@
 # limitations under the License.
 #
 
-#
-#
-#
 class Chef
-  #
   class Resource::JenkinsJob < Resource
     identity_attr :name
 
@@ -90,13 +86,8 @@ class Chef
   end
 end
 
-#
-#
-#
 class Chef
-  #
   class Provider::JenkinsJob < Provider
-    #
     class JobDoesNotExist < StandardError
       def initialize(job, action)
         super "The Jenkins job `#{job}` does not exist. In order to " \
