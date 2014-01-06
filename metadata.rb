@@ -6,17 +6,9 @@ description      'Installs and configures Jenkins CI server & slaves'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '1.2.3'
 
-recipe 'default', 'Does nothing'
-recipe 'iptables', 'Configures iptables to allow incoming connections to the jenkins instance'
-recipe 'node', 'Installs a Jenkins node'
-recipe 'proxy', 'Installs a web server proxy for communication with the jenkins instance'
 recipe 'server', 'Installs Jenkins server'
 
-depends 'java'
-depends 'runit', '>= 1.0.0'
-depends 'apt'
-depends 'yum'
-
-depends 'apache2'
-depends 'nginx'
-depends 'iptables'
+depends 'java',  '~> 1.17'
+depends 'runit', '~> 1.5'
+depends 'apt',   '~> 2.0'
+depends 'yum',   '~> 2.0'

@@ -16,7 +16,6 @@ Attributes
 
 * `node['jenkins']['mirror']` - Base URL for downloading all code (WAR file and plugins).
 * `node['jenkins']['java_home']` - Java install path, used for for cli commands.
-* `node['jenkins']['iptables_allow']` - If iptables is enabled, add a rule passing `node['jenkins']['server']['port']`.
 
 ### Master/Server related Attributes
 
@@ -29,23 +28,6 @@ Attributes
 * `node['jenkins']['server']['plugins']` - Download the latest version of plugins in this Array, bypassing update center. The members of the Array can either be strings if the latest version desired OR a Hash of the form
 `{'name' => 'git', 'version' => '1.4.0'}` if a specific version is required.
 * `node['jenkins']['server']['jvm_options']` - Additional tuning parameters to pass the underlying JVM process.
-* `node['jenkins']['http_proxy']['variant']` - use `nginx` or `apache2` to proxy traffic to jenkins backend (`nginx` by default)
-* `node['jenkins']['http_proxy']['www_redirect']` - add a redirect rule for 'www.*' URL requests ("disable" by default)
-* `node['jenkins']['http_proxy']['listen_ports']` - list of HTTP ports for the HTTP proxy to listen on ([80] by default).
-* `node['jenkins']['http_proxy']['host_name']` - primary vhost name for the HTTP proxy to respond to (`node['fqdn']` by default).
-* `node['jenkins']['http_proxy']['host_aliases']` - optional list of other host aliases to respond to (empty by default).
-* `node['jenkins']['http_proxy']['client_max_body_size']` - max client upload size ("1024m" by default, nginx only).
-* `node['jenkins']['http_proxy']['server_auth_method']` - Authentication with the server can be done with cas (using `apache2::mod_auth_cas`), or basic (using `htpasswd`). The default is no authentication.
-* `node['jenkins']['http_proxy']['basic_auth_username']` - Username to use for HTTP Basic Authentication.
-* `node['jenkins']['http_proxy']['basic_auth_password']` - Password to use with HTTP Basic Authentication.
-* `node['jenkins']['http_proxy']['cas_login_url']` - Login url for cas if using cas authentication.
-* `node['jenkins']['http_proxy']['cas_validate_url']` - Validation url for cas if using cas authentication.
-* `node['jenkins']['http_proxy']['cas_validate_server']` - Whether to validate the server cert. Defaults to off.
-* `node['jenkins']['http_proxy']['cas_root_proxy_url']` - If set, sets the url that the cas server redirects to after auth.
-* `node['jenkins']['http_proxy']['ssl']['enabled']` - Configures jenkins to use SSL. This cookbook expects you to provide your own certificates. You can tell Jenkins where your certificates with the below attributes.
-* `node['jenkins']['http_proxy']['ssl']['cert_path']` - The path to your SSL certificate.
-* `node['jenkins']['http_proxy']['ssl']['key_path']` - The path to your SSL key.
-* `node['jenkins']['http_proxy']['ssl']['ca_cert_path']` - If set, configures apache to use an intermediate certificate authority. Nginx does not use this attribute and expects any intermediate certificates to be appended in the same file as your SSL certificate.
 
 Recipes
 -------
@@ -54,12 +36,6 @@ Creates all required directories, installs Jenkins and generates an ssh private 
 
 * __package__ - Installs Jenkins from the official jenkins-ci.org packages.
 * __war__ - Downloads the latest version of the Jenkins WAR file from http://jenkins-ci. The server process is configured to run as a runit service.
-
-### proxy
-Installs a proxy and creates a vhost to route traffic to the installed Jenkins server. The type of HTTP proxy that is installed and configured is determined by the `node['jenkins']['http_proxy']['variant']` attribute. The following HTTP proxy variants are supported:
-
-* __apache2__
-* __nginx__
 
 
 Resource/Provider
@@ -413,7 +389,7 @@ Caveats
 If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to set a special node attribute:
 
 ```ruby
-node['jenkins']['cli']['private_key']
+node['jenkins']['executor']['private_key']
 ```
 
 The underlying executor class (which all LWRPs use) intelligently adds authentication information to the Jenkins CLI commands if this attribute is set. The method used to generate and populate this private key is left to the user:
@@ -421,11 +397,11 @@ The underlying executor class (which all LWRPs use) intelligently adds authentic
 ```ruby
 # Using search
 master = search(:node, 'fqdn:master.ci.example.com').first
-node.set['jenkins']['cli']['private_key'] = master['jenkins']['private_key']
+node.set['jenkins']['executor']['private_key'] = master['jenkins']['private_key']
 
 # Using encrypted data bags and chef-sugar
 private_key = encrypted_data_bag_item('jenkins', 'keys')['private_key']
-node.set['jenkins']['cli']['private_key'] = private_key
+node.set['jenkins']['executor']['private_key'] = private_key
 ```
 
 
@@ -433,13 +409,13 @@ node.set['jenkins']['cli']['private_key'] = private_key
 If you need to pass through a proxy server to communicate between your masters and slaves, you will need to set a special node attribute:
 
 ```ruby
-node['jenkins']['cli']['proxy']
+node['jenkins']['executor']['proxy']
 ```
 
 The underlying executor class (which all LWRPs use) intelligently passes proxy information to the Jenkins CLI commands if this attribute is set. It should be set in the form `HOST:PORT`:
 
 ```ruby
-node.set['jenkins']['cli']['proxy'] = '1.2.3.4:5678'
+node.set['jenkins']['executor']['proxy'] = '1.2.3.4:5678'
 ```
 
 

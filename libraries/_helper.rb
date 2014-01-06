@@ -132,7 +132,7 @@ module Jenkins
     # @return [String]
     #
     def private_key
-      content = node['jenkins']['cli']['private_key']
+      content = node['jenkins']['executor']['private_key']
       destination = File.join(Chef::Config[:file_cache_path], 'jenkins-key')
 
       file = Chef::Resource::File.new(destination, run_context)
@@ -150,7 +150,7 @@ module Jenkins
     # @return [Boolean]
     #
     def private_key_given?
-      !!node['jenkins']['cli']['private_key']
+      !!node['jenkins']['executor']['private_key']
     end
 
     #
@@ -159,7 +159,7 @@ module Jenkins
     # @return [String]
     #
     def proxy
-      node['jenkins']['cli']['proxy']
+      node['jenkins']['executor']['proxy']
     end
 
     #
@@ -168,7 +168,7 @@ module Jenkins
     # @return [Boolean]
     #
     def proxy_given?
-      !!node['jenkins']['cli']['proxy']
+      !!node['jenkins']['executor']['proxy']
     end
 
     #
