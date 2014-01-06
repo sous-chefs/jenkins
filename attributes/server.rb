@@ -50,6 +50,7 @@ when 'rhel'
   default['jenkins']['server']['ssh_dir_group'] = default['jenkins']['server']['user']
 else
   default['jenkins']['server']['install_method'] = 'war'
+  default['jenkins']['server']['release_type'] = 'standard'
   default['jenkins']['server']['group'] = default['jenkins']['server']['user']
   default['jenkins']['server']['log_dir_permissions'] = 00755
   default['jenkins']['server']['home_dir_group'] = default['jenkins']['server']['user']
