@@ -19,9 +19,6 @@
 # limitations under the License.
 #
 
-#
-#
-#
 class Chef
   class Resource::JenkinsCommand < Resource
     identity_attr :command
@@ -52,9 +49,6 @@ class Chef
   end
 end
 
-#
-#
-#
 class Chef
   class Provider::JenkinsCommand < Provider
     include Jenkins::Helper

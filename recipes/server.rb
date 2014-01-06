@@ -77,6 +77,11 @@ ruby_block 'store_server_ssh_pubkey' do
   block do
     node.set['jenkins']['server']['pubkey'] = IO.read(File.join(ssh_dir, 'id_rsa.pub'))
     node.save unless Chef::Config[:solo]
+    ak = Chef::Resource::File.new(File.join(ssh_dir, 'authorized_keys'), node.run_context)
+    ak.content(node['jenkins']['server']['pubkey'])
+    ak.user(node['jenkins']['server']['user'])
+    ak.group(node['jenkins']['server']['ssh_dir_group'])
+    ak.run_action(:create)
   end
   action :nothing
 end

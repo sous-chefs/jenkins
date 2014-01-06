@@ -19,9 +19,6 @@
 # limitations under the License.
 #
 
-#
-#
-#
 class Chef
   class Resource::JenkinsUser < Resource
     identity_attr :id
@@ -103,9 +100,6 @@ class Chef
   end
 end
 
-#
-#
-#
 class Chef
   class Provider::JenkinsUser < Provider
     require 'json'

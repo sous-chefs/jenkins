@@ -15,15 +15,6 @@ Chef 0.10.10+ and Ohai 6.10+ for platform_family use.
 * Ubuntu
 * RHEL/CentOS
 
-### Node (Slave) Recipe
-
-Agent Flavor:
-
-* `ssh` - Any Unix platform that is running `sshd`.
-* `jnlp` - Most Unix platforms.
-* `windows` - Windows platforms only. Depends on .NET Framework.
-
-
 Attributes
 ----------
 ### Common Attributes
@@ -61,31 +52,6 @@ Attributes
 * `node['jenkins']['http_proxy']['ssl']['key_path']` - The path to your SSL key.
 * `node['jenkins']['http_proxy']['ssl']['ca_cert_path']` - If set, configures apache to use an intermediate certificate authority. Nginx does not use this attribute and expects any intermediate certificates to be appended in the same file as your SSL certificate.
 
-### Node/Slave related Attributes
-
-* `node['jenkins']['node']['agent_type']` - Type of agent to communicate with this slave/node. Valid values include `jnlp`, `ssh` and `windows`. (default is `jnlp`)
-* `node['jenkins']['node']['name']` - Name of the node within Jenkins.
-* `node['jenkins']['node']['description']` - Jenkins node description.
-* `node['jenkins']['node']['executors']` - Number of node executors.
-* `node['jenkins']['node']['home]` - Home directory ("Remote FS root") of the node.
-* `node['jenkins']['node']['labels']` - Node labels.
-* `node['jenkins']['node']['mode']` - Node usage mode, `normal` or `exclusive` (tied jobs only).
-* `node['jenkins']['node']['availability']` - `always` keeps node on-line, `demand` off-lines when idle.
-* `node['jenkins']['node']['in_demand_delay']` - number of minutes for which jobs must be waiting in the queue before attempting to launch this slave.
-* `node['jenkins']['node']['idle_delay']` - number of minutes that this slave must remain idle before taking it off-line.
-* `node['jenkins']['node']['env']` - "Node Properties" -> "Environment Variables".
-* `node['jenkins']['node']['user']` - user the slave runs as.
-* `node['jenkins']['node']['ssh_host']` - Hostname or IP Jenkins Master should connect to when launching an SSH slave.
-* `node['jenkins']['node']['ssh_port']` - SSH port Jenkins Master should connect to when launching a slave.
-* `node['jenkins']['node']['ssh_user']` - SSH slave user name (only required if Jenkins server and slave user is different).
-* `node['jenkins']['node']['ssh_pass']` - SSH slave password (not required when server is installed via `jenkins::server` recipe).
-* `node['jenkins']['node']['ssh_private_key']` - Jenkins Master defaults to: `JENKINS_HOME/.ssh/id_rsa` (created by the `jenkins::server` recipe).
-* `node['jenkins']['node']['jvm_options']` - Additional tuning parameters to pass the underlying JVM process.
-
-### Windows Node/Slave related Attributes
-
-* `node['jenkins']['node']['winsw_url']` - The url for the winsw exe to download.
-
 Recipes
 -------
 ### server
@@ -93,14 +59,6 @@ Creates all required directories, installs Jenkins and generates an ssh private 
 
 * __package__ - Installs Jenkins from the official jenkins-ci.org packages.
 * __war__ - Downloads the latest version of the Jenkins WAR file from http://jenkins-ci. The server process is configured to run as a runit service.
-
-### node
-The type of agent that is used to communicate with the slave is determined by the attribute `node['jenkins']['node']['agent_type']`. The following agent types are supported:
-
-* __ssh__ - Creates the user and group for the Jenkins slave to run as and sets `.ssh/authorized_keys` to the `node['jenkins']['server']['pubkey']` attribute. The [jenkins-cli.jar](http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI) is downloaded from the Jenkins server and used to manage the nodes via the [groovy](http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Script+Console) cli command. Jenkins is configured to launch a slave agent on the node using it's [SSH slave plugin](http://wiki.jenkins-ci.org/display/JENKINS/SSH+Slaves+plugin).
-* __jnlp__ - Creates the user and group for the Jenkins slave to run as and `/jnlpJars/slave.jar` is downloaded from the Jenkins server. The slave process is configured to run as a runit service.
-* __windows__ - Creates the home directory for the node slave and sets `JENKINS_HOME` and `JENKINS_URL` system environment variables. The [winsw](http://weblogs.java.net/blog/2008/09/29/winsw-windows-service-wrapper-less-restrictive-license) Windows service wrapper will be downloaded and installed, along with generating `jenkins-slave.xml` from a template. Jenkins is configured with the node as a [jnlp](http://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds) slave and `/jnlpJars/slave.jar` is downloaded from the Jenkins server. The `jenkinsslave` service will be started the first time the recipe is run or if the service is not running. The 'jenkinsslave' service will be restarted if `/jnlpJars/slave.jar` has changed. The end results is functionally the same
-had you chosen the option to [Let Jenkins control this slave as a Windows service](http://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+as+a+Windows+service).
 
 ### proxy
 Installs a proxy and creates a vhost to route traffic to the installed Jenkins server. The type of HTTP proxy that is installed and configured is determined by the `node['jenkins']['http_proxy']['variant']` attribute. The following HTTP proxy variants are supported:
@@ -136,19 +94,64 @@ jenkins_command 'quiet-down'
 
 **NOTE** You must add your own `not_if`/`only_if` guards to the `jenkins_command` to prevent duplicate commands from executing. Just like Chef's core `execute` resource, the `jenkins_command` resource has no way of being idempotent.
 
-### jenkins_node
-This resource can be used to configure nodes as the `node_ssh` and `node_windows` recipes do or "Launch slave via execution of command on the Master":
+### jenkins_credentials
+This resource manages Jenkins credentials, supporting the following actions:
+
+    :create, :delete
+
+The following type of credentials are supported:
+
+* __Password__ - Basic username + password credentials.
+* __Private Key__ - Credentials that use a username + private key (optionally protected with a passphrase).
+
+The `jenkins_credentials` resource is actually the base resource for several resources that map directly back to a credentials type:
+
+* `jenkins_password_credentials`
+* `jenkins_private_key_credentials`
+
+This uses the Jenkins Groovy API to create/delete credentials. It also supports whyrun mode.
+
+The `:create` action idempotently creates a set of Jenkins credentials on the current node. The `username` attribute (also the name attribute) corresponds to the username of the credentials on the target node. You may also specify a `description` which is useful in credential identification.
 
 ```ruby
-jenkins_node node['fqdn'] do
-  description  'My node for things, stuff and whatnot'
-  executors    5
-  remote_fs    '/var/jenkins'
-  launcher     'command'
-  command      "ssh -i my_key #{node[:fqdn]} java -jar #{remote_fs}/slave.jar"
-  env          'ANT_HOME' => '/usr/local/ant', 'M2_REPO' => '/dev/null'
+# Create password credentials
+jenkins_credentials 'weaksauce' do
+  description 'passwords are for suckers'
+  password 'superseekret'
+end
+
+# Create private key credentials
+jenkins_private_key_credentials 'neckbeard' do
+  description 'this is more like it'
+  private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
+end
+
+# Private keys with a passphrase will also work
+jenkins_private_key_credentials 'super_neckbeard' do
+  description 'can haz passphrase'
+  private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
+  passphrase 'secret'
 end
 ```
+
+The `:delete` action idempotently removes a set of Jenkins credentials from the system. You can use the base `jenkins_credentials` resource or any of it's children to perform the deletion.
+
+```ruby
+jenkins_credentials 'weaksauce' do
+  action :delete
+end
+
+jenkins_private_key_credentials 'neckbeard' do
+  action :delete
+end
+```
+
+**NOTE** Credentials in Jenkins can be created with 2 different "scopes" which determines where the credentials can be used:
+
+* __GLOBAL__ - This credential is available to the object on which the credential is associated and all objects that are children of that object. Typically you would use global-scoped credentials for things that are needed by jobs.
+* __SYSTEM__ - This credential is only available to the object on which the credential is associated. Typically you would use system-scoped credentials for things like email auth, slave connection, etc, i.e. where the Jenkins instance itself is using the credential. Unlike the global scope, this significantly restricts where the credential can be used, thereby providing a higher degree of confidentiality to the credential.
+
+The credentials created with the `jenkins_credentials` are assigned a `GLOBAL` scope.
 
 ### jenkins_job
 This resource manages Jenkins jobs, supporting the following actions:
@@ -245,6 +248,138 @@ end
 ```
 
 **NOTE** You may need to restart the Jenkins server after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins servers differently) this LWRP does **NOT** restart Jenkins for you.
+
+### jenkins_slave
+This resource manages Jenkins slaves, supporting the following actions:
+
+    :create, :delete, :connect, :disconnect, :online, :offline
+
+The following slave launch methods are supported:
+
+* __JNLP/Java Web Start__ - Starts a slave by launching an agent program through JNLP. The launch in this case is initiated by the slave, thus slaves need not be IP reachable from the master (e.g. behind the firewall). This launch method is supported on *nix and Windows platforms.
+* __SSH__ - Jenkins has a built-in SSH client implementation that it can use to talk to remote `sshd` daemon and start a slave agent. This is the most convenient and preferred method for Unix slaves, which normally has `sshd` out-of-the-box.
+
+The `jenkins_slave` resource is actually the base resource for several resources that map directly back to a launch method:
+
+* `jenkins_jnlp_slave`
+* `jenkins_ssh_slave`
+
+The `:create` action idempotely creates a Jenkins slave on the master. The name attribute corresponds to the name of the slave (which is also used to uniquely identify the slave).
+
+```ruby
+# Create a basic JNLP slave
+jenkins_jnlp_slave 'grimlock' do
+  description 'full of cesium salami'
+  remote_fs '/home/jenkins'
+  labels ['transformer', 'autobot', 'dinobot']
+end
+
+# Create a slave launched via SSH
+jenkins_ssh_slave 'starscream' do
+  description 'should be the leader'
+  remote_fs '/home/starscream'
+  labels ['transformer', 'decepticon', 'seeker']
+  # SSH specific attributes
+  host 'localhost'
+  username 'starscream'
+end
+
+# A slave's executors, usage mode and availability can also be configured
+jenkins_jnlp_slave 'soundwave' do
+  description 'casettes are still cool'
+  remote_fs '/home/jenkins'
+  executors 5
+  usage_mode 'exclusive'
+  availability 'demand'
+  in_demand_delay 1
+  idle_delay 3
+  labels ['transformer', 'decepticon', 'badass']
+end
+
+# Create a slave with a full environment
+jenkins_jnlp_slave 'shrapnel' do
+  description 'bugs are cool'
+  remote_fs '/home/jenkins'
+  labels ['transformer', 'decepticon', 'insecticon']
+  environment(
+    FOO: 'bar',
+    BAZ: 'qux'
+  )
+end
+
+# Windows JNLP slave
+jenkins_jnlp_slave 'windoze' do
+  remote_fs 'C:\jenkins'
+  user 'Administrator'
+  labels ['transformer', 'autobot', 'dinobot']
+end
+```
+
+The `:delete` action idempotently removes a slave from the cluster. Any services used to manage the underlying slave process will also be disabled.
+
+```ruby
+jenkins_jnlp_slave 'grimlock' do
+  action :delete
+end
+
+jenkins_ssh_slave 'starscream' do
+  action :delete
+end
+```
+
+The `:connect` action idempotently forces the master to reconnect to the specified slave. You can use the base `jenkins_slave` resource or any of it's children to perform the connection.
+
+```ruby
+jenkins_slave 'grimlock' do
+  action :connect
+end
+
+jenkins_ssh_slave 'starscream' do
+  action :connect
+end
+```
+
+The `:disconnect` action idempotently forces the master to disconnect the specified slave. You can use the base `jenkins_slave` resource or any of it's children to perform the connection.
+
+```ruby
+jenkins_slave 'grimlock' do
+  action :disconnect
+end
+
+jenkins_ssh_slave 'starscream' do
+  action :disconnect
+end
+```
+
+The `:online` action idempotently brings a slave back online. You can use the base `jenkins_slave` resource or any of it's children to bring the slave online.
+
+```ruby
+jenkins_slave 'grimlock' do
+  action :online
+end
+
+jenkins_ssh_slave 'starscream' do
+  action :online
+end
+```
+
+The `:offline` action idempotently takes a slave temporarily offline. An optional reason for going offline can be provided with the `offline_reason` attribute. You can use the base `jenkins_slave` resource or any of it's children to take a slave offline.
+
+```ruby
+jenkins_slave 'grimlock' do
+  action :offline
+end
+
+jenkins_ssh_slave 'starscream' do
+  offline_reason 'ran out of energon'
+  action :offline
+end
+```
+
+**NOTE** It's worth noting the somewhat confusing differences between _disconnecting_ and _off-lining_ a slave:
+
+* __Disconnect__ - Instantly closes the channel of communication between the master and slave. Currently executing jobs will be terminated immediately. If a slave is configured with an availability of `always` the master will attempt to reconnect to the slave.
+* __Offline__ - Keeps the channel of communication between the master and slave open. Currently executing jobs will be allowed to finish, but no new jobs will be scheduled on the slave.
 
 ### jenkins_user
 This resource manages Jenkins users, supporting the following actions:

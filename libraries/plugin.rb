@@ -19,9 +19,6 @@
 # limitations under the License.
 #
 
-#
-#
-#
 class Chef
   class Resource::JenkinsPlugin < Resource
     identity_attr :name
@@ -97,9 +94,6 @@ class Chef
   end
 end
 
-#
-#
-#
 class Chef
   class Provider::JenkinsPlugin < Provider
     class PluginNotInstalled < StandardError
@@ -135,7 +129,7 @@ class Chef
     def action_install
       # This block stores the actual command to execute, since its the same
       # for upgrades and installs.
-      block = Proc.new do
+      block = proc do
         # Use the remote_file resource to download and cache the plugin (see
         # comment below for more information).
         name   = "#{new_resource.name}-#{new_resource.version}.plugin"
@@ -182,7 +176,7 @@ class Chef
     #
     def action_disable
       unless current_resource.installed?
-        raise PluginNotInstalled.new(new_resource.name, :disable)
+        fail PluginNotInstalled.new(new_resource.name, :disable)
       end
 
       disabled = "#{plugin_file}.disabled"
@@ -207,7 +201,7 @@ class Chef
     #
     def action_enable
       unless current_resource.installed?
-        raise PluginNotInstalled.new(new_resource.name, :enable)
+        fail PluginNotInstalled.new(new_resource.name, :enable)
       end
 
       disabled = "#{plugin_file}.disabled"

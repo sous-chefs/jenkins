@@ -1,5 +1,10 @@
 driver:
   name: vagrant
+  customize:
+    cpus: 2
+    memory: 1024
+  network:
+  - ["forwarded_port", {guest: 8080, host: 9090, auto_correct: true}]
 
 provisioner:
   name: chef_zero
@@ -7,9 +12,8 @@ provisioner:
   data_path: test/shared
 
 platforms:
-  - name: ubuntu-13.04
-    driver:
-      box: opscode-ubuntu-13.04
+  - name: ubuntu-12.04
+    run_list: apt::default
 
 suites:
   #
@@ -17,6 +21,14 @@ suites:
   #
   - name: jenkins_command_execute
     run_list: jenkins_command::execute
+
+  #
+  # Credentials suites
+  #
+  - name: jenkins_credentials_create
+    run_list: jenkins_credentials::create
+  - name: jenkins_credentials_delete
+    run_list: jenkins_credentials::delete
 
   #
   # Job suites
@@ -41,6 +53,22 @@ suites:
     run_list: jenkins_plugin::install
   - name: jenkins_plugin_uninstall
     run_list: jenkins_plugin::uninstall
+
+  #
+  # Slave suites
+  #
+  - name: jenkins_slave_create
+    run_list: jenkins_slave::create
+  - name: jenkins_slave_delete
+    run_list: jenkins_slave::delete
+  - name: jenkins_slave_connect
+    run_list: jenkins_slave::connect
+  - name: jenkins_slave_disconnect
+    run_list: jenkins_slave::disconnect
+  - name: jenkins_slave_online
+    run_list: jenkins_slave::online
+  - name: jenkins_slave_offline
+    run_list: jenkins_slave::offline
 
   #
   # User suites

@@ -1,2 +1,2 @@
 #!/bin/sh
-exec chpst -unobody logger -d -p local6.info -t [jenkins-slave]
+exec chpst -unobody logger -d -p local6.info -t [<%= @options[:new_resource].service_name %>]

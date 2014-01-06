@@ -3,6 +3,7 @@
 #
 module Serverspec
   module Type
+    # rubocop:disable PredicateName, CaseEquality
     class JenkinsUser < Base
       require 'rexml/document'
 
