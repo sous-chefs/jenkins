@@ -300,13 +300,11 @@ The following slave launch methods are supported:
 
 * __JNLP/Java Web Start__ - Starts a slave by launching an agent program through JNLP. The launch in this case is initiated by the slave, thus slaves need not be IP reachable from the master (e.g. behind the firewall.) It is still possible to start a launch without GUI, for example as a Windows service.
 * __SSH__ - Jenkins has a built-in SSH client implementation that it can use to talk to remote `sshd` daemon and start a slave agent. This is the most convenient and preferred method for Unix slaves, which normally has `sshd` out-of-the-box.
-* __Command__ - Starts a slave by having Jenkins execute a command from the master. Use this when the master is capable of remotely executing a process on a slave, such as through ssh/rsh.
 
 The `jenkins_slave` resource is actually the base resource for several resources that map directly back to a launch method:
 
 * `jenkins_jnlp_slave`
 * `jenkins_ssh_slave`
-* `jenkins_command_slave`
 
 The `:create` action idempotely creates a Jenkins slave on the master. The name attribute corresponds to the name of the slave (which is also used to uniquely identify the slave).
 
