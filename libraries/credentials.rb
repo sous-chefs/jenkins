@@ -135,7 +135,10 @@ class Chef
             import hudson.plugins.sshslaves.*;
 
             global_domain = Domain.global()
-            credentials_store = Jenkins.instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
+            credentials_store =
+              Jenkins.instance.getExtensionList(
+                'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
+              )[0].getStore()
 
             #{credentials_groovy}
 
@@ -143,12 +146,13 @@ class Chef
             #{credentials_for_username_groovy(new_resource.username, 'existing_credentials')}
 
             if(existing_credentials != null) {
-              credentials_store.updateCredentials(global_domain,
-                                                  existing_credentials,
-                                                  credentials)
+              credentials_store.updateCredentials(
+                global_domain,
+                existing_credentials,
+                credentials
+              )
             } else {
-              credentials_store.addCredentials(global_domain,
-                                               credentials)
+              credentials_store.addCredentials(global_domain, credentials)
             }
           EOH
         end
@@ -166,13 +170,18 @@ class Chef
             import com.cloudbees.plugins.credentials.*;
 
             global_domain = com.cloudbees.plugins.credentials.domains.Domain.global()
-            credentials_store = Jenkins.instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
+            credentials_store =
+              Jenkins.instance.getExtensionList(
+                'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
+              )[0].getStore()
 
             #{credentials_for_username_groovy(new_resource.username, 'existing_credentials')}
 
             if(existing_credentials != null) {
-              credentials_store.removeCredentials(global_domain,
-                                                  existing_credentials)
+              credentials_store.removeCredentials(
+                global_domain,
+                existing_credentials
+              )
             }
           EOH
         end
@@ -219,7 +228,8 @@ class Chef
 
       credentials_attributes = []
       attribute_to_property_map.each_pair do |resource_attribute, groovy_property|
-        credentials_attributes << "current_credentials['#{resource_attribute}'] = #{groovy_property}"
+        credentials_attributes <<
+        "current_credentials['#{resource_attribute}'] = #{groovy_property}"
       end
 
       json = executor.groovy! <<-EOH.gsub(/ ^{8}/, '')

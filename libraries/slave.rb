@@ -341,8 +341,11 @@ class Chef
 
             // Compute the retention strategy
             if (availability == 'demand') {
-              retention_strategy = new RetentionStrategy.Demand(#{new_resource.in_demand_delay},
-                                                                #{new_resource.idle_delay})
+              retention_strategy =
+                new RetentionStrategy.Demand(
+                  #{new_resource.in_demand_delay},
+                  #{new_resource.idle_delay}
+              )
             } else if (availability == 'always') {
               retention_strategy = new RetentionStrategy.Always()
             } else {
@@ -352,7 +355,9 @@ class Chef
             // Create an entry in the prop list for all env vars
             if (env_map != null) {
               env_vars = new hudson.EnvVars(env_map)
-              entries = env_vars.collect { k,v -> new EnvironmentVariablesNodeProperty.Entry(k,v) }
+              entries = env_vars.collect {
+                k,v -> new EnvironmentVariablesNodeProperty.Entry(k,v)
+              }
               props << new EnvironmentVariablesNodeProperty(entries)
             }
 
@@ -360,15 +365,17 @@ class Chef
             #{launcher_groovy}
 
             // Build the slave object
-            slave = new DumbSlave(#{convert_to_groovy(new_resource.slave_name)},
-                                  #{convert_to_groovy(new_resource.description)},
-                                  #{convert_to_groovy(new_resource.remote_fs)},
-                                  #{convert_to_groovy(new_resource.executors.to_s)},
-                                  mode,
-                                  labels,
-                                  launcher,
-                                  retention_strategy,
-                                  props)
+            slave = new DumbSlave(
+              #{convert_to_groovy(new_resource.name)},
+              #{convert_to_groovy(new_resource.description)},
+              #{convert_to_groovy(new_resource.remote_fs)},
+              #{convert_to_groovy(new_resource.executors.to_s)},
+              mode,
+              labels,
+              launcher,
+              retention_strategy,
+              props
+            )
 
             // Create or update the slave in the Jenkins instance
             nodes = new ArrayList(Jenkins.instance.getNodes())
@@ -439,7 +446,9 @@ class Chef
       if current_resource.online?
         converge_by("Offline #{new_resource}") do
           command_pieces  = [new_resource.slave_name]
-          command_pieces << "-m '#{new_resource.offline_reason}'" if new_resource.offline_reason
+          if new_resource.offline_reason
+            command_pieces << "-m '#{new_resource.offline_reason}'"
+          end
           executor.execute!('offline-node', command_pieces)
         end
       else

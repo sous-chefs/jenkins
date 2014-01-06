@@ -64,13 +64,19 @@ module Jenkins
         import com.cloudbees.plugins.credentials.domains.*;
 
         username_matcher = CredentialsMatchers.withUsername("#{username}")
-        available_credentials = CredentialsProvider.lookupCredentials(StandardUsernameCredentials.class,
-                                                                      Jenkins.getInstance(),
-                                                                      hudson.security.ACL.SYSTEM,
-                                                                      new SchemeRequirement("ssh"))
+        available_credentials =
+          CredentialsProvider.lookupCredentials(
+            StandardUsernameCredentials.class,
+            Jenkins.getInstance(),
+            hudson.security.ACL.SYSTEM,
+            new SchemeRequirement("ssh")
+          )
 
-        #{groovy_variable_name} = CredentialsMatchers.firstOrNull(available_credentials,
-                                                                  username_matcher)
+        #{groovy_variable_name} =
+          CredentialsMatchers.firstOrNull(
+            available_credentials,
+            username_matcher
+          )
       EOH
     end
 

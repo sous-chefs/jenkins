@@ -118,13 +118,16 @@ class Chef
     def launcher_groovy
       <<-EOH.gsub(/ ^{8}/, '')
         #{credential_lookup_groovy('credentials_id')}
-        launcher = new hudson.plugins.sshslaves.SSHLauncher(#{convert_to_groovy(new_resource.host)},
-                                                            #{convert_to_groovy(new_resource.port)},
-                                                            credentials_id,
-                                                            #{convert_to_groovy(new_resource.jvm_options)},
-                                                            null,
-                                                            null,
-                                                            null)
+        launcher =
+          new hudson.plugins.sshslaves.SSHLauncher(
+            #{convert_to_groovy(new_resource.host)},
+            #{convert_to_groovy(new_resource.port)},
+            credentials_id,
+            #{convert_to_groovy(new_resource.jvm_options)},
+            null,
+            null,
+            null
+          )
       EOH
     end
 
@@ -172,7 +175,8 @@ class Chef
       return @private_key if @private_key
       json = executor.groovy! <<-EOH.gsub(/ ^{8}/, '')
         #{credential_lookup_groovy('credentials_id')}
-        credentials = hudson.plugins.sshslaves.SSHLauncher.lookupSystemCredentials(credentials_id)
+        credentials =
+          hudson.plugins.sshslaves.SSHLauncher.lookupSystemCredentials(credentials_id)
 
         output = [
           private_key:credentials.privateKey

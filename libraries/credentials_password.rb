@@ -67,11 +67,13 @@ class Chef
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.plugins.credentials.impl.*
 
-        credentials = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL,
-                                                          #{convert_to_groovy(new_resource.id)},
-                                                          #{convert_to_groovy(new_resource.description)},
-                                                          #{convert_to_groovy(new_resource.username)},
-                                                          #{convert_to_groovy(new_resource.password)})
+        credentials = new UsernamePasswordCredentialsImpl(
+          CredentialsScope.GLOBAL,
+          #{convert_to_groovy(new_resource.id)},
+          #{convert_to_groovy(new_resource.description)},
+          #{convert_to_groovy(new_resource.username)},
+          #{convert_to_groovy(new_resource.password)}
+        )
       EOH
     end
 

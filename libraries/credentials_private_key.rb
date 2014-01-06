@@ -87,12 +87,14 @@ class Chef
         private_key = """#{new_resource.private_key}
         """
 
-        credentials = new BasicSSHUserPrivateKey(CredentialsScope.GLOBAL,
-                                                 #{convert_to_groovy(new_resource.id)},
-                                                 #{convert_to_groovy(new_resource.username)},
-                                                 new BasicSSHUserPrivateKey.DirectEntryPrivateKeySource(private_key),
-                                                 #{convert_to_groovy(new_resource.passphrase)},
-                                                 #{convert_to_groovy(new_resource.description)})
+        credentials = new BasicSSHUserPrivateKey(
+          CredentialsScope.GLOBAL,
+          #{convert_to_groovy(new_resource.id)},
+          #{convert_to_groovy(new_resource.username)},
+          new BasicSSHUserPrivateKey.DirectEntryPrivateKeySource(private_key),
+          #{convert_to_groovy(new_resource.passphrase)},
+          #{convert_to_groovy(new_resource.description)}
+        )
       EOH
     end
 
