@@ -7,13 +7,8 @@ Installs and configures Jenkins CI server & node slaves. Resource providers to s
 
 Requirements
 ------------
-Chef 0.10.10+ and Ohai 6.10+ for platform_family use.
-
-### Platform:
-#### Server (Master) Recipe
-
-* Ubuntu
-* RHEL/CentOS
+- Chef 11 or higher
+- **Ruby 1.9.3 or higher**
 
 Attributes
 ----------
@@ -115,33 +110,33 @@ The `:create` action idempotently creates a set of Jenkins credentials on the cu
 
 ```ruby
 # Create password credentials
-jenkins_credentials 'weaksauce' do
-  description 'passwords are for suckers'
-  password 'superseekret'
+jenkins_credentials 'wcoyote' do
+  description 'Wile E Coyote'
+  password    'beepbeep'
 end
 
 # Create private key credentials
-jenkins_private_key_credentials 'neckbeard' do
-  description 'this is more like it'
+jenkins_private_key_credentials 'wcoyote' do
+  description 'Wile E Coyote'
   private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
 end
 
 # Private keys with a passphrase will also work
-jenkins_private_key_credentials 'super_neckbeard' do
-  description 'can haz passphrase'
+jenkins_private_key_credentials 'wcoyote' do
+  description 'Eile E Coyote'
   private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
-  passphrase 'secret'
+  passphrase  'beepbeep'
 end
 ```
 
 The `:delete` action idempotently removes a set of Jenkins credentials from the system. You can use the base `jenkins_credentials` resource or any of it's children to perform the deletion.
 
 ```ruby
-jenkins_credentials 'weaksauce' do
+jenkins_credentials 'wcoyote' do
   action :delete
 end
 
-jenkins_private_key_credentials 'neckbeard' do
+jenkins_private_key_credentials 'wcoyote' do
   action :delete
 end
 ```
@@ -268,61 +263,62 @@ The `:create` action idempotely creates a Jenkins slave on the master. The name 
 
 ```ruby
 # Create a basic JNLP slave
-jenkins_jnlp_slave 'grimlock' do
-  description 'full of cesium salami'
-  remote_fs '/home/jenkins'
-  labels ['transformer', 'autobot', 'dinobot']
+jenkins_jnlp_slave 'builder' do
+  description 'A generic slave builder'
+  remote_fs   '/home/jenkins'
+  labels      ['builder', 'linux']
 end
 
 # Create a slave launched via SSH
-jenkins_ssh_slave 'starscream' do
-  description 'should be the leader'
-  remote_fs '/home/starscream'
-  labels ['transformer', 'decepticon', 'seeker']
+jenkins_ssh_slave 'executor' do
+  description 'Run test suites'
+  remote_fs   '/share/executor'
+  labels      ['executor', 'freebsd', 'jail']
+
   # SSH specific attributes
-  host 'localhost'
-  username 'starscream'
+  host     'localhost'
+  username 'jenkins'
 end
 
 # A slave's executors, usage mode and availability can also be configured
-jenkins_jnlp_slave 'soundwave' do
-  description 'casettes are still cool'
-  remote_fs '/home/jenkins'
-  executors 5
-  usage_mode 'exclusive'
-  availability 'demand'
+jenkins_jnlp_slave 'smoke' do
+  description     'Runs a series of high-level smoke tests'
+  remote_fs       '/home/jenkins'
+  executors       5
+  usage_mode      'exclusive'
+  availability    'demand'
   in_demand_delay 1
-  idle_delay 3
-  labels ['transformer', 'decepticon', 'badass']
+  idle_delay      3
+  labels          ['runner', 'fast']
 end
 
 # Create a slave with a full environment
-jenkins_jnlp_slave 'shrapnel' do
-  description 'bugs are cool'
-  remote_fs '/home/jenkins'
-  labels ['transformer', 'decepticon', 'insecticon']
+jenkins_jnlp_slave 'integration' do
+  description 'Runs the high-level integration suite'
+  remote_fs   '/home/jenkins'
+  labels      ['integration', 'rails', 'ruby']
   environment(
-    FOO: 'bar',
-    BAZ: 'qux'
+    RAILS_ENV: 'test',
+    GCC:       '1_000_000_000',
   )
 end
 
 # Windows JNLP slave
-jenkins_jnlp_slave 'windoze' do
+jenkins_jnlp_slave 'builder' do
   remote_fs 'C:\jenkins'
-  user 'Administrator'
-  labels ['transformer', 'autobot', 'dinobot']
+  user      'Administrator'
+  labels    ['builder', 'windows']
 end
 ```
 
 The `:delete` action idempotently removes a slave from the cluster. Any services used to manage the underlying slave process will also be disabled.
 
 ```ruby
-jenkins_jnlp_slave 'grimlock' do
+jenkins_jnlp_slave 'builder' do
   action :delete
 end
 
-jenkins_ssh_slave 'starscream' do
+jenkins_ssh_slave 'executor' do
   action :delete
 end
 ```
@@ -330,11 +326,11 @@ end
 The `:connect` action idempotently forces the master to reconnect to the specified slave. You can use the base `jenkins_slave` resource or any of it's children to perform the connection.
 
 ```ruby
-jenkins_slave 'grimlock' do
+jenkins_slave 'builder' do
   action :connect
 end
 
-jenkins_ssh_slave 'starscream' do
+jenkins_ssh_slave 'executor' do
   action :connect
 end
 ```
@@ -342,11 +338,11 @@ end
 The `:disconnect` action idempotently forces the master to disconnect the specified slave. You can use the base `jenkins_slave` resource or any of it's children to perform the connection.
 
 ```ruby
-jenkins_slave 'grimlock' do
+jenkins_slave 'builder' do
   action :disconnect
 end
 
-jenkins_ssh_slave 'starscream' do
+jenkins_ssh_slave 'executor' do
   action :disconnect
 end
 ```
@@ -354,11 +350,11 @@ end
 The `:online` action idempotently brings a slave back online. You can use the base `jenkins_slave` resource or any of it's children to bring the slave online.
 
 ```ruby
-jenkins_slave 'grimlock' do
+jenkins_slave 'builder' do
   action :online
 end
 
-jenkins_ssh_slave 'starscream' do
+jenkins_ssh_slave 'executor' do
   action :online
 end
 ```
@@ -366,11 +362,11 @@ end
 The `:offline` action idempotently takes a slave temporarily offline. An optional reason for going offline can be provided with the `offline_reason` attribute. You can use the base `jenkins_slave` resource or any of it's children to take a slave offline.
 
 ```ruby
-jenkins_slave 'grimlock' do
+jenkins_slave 'builder' do
   action :offline
 end
 
-jenkins_ssh_slave 'starscream' do
+jenkins_ssh_slave 'executor' do
   offline_reason 'ran out of energon'
   action :offline
 end
