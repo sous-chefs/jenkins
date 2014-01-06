@@ -1,11 +1,6 @@
-script: BUNDLE_GEMFILE=test/support/Gemfile bundle exec rake test foodcritic
-
-
 rvm:
   - 1.9.3
   - 2.0.0
-before_script:
-  - bundle exec berks install
+  - 2.1.0
 script:
-  - bundle exec foodcritic -f any .
-  - bundle exec rubocop
+  - bundle exec rake travis:ci
