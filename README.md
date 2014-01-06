@@ -131,7 +131,7 @@ This resource manages Jenkins jobs, supporting the following actions:
 
 The resource is fully idempotent and convergent. It also supports whyrun mode.
 
-The `:create` action requires a Jenkins job `config.xml`. This config file must exist on the target node and contain a valid Jenkins job configuration file. Because the Jenkins CLI actually reads and generates it's own copy of this file, **do NOT** write this configuration inside of the Jenkins job. We recommend putting them in a temporary directory:
+The `:create` action requires a Jenkins job `config.xml`. This config file must exist on the target node and contain a valid Jenkins job configuration file. Because the Jenkins CLI actually reads and generates it's own copy of this file, **do NOT** write this configuration inside of the Jenkins job. We recommend putting them in Chef's file cache path:
 
 ```ruby
 xml = File.join(Chef::Config[:file_cache_path], 'bacon-config.xml')
