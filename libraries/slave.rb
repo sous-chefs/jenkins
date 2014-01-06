@@ -209,6 +209,13 @@ class Chef
     #
     # The user that the slave process runs as.
     #
+    # On *nix systems the user account will be created if it does not
+    # exist. On Windows systems the following formats are supported:
+    #
+    #  * LocalSystem => Default. Service runs with the machine account.
+    #  * Administrator => Local Account
+    #  * domain\username => Domain Account
+    #
     # @param [String] arg
     # @return [String]
     #

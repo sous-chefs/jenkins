@@ -298,7 +298,7 @@ This resource manages Jenkins slaves, supporting the following actions:
 
 The following slave launch methods are supported:
 
-* __JNLP/Java Web Start__ - Starts a slave by launching an agent program through JNLP. The launch in this case is initiated by the slave, thus slaves need not be IP reachable from the master (e.g. behind the firewall.) It is still possible to start a launch without GUI, for example as a Windows service.
+* __JNLP/Java Web Start__ - Starts a slave by launching an agent program through JNLP. The launch in this case is initiated by the slave, thus slaves need not be IP reachable from the master (e.g. behind the firewall). This launch method is supported on *nix and Windows platforms.
 * __SSH__ - Jenkins has a built-in SSH client implementation that it can use to talk to remote `sshd` daemon and start a slave agent. This is the most convenient and preferred method for Unix slaves, which normally has `sshd` out-of-the-box.
 
 The `jenkins_slave` resource is actually the base resource for several resources that map directly back to a launch method:
@@ -347,6 +347,13 @@ jenkins_jnlp_slave 'shrapnel' do
     FOO: 'bar',
     BAZ: 'qux'
   )
+end
+
+# Windows JNLP slave
+jenkins_jnlp_slave 'windoze' do
+  remote_fs 'C:\jenkins'
+  user 'Administrator'
+  labels ['transformer', 'autobot', 'dinobot']
 end
 ```
 
