@@ -450,17 +450,19 @@ Please see the [Contributing](CONTRIBUTING.md) and [Issue Reporting](ISSUES.md) 
 
 License & Authors
 -----------------
-- Author:: Doug MacEachern (<dougm@vmware.com>)
-- Contributor:: AJ Christensen <aj@junglist.gen.nz>
-- Contributor:: Fletcher Nichol <fnichol@nichol.ca>
-- Contributor:: Roman Kamyk <rkj@go2.pl>
-- Contributor:: Darko Fabijan <darko@renderedtext.com>
-- Contributor:: Seth Chisamore <schisamo@opscode.com>
+- Author: Seth Vargo <sethvargo@getchef.com>
+- Author: Seth Chisamore <schisamo@getchef.com>
+
+- Original Author: Doug MacEachern <dougm@vmware.com>
+- Contributor: AJ Christensen <aj@junglist.gen.nz>
+- Contributor: Fletcher Nichol <fnichol@nichol.ca>
+- Contributor: Roman Kamyk <rkj@go2.pl>
+- Contributor: Darko Fabijan <darko@renderedtext.com>
 
 ```text
-Copyright (c) 2010 VMware, Inc.
-Copyright (c) 2011 Fletcher Nichol
-Copyright (c) 2013 Opscode, Inc.
+Copyright 2013-2014 Chef Software, Inc.
+Copyright 2011 Fletcher Nichol
+Copyright 2010 VMware, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
