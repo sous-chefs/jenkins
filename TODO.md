@@ -1,7 +1,6 @@
 # TODO
 
-* complete rewrite of README based on recent changes
-* automaticalyl send set set labels for a slave's platform, version and architecture
+* automatically send set set labels for a slave's platform, version and architecture
 * pull in improvements from Fletcher Nichol's fork: https://github.com/fnichol/chef-jenkins
 * test coverage including test-kitchen/jamie integration tests
 * reevalute LWRPs and see if Jenkins REST API can be better leveraged
