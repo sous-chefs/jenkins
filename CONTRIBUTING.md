@@ -8,7 +8,7 @@ All contributors are welcome to submit patches, but we ask you keep the followin
 - [Testing](#testing)
 - [Prerequisites](#prerequisites)
 
-Please also keep try to:
+Please also keep in mind:
 
 - Be patient as not all items will be tested or reviewed immediately by the core team.
 - Be receptive and responsive to feedback about your additions or changes. The core team and/or other community members may make suggestions or ask questions about your change. This is part of the review process, and helps everyone to understand what is happening, why it is happening, and potentially optimizes your code.
@@ -23,7 +23,7 @@ This second details Pull Requests that we will **not** merge.
 
 1. New features without accompanying Test Kitchen tests
 1. New features without accompanying usage documentation
-1. Pull requests with a broken build
+1. Pull requests with a broken build (Travis will automatically mark the build as passing/failing on GitHub, but you can also check the build manually by visiting https://travis-ci.org/opscode-cookbooks/jenkins)
 
 
 Coding Standards
