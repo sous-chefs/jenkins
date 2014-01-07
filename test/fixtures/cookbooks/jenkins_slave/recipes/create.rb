@@ -1,98 +1,106 @@
 include_recipe 'jenkins::server'
 
-##################################################
-# JNLP Slaves
-##################################################
+
+#
+# JNLP
+# ------------------------------
 
 # Test basic JNLP slave creation
-jenkins_jnlp_slave 'grimlock' do
-  description 'full of cesium salami'
-  remote_fs '/tmp/jenkins/slaves/grimlock'
-  service_name 'jenkins-slave-grimlock'
-  labels %w{ transformer autobot dinobot }
-  user 'jenkins-grimlock'
-  group 'jenkins-grimlock'
+jenkins_jnlp_slave 'builder' do
+  description  'A generic slave builder'
+  remote_fs    '/tmp/jenkins/slaves/builder'
+  service_name 'jenkins-slave-builder'
+  labels       %w[builder linux]
+  user         'jenkins-builder'
+  group        'jenkins-builder'
 end
 
 # Test with environment variables
-jenkins_jnlp_slave 'shrapnel' do
-  description 'bugs are cool'
-  remote_fs '/tmp/jenkins/slaves/shrapnel'
-  service_name 'jenkins-slave-shrapnel'
-  labels %w{ transformer decepticon insecticon }
+jenkins_jnlp_slave 'executor' do
+  description  'Run test suites'
+  remote_fs    '/tmp/jenkins/slaves/executor'
+  service_name 'jenkins-slave-executor'
+  labels       %w[executor freebsd jail]
+  user         'jenkins-executor'
+  group        'jenkins-executor'
   environment(
     'FOO' => 'bar',
-    'BAZ' => 'qux'
+    'BAZ' => 'qux',
   )
-  user 'jenkins-shrapnel'
-  group 'jenkins-shrapnel'
 end
 
 # Test more exotic JNLP slave creation
-jenkins_jnlp_slave 'soundwave' do
-  description 'casettes are still cool'
-  remote_fs '/tmp/jenkins/slaves/soundwave'
-  service_name 'jenkins-slave-soundwave'
-  executors 5
-  usage_mode 'exclusive'
-  availability 'demand'
+jenkins_jnlp_slave 'smoke' do
+  description     'Run high-level integration tests'
+  remote_fs       '/tmp/jenkins/slaves/smoke'
+  service_name    'jenkins-slave-smoke'
+  executors       5
+  usage_mode      'exclusive'
+  availability    'demand'
   in_demand_delay 1
-  idle_delay 3
-  labels %w{ transformer decepticon badass }
-  user 'jenkins-soundwave'
-  group 'jenkins-soundwave'
+  idle_delay      3
+  labels          %w[runner fast]
+  user           'jenkins-smoke'
+  group          'jenkins-smoke'
 end
 
-##################################################
-# SSH Slaves
-##################################################
+
+#
+# SSH
+# ------------------------------
 
 # Ugh...need to find a better way to do this...
-jenkins_master_pk = File.read(File.expand_path('../../../../../data/data/test_id_rsa', __FILE__))
+key_path = File.expand_path('../../../../../data/data/test_id_rsa', __FILE__)
+jenkins_master_pk = File.read(key_path)
 
 # Test SSH slave creation - credentials from resource
-c = jenkins_private_key_credentials 'jenkins-starscream' do
+credentials = jenkins_private_key_credentials 'jenkins-ssh-builder' do
   private_key jenkins_master_pk
 end
 
-jenkins_ssh_slave 'starscream' do
-  description 'should be the leader'
-  remote_fs '/tmp/jenkins/slaves/starscream'
-  labels %w{ transformer decepticon seeker }
-  user 'jenkins-starscream'
-  group 'jenkins-starscream'
+jenkins_ssh_slave 'ssh-builder' do
+  description 'Builder, but over SSH'
+  remote_fs   '/tmp/jenkins/slaves/ssh-builder'
+  labels      %w[builer linux]
+  user        'jenkins-ssh-builder'
+  group       'jenkins-ssh-builder'
+
   # SSH specific attributes
-  host 'localhost'
-  credentials c
+  host        'localhost'
+  credentials credentials
 end
 
 # Test SSH slave creation - credentials from ID
-jenkins_private_key_credentials 'jenkins-skywarp' do
+jenkins_private_key_credentials 'jenkins-ssh-executor' do
   id '38537014-ec66-49b5-aff2-aed1c19e2989'
   private_key jenkins_master_pk
 end
 
-jenkins_ssh_slave 'skywarp' do
-  remote_fs '/tmp/jenkins/slaves/skywarp'
-  labels %w{ transformer decepticon seeker }
-  user 'jenkins-skywarp'
-  group 'jenkins-skywarp'
+jenkins_ssh_slave 'ssh-executor' do
+  description 'An executor, but over SSH'
+  remote_fs   '/tmp/jenkins/slaves/ssh-executor'
+  labels      %w[executor freebsd jail]
+  user        'jenkins-ssh-executor'
+  group       'jenkins-ssh-executor'
+
   # SSH specific attributes
-  host 'localhost'
+  host        'localhost'
   credentials '38537014-ec66-49b5-aff2-aed1c19e2989'
 end
 
 # Test SSH slave creation - credentials from username
-jenkins_private_key_credentials 'jenkins-thundercracker' do
+jenkins_private_key_credentials 'jenkins-smoke' do
   private_key jenkins_master_pk
 end
 
-jenkins_ssh_slave 'thundercracker' do
-  remote_fs '/tmp/jenkins/slaves/thundercracker'
-  labels %w{ transformer decepticon seeker }
-  user 'jenkins-thundercracker'
-  group 'jenkins-thundercracker'
+jenkins_ssh_slave 'smoke' do
+  description 'Smoke, but over SSH'
+  remote_fs   '/tmp/jenkins/slaves/smoke'
+  labels      %w[runner fast]
+  user        'jenkins-smoke'
+  group       'jenkins-smoke'
+
   # SSH specific attributes
-  host 'localhost'
-  credentials 'jenkins-thundercracker'
+  host        'localhost'
+  credentials 'jenkins-smoke'
 end
