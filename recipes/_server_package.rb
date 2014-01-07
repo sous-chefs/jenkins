@@ -59,7 +59,6 @@ template node['jenkins']['server']['config_path'] do
   group 'root'
   mode '0644'
   notifies :restart, 'service[jenkins]', :immediately
-  notifies :create, 'ruby_block[block_until_operational]', :immediately
 end
 
 service 'jenkins' do

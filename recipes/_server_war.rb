@@ -33,7 +33,6 @@ remote_file File.join(node['jenkins']['server']['home'], 'jenkins.war') do
   owner node['jenkins']['server']['user']
   group node['jenkins']['server']['home_dir_group']
   notifies :restart, 'service[jenkins]'
-  notifies :create, 'ruby_block[block_until_operational]'
 end
 
 runit_service 'jenkins'

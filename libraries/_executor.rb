@@ -66,16 +66,18 @@ module Jenkins
     #   the standard out from the command
     #
     def execute!(*pieces)
-      command =  "#{shl_escape(options[:java])} -jar #{shl_escape(options[:cli])}"
-      command << " -s #{uri_escape(options[:url])}"   if options[:url]
-      command << " -i #{shl_escape(options[:key])}"   if options[:key]
-      command << " -p #{uri_escape(options[:proxy])}" if options[:proxy]
-      command << " #{pieces.join(' ')}"
+      with_error_parsing do
+        command =  "#{shl_escape(options[:java])} -jar #{shl_escape(options[:cli])}"
+        command << " -s #{uri_escape(options[:url])}"   if options[:url]
+        command << " -i #{shl_escape(options[:key])}"   if options[:key]
+        command << " -p #{uri_escape(options[:proxy])}" if options[:proxy]
+        command << " #{pieces.join(' ')}"
 
-      command = Mixlib::ShellOut.new(command)
-      command.run_command
-      command.error!
-      command.stdout.strip
+        command = Mixlib::ShellOut.new(command, timeout: 30)
+        command.run_command
+        command.error!
+        command.stdout.strip
+      end
     end
 
     #
@@ -136,6 +138,44 @@ module Jenkins
     #
     def uri_escape(string)
       URI.escape(string)
+    end
+
+    private
+
+    def with_error_parsing(&block)
+      interval = 10
+      retries  = 3
+
+      begin
+        block.call
+      rescue Mixlib::ShellOut::ShellCommandFailed,
+             Mixlib::ShellOut::CommandTimeout => e
+
+        # Re-raise if we are out of retries
+        raise if retries < 1
+
+        if e.message =~ /java\.net\.ConnectException: Connection refused/
+          # This state occurs when the Jenkins service isn't running or the CLI
+          # hasn't yet booted.
+          Chef::Log.info('The CLI is not currently responding, retrying...')
+          Chef::Log.debug(e.message)
+        elsif e.message =~ /I\/O error in channel Chunked connection/
+          # This state occurs when a CLI request is made _while_ the CLI is
+          # booting.
+          Chef::Log.info('The CLI is not accepting requests, retrying...')
+          Chef::Log.debug(e.message)
+        else
+          # This state occurs when shit blows up
+          Chef::Log.info('The CLI threw an unexpected error, retrying...')
+          Chef::Log.debug(e.message)
+        end
+
+        # Sleep for the wait period
+        sleep(interval)
+
+        retries -= 1
+        retry
+      end
     end
   end
 end

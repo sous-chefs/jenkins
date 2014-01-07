@@ -8,7 +8,7 @@ version          '1.2.3'
 
 recipe 'server', 'Installs Jenkins server'
 
+depends 'apt',   '~> 2.0'
 depends 'java',  '~> 1.17'
 depends 'runit', '~> 1.5'
-depends 'apt',   '~> 2.0'
-depends 'yum',   '~> 2.0'
+depends 'yum',   '~> 3.0'
