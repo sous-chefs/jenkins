@@ -86,7 +86,7 @@ The `:create` action idempotently creates a set of Jenkins credentials on the cu
 
 ```ruby
 # Create password credentials
-jenkins_credentials 'wcoyote' do
+jenkins_password_credentials 'wcoyote' do
   description 'Wile E Coyote'
   password    'beepbeep'
 end
