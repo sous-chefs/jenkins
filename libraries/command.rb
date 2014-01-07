@@ -36,15 +36,10 @@ class Chef
 
       # Set the name attribute and default attributes
       @command = name
-      @timeout = 30
     end
 
     def command(arg = nil)
       set_or_return(:command, arg, kind_of: String)
-    end
-
-    def timeout(arg = nil)
-      set_or_return(:timeout, arg, kind_of: Fixnum)
     end
   end
 end
@@ -55,7 +50,6 @@ class Chef
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsCommand.new(new_resource.command)
-      @current_resource.timeout(new_resource.timeout)
     end
 
     #
