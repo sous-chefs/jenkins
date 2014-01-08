@@ -234,7 +234,10 @@ module Jenkins
       Timeout.timeout(node['jenkins']['timeout']) do
         begin
           open(node['jenkins']['server']['url'])
-        rescue SocketError, Errno::ECONNREFUSED, OpenURI::HTTPError => e
+        rescue SocketError,
+               Errno::ECONNREFUSED,
+               Errno::ECONNRESET,
+               OpenURI::HTTPError => e
           Chef::Log.debug("Jenkins is not accepting requests - #{e.message}")
 
           sleep(0.5)
