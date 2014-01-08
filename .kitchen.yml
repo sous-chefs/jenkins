@@ -25,6 +25,12 @@ platforms:
 
 suites:
   #
+  # Smoke suite
+  #
+  - name: jenkins_smoke
+    run_list: jenkins_smoke::default
+
+  #
   # Command suites
   #
   - name: jenkins_command_execute
