@@ -14,6 +14,10 @@ provisioner:
   name: chef_zero
   require_chef_omnibus: 11.8.0
   data_path: test/shared
+  attributes:
+    jenkins:
+      server:
+        host: localhost
 
 platforms:
   - name: ubuntu-12.04
