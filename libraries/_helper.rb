@@ -54,7 +54,7 @@ module Jenkins
     #
     def executor
       wait_until_ready!
-      ensure_cli_present!
+      ensure_cli_present! unless ::File.exists?(cli)
 
       options = {}.tap do |h|
         h[:cli]   = cli
