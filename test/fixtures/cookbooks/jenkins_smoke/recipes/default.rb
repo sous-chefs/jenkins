@@ -14,7 +14,6 @@
 
 include_recipe 'jenkins::server'
 
-
 #
 # Commands
 # ------------------------------
@@ -22,7 +21,6 @@ include_recipe 'jenkins::server'
 jenkins_command 'clear-queue'
 jenkins_command 'help'
 jenkins_command 'version'
-
 
 #
 # Credentials
@@ -78,7 +76,6 @@ end
 jenkins_credentials 'yzl' do
   action :delete
 end
-
 
 #
 # Jobs
@@ -242,7 +239,6 @@ end
 jenkins_ssh_slave 'ssh-executor' do
   action :online
 end
-
 
 #
 # Users

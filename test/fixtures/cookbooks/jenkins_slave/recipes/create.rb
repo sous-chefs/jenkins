@@ -43,7 +43,6 @@ jenkins_jnlp_slave 'executor' do
   )
 end
 
-
 #
 # SSH
 # ------------------------------

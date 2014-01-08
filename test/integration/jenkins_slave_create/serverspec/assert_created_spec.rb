@@ -29,7 +29,6 @@ describe service('jenkins-slave-builder') do
   it { should be_running }
 end
 
-
 #
 # JNLP Slave #2
 # ------------------------------
@@ -63,7 +62,6 @@ describe service('jenkins-slave-smoke') do
   it { should be_running }
 end
 
-
 #
 # JNLP Slave #3
 # ------------------------------
@@ -94,7 +92,6 @@ describe service('jenkins-slave-executor') do
   it { should be_running }
 end
 
-
 #
 # SSH Slave #1
 # ------------------------------
@@ -123,7 +120,6 @@ describe file('/tmp/jenkins/slaves/ssh-builder') do
   it { should be_directory }
 end
 
-
 #
 # SSH Slave #2
 # ------------------------------
@@ -150,7 +146,6 @@ end
 describe file('/tmp/jenkins/slaves/ssh-executor') do
   it { should be_directory }
 end
-
 
 #
 # SSH Slave #3

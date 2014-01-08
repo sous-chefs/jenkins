@@ -28,7 +28,7 @@ module Jenkins
       def initialize(url, timeout)
         super "The Jenkins server at `#{url}' did not become ready within " \
               "#{timeout} seconds. On large Jenkins instances, you may need " \
-              "to increase the timeout to #{timeout*4} seconds. " \
+              "to increase the timeout to #{timeout * 4} seconds. " \
               "Alternatively, Jenkins can fail to start if:\n" \
               "\n" \
               "  - a configuration file is invalid\n" \
