@@ -1,6 +1,5 @@
 include_recipe 'jenkins::server'
 
-
 #
 # JNLP
 # ------------------------------
@@ -13,20 +12,6 @@ jenkins_jnlp_slave 'builder' do
   labels       %w[builder linux]
   user         'jenkins-builder'
   group        'jenkins-builder'
-end
-
-# Test with environment variables
-jenkins_jnlp_slave 'executor' do
-  description  'Run test suites'
-  remote_fs    '/tmp/jenkins/slaves/executor'
-  service_name 'jenkins-slave-executor'
-  labels       %w[executor freebsd jail]
-  user         'jenkins-executor'
-  group        'jenkins-executor'
-  environment(
-    'FOO' => 'bar',
-    'BAZ' => 'qux',
-  )
 end
 
 # Test more exotic JNLP slave creation
@@ -42,6 +27,20 @@ jenkins_jnlp_slave 'smoke' do
   labels          %w[runner fast]
   user           'jenkins-smoke'
   group          'jenkins-smoke'
+end
+
+# Test with environment variables
+jenkins_jnlp_slave 'executor' do
+  description  'Run test suites'
+  remote_fs    '/tmp/jenkins/slaves/executor'
+  service_name 'jenkins-slave-executor'
+  labels       %w[executor freebsd jail]
+  user         'jenkins-executor'
+  group        'jenkins-executor'
+  environment(
+    'FOO' => 'bar',
+    'BAZ' => 'qux',
+  )
 end
 
 
@@ -89,18 +88,18 @@ jenkins_ssh_slave 'ssh-executor' do
 end
 
 # Test SSH slave creation - credentials from username
-jenkins_private_key_credentials 'jenkins-smoke' do
+jenkins_private_key_credentials 'jenkins-ssh-smoke' do
   private_key jenkins_master_pk
 end
 
-jenkins_ssh_slave 'smoke' do
-  description 'Smoke, but over SSH'
-  remote_fs   '/tmp/jenkins/slaves/smoke'
+jenkins_ssh_slave 'ssh-smoke' do
+  description 'ssh-Smoke, but over SSH'
+  remote_fs   '/tmp/jenkins/slaves/ssh-smoke'
   labels      %w[runner fast]
-  user        'jenkins-smoke'
-  group       'jenkins-smoke'
+  user        'jenkins-ssh-smoke'
+  group       'jenkins-ssh-smoke'
 
   # SSH specific attributes
   host        'localhost'
-  credentials 'jenkins-smoke'
+  credentials 'jenkins-ssh-smoke'
 end
