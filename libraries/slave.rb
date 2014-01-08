@@ -648,7 +648,7 @@ class Chef
         remote_fs: new_resource.remote_fs,
         executors: new_resource.executors,
         usage_mode: new_resource.usage_mode,
-        labels: (auto_labels + new_resource.labels).sort,
+        labels: new_resource.labels.sort,
         availability: new_resource.availability,
         environment: new_resource.environment
       }
