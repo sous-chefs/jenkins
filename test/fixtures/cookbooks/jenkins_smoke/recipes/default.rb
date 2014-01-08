@@ -127,6 +127,9 @@ end
   jenkins_plugin name
 end
 
+# Restart jenkins to install the plugins
+jenkins_command 'restart'
+
 # Uninstall a plugin
 jenkins_plugin 'greenballs' do
   action :uninstall
@@ -137,17 +140,9 @@ jenkins_plugin 'fancypants' do
   action :uninstall
 end
 
-ruby_block 'block_until_plugin_installed' do
-  block { sleep(15) }
-end
-
 # Disable a plugin
 jenkins_plugin 'disk-usage' do
   action :disable
-end
-
-ruby_block 'block_until_plugin_disabled' do
-  block { sleep(15) }
 end
 
 # Enable a plugin
@@ -209,6 +204,9 @@ jenkins_ssh_slave 'ssh-executor' do
   action :disconnect
 end
 
+# Restart
+jenkins_command 'restart'
+
 # Connection JNLP slave
 jenkins_jnlp_slave 'executor' do
   action :connect
@@ -219,6 +217,9 @@ jenkins_ssh_slave 'ssh-executor' do
   action :connect
 end
 
+# Restart
+jenkins_command 'restart'
+
 # Offline JNLP Slave
 jenkins_jnlp_slave 'executor' do
   action :offline
@@ -228,6 +229,9 @@ end
 jenkins_ssh_slave 'ssh-executor' do
   action :offline
 end
+
+# Restart
+jenkins_command 'restart'
 
 # Online JNLP Slave
 jenkins_jnlp_slave 'executor' do
