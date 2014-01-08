@@ -27,6 +27,15 @@ default['jenkins']['mirror'] = 'http://mirrors.jenkins-ci.org'
 default['jenkins']['java_home'] = ENV['JAVA_HOME']
 
 #
+# This is the number of seconds to wait for Jenkins to become "ready" after a
+# start, restart, or reload. Since the Jenkins service returns immediately and
+# the actual Java process is started in the background, we block the Chef
+# Client run until the service endpoint(s) are _actually_ ready to accept
+# requests.
+#
+default['jenkins']['timeout'] = 60
+
+#
 # If your Jenkins master requires authentication, you must set the private key.
 #
 # For example, you could load this private key via a search:

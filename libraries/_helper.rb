@@ -19,8 +19,27 @@
 # limitations under the License.
 #
 
+require 'open-uri'
+require 'timeout'
+
 module Jenkins
   module Helper
+    class JenkinsNotReady < StandardError
+      def initialize(url, timeout)
+        super "The Jenkins server at `#{url}' did not become ready within " \
+              "#{timeout} seconds. On large Jenkins instances, you may need " \
+              "to increase the timeout to #{timeout*4} seconds. " \
+              "Alternatively, Jenkins can fail to start if:\n" \
+              "\n" \
+              "  - a configuration file is invalid\n" \
+              "  - a plugin is partially installed\n" \
+              "  - a plugin's dependencies are not installed\n" \
+              "\n" \
+              "If this problem persists, check your server's log files for " \
+              "more information."
+      end
+    end
+
     # Matches Version 4 UUID per RFC 4122
     # Example: 38537014-ec66-49b5-aff2-aed1c19e2989
     UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/
@@ -34,7 +53,8 @@ module Jenkins
     # @return [Jenkins::Executor]
     #
     def executor
-      ensure_cli_present! unless ::File.exists?(cli)
+      wait_until_ready!
+      ensure_cli_present!
 
       options = {}.tap do |h|
         h[:cli]   = cli
@@ -197,6 +217,32 @@ module Jenkins
     #
     def cli
       File.join(Chef::Config[:file_cache_path], 'jenkins-cli.jar')
+    end
+
+    #
+    # Since the Jenkins service returns immediately and the actual Java process
+    # is started in the background, we block the Chef Client run until the
+    # service endpoint(s) are _actually_ ready to accept requests.
+    #
+    # This method will effectively "block" the current thread until the Jenkins
+    # server is ready to accept CLI and HTTP requests.
+    #
+    # @raise [JenkinsNotReady]
+    #   if the server does not respond within (+timeout+) seconds
+    #
+    def wait_until_ready!
+      Timeout.timeout(node['jenkins']['timeout']) do
+        begin
+          open(node['jenkins']['server']['url'])
+        rescue SocketError, Errno::ECONNREFUSED, OpenURI::HTTPError => e
+          Chef::Log.debug("Jenkins is not accepting requests - #{e.message}")
+
+          sleep(0.5)
+          retry
+        end
+      end
+    rescue Timeout::Error
+      raise JenkinsNotReady.new(node['jenkins']['url'], node['jenkins']['timeout'])
     end
 
     #
