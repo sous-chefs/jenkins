@@ -16,7 +16,7 @@ provisioner:
   data_path: test/shared
   attributes:
     jenkins:
-      server:
+      master:
         host: localhost
 
 platforms:
@@ -33,13 +33,13 @@ suites:
     run_list: jenkins_smoke::default
     attributes:
       jenkins:
-        server:
+        master:
           install_method: package
   - name: jenkins_smoke_war
     run_list: jenkins_smoke::default
     attributes:
       jenkins:
-        server:
+        master:
           install_method: war
 
   #

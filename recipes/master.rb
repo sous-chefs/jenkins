@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: jenkins
-# Recipe:: server
+# Recipe:: master
 #
 # Author: AJ Christensen <aj@junglist.gen.nz>
 # Author: Dough MacEachern <dougm@vmware.com>
@@ -30,32 +30,32 @@
 include_recipe 'java::default'
 
 # Create the Jenkins user
-user node['jenkins']['server']['user'] do
-  home node['jenkins']['server']['home']
+user node['jenkins']['master']['user'] do
+  home node['jenkins']['master']['home']
 end
 
 # Create the home directory
-directory node['jenkins']['server']['home'] do
-  owner     node['jenkins']['server']['user']
-  group     node['jenkins']['server']['group']
+directory node['jenkins']['master']['home'] do
+  owner     node['jenkins']['master']['user']
+  group     node['jenkins']['master']['group']
   mode      '0755'
   recursive true
 end
 
 # Create the log directory
-directory node['jenkins']['server']['log_directory'] do
-  owner     node['jenkins']['server']['user']
-  group     node['jenkins']['server']['group']
+directory node['jenkins']['master']['log_directory'] do
+  owner     node['jenkins']['master']['user']
+  group     node['jenkins']['master']['group']
   mode      '0755'
   recursive true
 end
 
 # Gracefully handle the failure for an invalid installation type
 begin
-  include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
+  include_recipe "jenkins::_master_#{node['jenkins']['master']['install_method']}"
 rescue Chef::Exceptions::RecipeNotFound
   raise Chef::Exceptions::RecipeNotFound, "The install method " \
-    "`#{node['jenkins']['server']['install_method']}' is not supported by " \
+    "`#{node['jenkins']['master']['install_method']}' is not supported by " \
     "this cookbook. Please ensure you have spelled it correctly. If you " \
     "continue to encounter this error, please file an issue."
 end

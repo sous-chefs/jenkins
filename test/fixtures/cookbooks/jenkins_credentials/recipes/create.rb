@@ -1,6 +1,6 @@
 require 'openssl'
 
-include_recipe 'jenkins::server'
+include_recipe 'jenkins::master'
 
 # Test basic password credentials creation
 jenkins_password_credentials 'schisamo' do

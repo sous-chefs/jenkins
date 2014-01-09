@@ -2,7 +2,7 @@ jenkins Cookbook
 ================
 [![Build Status](https://secure.travis-ci.org/opscode-cookbooks/jenkins.png?branch=master)](http://travis-ci.org/opscode-cookbooks/jenkins)
 
-Installs and configures Jenkins CI server & node slaves. Resource providers to support automation via jenkins-cli, including job create/update.
+Installs and configures Jenkins CI master & node slaves. Resource providers to support automation via jenkins-cli, including job create/update.
 
 
 Requirements
@@ -18,8 +18,8 @@ In order to keep the README managable and in sync with the attributes, this cook
 
 Recipes
 -------
-### server
-The server recipe will create the required directory structure and install jenkins. There are two installation methods, controlled by the `node['jenkins']['server']['install_method']` attribute:
+### master
+The master recipe will create the required directory structure and install jenkins. There are two installation methods, controlled by the `node['jenkins']['master']['install_method']` attribute:
 
 - `package` - Install Jenkins from the official jenkins-ci.org packages
 - `war` - Download the latest version of the WAR file and configure it with Runit
@@ -205,7 +205,7 @@ jenkins_plugin 'greenballs' do
 end
 ```
 
-**NOTE** You may need to restart the Jenkins server after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins servers differently) this LWRP does **NOT** restart Jenkins for you.
+**NOTE** You may need to restart Jenkins after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins infrastructure differently) this LWRP does **NOT** restart Jenkins for you.
 
 ### jenkins_slave
 This resource manages Jenkins slaves, supporting the following actions:
@@ -393,7 +393,7 @@ node.set['jenkins']['executor']['private_key'] = private_key
 
 
 ### Proxies
-If you need to pass through a proxy server to communicate between your masters and slaves, you will need to set a special node attribute:
+If you need to pass through a proxy to communicate between your masters and slaves, you will need to set a special node attribute:
 
 ```ruby
 node['jenkins']['executor']['proxy']

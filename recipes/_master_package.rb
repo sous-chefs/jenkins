@@ -1,7 +1,7 @@
 #
 # Author:: Guilhem Lettron <guilhem.lettron@youscribe.com>
 # Cookbook Name:: jenkins
-# Recipe:: _server_package
+# Recipe:: _master_package
 #
 # Author: Seth Vargo <sethvargo@getchef.com>
 #
@@ -32,7 +32,7 @@ when 'debian'
   end
 
   package 'jenkins' do
-    version node['jenkins']['server']['version']
+    version node['jenkins']['master']['version']
   end
 
   template '/etc/default/jenkins' do
@@ -49,7 +49,7 @@ when 'rhel'
   end
 
   package 'jenkins' do
-    version node['jenkins']['server']['version']
+    version node['jenkins']['master']['version']
   end
 
   template '/etc/sysconfig/jenkins' do

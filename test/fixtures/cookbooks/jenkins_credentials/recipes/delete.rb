@@ -1,4 +1,4 @@
-include_recipe 'jenkins::server'
+include_recipe 'jenkins::master'
 
 # Include the create recipe so we have something to delete
 include_recipe 'jenkins_credentials::create'

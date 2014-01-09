@@ -1,4 +1,4 @@
-include_recipe 'jenkins::server'
+include_recipe 'jenkins::master'
 
 # Include the disable recipe so we have something to enable
 include_recipe 'jenkins_plugin::disable'

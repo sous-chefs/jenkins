@@ -1,4 +1,4 @@
-include_recipe 'jenkins::server'
+include_recipe 'jenkins::master'
 
 # Test basic user creation
 jenkins_user 'sethvargo'

@@ -265,7 +265,7 @@ class Chef
 
     #
     # Helper method for determining if the given JSON is in sync with the
-    # current configuration on the Jenkins server.
+    # current configuration on the Jenkins instance.
     #
     # @return [Boolean]
     #

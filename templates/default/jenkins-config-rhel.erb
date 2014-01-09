@@ -7,7 +7,7 @@
 # Directory where Jenkins store its configuration and working
 # files (checkouts, build reports, artifacts, ...).
 #
-JENKINS_HOME="<%= node['jenkins']['server']['home'] %>"
+JENKINS_HOME="<%= node['jenkins']['master']['home'] %>"
 
 ## Type:        string
 ## Default:     ""
@@ -26,7 +26,7 @@ JENKINS_JAVA_CMD="<%= node['jenkins']['java'] %>"
 # Be careful when you change this, as you need to update
 # permissions of $JENKINS_HOME and /var/log/jenkins.
 #
-JENKINS_USER="<%= node['jenkins']['server']['user'] %>"
+JENKINS_USER="<%= node['jenkins']['master']['user'] %>"
 
 ## Type:        string
 ## Default:     "/var/log/jenkins"
@@ -34,7 +34,7 @@ JENKINS_USER="<%= node['jenkins']['server']['user'] %>"
 #
 # Directory where Jenkins will write its logfiles.
 #
-JENKINS_LOG=<%= node['jenkins']['server']['log_directory'] %>/jenkins.log
+JENKINS_LOG=<%= node['jenkins']['master']['log_directory'] %>/jenkins.log
 
 ## Type:        string
 ## Default:     "-Djava.awt.headless=true"
@@ -43,8 +43,8 @@ JENKINS_LOG=<%= node['jenkins']['server']['log_directory'] %>/jenkins.log
 # Options to pass to java when running Jenkins.
 #
 JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
-<% if node['jenkins']['server']['jvm_options'] %>
-JENKINS_JAVA_OPTIONS="$JENKINS_JAVA_OPTIONS <%= node['jenkins']['server']['jvm_options'] %>"
+<% if node['jenkins']['master']['jvm_options'] %>
+JENKINS_JAVA_OPTIONS="$JENKINS_JAVA_OPTIONS <%= node['jenkins']['master']['jvm_options'] %>"
 <% end %>
 
 ## Type:        integer(0:65535)

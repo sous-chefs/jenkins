@@ -83,7 +83,7 @@ class Chef
     end
 
     #
-    # Determine if the plugin is installed on the server. This value is set by
+    # Determine if the plugin is installed on the master. This value is set by
     # the provider when the current resource is loaded.
     #
     # @return [Boolean]
@@ -100,7 +100,7 @@ class Chef
       def initialize(plugin, action)
         super <<-EOH
 The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
-`#{plugin}', that plugin must first be installed on the Jenkins server!
+`#{plugin}', that plugin must first be installed on the Jenkins master!
 EOH
       end
     end
@@ -278,7 +278,7 @@ EOH
     # @return [String]
     #
     def plugins_directory
-      ::File.join(node['jenkins']['server']['home'], 'plugins')
+      ::File.join(node['jenkins']['master']['home'], 'plugins')
     end
 
     #
@@ -316,21 +316,21 @@ EOH
     end
 
     #
-    # Restart the Jenkins server. If the +restart+ parameter is given, the
-    # server is restarted immediately. Otherwise, the server is restarted at
+    # Restart the Jenkins master. If the +restart+ parameter is given, the
+    # master is restarted immediately. Otherwise, the master is restarted at
     # the end of the Chef Client run.
     #
     def notify(action)
       begin
         service = run_context.resource_collection.find('service[jenkins]')
       rescue Chef::Exceptions::ResourceNotFound
-        Chef::Log.warn "I could not find service[jenkins] in the resource " \
-                       "collection. The `jenkins_plugin` resource tries to " \
-                       "#{action} the Jenkins Server automatically after a " \
-                       "plugin is installed, but requires that a service " \
-                       "resource exists for `jenkins`. If you are using " \
-                       "your own Jenkins cookbook, you must manually " \
-                       "create a Jenkins service resource."
+        Chef::Log.warn <<-EOH
+I could not find service[jenkins] in the resource collection. The
+`jenkins_plugin' resource tries to #{action} the Jenkins master automatically
+after a plugin is installed or modified, but requires that a service resource
+exists for `jenkins'. If you are using your own Jenkins installation method,
+you must manually create a Jenkins service resource.
+EOH
         return
       end
 

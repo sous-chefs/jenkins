@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: jenkins
-# Attributes:: server
+# Attributes:: master
 #
 # Author: Doug MacEachern <dougm@vmware.com>
 # Author: Fletcher Nichol <fnichol@nichol.ca>
@@ -23,39 +23,39 @@
 # limitations under the License.
 #
 
-default['jenkins']['server'].tap do |server|
+default['jenkins']['master'].tap do |master|
   #
   # The installation method - +package+ or +war+. On RedHat and Debian
   # platforms, the installation method is to use the package from the official
   # Apt/Yum repos. On other platforms, the default method is using the war
   # file.
   #
-  #   node.set['jenkins']['server']['install_method'] = 'war'
+  #   node.set['jenkins']['master']['install_method'] = 'war'
   #
-  server['install_method'] = case node['platform_family']
+  master['install_method'] = case node['platform_family']
                              when 'debian', 'rhel' then 'package'
                              else 'war'
                              end
 
   #
-  # The version of the Jenkins server to install. This can be a specific
+  # The version of the Jenkins master to install. This can be a specific
   # package version (from the yum or apt repo), or the version of the war
   # file to download from the Jenkins mirror.
   #
-  server['version'] = nil
+  master['version'] = nil
 
   #
   # The mirror to donload the Jenkins war file. This attribute is only used
   # in the "war" installation method.
   #
-  #   node.set['jenkins']['server']['mirror'] = 'http://cache.example.com'
+  #   node.set['jenkins']['master']['mirror'] = 'http://cache.example.com'
   #
   # Note: this mirror is combined with some "smart" attributes to build the
   # Jenkins war. If you are not using an actual Jenkins mirror, you might be
   # more interested in the +source+ attribute, which accepts the full path
   # to the war file for downloading.
   #
-  server['mirror'] = 'http://mirrors.jenkins-ci.org'
+  master['mirror'] = 'http://mirrors.jenkins-ci.org'
 
   #
   # The full URL to the Jenkins WAR file on the remote mirror. This attribute is
@@ -65,12 +65,12 @@ default['jenkins']['server'].tap do |server|
   # war file. If you choose to override this file manually, it is highly
   # recommended that you also set the +checksum+ attribute.
   #
-  #   node.set['jenkins']['server']['source'] = 'http://fs01.example.com/jenkins.war'
+  #   node.set['jenkins']['master']['source'] = 'http://fs01.example.com/jenkins.war'
   #
   # Warning: Setting this attribute will negate/ignore any values for +mirror+
   # and +version+.
   #
-  server['source'] = "#{server['mirror']}/war/#{server['version'] || 'latest'}/jenkins.war"
+  master['source'] = "#{master['mirror']}/war/#{master['version'] || 'latest'}/jenkins.war"
 
   #
   # The checksum of the war file. This is use to verify that the remote war file
@@ -78,59 +78,59 @@ default['jenkins']['server'].tap do |server|
   # attribute set to +nil+, no validation will be performed. If this attribute
   # is set to the wrong MD5 checksum, the Chef Client run will fail.
   #
-  #   node.set['jenkins']['server']['checksum'] = 'abcd1234...'
+  #   node.set['jenkins']['master']['checksum'] = 'abcd1234...'
   #
-  server['checksum'] = nil
+  master['checksum'] = nil
 
   #
   # The list of options to pass to the Java JVM script when using the package
   # installer. For example:
   #
-  #   node.set['jenkins']['server']['jvm_options'] = '-Xmx256m'
+  #   node.set['jenkins']['master']['jvm_options'] = '-Xmx256m'
   #
-  server['jvm_options'] = nil
+  master['jvm_options'] = nil
 
   #
   # The username of the user who will own and run the Jenkins process. You can
   # change this to any user on the system. Chef will automatically create the
   # user if it does not exist.
   #
-  #   node.set['jenkins']['server']['user'] = 'root'
+  #   node.set['jenkins']['master']['user'] = 'root'
   #
-  server['user'] = 'jenkins'
+  master['user'] = 'jenkins'
 
   #
   # The group under which Jenkins is running. Jenkins doesn't actually use or
   # honor this attribute - it is used for file permission purposes.
   #
-  server['group'] = 'jenkins'
+  master['group'] = 'jenkins'
 
   #
-  # The host the Jenkins server is running on. For single-installs, the default
+  # The host the Jenkins master is running on. For single-installs, the default
   # value of +localhost+ will suffice. For multi-node installs, you will likely
   # need to update this attribute to the FQDN of your Jenkins master.
   #
   # If you are running behind a proxy, please see the documentation for the
   # +endpoint+ attribute instead.
   #
-  server['host'] = 'localhost'
+  master['host'] = 'localhost'
 
   #
   # The port which the Jenkins process will listen on.
   #
-  server['port'] = 8080
+  master['port'] = 8080
 
   #
-  # The top-level endpoint for the Jenkins server. By default, this is a
-  # "compiled" attribute from +jenkins.server.host+ and +jenkins.server.port+,
+  # The top-level endpoint for the Jenkins master. By default, this is a
+  # "compiled" attribute from +jenkins.master.host+ and +jenkins.master.port+,
   # but you will need to change this attribute if you choose to serve Jenkins
   # behind an HTTP(s) proxy. For example, if you have an Nginx proxy that runs
   # Jenkins on port 80 on a custom domain with a proxy, you will need to set
   # that attribute here:
   #
-  #   node.set['jenkins']['server']['endpoint'] = 'https://custom.domain.com/jenkins'
+  #   node.set['jenkins']['master']['endpoint'] = 'https://custom.domain.com/jenkins'
   #
-  server['endpoint'] = "http://#{server['host']}:#{server['port']}"
+  master['endpoint'] = "http://#{master['host']}:#{master['port']}"
 
   #
   # The path to the Jenkins home location. This will also become the value of
@@ -138,7 +138,7 @@ default['jenkins']['server'].tap do |server|
   # configuration and build artifacts. You should ensure this directory resides
   # on a volume with adequate disk space.
   #
-  server['home'] = '/var/lib/jenkins'
+  master['home'] = '/var/lib/jenkins'
 
   #
   # The directory where Jenkins should write its logfile(s). **This attribute
@@ -146,7 +146,7 @@ default['jenkins']['server'].tap do |server|
   # by the same user and group as the home directory. If you need furthor
   # customization, you should override these values in your wrapper cookbook.
   #
-  #   node.set['jenkins']['server']['log_directory'] = '/var/log/jenkins'
+  #   node.set['jenkins']['master']['log_directory'] = '/var/log/jenkins'
   #
-  server['log_directory'] = '/var/log/jenkins'
+  master['log_directory'] = '/var/log/jenkins'
 end

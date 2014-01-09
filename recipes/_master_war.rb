@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: jenkins
-# Recipe:: _server_war
+# Recipe:: _master_war
 #
 # Author: AJ Christensen <aj@junglist.gen.nz>
 # Author: Doug MacEachern <dougm@vmware.com>
@@ -28,11 +28,11 @@
 include_recipe 'runit::default'
 
 # Download the remote WAR file
-remote_file File.join(node['jenkins']['server']['home'], 'jenkins.war') do
-  source   node['jenkins']['server']['source']
-  checksum node['jenkins']['server']['checksum'] if node['jenkins']['server']['checksum']
-  owner    node['jenkins']['server']['user']
-  group    node['jenkins']['server']['group']
+remote_file File.join(node['jenkins']['master']['home'], 'jenkins.war') do
+  source   node['jenkins']['master']['source']
+  checksum node['jenkins']['master']['checksum'] if node['jenkins']['master']['checksum']
+  owner    node['jenkins']['master']['user']
+  group    node['jenkins']['master']['group']
   notifies :restart, 'service[jenkins]'
 end
 

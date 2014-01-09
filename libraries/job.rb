@@ -65,7 +65,7 @@ class Chef
     end
 
     #
-    # Determine if the job exists on the server. This value is set by the
+    # Determine if the job exists on the master. This value is set by the
     # provider when the current resource is loaded.
     #
     # @return [Boolean]
@@ -75,7 +75,7 @@ class Chef
     end
 
     #
-    # Determine if the job is enabled on the server. This value is set by the
+    # Determine if the job is enabled on the master. This value is set by the
     # provider when the current resource is loaded.
     #
     # @return [Boolean]
@@ -92,7 +92,7 @@ class Chef
       def initialize(job, action)
         super <<-EOH
 The Jenkins job `#{job}' does not exist. In order to #{action} `#{job}', that
-job must first exist on the Jenkins server!
+job must first exist on the Jenkins master!
 EOH
       end
     end
@@ -131,8 +131,8 @@ EOH
     # `config` XML file using the Jenkins CLI.
     #
     # This method also ensures the given configuration file matches the one
-    # rendered on the server. If the configuration file does not match, a new
-    # one is rendered.
+    # rendered on the Jenkins master. If the configuration file does not match,
+    # a new one is rendered.
     #
     # Requirements:
     #   - `config` parameter
@@ -247,7 +247,7 @@ EOH
 
     #
     # Helper method for determining if the given JSON is in sync with the
-    # current configuration on the Jenkins server.
+    # current configuration on the Jenkins master.
     #
     # We have to create REXML objects and then remove any whitespace because
     # XML is evil and sometimes sucks at the simplest things, like comparing

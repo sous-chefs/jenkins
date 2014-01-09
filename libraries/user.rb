@@ -89,7 +89,7 @@ class Chef
     end
 
     #
-    # Determine if the user exists on the server. This value is set by
+    # Determine if the user exists on the master. This value is set by
     # the provider when the current resource is loaded.
     #
     # @return [Boolean]

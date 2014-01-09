@@ -1,4 +1,4 @@
-include_recipe 'jenkins::server'
+include_recipe 'jenkins::master'
 
 # Include the install recipe so we have something to uninstall
 include_recipe 'jenkins_plugin::install'

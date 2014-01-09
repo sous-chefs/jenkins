@@ -48,9 +48,9 @@ default['jenkins']['executor'].tap do |executor|
   executor['private_key'] = nil
 
   #
-  # If you need to pass through a proxy server to communicate between your
-  # masters and slaves, you will need to set this node attribute. It should be
-  # set in the form `HOST:PORT`:
+  # If you need to pass through a proxy to communicate between your masters and
+  # slaves, you will need to set this node attribute. It should be  set in the
+  # form `HOST:PORT`:
   #
   #   node.set['jenkins']['executor']['proxy'] = '1.2.3.4'
   #

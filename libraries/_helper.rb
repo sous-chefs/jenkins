@@ -27,7 +27,7 @@ module Jenkins
     class JenkinsNotReady < StandardError
       def initialize(endpoint, timeout)
         super <<-EOH
-The Jenkins server at `#{endpoint}' did not become ready within #{timeout}
+The Jenkins master at `#{endpoint}' did not become ready within #{timeout}
 seconds. On large Jenkins instances, you may need to increase the timeout to
 #{timeout * 4} seconds. Alternatively, Jenkins may have failed to start.
 Jenkins can fail to start if:
@@ -36,7 +36,7 @@ Jenkins can fail to start if:
   - a plugin is only partially installed
   - a plugin's dependencies are not installed
 
-If this problem persists, check your server's log files.
+If this problem persists, check your Jenkins's log files.
 EOH
       end
     end
@@ -193,12 +193,12 @@ EOH
     end
 
     #
-    # The URL endpoint for the Jenkins server.
+    # The URL endpoint for the Jenkins master.
     #
     # @return [String]
     #
     def endpoint
-      node['jenkins']['server']['endpoint']
+      node['jenkins']['master']['endpoint']
     end
 
     #
@@ -234,10 +234,10 @@ EOH
     # service endpoint(s) are _actually_ ready to accept requests.
     #
     # This method will effectively "block" the current thread until the Jenkins
-    # server is ready to accept CLI and HTTP requests.
+    # master is ready to accept CLI and HTTP requests.
     #
     # @raise [JenkinsNotReady]
-    #   if the server does not respond within (+timeout+) seconds
+    #   if the Jenkins master does not respond within (+timeout+) seconds
     #
     def wait_until_ready!
       Timeout.timeout(timeout) do
@@ -259,7 +259,7 @@ EOH
 
     #
     # Idempotently download the remote +jenkins-cli.jar+ file for the Jenkins
-    # server. This method will raise an exception if the Jenkins master is
+    # master. This method will raise an exception if the Jenkins master is
     # unavailable or is not accepting requests.
     #
     def ensure_cli_present!

@@ -12,7 +12,7 @@
 #   - Manage SSH slaves (create, delete, connect, disconnect, online, offline)
 #
 
-include_recipe 'jenkins::server'
+include_recipe 'jenkins::master'
 
 #
 # Commands
