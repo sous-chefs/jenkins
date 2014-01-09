@@ -7,6 +7,7 @@ group :integration do
   cookbook 'jenkins_credentials', path: 'test/fixtures/cookbooks/jenkins_credentials'
   cookbook 'jenkins_job',         path: 'test/fixtures/cookbooks/jenkins_job'
   cookbook 'jenkins_plugin',      path: 'test/fixtures/cookbooks/jenkins_plugin'
+  cookbook 'jenkins_script',      path: 'test/fixtures/cookbooks/jenkins_script'
   cookbook 'jenkins_slave',       path: 'test/fixtures/cookbooks/jenkins_slave'
   cookbook 'jenkins_smoke',       path: 'test/fixtures/cookbooks/jenkins_smoke'
   cookbook 'jenkins_user',        path: 'test/fixtures/cookbooks/jenkins_user'

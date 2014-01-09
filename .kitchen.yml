@@ -77,6 +77,12 @@ suites:
     run_list: jenkins_job::enable
 
   #
+  # Script suites
+  #
+  - name: jenkins_script
+    run_list: jenkins_script::execute
+
+  #
   # Plugin suites
   #
   - name: jenkins_plugin_disable

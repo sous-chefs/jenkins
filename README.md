@@ -55,6 +55,38 @@ jenkins_command 'quiet-down'
 
 **NOTE** You must add your own `not_if`/`only_if` guards to the `jenkins_command` to prevent duplicate commands from executing. Just like Chef's core `execute` resource, the `jenkins_command` resource has no way of being idempotent.
 
+### jenkins_script
+This resource executes arbitrary Java or Groovy commands against the Jenkins master. By the nature of this command, it is **not** idempotent.
+
+```ruby
+jenkins_script 'println("This is Groovy code!")'
+```
+
+```ruby
+jenkins_script 'add_authentication' do
+  command <<-EOH.gsub(/^ {4}/, '')
+    import jenkins.model.*
+    import hudson.security.*
+    import org.jenkinsci.plugins.*
+
+    def instance = Jenkins.getInstance()
+
+    def githubRealm = new GithubSecurityRealm(
+      'https://github.com',
+      'https://api.github.com',
+      'API_KEY',
+      'API_SECRET'
+    )
+    instance.setSecurityRealm(githubRealm)
+
+    def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
+    instance.setAuthorizationStrategy(strategy)
+
+    instance.save()
+  EOH
+end
+```
+
 ### jenkins_credentials
 This resource manages Jenkins credentials, supporting the following actions:
 

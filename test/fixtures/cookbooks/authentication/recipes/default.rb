@@ -50,26 +50,26 @@ jenkins_plugin 'git'
 jenkins_command 'safe-restart'
 
 # Add GitHub authentication
-github_auth = <<-EOH.gsub(/^ {2}/, '')
-  import jenkins.model.*
-  def instance = Jenkins.getInstance()
+jenkins_script 'setup authentication' do
+  command <<-EOH.gsub(/^ {4}/, '')
+    import jenkins.model.*
+    def instance = Jenkins.getInstance()
 
-  import org.jenkinsci.plugins.*
-  def githubRealm = new GithubSecurityRealm(
-    'https://github.com',
-    'https://api.github.com',
-    'API_KEY',
-    'API_SECRET'
-  )
-  instance.setSecurityRealm(githubRealm)
+    import org.jenkinsci.plugins.*
+    def githubRealm = new GithubSecurityRealm(
+      'https://github.com',
+      'https://api.github.com',
+      'API_KEY',
+      'API_SECRET'
+    )
+    instance.setSecurityRealm(githubRealm)
 
-  def strategy = new hudson.security.FullControlOnceLoggedInAuthorizationStrategy()
-  instance.setAuthorizationStrategy(strategy)
+    def strategy = new hudson.security.FullControlOnceLoggedInAuthorizationStrategy()
+    instance.setAuthorizationStrategy(strategy)
 
-  instance.save()
-EOH
-
-jenkins_command "groovy = <<-GROOVY_SCRIPT\n#{github_auth}\nGROOVY_SCRIPT"
+    instance.save()
+  EOH
+end
 
 # Restart so authentication is setup
 jenkins_command 'safe-restart'
