@@ -50,11 +50,6 @@ Developing this cookbook requires a sane Ruby 1.9+ environment with `bundler` in
 - [Vagrant](https://vagrantup.com)
 - [VirtualBox](https://virtualbox.org)
 
-Once installed, you must install the `vagrant-berkshelf` and `vagrant-omnibus` plugins:
-
-    $ vagrant plugin install vagrant-berkshelf
-    $ vagrant plugin install vagrant-omnibus
-
 ### CLA
 For non-trival updates (such as new features or bugfixes), we do require a Contributor License Agreement from Chef Software. If you have already signed a CLA under Opscode or Chef Software, you are already covered. For more information, see [Opscode's Contribution Guidelines](https://wiki.opscode.com/display/chef/How+to+Contribute), but please note that we do **not** use the JIRA ticketing system.
 
