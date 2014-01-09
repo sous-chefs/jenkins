@@ -98,9 +98,10 @@ class Chef
   class Provider::JenkinsPlugin < Provider
     class PluginNotInstalled < StandardError
       def initialize(plugin, action)
-        super "The Jenkins plugin `#{plugin}` is not installed. In order " \
-              "to #{action} `#{plugin}`, that plugin must first be " \
-              "installed on the Jenkins server!"
+        super <<-EOH
+The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
+`#{plugin}', that plugin must first be installed on the Jenkins server!
+EOH
       end
     end
 

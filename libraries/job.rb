@@ -90,9 +90,10 @@ class Chef
   class Provider::JenkinsJob < Provider
     class JobDoesNotExist < StandardError
       def initialize(job, action)
-        super "The Jenkins job `#{job}` does not exist. In order to " \
-              "#{action} `#{job}`, that job must first exist on the " \
-              "Jenkins server!"
+        super <<-EOH
+The Jenkins job `#{job}' does not exist. In order to #{action} `#{job}', that
+job must first exist on the Jenkins server!
+EOH
       end
     end
 

@@ -26,17 +26,18 @@ module Jenkins
   module Helper
     class JenkinsNotReady < StandardError
       def initialize(endpoint, timeout)
-        super "The Jenkins server at `#{endpoint}' did not become ready " \
-              "within #{timeout} seconds. On large Jenkins instances, you " \
-              "may need to increase the timeout to #{timeout * 4} seconds. " \
-              "Alternatively, Jenkins can fail to start if:\n" \
-              "\n" \
-              "  - a configuration file is invalid\n" \
-              "  - a plugin is partially installed\n" \
-              "  - a plugin's dependencies are not installed\n" \
-              "\n" \
-              "If this problem persists, check your server's log files for " \
-              "more information."
+        super <<-EOH
+The Jenkins server at `#{endpoint}' did not become ready within #{timeout}
+seconds. On large Jenkins instances, you may need to increase the timeout to
+#{timeout * 4} seconds. Alternatively, Jenkins may have failed to start.
+Jenkins can fail to start if:
+
+  - a configuration file is invalid
+  - a plugin is only partially installed
+  - a plugin's dependencies are not installed
+
+If this problem persists, check your server's log files.
+EOH
       end
     end
 
