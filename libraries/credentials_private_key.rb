@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@getchef.com>
 #
-# Copyright 2013, Chef Software, Inc.
+# Copyright 2013-2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-require_relative 'slave'
+require_relative 'credentials'
 
 class Chef
   class Resource::JenkinsPrivateKeyCredentials < Resource::JenkinsCredentials

@@ -468,7 +468,7 @@ Please see the [Contributing](CONTRIBUTING.md) and [Issue Reporting](ISSUES.md) 
 
 License & Authors
 -----------------
-- Author: Seth Vargo <sethvargo@getchef.com>
+- Author: Seth Vargo <sethvargo@gmail.com>
 - Author: Seth Chisamore <schisamo@getchef.com>
 
 - Original Author: Doug MacEachern <dougm@vmware.com>
@@ -478,9 +478,9 @@ License & Authors
 - Contributor: Darko Fabijan <darko@renderedtext.com>
 
 ```text
-Copyright 2013-2014 Chef Software, Inc.
-Copyright 2011 Fletcher Nichol
 Copyright 2010 VMware, Inc.
+Copyright 2011 Fletcher Nichol
+Copyright 2013-2014 Chef Software, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

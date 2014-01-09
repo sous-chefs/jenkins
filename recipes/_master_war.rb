@@ -6,7 +6,7 @@
 # Author: Doug MacEachern <dougm@vmware.com>
 # Author: Fletcher Nichol <fnichol@nichol.ca>
 # Author: Seth Chisamore <schisamo@getchef.com>
-# Author: Seth Vargo <sethvargo@getchef.com>
+# Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright 2010, VMware, Inc.
 # Copyright 2012-2014, Chef Software, Inc.

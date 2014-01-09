@@ -2,7 +2,7 @@
 # Cookbook Name:: jenkins
 # Attributes:: executor
 #
-# Author: Seth Vargo <sethvargo@getchef.com>
+# Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright 2013-2014, Chef Software, Inc.
 #

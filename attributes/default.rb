@@ -2,13 +2,13 @@
 # Cookbook Name:: jenkins
 # Attributes:: default
 #
-# Author: Seth Vargo <sethvargo@getchef.com>
 # Author: Doug MacEachern <dougm@vmware.com>
 # Author: Fletcher Nichol <fnichol@nichol.ca>
-# Author: Seth Chisamore <schisamo@opscode.com>
+# Author: Seth Chisamore <schisamo@getchef.com>
+# Author: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright 2012-2014, Chef Software, Inc.
 # Copyright 2010, VMware, Inc.
+# Copyright 2012-2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

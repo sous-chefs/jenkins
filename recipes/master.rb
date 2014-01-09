@@ -7,7 +7,7 @@
 # Author: Fletcher Nichol <fnichol@nichol.ca>
 # Author: Seth Chisamore <schisamo@getchef.com>
 # Author: Guilhem Lettron <guilhem.lettron@youscribe.com>
-# Author: Seth Vargo <sethvargo@getchef.com>
+# Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright 2010, VMWare, Inc.
 # Copyright 2013, Youscribe.
