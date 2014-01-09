@@ -45,6 +45,12 @@ suites:
           install_method: war
 
   #
+  # Authentication suites
+  #
+  - name: authentication
+    run_list: authentication::default
+
+  #
   # Command suites
   #
   - name: jenkins_command_execute

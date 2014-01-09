@@ -2,6 +2,7 @@ site :opscode
 metadata
 
 group :integration do
+  cookbook 'authentication',      path: 'test/fixtures/cookbooks/authentication'
   cookbook 'jenkins_command',     path: 'test/fixtures/cookbooks/jenkins_command'
   cookbook 'jenkins_credentials', path: 'test/fixtures/cookbooks/jenkins_credentials'
   cookbook 'jenkins_job',         path: 'test/fixtures/cookbooks/jenkins_job'
