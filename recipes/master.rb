@@ -26,9 +26,6 @@
 # limitations under the License.
 #
 
-# Install Java (TODO: remove)
-include_recipe 'java::default'
-
 # Create the Jenkins user
 user node['jenkins']['master']['user'] do
   home node['jenkins']['master']['home']

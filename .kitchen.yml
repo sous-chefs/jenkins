@@ -36,7 +36,9 @@ suites:
         master:
           install_method: package
   - name: jenkins_smoke_war
-    run_list: jenkins_smoke::default
+    run_list:
+      - jenkins::java
+      - jenkins_smoke::default
     attributes:
       jenkins:
         master:
