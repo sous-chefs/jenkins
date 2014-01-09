@@ -137,6 +137,7 @@ class Chef
       @slave_xml_resource.source('jenkins-slave.xml.erb')
       @slave_xml_resource.variables(
         new_resource: new_resource,
+        endpoint: endpoint,
         java_bin: java,
         slave_jar: slave_jar,
         jnlp_url: jnlp_url,

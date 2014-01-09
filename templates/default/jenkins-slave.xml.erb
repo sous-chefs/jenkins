@@ -47,7 +47,7 @@ THE SOFTWARE.
   -->
   <logmode>rotate</logmode>
   <env name="JENKINS_HOME" value="<%= @new_resource.remote_fs %>" />
-  <env name="JENKINS_URL" value="<%= @jenkins_url %>" />
+  <env name="JENKINS_URL" value="<%= @endpoint %>" />
 
   <serviceaccount>
 <%- if @user_domain -%>
