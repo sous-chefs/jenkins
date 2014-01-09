@@ -10,31 +10,19 @@ Requirements
 - Chef 11 or higher
 - **Ruby 1.9.3 or higher**
 
+
 Attributes
 ----------
-### Common Attributes
+In order to keep the README managable and in sync with the attributes, this cookbook documents attributes inline. The usage instructions and default values for attributes can be found in the individual attribute files.
 
-* `node['jenkins']['mirror']` - Base URL for downloading all code (WAR file and plugins).
-
-### Master/Server related Attributes
-
-* `node['jenkins']['server']['install_method']` - Whether Jenkins is installed from packages or run from a WAR file.
-* `node['jenkins']['server']['home']` - Location of `JENKINS_HOME` directory.
-* `node['jenkins']['server']['user']` - User the Jenkins server runs as.
-* `node['jenkins']['server']['group']` - Jenkins user primary group.
-* `node['jenkins']['server']['port']` - TCP port Jenkins server listens on.
-* `node['jenkins']['server']['url']` - Base URL of the Jenkins server.
-* `node['jenkins']['server']['plugins']` - Download the latest version of plugins in this Array, bypassing update center. The members of the Array can either be strings if the latest version desired OR a Hash of the form
-`{'name' => 'git', 'version' => '1.4.0'}` if a specific version is required.
-* `node['jenkins']['server']['jvm_options']` - Additional tuning parameters to pass the underlying JVM process.
 
 Recipes
 -------
 ### server
-Creates all required directories, installs Jenkins and generates an ssh private key and stores the ssh public key in the `node['jenkins']['server']['pubkey']` attribute for use by the node recipes. The installation method is controlled by the `node['jenkins']['server']['install_method']` attribute. The following install methods are supported:
+The server recipe will create the required directory structure and install jenkins. There are two installation methods, controlled by the `node['jenkins']['server']['install_method']` attribute:
 
-* __package__ - Installs Jenkins from the official jenkins-ci.org packages.
-* __war__ - Downloads the latest version of the Jenkins WAR file from http://jenkins-ci. The server process is configured to run as a runit service.
+- `package` - Install Jenkins from the official jenkins-ci.org packages
+- `war` - Download the latest version of the WAR file and configure it with Runit
 
 
 Resource/Provider
