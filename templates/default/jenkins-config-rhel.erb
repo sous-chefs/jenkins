@@ -42,7 +42,10 @@ JENKINS_LOG=<%= node['jenkins']['server']['log_directory'] %>/jenkins.log
 #
 # Options to pass to java when running Jenkins.
 #
-JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true<%= node['jenkins']['server']['jvm_options'] %>"
+JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
+<% if node['jenkins']['server']['jvm_options'] %>
+JENKINS_JAVA_OPTIONS="$JENKINS_JAVA_OPTIONS <%= node['jenkins']['server']['jvm_options'] %>"
+<% end %>
 
 ## Type:        integer(0:65535)
 ## Default:     8080
