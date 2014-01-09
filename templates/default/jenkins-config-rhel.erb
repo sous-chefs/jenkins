@@ -1,13 +1,13 @@
 ## Path:        Development/Jenkins
 ## Description: Configuration for the Jenkins continuous build server
 ## Type:        string
-## Default:     "/var/lib/jenkins"
+## Default:     "@@HOME@@"
 ## ServiceRestart: jenkins
 #
 # Directory where Jenkins store its configuration and working
 # files (checkouts, build reports, artifacts, ...).
 #
-JENKINS_HOME="<%= @home %>"
+JENKINS_HOME="<%= node['jenkins']['server']['home'] %>"
 
 ## Type:        string
 ## Default:     ""
@@ -16,7 +16,7 @@ JENKINS_HOME="<%= @home %>"
 # Java executable to run Jenkins
 # When left empty, we'll try to find the suitable Java.
 #
-JENKINS_JAVA_CMD=""
+JENKINS_JAVA_CMD="<%= node['jenkins']['java'] %>"
 
 ## Type:        string
 ## Default:     "jenkins"
@@ -26,7 +26,15 @@ JENKINS_JAVA_CMD=""
 # Be careful when you change this, as you need to update
 # permissions of $JENKINS_HOME and /var/log/jenkins.
 #
-JENKINS_USER="<%= @user %>"
+JENKINS_USER="<%= node['jenkins']['server']['user'] %>"
+
+## Type:        string
+## Default:     "/var/log/jenkins"
+## ServiceRestart: jenkins
+#
+# Directory where Jenkins will write its logfiles.
+#
+JENKINS_LOG=<%= node['jenkins']['server']['log_directory'] %>/jenkins.log
 
 ## Type:        string
 ## Default:     "-Djava.awt.headless=true"
@@ -34,7 +42,7 @@ JENKINS_USER="<%= @user %>"
 #
 # Options to pass to java when running Jenkins.
 #
-JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
+JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true<%= node['jenkins']['server']['jvm_options'] %>"
 
 ## Type:        integer(0:65535)
 ## Default:     8080
@@ -43,7 +51,34 @@ JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
 # Port Jenkins is listening on.
 # Set to -1 to disable
 #
-JENKINS_PORT="<%= @port %>"
+JENKINS_PORT="<%= node['jenkins']['port'] %>"
+
+## Type:        string
+## Default:     ""
+## ServiceRestart: jenkins
+#
+# IP address Jenkins listens on for HTTP requests.
+# Default is all interfaces (0.0.0.0).
+#
+JENKINS_LISTEN_ADDRESS=""
+
+## Type:        integer(0:65535)
+## Default:     ""
+## ServiceRestart: jenkins
+#
+# HTTPS port Jenkins is listening on.
+# Default is disabled.
+#
+JENKINS_HTTPS_PORT=""
+
+## Type:        string
+## Default:     ""
+## ServiceRestart: jenkins
+#
+# IP address Jenkins listens on for HTTPS requests.
+# Default is disabled.
+#
+JENKINS_HTTPS_LISTEN_ADDRESS=""
 
 ## Type:        integer(0:65535)
 ## Default:     8009
@@ -53,6 +88,15 @@ JENKINS_PORT="<%= @port %>"
 # Set to -1 to disable
 #
 JENKINS_AJP_PORT="8009"
+
+## Type:        string
+## Default:     ""
+## ServiceRestart: jenkins
+#
+# IP address Jenkins listens on for Ajp13 requests.
+# Default is all interfaces (0.0.0.0).
+#
+JENKINS_AJP_LISTEN_ADDRESS=""
 
 ## Type:        integer(1:9)
 ## Default:     5

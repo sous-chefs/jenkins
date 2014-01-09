@@ -37,8 +37,8 @@ module Jenkins
     #
     # @param [Hash] options
     #
-    # @option options [String] :url
-    #   the URL for the Jenkins master
+    # @option options [String] :endpoint
+    #   the endpoint for the Jenkins master
     # @option options [String] :cli
     #   the full path to the Jenkins CLI jar (default:
     #   +/usr/share/jenkins/cli/java/cli.jar+)
@@ -67,7 +67,7 @@ module Jenkins
     #
     def execute!(*pieces)
       command =  "#{shl_escape(options[:java])} -jar #{shl_escape(options[:cli])}"
-      command << " -s #{uri_escape(options[:url])}"   if options[:url]
+      command << " -s #{uri_escape(options[:endpoint])}"   if options[:endpoint]
       command << " -i #{shl_escape(options[:key])}"   if options[:key]
       command << " -p #{uri_escape(options[:proxy])}" if options[:proxy]
       command << " #{pieces.join(' ')}"

@@ -25,10 +25,10 @@ require 'timeout'
 module Jenkins
   module Helper
     class JenkinsNotReady < StandardError
-      def initialize(url, timeout)
-        super "The Jenkins server at `#{url}' did not become ready within " \
-              "#{timeout} seconds. On large Jenkins instances, you may need " \
-              "to increase the timeout to #{timeout * 4} seconds. " \
+      def initialize(endpoint, timeout)
+        super "The Jenkins server at `#{endpoint}' did not become ready " \
+              "within #{timeout} seconds. On large Jenkins instances, you " \
+              "may need to increase the timeout to #{timeout * 4} seconds. " \
               "Alternatively, Jenkins can fail to start if:\n" \
               "\n" \
               "  - a configuration file is invalid\n" \
@@ -57,11 +57,11 @@ module Jenkins
       ensure_cli_present! unless ::File.exists?(cli)
 
       options = {}.tap do |h|
-        h[:cli]   = cli
-        h[:java]  = java
-        h[:key]   = private_key if private_key_given?
-        h[:proxy] = proxy if proxy_given?
-        h[:url]   = url
+        h[:cli]      = cli
+        h[:java]     = java
+        h[:key]      = private_key if private_key_given?
+        h[:proxy]    = proxy if proxy_given?
+        h[:endpoint] = endpoint
       end
 
       Jenkins::Executor.new(options)
@@ -192,12 +192,21 @@ module Jenkins
     end
 
     #
-    # The URL for the Jenkins server.
+    # The URL endpoint for the Jenkins server.
     #
     # @return [String]
     #
-    def url
-      node['jenkins']['server']['url']
+    def endpoint
+      node['jenkins']['server']['endpoint']
+    end
+
+    #
+    # The global timeout for the executor.
+    #
+    # @return [Fixnum]
+    #
+    def timeout
+      node['jenkins']['executor']['timeout']
     end
 
     #
@@ -206,8 +215,7 @@ module Jenkins
     # @return [String]
     #
     def java
-      home = node['jenkins']['java_home'] || (node['java'] && node['java']['java_home'])
-      home.nil? ? 'java' : File.join(home, 'bin', 'java')
+      node['jenkins']['java']
     end
 
     #
@@ -231,9 +239,9 @@ module Jenkins
     #   if the server does not respond within (+timeout+) seconds
     #
     def wait_until_ready!
-      Timeout.timeout(node['jenkins']['timeout']) do
+      Timeout.timeout(timeout) do
         begin
-          open(node['jenkins']['server']['url'])
+          open(endpoint)
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
@@ -245,7 +253,7 @@ module Jenkins
         end
       end
     rescue Timeout::Error
-      raise JenkinsNotReady.new(node['jenkins']['url'], node['jenkins']['timeout'])
+      raise JenkinsNotReady.new(endpoint, timeout)
     end
 
     #
@@ -254,7 +262,7 @@ module Jenkins
     # unavailable or is not accepting requests.
     #
     def ensure_cli_present!
-      source = File.join(url, 'jnlpJars', 'jenkins-cli.jar')
+      source = File.join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
 
       remote_file = Chef::Resource::RemoteFile.new(cli, run_context)
       remote_file.source(source)

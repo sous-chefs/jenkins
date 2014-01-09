@@ -1,16 +1,17 @@
 #
-# Author:: AJ Christensen <aj@junglist.gen.nz>
-# Author:: Dough MacEachern <dougm@vmware.com>
-# Author:: Fletcher Nichol <fnichol@nichol.ca>
-# Author:: Seth Chisamore <schisamo@opscode.com>
-# Author:: Guilhem Lettron <guilhem.lettron@youscribe.com>
-#
 # Cookbook Name:: jenkins
 # Recipe:: server
 #
+# Author: AJ Christensen <aj@junglist.gen.nz>
+# Author: Dough MacEachern <dougm@vmware.com>
+# Author: Fletcher Nichol <fnichol@nichol.ca>
+# Author: Seth Chisamore <schisamo@getchef.com>
+# Author: Guilhem Lettron <guilhem.lettron@youscribe.com>
+# Author: Seth Vargo <sethvargo@getchef.com>
+#
 # Copyright 2010, VMWare, Inc.
-# Copyright 2012, Opscode, Inc.
 # Copyright 2013, Youscribe.
+# Copyright 2012-2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,43 +26,36 @@
 # limitations under the License.
 #
 
+# Install Java (TODO: remove)
 include_recipe 'java::default'
 
+# Create the Jenkins user
 user node['jenkins']['server']['user'] do
   home node['jenkins']['server']['home']
 end
 
-home_dir = node['jenkins']['server']['home']
-plugins_dir = File.join(home_dir, 'plugins')
-log_dir = node['jenkins']['server']['log_dir']
-ssh_dir = File.join(home_dir, '.ssh')
-
-directory home_dir do
-  owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['home_dir_group']
-  mode node['jenkins']['server']['dir_permissions']
+# Create the home directory
+directory node['jenkins']['server']['home'] do
+  owner     node['jenkins']['server']['user']
+  group     node['jenkins']['server']['group']
+  mode      '0755'
   recursive true
 end
 
-directory plugins_dir do
-  owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['plugins_dir_group']
-  mode node['jenkins']['server']['dir_permissions']
+# Create the log directory
+directory node['jenkins']['server']['log_directory'] do
+  owner     node['jenkins']['server']['user']
+  group     node['jenkins']['server']['group']
+  mode      '0755'
   recursive true
 end
 
-directory log_dir do
-  owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['log_dir_group']
-  mode node['jenkins']['server']['log_dir_permissions']
-  recursive true
+# Gracefully handle the failure for an invalid installation type
+begin
+  include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
+rescue Chef::Exceptions::RecipeNotFound
+  raise Chef::Exceptions::RecipeNotFound, "The install method " \
+    "`#{node['jenkins']['server']['install_method']}' is not supported by " \
+    "this cookbook. Please ensure you have spelled it correctly. If you " \
+    "continue to encounter this error, please file an issue."
 end
-
-directory ssh_dir do
-  owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['ssh_dir_group']
-  mode node['jenkins']['server']['ssh_dir_permissions']
-  recursive true
-end
-
-include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"

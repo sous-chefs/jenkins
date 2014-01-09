@@ -22,13 +22,25 @@ provisioner:
 platforms:
   - name: ubuntu-12.04
     run_list: apt::default
+  - name: centos-6.4
+    run_list: yum::default
 
 suites:
   #
   # Smoke suite
   #
-  - name: jenkins_smoke
+  - name: jenkins_smoke_package
     run_list: jenkins_smoke::default
+    attributes:
+      jenkins:
+        server:
+          install_method: package
+  - name: jenkins_smoke_war
+    run_list: jenkins_smoke::default
+    attributes:
+      jenkins:
+        server:
+          install_method: war
 
   #
   # Command suites

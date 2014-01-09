@@ -15,7 +15,6 @@ Attributes
 ### Common Attributes
 
 * `node['jenkins']['mirror']` - Base URL for downloading all code (WAR file and plugins).
-* `node['jenkins']['java_home']` - Java install path, used for for cli commands.
 
 ### Master/Server related Attributes
 

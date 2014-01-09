@@ -2,13 +2,14 @@
 # Cookbook Name:: jenkins
 # Recipe:: _server_war
 #
-# Author:: AJ Christensen <aj@junglist.gen.nz>
-# Author:: Doug MacEachern <dougm@vmware.com>
-# Author:: Fletcher Nichol <fnichol@nichol.ca>
-# Author:: Seth Chisamore <schisamo@opscode.com>
+# Author: AJ Christensen <aj@junglist.gen.nz>
+# Author: Doug MacEachern <dougm@vmware.com>
+# Author: Fletcher Nichol <fnichol@nichol.ca>
+# Author: Seth Chisamore <schisamo@getchef.com>
+# Author: Seth Vargo <sethvargo@getchef.com>
 #
 # Copyright 2010, VMware, Inc.
-# Copyright 2012, Opscode, Inc.
+# Copyright 2012-2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,16 +24,17 @@
 # limitations under the License.
 #
 
+# Include runit to setup the service
 include_recipe 'runit::default'
 
-war_version = node['jenkins']['server']['version'].nil? ? 'latest' : node['jenkins']['server']['version']
-
+# Download the remote WAR file
 remote_file File.join(node['jenkins']['server']['home'], 'jenkins.war') do
-  source "#{node['jenkins']['mirror']}/war/#{war_version}/jenkins.war"
-  checksum node['jenkins']['server']['war_checksum'] unless node['jenkins']['server']['war_checksum'].nil?
-  owner node['jenkins']['server']['user']
-  group node['jenkins']['server']['home_dir_group']
+  source   node['jenkins']['server']['source']
+  checksum node['jenkins']['server']['checksum'] if node['jenkins']['server']['checksum']
+  owner    node['jenkins']['server']['user']
+  group    node['jenkins']['server']['group']
   notifies :restart, 'service[jenkins]'
 end
 
+# Create runit service
 runit_service 'jenkins'

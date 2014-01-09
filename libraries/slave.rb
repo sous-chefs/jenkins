@@ -488,13 +488,13 @@ class Chef
     end
 
     #
-    # The path (url) of the +slave.jar+ on the Jenkins master.
+    # The url of the +slave.jar+ on the Jenkins master.
     #
     # @return [String]
     #
     def slave_jar_url
       path = ::File.join('jnlpJars', 'slave.jar')
-      URI.join(url, path).to_s
+      URI.join(endpoint, path).to_s
     end
 
     #

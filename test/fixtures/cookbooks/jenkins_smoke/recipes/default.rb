@@ -137,6 +137,9 @@ jenkins_plugin 'fancypants' do
   action :uninstall
 end
 
+# Restart jenkins to reload plugins
+jenkins_command 'restart'
+
 # Disable a plugin
 jenkins_plugin 'disk-usage' do
   action :disable

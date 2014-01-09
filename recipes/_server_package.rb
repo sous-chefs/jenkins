@@ -3,6 +3,9 @@
 # Cookbook Name:: jenkins
 # Recipe:: _server_package
 #
+# Author: Seth Vargo <sethvargo@getchef.com>
+#
+# Copyright 2014, Chef Software, Inc.
 # Copyright 2013, Youscribe
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,42 +26,37 @@ when 'debian'
   include_recipe 'apt::default'
 
   apt_repository 'jenkins' do
-    uri 'http://pkg.jenkins-ci.org/debian'
+    uri          'http://pkg.jenkins-ci.org/debian'
     distribution 'binary/'
-    components ['']
-    key 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key'
-    action :add
+    key          'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key'
   end
 
-when 'rhel'
-  include_recipe 'yum'
-
-  yum_key 'RPM-GPG-KEY-jenkins-ci' do
-    url 'http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key'
-    action :add
-  end
-
-  yum_repository 'jenkins-ci' do
-    url 'http://pkg.jenkins-ci.org/redhat'
-    key 'RPM-GPG-KEY-jenkins-ci'
-    action :add
-  end
-
-end
-
-package 'jenkins' do
-  unless node['jenkins']['server']['version'].nil?
+  package 'jenkins' do
     version node['jenkins']['server']['version']
   end
-end
 
-template node['jenkins']['server']['config_path'] do
-  source node['jenkins']['server']['config_template']
-  variables node['jenkins']['server'].to_hash
-  owner 'root'
-  group 'root'
-  mode '0644'
-  notifies :restart, 'service[jenkins]', :immediately
+  template '/etc/default/jenkins' do
+    source   'jenkins-config-debian.erb'
+    mode     '0644'
+    notifies :restart, 'service[jenkins]', :immediately
+  end
+when 'rhel'
+  include_recipe 'yum::default'
+
+  yum_repository 'jenkins-ci' do
+    baseurl 'http://pkg.jenkins-ci.org/redhat'
+    gpgkey  'http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key'
+  end
+
+  package 'jenkins' do
+    version node['jenkins']['server']['version']
+  end
+
+  template '/etc/sysconfig/jenkins' do
+    source   'jenkins-config-rhel.erb'
+    mode     '0644'
+    notifies :restart, 'service[jenkins]', :immediately
+  end
 end
 
 service 'jenkins' do

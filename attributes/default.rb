@@ -23,42 +23,32 @@
 # limitations under the License.
 #
 
-default['jenkins']['mirror'] = 'http://mirrors.jenkins-ci.org'
-default['jenkins']['java_home'] = ENV['JAVA_HOME']
-
-#
-# This is the number of seconds to wait for Jenkins to become "ready" after a
-# start, restart, or reload. Since the Jenkins service returns immediately and
-# the actual Java process is started in the background, we block the Chef
-# Client run until the service endpoint(s) are _actually_ ready to accept
-# requests.
-#
-default['jenkins']['timeout'] = 60
-
-#
-# If your Jenkins master requires authentication, you must set the private key.
-#
-# For example, you could load this private key via a search:
-#
-#   master = search(:node, 'fqdn: master.ci.example.com')
-#   node.set['jenkins']['executor']['private_key'] = master['jenkins']['private_key']
-#
-# Or you could set it from a data bag:
-#
-#   private_key = encrypted_data_bag_item('jenkins', 'keys')['private_key']
-#   node.set['jenkins']['executor']['private_key'] = private_key
-#
-# Please see the +Authentication+ section of the README for more information.
-#
-default['jenkins']['executor']['private_key'] = nil
-
-#
-# If you need to pass through a proxy server to communicate between your masters
-# and slaves, you will need to set this node attribute. It should be set in the
-# form `HOST:PORT`:
-#
-#   node.set['jenkins']['executor']['proxy'] = '1.2.3.4'
-#
-# Please see the +Proxies+ section of the README for more information.
-#
-default['jenkins']['executor']['proxy'] = nil
+default['jenkins'].tap do |jenkins|
+  #
+  # The path to the +java+ bin on disk. This attribute is intelligently
+  # calculated by assuming some sane defaults from community Java cookbooks:
+  #
+  #   - node['java']['java_home']
+  #   - node['java']['home']
+  #   - ENV['JAVA_HOME']
+  #
+  # These home's are then intelligently joined with +/bin/java+ for the full
+  # path to the Java binary. If no +$JAVA_HOME+ is detected, +'java'+ is used
+  # and it is assumed that the correct java binary exists in the +$PATH+.
+  #
+  # You can override this attribute by setting the full path manually:
+  #
+  #   node.set['jenkins']['java'] = '/my/custom/path/to/java6'
+  #
+  # Setting this value to +nil+ will break the Internet.
+  #
+  jenkins['java'] = if node['java'] && node['java']['java_home']
+                      File.join(node['java']['java_home'], 'bin', 'java')
+                    elsif node['java'] && node['java']['home']
+                      File.join(node['java']['home'], 'bin', 'java')
+                    elsif ENV['JAVA_HOME']
+                      File.join(ENV['JAVA_HOME'], 'bin', 'java')
+                    else
+                      'java'
+                    end
+end
