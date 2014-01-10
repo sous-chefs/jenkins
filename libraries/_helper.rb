@@ -55,7 +55,7 @@ EOH
     #
     def executor
       wait_until_ready!
-      ensure_cli_present! unless ::File.exists?(cli)
+      ensure_cli_present!
 
       options = {}.tap do |h|
         h[:cli]      = cli
@@ -153,6 +153,8 @@ EOH
     # @return [String]
     #
     def private_key
+      return if node.run_state[:jenkins_private_key_present]
+
       content = node['jenkins']['executor']['private_key']
       destination = File.join(Chef::Config[:file_cache_path], 'jenkins-key')
 
@@ -161,6 +163,8 @@ EOH
       file.backup(false)
       file.mode('0600')
       file.run_action(:create)
+
+      node.run_state[:jenkins_private_key_present] = true
 
       destination
     end
@@ -263,13 +267,16 @@ EOH
     # unavailable or is not accepting requests.
     #
     def ensure_cli_present!
-      source = File.join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
+      return if node.run_state[:jenkins_cli_present]
 
+      source = File.join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
       remote_file = Chef::Resource::RemoteFile.new(cli, run_context)
       remote_file.source(source)
       remote_file.backup(false)
       remote_file.mode('0755')
       remote_file.run_action(:create)
+
+      node.run_state[:jenkins_cli_present] = true
     end
   end
 end
