@@ -61,3 +61,6 @@ PREFIX=/jenkins
 # --prefix=$PREFIX
 
 JENKINS_ARGS="--webroot=/var/cache/jenkins/war --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT"
+<% if node['jenkins']['master']['jenkins_args'] %>
+JENKINS_ARGS="$JENKINS_ARGS <%= node['jenkins']['master']['jenkins_args'] %>"
+<% end %>

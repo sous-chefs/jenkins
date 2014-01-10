@@ -91,6 +91,26 @@ default['jenkins']['master'].tap do |master|
   master['jvm_options'] = nil
 
   #
+  # The list of Jenkins arguments to pass to the initialize script. This varies
+  # from system-to-system, but here are some examples:
+  #
+  #   --javahome=$JAVA_HOME
+  #   --httpPort=$HTTP_PORT (default 8080; disable with -1)
+  #   --httpsPort=$HTTP_PORT
+  #   --ajp13Port=$AJP_PORT
+  #   --argumentsRealm.passwd.$ADMIN_USER=[password]
+  #   --argumentsRealm.roles.$ADMIN_USER=admin
+  #   --webroot=~/.jenkins/war
+  #   --prefix=$PREFIX
+  #
+  # This attribute is _cumulative_, meaning it is appended to the end of the
+  # existing environment variable.
+  #
+  #   node.set['jenkins']['master']['jenkins_args'] = '--argumentsRealm.roles.$ADMIN_USER=admin'
+  #
+  master['jenkins_args'] = nil
+
+  #
   # The username of the user who will own and run the Jenkins process. You can
   # change this to any user on the system. Chef will automatically create the
   # user if it does not exist.
