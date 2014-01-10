@@ -29,16 +29,16 @@ suites:
   #
   # Smoke suite
   #
-  - name: jenkins_smoke_package
-    run_list: jenkins_smoke::default
+  - name: smoke_package
+    run_list: smoke::default
     attributes:
       jenkins:
         master:
           install_method: package
-  - name: jenkins_smoke_war
+  - name: smoke_war
     run_list:
       - jenkins::java
-      - jenkins_smoke::default
+      - smoke::default
     attributes:
       jenkins:
         master:

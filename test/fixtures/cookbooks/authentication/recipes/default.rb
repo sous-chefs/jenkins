@@ -27,8 +27,6 @@ end
 
 # Run some commands - this will ensure the CLI is correctly passing attributes
 jenkins_command 'clear-queue'
-jenkins_command 'help'
-jenkins_command 'version'
 
 # Install a plugin
 jenkins_plugin 'greenballs'
@@ -40,29 +38,15 @@ jenkins_user 'sethvargo'
 # Authentication on
 # ------------------------------
 
-# Turn on authentication
-jenkins_plugin 'github'
-jenkins_plugin 'github-api'
-jenkins_plugin 'github-oauth'
-jenkins_plugin 'git'
-
-# Restart so the plugins are instaled
-jenkins_command 'safe-restart'
-
-# Add GitHub authentication
+# Turn on basic authentication
 jenkins_script 'setup authentication' do
   command <<-EOH.gsub(/^ {4}/, '')
     import jenkins.model.*
     def instance = Jenkins.getInstance()
 
-    import org.jenkinsci.plugins.*
-    def githubRealm = new GithubSecurityRealm(
-      'https://github.com',
-      'https://api.github.com',
-      'API_KEY',
-      'API_SECRET'
-    )
-    instance.setSecurityRealm(githubRealm)
+    import hudson.security.*
+    def realm = new HudsonPrivateSecurityRealm(false)
+    instance.setSecurityRealm(realm)
 
     def strategy = new hudson.security.FullControlOnceLoggedInAuthorizationStrategy()
     instance.setAuthorizationStrategy(strategy)
@@ -71,16 +55,14 @@ jenkins_script 'setup authentication' do
   EOH
 end
 
-# Restart so authentication is setup
+# Restart so authentication is fully setup
 jenkins_command 'safe-restart'
 
 # Run some commands - this will ensure the CLI is correctly passing attributes
 jenkins_command 'clear-queue'
-jenkins_command 'help'
-jenkins_command 'version'
 
 # Install a plugin
 jenkins_plugin 'greenballs'
 
 # Try creating another user
-jenkins_user 'sethvargo'
+jenkins_user 'schisamo'

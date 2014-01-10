@@ -4,25 +4,17 @@ include_recipe 'jenkins::master'
 jenkins_script 'println("This is Groovy code!")'
 
 # A complex, multi-line scipt
-jenkins_script 'add_authentication' do
+#
+# Note: You should use the +jenkins_user+ resource for this, but this is more
+# easily testable.
+jenkins_script 'create user' do
   command <<-EOH.gsub(/^ {4}/, '')
-    import jenkins.model.*
-    import hudson.security.*
-    import org.jenkinsci.plugins.*
+    user = hudson.model.User.get('sethvargo')
+    user.setFullName('Seth Vargo')
 
-    def instance = Jenkins.getInstance()
+    email = new hudson.tasks.Mailer.UserProperty('sethvargo@gmail.com')
+    user.addProperty(email)
 
-    def githubRealm = new GithubSecurityRealm(
-      'https://github.com',
-      'https://api.github.com',
-      'API_KEY',
-      'API_SECRET'
-    )
-    instance.setSecurityRealm(githubRealm)
-
-    def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
-    instance.setAuthorizationStrategy(strategy)
-
-    instance.save()
+    user.save()
   EOH
 end

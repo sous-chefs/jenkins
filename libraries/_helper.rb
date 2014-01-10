@@ -175,7 +175,7 @@ EOH
     # @return [Boolean]
     #
     def private_key_given?
-      !!node['jenkins']['executor']['private_key']
+      !node['jenkins']['executor']['private_key'].nil?
     end
 
     #
