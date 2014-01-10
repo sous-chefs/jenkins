@@ -59,7 +59,7 @@ JENKINS_JAVA_OPTIONS="$JENKINS_JAVA_OPTIONS <%= node['jenkins']['master']['jvm_o
 # Port Jenkins is listening on.
 # Set to -1 to disable
 #
-JENKINS_PORT="<%= node['jenkins']['port'] %>"
+JENKINS_PORT="<%= node['jenkins']['master']['port'] %>"
 
 ## Type:        string
 ## Default:     ""
