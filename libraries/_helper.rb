@@ -60,7 +60,7 @@ EOH
       options = {}.tap do |h|
         h[:cli]      = cli
         h[:java]     = java
-        h[:key]      = private_key if private_key_given?
+        h[:key]      = private_key_path if private_key_given?
         h[:proxy]    = proxy if proxy_given?
         h[:endpoint] = endpoint
       end
@@ -151,22 +151,21 @@ EOH
     # also ensure the private key is written to disk.
     #
     # @return [String]
+    #   the path to the private key on disk
     #
-    def private_key
-      return if node.run_state[:jenkins_private_key_present]
+    def private_key_path
+      node.run_state[:jenkins_private_key_path] ||= begin
+        content = node['jenkins']['executor']['private_key']
+        destination = File.join(Chef::Config[:file_cache_path], 'jenkins-key')
 
-      content = node['jenkins']['executor']['private_key']
-      destination = File.join(Chef::Config[:file_cache_path], 'jenkins-key')
+        file = Chef::Resource::File.new(destination, run_context)
+        file.content(content)
+        file.backup(false)
+        file.mode('0600')
+        file.run_action(:create)
 
-      file = Chef::Resource::File.new(destination, run_context)
-      file.content(content)
-      file.backup(false)
-      file.mode('0600')
-      file.run_action(:create)
-
-      node.run_state[:jenkins_private_key_present] = true
-
-      destination
+        destination
+      end
     end
 
     #
@@ -267,16 +266,16 @@ EOH
     # unavailable or is not accepting requests.
     #
     def ensure_cli_present!
-      return if node.run_state[:jenkins_cli_present]
+      node.run_state[:jenkins_cli_present] ||= begin
+        source = File.join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
+        remote_file = Chef::Resource::RemoteFile.new(cli, run_context)
+        remote_file.source(source)
+        remote_file.backup(false)
+        remote_file.mode('0755')
+        remote_file.run_action(:create)
 
-      source = File.join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
-      remote_file = Chef::Resource::RemoteFile.new(cli, run_context)
-      remote_file.source(source)
-      remote_file.backup(false)
-      remote_file.mode('0755')
-      remote_file.run_action(:create)
-
-      node.run_state[:jenkins_cli_present] = true
+        true
+      end
     end
   end
 end
