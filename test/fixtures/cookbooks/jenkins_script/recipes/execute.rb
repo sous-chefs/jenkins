@@ -9,10 +9,10 @@ jenkins_script 'println("This is Groovy code!")'
 # easily testable.
 jenkins_script 'create user' do
   command <<-EOH.gsub(/^ {4}/, '')
-    user = hudson.model.User.get('sethvargo')
-    user.setFullName('Seth Vargo')
+    user = hudson.model.User.get('yzl')
+    user.setFullName('Yvonne Lam')
 
-    email = new hudson.tasks.Mailer.UserProperty('sethvargo@gmail.com')
+    email = new hudson.tasks.Mailer.UserProperty('yzl@getchef.com')
     user.addProperty(email)
 
     user.save()

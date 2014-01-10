@@ -21,23 +21,6 @@ ruby_block 'set the private key' do
   block { node.set['jenkins']['executor']['private_key'] = private_key }
 end
 
-#
-# Authentication off
-# ------------------------------
-
-# Run some commands - this will ensure the CLI is correctly passing attributes
-jenkins_command 'clear-queue'
-
-# Install a plugin
-jenkins_plugin 'greenballs'
-
-# Try creating another user
-jenkins_user 'sethvargo'
-
-#
-# Authentication on
-# ------------------------------
-
 # Turn on basic authentication
 jenkins_script 'setup authentication' do
   command <<-EOH.gsub(/^ {4}/, '')
@@ -54,9 +37,6 @@ jenkins_script 'setup authentication' do
     instance.save()
   EOH
 end
-
-# Restart so authentication is fully setup
-jenkins_command 'safe-restart'
 
 # Run some commands - this will ensure the CLI is correctly passing attributes
 jenkins_command 'clear-queue'
