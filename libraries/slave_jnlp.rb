@@ -63,6 +63,8 @@ class Chef
     def action_create
       super
 
+      parent_remote_fs_dir_resource.run_action(:create)
+
       # don't create user/group on Windows
       unless Chef::Platform.windows?
         group_resource.run_action(:create)

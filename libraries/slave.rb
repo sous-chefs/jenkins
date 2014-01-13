@@ -538,6 +538,22 @@ class Chef
     end
 
     #
+    # Creates the parent `directory` resource that is a level above where
+    # the actual +remote_fs+ will live. This is required due to a Chef/RedHat
+    # bug where +--create-home-dir+ behavior changed and broke the Internet.
+    #
+    # @return [Chef::Resource::Directory]
+    #
+    def parent_remote_fs_dir_resource
+      return @parent_remote_fs_dir_resource if @parent_remote_fs_dir_resource
+
+      path = ::File.expand_path(new_resource.remote_fs, '..')
+      @parent_remote_fs_dir_resource = Chef::Resource::Directory.new(path, run_context)
+      @parent_remote_fs_dir_resource.recursive(true)
+      @parent_remote_fs_dir_resource
+    end
+
+    #
     # Creates a `directory` resource that represents the directory
     # specified the `remote_fs` attribute. The caller will need to call
     # `run_action` on the resource.

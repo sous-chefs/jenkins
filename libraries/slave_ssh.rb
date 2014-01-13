@@ -99,6 +99,7 @@ class Chef
     # @see Chef::Resource::JenkinsSlave#action_create
     #
     def action_create
+      parent_remote_fs_dir_resource
       group_resource.run_action(:create)
       user_resource.run_action(:create)
       remote_fs_dir_resource.run_action(:create)
