@@ -10,7 +10,7 @@ end
 
 # Test specifying an ID
 jenkins_password_credentials 'schisamo2' do
-  id '38537014-ec66-49b5-aff2-aed1c19e2989'
+  id '63e11302-d446-4ba0-8aa4-f5821f74d36f'
   password 'superseekret'
 end
 
