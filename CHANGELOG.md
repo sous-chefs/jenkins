@@ -2,6 +2,66 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.0.0 (2014-01-14)
+-------------------
+**This is a major refactor of the Jenkins cookbook and is not backwards-compatible.**
+- Updated to the latest gems
+- Added a full Test Kitchen integration suite for every resource
+- Added Rubocop + Foodcritic + Travis
+- Updated contributing guidelines
+- Updated issue reporting guidelines
+- Refactored README format - attribute documentation is now inline. Please see the specific attribute file for documentation, rather than a verbose README
+- Added a Rakefile for encapsulating commands
+- Move testing instructions into contribution guidelines
+- Remove old TODO file
+- Refactor attributes into semantic groupings and namespaces
+  - `jenkins.cli` has been removed
+  - `jenkins.java_home` has been changed to `jenkins.java` and accepts the full path to the java binary, not the JAVA_HOME
+  - `jenkins.iptables_allow` has been removed
+  - `jenkins.mirror` -> `jenkins.master.mirror`
+  - `jenkins.executor` created
+  - `jenkins.executor.timeout` created
+  - `jenkins.executor.private_key` created
+  - `jenkins.executor.proxy` created
+  - `jenkins.master` created and only refers to the Jenkins master installation
+  - `jenkins.master.source` created to refer to the full URL of the war download
+  - `jenkins.master.jvm_options` created
+  - `jenkins.master.jenkins_args` added
+  - `jenkins.master.url` -> `jenkins.master.endpoint`
+  - `jenkins.master.log_directory` created
+  - `jenkins.node` attributes have all been removed
+  - `jenkins.server` attributes have all been removed
+- Removed Chef MiniTest handler
+- Created a new executor class for running commands through the CLI
+- Create `jenkins_command` resource for executing arbitrary commands against the Jenkins CLI
+- Create `jenkins_script` resource for executing arbitrary groovy scripts agains the Jenkins CLI
+- Create `jenkins_credentials` resource for creating and managing Jenkins credentials
+- Refactor `jenkins_job` resource for creating and managing jobs
+- Refactor `jenkins_plugin` resource for creating and managing plugins
+- Create `jenkins_slave` (and sub-resources) for managing Jenkins slaves (formerly called "nodes")
+- Add `jenkins_user` resource for creating and managing users
+- Remove dependencies on java, apache2, nginx, and iptables
+- Remove `jenkins_cli` resource (it's been replaced by `jenkins_command`)
+- Remove `jenkins_execute` resource (it's been replaced by `jenkins_command`)
+- Remove the pesky "block_until_operational" Ruby block
+- Remove `jenkins_node` resource (it's now a series of `jenkins_slave` resources)
+- Don't pin plugins (users should explictly provide a version to ensure pinning)
+- Upgrade apt and yum dependencies
+- Allow full customization of the war file download URL
+- Remove apache2 proxy, nginx proxy, and iptables support; they are outside the scope of this cookbook and add unnecessary complication
+- Default recipe has been removed
+- Iptables recipe has been removed
+- Added a _very_ basic Java recipe with caveats
+- Added a Jenkins master recipe (formerly called "server")
+- Removed "node" recipes - they have all been replaced by HWRPs
+- Removed proxy recipes
+- Updated Debian and RedHat templates to the latest version
+- Added the ability to add authentication
+- Added custom ServerSpec matchers
+- "node" renamed to "slave"
+- "server" renamed to "master"
+
+
 v1.2.2
 ------
 ### Bug
