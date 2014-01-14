@@ -35,7 +35,9 @@ class Chef
       @provider = Provider::JenkinsSSHSlave
 
       # Set the name attribute and default attributes
-      @port = 22
+      @port           = 22
+      @command_prefix = nil
+      @command_suffix = nil
     end
 
     #
@@ -76,6 +78,26 @@ class Chef
         arg = arg.send(:username)
       end
       set_or_return(:credentials, arg, kind_of: String)
+    end
+
+    #
+    # The SSH command prefix.
+    #
+    # @param [String] arg
+    # @return [String]
+    #
+    def command_prefix(arg = nil)
+      set_or_return(:command_prefix, arg, kind_of: String)
+    end
+
+    #
+    # The SSH command suffix.
+    #
+    # @param [String] arg
+    # @return [String]
+    #
+    def command_suffix(arg = nil)
+      set_or_return(:command_suffix, arg, kind_of: String)
     end
   end
 end
@@ -126,8 +148,8 @@ class Chef
             credentials_id,
             #{convert_to_groovy(new_resource.jvm_options)},
             null,
-            null,
-            null
+            #{convert_to_groovy(new_resource.command_prefix)},
+            #{convert_to_groovy(new_resource.command_suffix)}
           )
       EOH
     end
@@ -136,9 +158,14 @@ class Chef
     # @see Chef::Resource::JenkinsSlave#attribute_to_property_map
     #
     def attribute_to_property_map
-      map = { host: 'slave.launcher.host',
-              port: 'slave.launcher.port',
-              jvm_options: 'slave.launcher.jvmOptions' }
+      map = {
+        host: 'slave.launcher.host',
+        port: 'slave.launcher.port',
+        jvm_options: 'slave.launcher.jvmOptions',
+        command_prefix: 'jenkins.launcher.prefixStartSlaveCmd',
+        command_suffix: 'jenkins.launcher.suffixStartSlaveCmd',
+      }
+
       if new_resource.credentials.match(UUID_REGEX)
         map[:credentials] = 'slave.launcher.credentialsId'
       else
