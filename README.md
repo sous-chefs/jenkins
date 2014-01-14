@@ -472,7 +472,6 @@ License & Authors
 -----------------
 - Author: Seth Vargo <sethvargo@gmail.com>
 - Author: Seth Chisamore <schisamo@getchef.com>
-
 - Original Author: Doug MacEachern <dougm@vmware.com>
 - Contributor: AJ Christensen <aj@junglist.gen.nz>
 - Contributor: Fletcher Nichol <fnichol@nichol.ca>
