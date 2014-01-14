@@ -1,0 +1,2 @@
+name 'authentication'
+depends 'jenkins'

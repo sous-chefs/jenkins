@@ -1,135 +1,121 @@
-driver_plugin: vagrant
-driver_config:
-  require_chef_omnibus: true
+driver:
+  name: vagrant
   customize:
     cpus: 2
     memory: 1024
+  network:
+    # Allow access to the Jenkins webui which is useful when troubleshooting
+    - - forwarded_port
+      - guest: 8080
+        host: 9090
+        auto_correct: true
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: 11.8.0
+  data_path: test/shared
+  attributes:
+    jenkins:
+      master:
+        host: localhost
 
 platforms:
-  - name: ubuntu-12.10
-    run_list:
-      - recipe[apt]
   - name: ubuntu-12.04
     run_list:
-      - recipe[apt]
-  - name: ubuntu-10.04
+      - apt::default
+      - jenkins::java
+  - name: centos-6.4
     run_list:
-      - recipe[apt]
-  - name: centos-5.9
+      - yum::default
+      - jenkins::java
 
 suites:
-  - name: server_package
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[minitest-handler]
+  #
+  # Smoke suite
+  #
+  - name: smoke_package
+    run_list: smoke::default
     attributes:
       jenkins:
-        server:
+        master:
           install_method: package
-          plugins:
-          - name: git-client
-            version: 1.0.5
-          - name: git
-            version: 1.3.0
-  - name: server_war
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[minitest-handler]
+  - name: smoke_war
+    run_list: smoke::default
     attributes:
       jenkins:
-        server:
+        master:
           install_method: war
-          plugins:
-          - name: git-client
-            version: 1.0.5
-          - name: git
-            version: 1.3.0
-  - name: server-proxy-nginx
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: nginx
-          host_name: 33.33.33.10
-  - name: server-proxy-nginx-ssl
-    run_list:
-    - recipe[jenkins-test::generate_certs]
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: nginx
-          host_name: 33.33.33.10
-          ssl:
-            enabled: true
-            redirect_http: true
-  - name: server-proxy-nginx-basicauth
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: nginx
-          host_name: 33.33.33.10
-          server_auth_method: basic
-          basic_auth_username: foo
-          basic_auth_password: bar
-  - name: server-proxy-apache2
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: apache2
-          host_name: 33.33.33.10
-  - name: server-proxy-apache2-ssl
-    run_list:
-    - recipe[jenkins-test::generate_certs]
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: apache2
-          host_name: 33.33.33.10
-          ssl:
-            enabled: true
-            redirect_http: true
-            ca_cert_path: /var/lib/jenkins/ssl/jenkins.cert
-  - name: server-proxy-apache2-basicauth
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: apache2
-          host_name: 33.33.33.10
-          server_auth_method: basic
-          basic_auth_username: foo
-          basic_auth_password: bar
-  - name: node
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[jenkins::node]
-    - recipe[jenkins-test::generate_sshkey]
-    - recipe[jenkins-test::generate_user]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        node:
-          home: /home/jenkins
-          ssh_private_key: /home/jenkins/.ssh/id_rsa
-          env:
-            foo: bar
+
+  #
+  # Authentication suites
+  #
+  - name: authentication
+    run_list: authentication::default
+
+  #
+  # Command suites
+  #
+  - name: jenkins_command_execute
+    run_list: jenkins_command::execute
+
+  #
+  # Credentials suites
+  #
+  - name: jenkins_credentials_create
+    run_list: jenkins_credentials::create
+  - name: jenkins_credentials_delete
+    run_list: jenkins_credentials::delete
+
+  #
+  # Job suites
+  #
+  - name: jenkins_job_create
+    run_list: jenkins_job::create
+  - name: jenkins_job_delete
+    run_list: jenkins_job::delete
+  - name: jenkins_job_disable
+    run_list: jenkins_job::disable
+  - name: jenkins_job_enable
+    run_list: jenkins_job::enable
+
+  #
+  # Script suites
+  #
+  - name: jenkins_script
+    run_list: jenkins_script::execute
+
+  #
+  # Plugin suites
+  #
+  - name: jenkins_plugin_disable
+    run_list: jenkins_plugin::disable
+  - name: jenkins_plugin_enable
+    run_list: jenkins_plugin::enable
+  - name: jenkins_plugin_install
+    run_list: jenkins_plugin::install
+  - name: jenkins_plugin_uninstall
+    run_list: jenkins_plugin::uninstall
+
+  #
+  # Slave suites
+  #
+  - name: jenkins_slave_create
+    run_list: jenkins_slave::create
+  - name: jenkins_slave_delete
+    run_list: jenkins_slave::delete
+  - name: jenkins_slave_connect
+    run_list: jenkins_slave::connect
+  - name: jenkins_slave_disconnect
+    run_list: jenkins_slave::disconnect
+  - name: jenkins_slave_online
+    run_list: jenkins_slave::online
+  - name: jenkins_slave_offline
+    run_list: jenkins_slave::offline
+
+  #
+  # User suites
+  #
+  - name: jenkins_user_create
+    run_list: jenkins_user::create
+  - name: jenkins_user_delete
+    run_list: jenkins_user::delete

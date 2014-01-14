@@ -10,5 +10,9 @@ HashSyntax:
   Enabled: false
 LineLength:
   Enabled: false
+ClassLength:
+  Enabled: false
 MethodLength:
-  Max: 30
+  Enabled: false
+Documentation:
+  Enabled: false
