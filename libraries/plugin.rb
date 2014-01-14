@@ -62,7 +62,7 @@ class Chef
     # which pulls the latest plugin from the source or update center, however,
     # you can specify a specific version of the plugin to lock and install.
     #
-    # @warn If the +source+ parameter is specified, this parameter is *ignored*,
+    # WARNING: If the +source+ parameter is specified, this parameter is *ignored*,
     # since the source points to a specific +.jpi+ version.
     #
     # @param [String] arg
@@ -226,7 +226,7 @@ EOH
     # to being with. They will not appear anywhere in the UI, all the
     # extensions they contributed will disappear.
     #
-    # @warn Uninstalling a plugin, however, does not remove the configuration
+    # WARNING: Uninstalling a plugin, however, does not remove the configuration
     # that the plugin might have created. If there are existing
     # jobs/slaves/views/builds/etc that used some extensions from the plugin,
     # during the boot Jenkins will report that there are some fragments in

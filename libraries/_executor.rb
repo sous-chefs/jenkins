@@ -79,7 +79,7 @@ module Jenkins
     end
 
     #
-    # Same as {execute!}, but quietly returns +nil+ if the command fails.
+    # Same as {Executor#execute!}, but quietly returns +nil+ if the command fails.
     #
     # @see execute!
     #
@@ -105,7 +105,7 @@ module Jenkins
     end
 
     #
-    # Same as {groovy!}, but quietly returns +nil+ if the command fails.
+    # Same as {Executor#groovy!}, but quietly returns +nil+ if the command fails.
     #
     # @see groovy!
     #

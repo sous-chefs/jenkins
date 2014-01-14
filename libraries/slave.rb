@@ -177,7 +177,7 @@ class Chef
     # A Hash of environment variables which are set directly on the
     # slaves configuration. These key-value pairs apply for every build
     # on this slave and override any global values. They can be used in
-    # Jenkins' configuration (as $key or ${key}) and be will added to
+    # Jenkins' configuration (as +$key+ or +${key}+) and be will added to
     # the environment for processes launched from the build.
     #
     # @param [Hash] arg
