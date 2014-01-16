@@ -263,8 +263,13 @@ EOH
       @current_plugin = Hash[*::File.readlines(manifest).map do |line|
         next if line.strip.empty?
 
-        config, value = line.split(' ', 2)
+        #
+        # Example Data:
+        #   Plugin-Version: 1.4
+        #
+        config, value = line.split(/:\s/, 2)
         config = config.gsub('-', '_').downcase.to_sym
+        value = value.strip if value # remove trailing \r\n
 
         [config, value]
       end.compact.flatten]
