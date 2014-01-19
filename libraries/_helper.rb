@@ -253,9 +253,8 @@ EOH
           sleep(0.5)
           retry
         rescue OpenURI::HTTPError => e
-          puts e.message
-          if /^403/ =~ e.message
-            return
+          if /^403/ =~ e.message.to_s
+            next
           else
             Chef::Log.info("Jenkins is not accepting requests - #{e.message}")
             sleep(0.5)
