@@ -248,18 +248,23 @@ EOH
           open(endpoint)
         rescue SocketError,
                Errno::ECONNREFUSED,
-               Errno::ECONNRESET,
-               OpenURI::HTTPError => e
-          Chef::Log.debug("Jenkins is not accepting requests - #{e.message}")
-
+               Errno::ECONNRESET => ex
+          Chef::Log.info("Jenkins is not accepting requests - #{ex.message}")
           sleep(0.5)
           retry
+        rescue OpenURI::HTTPError => e
+          if /^403/ =~ e.message.to_s
+            next
+          else
+            Chef::Log.info("Jenkins is not accepting requests - #{e.message}")
+            sleep(0.5)
+            retry
+          end
         end
       end
     rescue Timeout::Error
       raise JenkinsNotReady.new(endpoint, timeout)
     end
-
     #
     # Idempotently download the remote +jenkins-cli.jar+ file for the Jenkins
     # master. This method will raise an exception if the Jenkins master is
