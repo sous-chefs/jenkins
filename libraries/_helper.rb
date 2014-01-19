@@ -247,8 +247,8 @@ EOH
         begin
           open(endpoint)
         rescue SocketError,
-            Errno::ECONNREFUSED,
-            Errno::ECONNRESET => ex
+               Errno::ECONNREFUSED,
+               Errno::ECONNRESET => ex
           Chef::Log.info("Jenkins is not accepting requests - #{ex.message}")
           sleep(0.5)
           retry
