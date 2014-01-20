@@ -493,7 +493,8 @@ class Chef
     # @return [String]
     #
     def slave_jar_url
-      path = ::File.join('jnlpJars', 'slave.jar')
+      master_uri = URI.parse(endpoint)
+      path = ::File.join(master_uri.path, 'jnlpJars', 'slave.jar')
       URI.join(endpoint, path).to_s
     end
 
