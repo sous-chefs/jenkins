@@ -104,10 +104,7 @@ class Chef
     # @return [String]
     #
     def jnlp_url
-      return @jnlp_url if @jnlp_url
-      path = ::File.join(
-               'computer', new_resource.slave_name, 'slave-agent.jnlp')
-      @jnlp_url = URI.join(endpoint, path).to_s
+      @jnlp_url ||= uri_join(endpoint, 'computer', new_resource.slave_name, 'slave_agent.jnlp')
     end
 
     #

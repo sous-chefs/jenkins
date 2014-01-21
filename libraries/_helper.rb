@@ -69,6 +69,21 @@ EOH
     end
 
     #
+    # {URI.join} is a fucking nightmare. It rarely works. Using +File.join+ is
+    # cool for URLs, until someone is running on Windows and their URLs use the
+    # wrong slashes. This method attempts to cleanly join URI/URL segments into
+    # a cleanly normalized URL that the libraries can use when constructing
+    # URIs.
+    #
+    # @param [Array<String>] parts
+    #   the list of parts to join
+    #
+    def uri_join(*parts)
+      parts = parts.compact.map(&URI.method(:escape))
+      URI.parse(parts.join('/')).normalize.to_s
+    end
+
+    #
     # A Groovy snippet that will set the requested local Groovy variable
     # to an instance of the credentials represented by `username`.
     # Returns the Groovy `null` if no credentials are found.
@@ -271,7 +286,7 @@ EOH
     #
     def ensure_cli_present!
       node.run_state[:jenkins_cli_present] ||= begin
-        source = File.join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
+        source = uri_join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
         remote_file = Chef::Resource::RemoteFile.new(cli, run_context)
         remote_file.source(source)
         remote_file.backup(false)
