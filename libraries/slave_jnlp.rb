@@ -104,7 +104,7 @@ class Chef
     # @return [String]
     #
     def jnlp_url
-      @jnlp_url ||= uri_join(endpoint, 'computer', new_resource.slave_name, 'slave_agent.jnlp')
+      @jnlp_url ||= uri_join(endpoint, 'computer', new_resource.slave_name, 'slave-agent.jnlp')
     end
 
     #
