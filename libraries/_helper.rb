@@ -36,7 +36,7 @@ Jenkins can fail to start if:
   - a plugin is only partially installed
   - a plugin's dependencies are not installed
 
-If this problem persists, check your Jenkins's log files.
+If this problem persists, check your Jenkins log files.
 EOH
       end
     end
