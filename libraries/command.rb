@@ -38,7 +38,7 @@ class Chef
       @command = name
 
       # output buffer for the command results
-      @output 
+      @output = nil
     end
 
     def command(arg = nil)
