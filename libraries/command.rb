@@ -49,7 +49,6 @@ class Chef
     def output(arg = nil)
       set_or_return(:output, arg, kind_of: String)
     end
-
   end
 end
 
