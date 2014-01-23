@@ -36,10 +36,18 @@ class Chef
 
       # Set the name attribute and default attributes
       @command = name
+
+      # output buffer for the command results
+      @output = nil
     end
 
     def command(arg = nil)
       set_or_return(:command, arg, kind_of: String)
+    end
+
+    # Setter/Getter for the output buffer
+    def output(arg = nil)
+      set_or_return(:output, arg, kind_of: String)
     end
   end
 end
@@ -61,7 +69,7 @@ class Chef
 
     def action_execute
       converge_by("Execute #{new_resource}") do
-        executor.execute!(new_resource.command)
+        new_resource.output(executor.execute!(new_resource.command))
       end
     end
   end
