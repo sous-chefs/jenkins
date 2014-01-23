@@ -136,15 +136,15 @@ class Chef
       @slave_xml_resource.cookbook('jenkins')
       @slave_xml_resource.source('jenkins-slave.xml.erb')
       @slave_xml_resource.variables(
-        new_resource: new_resource,
-        endpoint: endpoint,
-        java_bin: java,
-        slave_jar: slave_jar,
-        jnlp_url: jnlp_url,
-        jnlp_secret: jnlp_secret,
-        user_domain: user_domain,
-        user_account: user_account,
-        user_password: new_resource.password
+        new_resource:  new_resource,
+        endpoint:      endpoint,
+        java_bin:      java,
+        slave_jar:     slave_jar,
+        jnlp_url:      jnlp_url,
+        jnlp_secret:   jnlp_secret,
+        user_domain:   user_domain,
+        user_account:  user_account,
+        user_password: new_resource.password,
       )
       @slave_xml_resource.notifies(:restart, "service[#{new_resource.service_name}]")
       @slave_xml_resource
@@ -167,7 +167,7 @@ class Chef
       @install_service_resource.only_if do
         WMI::Win32_Service.find(
           :first,
-          :conditions => { :name => new_resource.service_name }
+          conditions: { name: new_resource.service_name },
         ).nil?
       end
       @install_service_resource
@@ -183,7 +183,7 @@ class Chef
       @service_resource.only_if do
         !WMI::Win32_Service.find(
           :first,
-          :conditions => { :name => new_resource.service_name }
+          conditions: { name: new_resource.service_name },
         ).nil?
       end
       @service_resource

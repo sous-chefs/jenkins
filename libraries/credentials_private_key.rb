@@ -104,7 +104,7 @@ class Chef
     def attribute_to_property_map
       {
         private_key: 'credentials.privateKey',
-        passphrase: 'credentials.passphrase.plainText'
+        passphrase: 'credentials.passphrase.plainText',
       }
     end
 

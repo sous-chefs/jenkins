@@ -65,8 +65,7 @@ module Serverspec
 
       def has_environment?(environment)
         environment.all? do |k, v|
-          value_in_jenkins = REXML::XPath.first(xml,
-                                                "//*/string[text()='#{k}']/following-sibling::string[1]").text
+          value_in_jenkins = REXML::XPath.first(xml, "//*/string[text()='#{k}']/following-sibling::string[1]").text
           v.to_s === value_in_jenkins
         end
       end

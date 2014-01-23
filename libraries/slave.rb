@@ -38,9 +38,7 @@ class Chef
 
       # Set default actions and allowed actions
       @action = :create
-      @allowed_actions.push(:create, :delete,
-                            :connect, :disconnect,
-                            :online, :offline)
+      @allowed_actions.push(:create, :delete, :connect, :disconnect, :online, :offline)
 
       # Set the name attribute and default attributes
       @slave_name      = name
@@ -114,7 +112,7 @@ class Chef
         :usage_mode,
         arg,
         kind_of: String,
-        equal_to: %w{ exclusive normal }
+        equal_to: %w[exclusive normal],
       )
     end
 
@@ -145,7 +143,7 @@ class Chef
         :availability,
         arg,
         kind_of: String,
-        equal_to: %w{ always demand }
+        equal_to: %w[always demand],
       )
     end
 
@@ -220,7 +218,7 @@ class Chef
         :user,
         arg,
         kind_of: String,
-        regex: Chef::Config[:user_valid_regex]
+        regex: Chef::Config[:user_valid_regex],
       )
     end
 
@@ -236,7 +234,7 @@ class Chef
         :group,
         arg,
         kind_of: String,
-        regex: Chef::Config[:group_valid_regex]
+        regex: Chef::Config[:group_valid_regex],
       )
     end
 
@@ -658,14 +656,14 @@ class Chef
     #
     def correct_config?
       wanted_slave = {
-        name: new_resource.slave_name,
-        description: new_resource.description,
-        remote_fs: new_resource.remote_fs,
-        executors: new_resource.executors,
-        usage_mode: new_resource.usage_mode,
-        labels: new_resource.labels.sort,
+        name:         new_resource.slave_name,
+        description:  new_resource.description,
+        remote_fs:    new_resource.remote_fs,
+        executors:    new_resource.executors,
+        usage_mode:   new_resource.usage_mode,
+        labels:       new_resource.labels.sort,
         availability: new_resource.availability,
-        environment: new_resource.environment
+        environment:  new_resource.environment,
       }
 
       if new_resource.availability.to_s == 'demand'

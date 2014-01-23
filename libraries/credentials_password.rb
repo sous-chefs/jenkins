@@ -82,7 +82,7 @@ class Chef
     #
     def attribute_to_property_map
       {
-        password: 'credentials.password.plainText'
+        password: 'credentials.password.plainText',
       }
     end
   end

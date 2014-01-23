@@ -149,10 +149,10 @@ class Chef
       @service_resource.log_template_name('jenkins-slave')
       @service_resource.options(
         new_resource: new_resource,
-        java_bin: java,
-        slave_jar: slave_jar,
-        jnlp_url: jnlp_url,
-        jnlp_secret: jnlp_secret
+        java_bin:    java,
+        slave_jar:   slave_jar,
+        jnlp_url:    jnlp_url,
+        jnlp_secret: jnlp_secret,
       )
       @service_resource
     end
