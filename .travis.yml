@@ -4,3 +4,7 @@ rvm:
   - 2.1.0
 script:
   - bundle exec rake travis:ci
+notifications:
+  hipchat:
+    rooms:
+      - secure: axRyMDofVTprR+N7xGqss6fkphj5wHxv2GVC2bAmQt04SgWa4AhpdroE4s9yOupOPlbWElbJVcobvY3djpsgq0UPkDsaA93cvIeAV7MRwLyp1z97pyxXm2dvMzk8XFITq5qmJeKAEMTPeTnksJKgvB5TVGPTgrrF+1+fTSlWw6E=
