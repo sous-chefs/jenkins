@@ -2,6 +2,21 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.0.2 (2014-01-30)
+-------------------
+- Add support for prefix and suffix commands on SSH nodes
+- Don't commit documentation into git
+- Fix YARD-generated documentation
+- Fix plugin output parsing
+- Accept a 403 response, indicating the server is "ready"
+- Use a custom URI joining method
+- Document the need for the Jenkins credentials plugin
+- Fix a typo in the slave jar URL
+- Fix typos in README
+- Fix grammer in the Jenkins helper error
+- Update Rubocop
+
+
 v2.0.0 (2014-01-14)
 -------------------
 **This is a major refactor of the Jenkins cookbook and is not backwards-compatible.**
