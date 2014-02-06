@@ -162,8 +162,8 @@ class Chef
         host: 'slave.launcher.host',
         port: 'slave.launcher.port',
         jvm_options: 'slave.launcher.jvmOptions',
-        command_prefix: 'jenkins.launcher.prefixStartSlaveCmd',
-        command_suffix: 'jenkins.launcher.suffixStartSlaveCmd',
+        command_prefix: 'slave.launcher.prefixStartSlaveCmd',
+        command_suffix: 'slave.launcher.suffixStartSlaveCmd',
       }
 
       if new_resource.credentials.match(UUID_REGEX)
