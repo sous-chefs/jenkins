@@ -7,4 +7,5 @@ script:
 notifications:
   hipchat:
     rooms:
-      - secure: axRyMDofVTprR+N7xGqss6fkphj5wHxv2GVC2bAmQt04SgWa4AhpdroE4s9yOupOPlbWElbJVcobvY3djpsgq0UPkDsaA93cvIeAV7MRwLyp1z97pyxXm2dvMzk8XFITq5qmJeKAEMTPeTnksJKgvB5TVGPTgrrF+1+fTSlWw6E=
+      - secure: XJGQPfNmCH4SjDPUMlinLMVjp0iACEQBxuAsUjhspgQbarNHo/aQ0jU++k6P4feGrSpSSFl8QH9sy3IqvIbiU8DzR6F8T+I63FztPvwIO4NW4c3FknBprNQbAJSCQ02XfoDXF8JO19mx3DZfmc7ObbdhoD7DrKoZvgtHbqhMkx4= # Build Statuses
+      - secure: axRyMDofVTprR+N7xGqss6fkphj5wHxv2GVC2bAmQt04SgWa4AhpdroE4s9yOupOPlbWElbJVcobvY3djpsgq0UPkDsaA93cvIeAV7MRwLyp1z97pyxXm2dvMzk8XFITq5qmJeKAEMTPeTnksJKgvB5TVGPTgrrF+1+fTSlWw6E= # Release Engineering
