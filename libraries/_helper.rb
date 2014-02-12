@@ -60,7 +60,7 @@ EOH
       options = {}.tap do |h|
         h[:cli]      = cli
         h[:java]     = java
-        h[:key]      = private_key_path if private_key_given?
+        h[:key]      = private_key_path if private_key_given? && auth_turned_on?
         h[:proxy]    = proxy if proxy_given?
         h[:endpoint] = endpoint
       end
@@ -277,6 +277,28 @@ EOH
       end
     rescue Timeout::Error
       raise JenkinsNotReady.new(endpoint, timeout)
+    end
+
+    #
+    # We want to determine if the chef server is using authentication
+    # If the admin endpoint returns an error containing 403, true is returned
+    # In all other cases, false is returned
+    #
+
+    def auth_turned_on?
+      open("#{endpoint}/manage")
+      return false
+    rescue SocketError,
+           Errno::ECONNREFUSED,
+           Errno::ECONNRESET,
+           OpenURI::HTTPError => e
+      # If authentication has been enabled, the server will return an HTTP 403.
+      # So if a 403 is returned, we want to leave the private_key intact
+      if e.message =~ /^403/
+        return true
+      else
+        return false
+      end
     end
 
     #
