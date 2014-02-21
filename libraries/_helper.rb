@@ -159,6 +159,19 @@ EOH
       Hash[mapped_hash]
     end
 
+    #
+    # Escape the given value for use on the command line.
+    #
+    # @param [String] value
+    #   the value to escape
+    #
+    # @return [String]
+    #   the escaped value
+    #
+    def escape(value)
+      Shellwords.escape(value)
+    end
+
     private
 
     #
