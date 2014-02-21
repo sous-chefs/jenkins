@@ -260,21 +260,23 @@ EOH
 
       return nil unless ::File.exists?(manifest)
 
-      @current_plugin = Hash[*::File.readlines(manifest).map do |line|
-        next if line.strip.empty?
+      @current_plugin = {}
 
-        #
-        # Example Data:
-        #   Plugin-Version: 1.4
-        #
-        config, value = line.split(/:\s/, 2)
-        config = config.gsub('-', '_').downcase.to_sym
-        value = value.strip if value # remove trailing \r\n
+      File.open(manifest, 'r', encoding: 'utf-8') do |file|
+        file.each_line do |line|
+          next if line.strip.empty?
 
-        [config, value]
-      end.compact.flatten]
+          #
+          # Example Data:
+          #   Plugin-Version: 1.4
+          #
+          config, value = line.split(/:\s/, 2)
+          config = config.gsub('-', '_').downcase.to_sym
+          value = value.strip if value # remove trailing \r\n
 
-      @current_plugin
+          @current_plugin[config] = value
+        end
+      end
     end
 
     #
