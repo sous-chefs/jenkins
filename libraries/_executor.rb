@@ -59,17 +59,17 @@ module Jenkins
     # exceptions to the main thread.
     #
     # @param [Array] pieces
-    #   an array of commands to execute - each piece is individually shell-
-    #   escaped and joined with a space
+    #   an array of commands to execute
     #
     # @return [String]
     #   the standard out from the command
     #
     def execute!(*pieces)
-      command =  "#{shl_escape(options[:java])} -jar #{shl_escape(options[:cli])}"
-      command << " -s #{uri_escape(options[:endpoint])}"   if options[:endpoint]
-      command << " -i #{shl_escape(options[:key])}"   if options[:key]
-      command << " -p #{uri_escape(options[:proxy])}" if options[:proxy]
+      command =  "#{Shelllwords.escape(options[:java])}"
+      command << " -jar #{Shellwords.escape(options[:cli])}"
+      command << " -s #{URI.escape(options[:endpoint])}" if options[:endpoint]
+      command << " -i #{shl_escape(options[:key])}"      if options[:key]
+      command << " -p #{uri_escape(options[:proxy])}"    if options[:proxy]
       command << " #{pieces.join(' ')}"
 
       command = Mixlib::ShellOut.new(command, timeout: 30)

@@ -144,7 +144,7 @@ EOH
         Chef::Log.debug("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
-          executor.execute!('create-job', new_resource.name, '<', new_resource.config)
+          executor.execute!('create-job', escape(new_resource.name), '<', escape(new_resource.config))
         end
       end
 
@@ -152,7 +152,7 @@ EOH
         Chef::Log.debug("#{new_resource} config up to date - skipping")
       else
         converge_by("Update #{new_resource} config") do
-          executor.execute!('update-job', new_resource.name, '<', new_resource.config)
+          executor.execute!('update-job', escape(new_resource.name), '<', escape(new_resource.config))
         end
       end
     end
@@ -165,7 +165,7 @@ EOH
     def action_delete
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
-          executor.execute!('delete-job', new_resource.name)
+          executor.execute!('delete-job', escape(new_resource.name))
         end
       else
         Chef::Log.debug("#{new_resource} does not exist - skipping")
@@ -187,7 +187,7 @@ EOH
 
       if current_resource.enabled?
         converge_by("Disable #{new_resource}") do
-          executor.execute!('disable-job', new_resource.name)
+          executor.execute!('disable-job', escape(new_resource.name))
         end
       else
         Chef::Log.debug("#{new_resource} disabled - skipping")
@@ -211,7 +211,7 @@ EOH
         Chef::Log.debug("#{new_resource} enabled - skipping")
       else
         converge_by("Enable #{new_resource}") do
-          executor.execute!('enable-job', new_resource.name)
+          executor.execute!('enable-job', escape(new_resource.name))
         end
       end
     end
@@ -230,7 +230,7 @@ EOH
 
       Chef::Log.debug "Load #{new_resource} job information"
 
-      response = executor.execute('get-job', new_resource.name)
+      response = executor.execute('get-job', escape(new_resource.name))
       return nil if response.nil? || response =~ /No such job/
 
       Chef::Log.debug "Parse #{new_resource} as XML"
