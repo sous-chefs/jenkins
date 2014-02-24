@@ -65,7 +65,7 @@ module Jenkins
     #   the standard out from the command
     #
     def execute!(*pieces)
-      command =  "#{Shelllwords.escape(options[:java])}"
+      command =  "#{Shellwords.escape(options[:java])}"
       command << " -jar #{Shellwords.escape(options[:cli])}"
       command << " -s #{URI.escape(options[:endpoint])}" if options[:endpoint]
       command << " -i #{shl_escape(options[:key])}"      if options[:key]
