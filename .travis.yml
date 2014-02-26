@@ -4,8 +4,10 @@ rvm:
   - 2.1
 
 bundler_args: --jobs 7
+
 script:
   - bundle exec rake travis:ci
+
 notifications:
   hipchat:
     rooms:
