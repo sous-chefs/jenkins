@@ -1,5 +1,8 @@
 require 'bundler/setup'
 
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:unit)
+
 namespace :style do
   require 'rubocop/rake_task'
   desc 'Run Ruby style checks'
@@ -25,8 +28,8 @@ end
 # We cannot run Test Kitchen on Travis CI yet...
 namespace :travis do
   desc 'Run tests on Travis'
-  task ci: ['style']
+  task ci: ['style', 'unit']
 end
 
 # The default rake task should just run it all
-task default: ['style', 'integration']
+task default: ['ci', 'integration']
