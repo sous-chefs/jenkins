@@ -105,6 +105,7 @@ EOH
       end
     end
 
+    require_relative '_helper'
     include Jenkins::Helper
 
     def load_current_resource
@@ -262,7 +263,7 @@ EOH
 
       @current_plugin = {}
 
-      File.open(manifest, 'r', encoding: 'utf-8') do |file|
+      ::File.open(manifest, 'r', encoding: 'utf-8') do |file|
         file.each_line do |line|
           next if line.strip.empty?
 

@@ -104,6 +104,7 @@ class Chef
   class Provider::JenkinsUser < Provider
     require 'json'
 
+    require_relative '_helper'
     include Jenkins::Helper
 
     def load_current_resource

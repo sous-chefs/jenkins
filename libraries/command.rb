@@ -46,6 +46,7 @@ end
 
 class Chef
   class Provider::JenkinsCommand < Provider
+    require_relative '_helper'
     include Jenkins::Helper
 
     def load_current_resource

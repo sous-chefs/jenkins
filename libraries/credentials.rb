@@ -23,6 +23,7 @@ class Chef
   class Resource::JenkinsCredentials < Resource
     require 'securerandom'
 
+    require_relative '_helper'
     include Jenkins::Helper
 
     identity_attr :username
@@ -97,6 +98,7 @@ class Chef
     require 'json'
     require 'openssl'
 
+    require_relative '_helper'
     include Jenkins::Helper
 
     def load_current_resource

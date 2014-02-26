@@ -99,6 +99,7 @@ EOH
 
     require 'rexml/document'
 
+    require_relative '_helper'
     include Jenkins::Helper
 
     def load_current_resource
