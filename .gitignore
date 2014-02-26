@@ -9,6 +9,7 @@
 *.bkup
 .DS_Store
 .kitchen.local.yml
+.rspec
 Berksfile.lock
 Gemfile.lock
 
