@@ -283,6 +283,7 @@ end
 
 class Chef
   class Provider::JenkinsSlave < Provider
+    require_relative '_helper'
     include Jenkins::Helper
 
     #

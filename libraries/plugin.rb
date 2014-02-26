@@ -105,6 +105,7 @@ EOH
       end
     end
 
+    require_relative '_helper'
     include Jenkins::Helper
 
     def load_current_resource
