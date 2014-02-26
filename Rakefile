@@ -3,18 +3,9 @@ require 'bundler/setup'
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:unit)
 
-namespace :style do
-  require 'rubocop/rake_task'
-  desc 'Run Ruby style checks'
-  Rubocop::RakeTask.new(:ruby)
-
-  require 'foodcritic'
-  desc 'Run Chef style checks'
-  FoodCritic::Rake::LintTask.new(:chef)
-end
-
-desc 'Run all style checks'
-task style: ['style:chef', 'style:ruby']
+require 'rubocop/rake_task'
+desc 'Run Ruby style checks'
+Rubocop::RakeTask.new(:style)
 
 require 'kitchen'
 desc 'Run Test Kitchen integration tests'
