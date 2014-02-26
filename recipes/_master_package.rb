@@ -57,6 +57,23 @@ when 'rhel'
     mode     '0644'
     notifies :restart, 'service[jenkins]', :immediately
   end
+when 'rhel'
+  include_recipe 'yum::default'
+
+  yum_repository 'jenkins-ci' do
+    baseurl 'http://pkg.jenkins-ci.org/redhat'
+    gpgkey  'http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key'
+  end
+
+  package 'jenkins' do
+    version node['jenkins']['master']['version']
+  end
+
+  template '/etc/sysconfig/jenkins' do
+    source   'jenkins-config-fedora.erb'
+    mode     '0644'
+    notifies :restart, 'service[jenkins]', :immediately
+  end
 end
 
 service 'jenkins' do
