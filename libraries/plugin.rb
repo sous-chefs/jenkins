@@ -39,6 +39,8 @@ class Chef
       # Set the name attribute and default attributes
       @name    = name
       @version = :latest
+      @restart = :delayed
+      @options = []
 
       # State attributes that are set by the provider
       @installed = false
@@ -80,6 +82,34 @@ class Chef
     #
     def source(arg = nil)
       set_or_return(:source, arg, kind_of: String)
+    end
+
+    #
+    # After installing, removing, enabling or disabling, should this plugin cause a restart and
+    # if so, how. Possible values:
+    #
+    #   :delayed - This is the default behavior. This looks for the service[jenkins]
+    #              resource and if found it will do a delayed notification on it.
+    #   :immediately - Look for the service[jenkins] resource and calls the restart action on it.
+    #   false - Do not attempt to restart Jenkins now or later.
+    #
+    # @param [Symbol, FalseClass] arg
+    # @return [Symbol, FalseClass]
+    #
+    def restart(arg = nil)
+      set_or_return(:restart, arg, kind_of: [Symbol, FalseClass], equal_to: [:delayed, :immediately, false])
+    end
+
+    #
+    # Options that will be passed to the install-plugin CLI call. For example,
+    #   -deploy - Deploy plugins right away without postponing them until the reboot.
+    #   -restart - Restart Jenkins upon successful installation
+    #
+    # @param [Array]
+    # #return [Array]
+    #
+    def options(arg = nil)
+      set_or_return(:options, arg, kind_of: [Array])
     end
 
     #
@@ -145,7 +175,7 @@ EOH
         # Jenkins that prevents Jenkins from following 302 redirects, so we
         # use Chef to download the plugin and then use Jenkins to install it.
         # It's a bit backwards, but so is Jenkins.
-        executor.execute!('install-plugin', escape(plugin.path), '-name', escape(new_resource.name))
+        executor.execute!('install-plugin', escape(plugin.path), '-name', escape(new_resource.name), new_resource.options)
       end
 
       if current_resource.installed?
@@ -154,11 +184,13 @@ EOH
           Chef::Log.debug("#{new_resource} already installed - skipping")
         else
           converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{new_resource.version}", &block)
-          notify(:restart)
+          new_resource.updated_by_last_action(true)
+          notify_restart
         end
       else
         converge_by("Install #{new_resource}", &block)
-        notify(:restart)
+        new_resource.updated_by_last_action(true)
+        notify_restart
       end
     end
 
@@ -189,7 +221,8 @@ EOH
         converge_by("Disable #{new_resource}") do
           Resource::File.new(disabled, run_context).run_action(:create)
         end
-        notify(:restart)
+        new_resource.updated_by_last_action(true)
+        notify_restart
       end
     end
 
@@ -212,7 +245,8 @@ EOH
         converge_by("Enable #{new_resource}") do
           Resource::File.new(disabled, run_context).run_action(:delete)
         end
-        notify(:restart)
+        new_resource.updated_by_last_action(true)
+        notify_restart
       else
         Chef::Log.debug("#{new_resource} already enabled - skipping")
       end
@@ -242,7 +276,8 @@ EOH
           directory.recursive(true)
           directory.run_action(:delete)
         end
-        notify(:restart)
+        new_resource.updated_by_last_action(true)
+        notify_restart
       else
         Chef::Log.debug("#{new_resource} not installed - skipping")
       end
@@ -324,25 +359,27 @@ EOH
     end
 
     #
-    # Restart the Jenkins master. If the +restart+ parameter is given, the
-    # master is restarted immediately. Otherwise, the master is restarted at
-    # the end of the Chef Client run.
+    # Restart the Jenkins master. If new_resource.restart is :immediately then
+    # run the restart action on the service[jenkins] resource. If it is :delayed
+    # then do a delayed notification.
     #
-    def notify(action)
-      begin
-        service = run_context.resource_collection.find('service[jenkins]')
-      rescue Chef::Exceptions::ResourceNotFound
-        Chef::Log.warn <<-EOH
-I could not find service[jenkins] in the resource collection. The
-`jenkins_plugin' resource tries to #{action} the Jenkins master automatically
-after a plugin is installed or modified, but requires that a service resource
-exists for `jenkins'. If you are using your own Jenkins installation method,
-you must manually create a Jenkins service resource.
-EOH
-        return
-      end
+    def notify_restart
+      unless new_resource.restart == false
+        begin
+          service = run_context.resource_collection.find('service[jenkins]')
+        rescue Chef::Exceptions::ResourceNotFound
+          Chef::Log.warn <<-EOH
+  I could not find service[jenkins] in the resource collection. The
+  `jenkins_plugin' resource tries to restart the Jenkins master automatically
+  after a plugin is installed or modified, but requires that a service resource
+  exists for `jenkins'. If you are using your own Jenkins installation method,
+  you must manually create a Jenkins service resource.
+  EOH
+          return
+        end
 
-      new_resource.notifies(action, service, :delayed)
+        new_resource.notifies(:restart, service, new_resource.restart)
+      end
     end
   end
 end
