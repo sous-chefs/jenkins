@@ -108,6 +108,8 @@ suites:
     run_list: jenkins_plugin::enable
   - name: jenkins_plugin_install
     run_list: jenkins_plugin::install
+  - name: jenkins_plugin_install_no_restart
+    run_list: jenkins_plugin::install_no_restart
   - name: jenkins_plugin_uninstall
     run_list: jenkins_plugin::uninstall
 

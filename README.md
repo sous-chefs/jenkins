@@ -262,7 +262,30 @@ jenkins_plugin 'greenballs' do
 end
 ```
 
-**NOTE** You may need to restart Jenkins after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins infrastructure differently) this LWRP does **NOT** restart Jenkins for you.
+By default this LWRP restarts jenkins after an install, uninstall, enable or disable of a plugin. It does this
+by sending a delayed notification to the `service[jenkins]` resource to restart. If you would like to avoid this restart you can set the `restart` attribute to `false`.
+
+```ruby
+jenkins_plugin 'greenballs' do
+  version '1.3'
+  restart false
+end
+
+```
+
+Additionally, you can pass `:immediately` to `restart` to cause an immediate restart.
+
+The jenkins CLI allows for a couple of options that can be passed to its `install-plugin` command. This is possible using the LWRP by passing an array to the `options` attribute. For example, to tell the LWRP not to restart jenkins and to pass the `-deploy` flag to `install-plugin`.
+
+```ruby
+  jenkins_plugin 'github-oauth' do
+    action :install
+    restart false
+    options ['-deploy']
+  end
+```
+
+`-deploy` tells install-plugin to attempt to deploy the plugin without restarting jenkins.
 
 ### jenkins_slave
 This resource manages Jenkins slaves, supporting the following actions:
