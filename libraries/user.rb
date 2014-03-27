@@ -142,6 +142,10 @@ class Chef
 
             email = new hudson.tasks.Mailer.UserProperty('#{new_resource.email}')
             user.addProperty(email)
+            
+            def chars = [ 'A'..'Z', 'a'..'z', '0'..'9' ].flatten()
+            def password = (0..<20).collect { chars[ new Random().nextInt( chars.size() ) ] }.join()
+            user.addProperty(hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword(password))
 
             keys = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl('#{new_resource.public_keys.join("\n")}')
             user.addProperty(keys)
