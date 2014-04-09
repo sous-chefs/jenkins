@@ -54,10 +54,13 @@ end
 
 # Gracefully handle the failure for an invalid installation type
 begin
+  if node['jenkins']['master']['install_method'].empty?
+    raise Chef::Exceptions::AttributeNotFound, "Attribute node['jenkins']['master']['install_method'] not defined."
+  end
   include_recipe "jenkins::_master_#{node['jenkins']['master']['install_method']}"
 rescue Chef::Exceptions::RecipeNotFound
   raise Chef::Exceptions::RecipeNotFound, "The install method " \
-    "`#{node['jenkins']['master']['install_method']}' is not supported by " \
+    "'#{node['jenkins']['master']['install_method']}' is not supported " \
     "this cookbook. Please ensure you have spelled it correctly. If you " \
     "continue to encounter this error, please file an issue."
 end
