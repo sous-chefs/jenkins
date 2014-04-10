@@ -277,7 +277,7 @@ EOH
 
       if new_resource.config.nil?
         fail("#{new_resource} must specify a configuration file!")
-      elsif !::File.exists?(new_resource.config)
+      elsif !::File.exist?(new_resource.config)
         fail("#{new_resource} config `#{new_resource.config}` does not exist!")
       else
         begin

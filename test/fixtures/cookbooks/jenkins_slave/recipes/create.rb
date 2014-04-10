@@ -9,7 +9,7 @@ jenkins_jnlp_slave 'builder' do
   description  'A generic slave builder'
   remote_fs    '/tmp/jenkins/slaves/builder'
   service_name 'jenkins-slave-builder'
-  labels       %w[builder linux]
+  labels       %w(builder linux)
   user         'jenkins-builder'
   group        'jenkins-builder'
 end
@@ -24,7 +24,7 @@ jenkins_jnlp_slave 'smoke' do
   availability    'demand'
   in_demand_delay 1
   idle_delay      3
-  labels          %w[runner fast]
+  labels          %w(runner fast)
   user           'jenkins-smoke'
   group          'jenkins-smoke'
 end
@@ -34,7 +34,7 @@ jenkins_jnlp_slave 'executor' do
   description  'Run test suites'
   remote_fs    '/tmp/jenkins/slaves/executor'
   service_name 'jenkins-slave-executor'
-  labels       %w[executor freebsd jail]
+  labels       %w(executor freebsd jail)
   user         'jenkins-executor'
   group        'jenkins-executor'
   environment(
@@ -59,7 +59,7 @@ end
 jenkins_ssh_slave 'ssh-builder' do
   description 'Builder, but over SSH'
   remote_fs   '/tmp/jenkins/slaves/ssh-builder'
-  labels      %w[builer linux]
+  labels      %w(builer linux)
   user        'jenkins-ssh-builder'
   group       'jenkins-ssh-builder'
 
@@ -77,7 +77,7 @@ end
 jenkins_ssh_slave 'ssh-executor' do
   description 'An executor, but over SSH'
   remote_fs   '/tmp/jenkins/slaves/ssh-executor'
-  labels      %w[executor freebsd jail]
+  labels      %w(executor freebsd jail)
   user        'jenkins-ssh-executor'
   group       'jenkins-ssh-executor'
 
@@ -94,7 +94,7 @@ end
 jenkins_ssh_slave 'ssh-smoke' do
   description 'ssh-Smoke, but over SSH'
   remote_fs   '/tmp/jenkins/slaves/ssh-smoke'
-  labels      %w[runner fast]
+  labels      %w(runner fast)
   user        'jenkins-ssh-smoke'
   group       'jenkins-ssh-smoke'
 

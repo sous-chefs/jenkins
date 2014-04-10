@@ -16,7 +16,7 @@ module Serverspec
       end
 
       def disabled?
-        ::File.exists?(disabled_plugin)
+        ::File.exist?(disabled_plugin)
       end
 
       def has_version?(version)
