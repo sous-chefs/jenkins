@@ -6,17 +6,30 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 
 This project is managed by the CHEF Release Engineering team. For more information on the Release Engineering team's contribution, triage, and release process, please consult the [CHEF Release Engineering OSS Management Guide](https://docs.google.com/a/opscode.com/document/d/1oJB0vZb_3bl7_ZU2YMDBkMFdL-EWplW1BJv_FXTUOzg/edit).
 
-
 Requirements
 ------------
 - Chef 11 or higher
 - **Ruby 1.9.3 or higher**
 
+Public Service Announcment
+----------------------------
+If you are using jenkins with authentication:  until [JENKINS-22346](https://issues.jenkins-ci.org/browse/JENKINS-22346) is fixed, pin to version 1.555 of jenkins and use the `war` installation method:
+
+````
+node.default['jenkins']['master']['install_method'] = 'war'
+node.default['jenkins']['master']['version'] = '1.555'
+node.default['jenkins']['master']['source'] = "#{node['jenkins']['master']['mirror']}/war/#{node['jenkins']['master']['version']}/jenkins.war"
+````
+
+JENKINS-22346 affects the `jenkins-cli` command, whose use by this cookbook is described in the Caveats section under Authentication.
 
 Attributes
 ----------
 In order to keep the README managable and in sync with the attributes, this cookbook documents attributes inline. The usage instructions and default values for attributes can be found in the individual attribute files.
 
+Examples
+---------
+Documentation and examples are provided inline using YARD.  The tests and fixture cookbooks in `tests` and `tests/fixtures` are intended to be a further source of examples.
 
 Recipes
 -------
