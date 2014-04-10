@@ -112,7 +112,7 @@ class Chef
         :usage_mode,
         arg,
         kind_of: String,
-        equal_to: %w[exclusive normal],
+        equal_to: %w(exclusive normal),
       )
     end
 
@@ -143,7 +143,7 @@ class Chef
         :availability,
         arg,
         kind_of: String,
-        equal_to: %w[always demand],
+        equal_to: %w(always demand),
       )
     end
 

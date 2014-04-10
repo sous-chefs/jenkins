@@ -181,10 +181,10 @@ class Chef
 
       @service_resource = Chef::Resource::Service.new(new_resource.service_name, run_context)
       @service_resource.only_if do
-        !WMI::Win32_Service.find(
+        WMI::Win32_Service.find(
           :first,
           conditions: { name: new_resource.service_name },
-        ).nil?
+        )
       end
       @service_resource
     end

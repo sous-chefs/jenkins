@@ -183,7 +183,7 @@ EOH
 
       disabled = "#{plugin_file}.disabled"
 
-      if ::File.exists?(disabled)
+      if ::File.exist?(disabled)
         Chef::Log.debug("#{new_resource} already disabled - skipping")
       else
         converge_by("Disable #{new_resource}") do
@@ -208,7 +208,7 @@ EOH
 
       disabled = "#{plugin_file}.disabled"
 
-      if ::File.exists?(disabled)
+      if ::File.exist?(disabled)
         converge_by("Enable #{new_resource}") do
           Resource::File.new(disabled, run_context).run_action(:delete)
         end
@@ -259,7 +259,7 @@ EOH
       manifest = ::File.join(plugins_directory, new_resource.name, 'META-INF', 'MANIFEST.MF')
       Chef::Log.debug "Load #{new_resource} plugin information from #{manifest}"
 
-      return nil unless ::File.exists?(manifest)
+      return nil unless ::File.exist?(manifest)
 
       @current_plugin = {}
 
@@ -296,7 +296,7 @@ EOH
       hpi = ::File.join(plugins_directory, "#{new_resource.name}.hpi")
       jpi = ::File.join(plugins_directory, "#{new_resource.name}.jpi")
 
-      ::File.exists?(hpi) ? hpi : jpi
+      ::File.exist?(hpi) ? hpi : jpi
     end
 
     #

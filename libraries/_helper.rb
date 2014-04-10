@@ -127,7 +127,7 @@ EOH
       when nil
         'null'
       when String
-        %Q{"#{val}"}
+        %Q("#{val}")
       when Array
         list_members = val.map do |v|
           convert_to_groovy(v)

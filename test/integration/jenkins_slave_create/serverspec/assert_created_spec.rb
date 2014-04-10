@@ -7,7 +7,7 @@ describe jenkins_slave('builder') do
   it { should be_a_jenkins_slave }
   it { should have_description('A generic slave builder') }
   it { should have_remote_fs('/tmp/jenkins/slaves/builder') }
-  it { should have_labels(%w[builder linux]) }
+  it { should have_labels(%w(builder linux)) }
   it { should be_connected }
   it { should be_online }
 end
@@ -40,7 +40,7 @@ describe jenkins_slave('smoke') do
   it { should have_availability('demand') }
   it { should have_in_demand_delay(1) }
   it { should have_idle_delay(3) }
-  it { should have_labels(%w[runner fast]) }
+  it { should have_labels(%w(runner fast)) }
   it { should be_connected }
   it { should be_online }
 end
@@ -69,7 +69,7 @@ describe jenkins_slave('executor') do
   it { should be_a_jenkins_slave }
   it { should have_description('Run test suites') }
   it { should have_remote_fs('/tmp/jenkins/slaves/executor') }
-  it { should have_labels(%w[executor freebsd jail]) }
+  it { should have_labels(%w(executor freebsd jail)) }
   it { should have_environment(FOO: 'bar', BAZ: 'qux') }
   it { should be_connected }
   it { should be_online }
@@ -99,7 +99,7 @@ describe jenkins_slave('ssh-builder') do
   it { should be_a_jenkins_slave }
   it { should have_description('Builder, but over SSH') }
   it { should have_remote_fs('/tmp/jenkins/slaves/ssh-builder') }
-  it { should have_labels(%w[builer linux]) }
+  it { should have_labels(%w(builer linux)) }
   it { should have_host('localhost') }
   it { should have_port(22) }
   it { should have_credentials('jenkins-ssh-builder') }
@@ -126,7 +126,7 @@ end
 describe jenkins_slave('ssh-executor') do
   it { should be_a_jenkins_slave }
   it { should have_remote_fs('/tmp/jenkins/slaves/ssh-executor') }
-  it { should have_labels(%w[ssh-executor freebsd jail]) }
+  it { should have_labels(%w(ssh-executor freebsd jail)) }
   it { should have_host('localhost') }
   it { should have_port(22) }
   it { should have_credentials('38537014-ec66-49b5-aff2-aed1c19e2989') }
@@ -153,7 +153,7 @@ end
 describe jenkins_slave('ssh-smoke') do
   it { should be_a_jenkins_slave }
   it { should have_remote_fs('/tmp/jenkins/slaves/ssh-smoke') }
-  it { should have_labels(%w[runner fast]) }
+  it { should have_labels(%w(runner fast)) }
   it { should have_host('localhost') }
   it { should have_port(22) }
   it { should have_credentials('jenkins-ssh-smoke') }
