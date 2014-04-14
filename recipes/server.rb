@@ -69,7 +69,7 @@ include_recipe "jenkins::_server_#{node['jenkins']['server']['install_method']}"
 execute "ssh-keygen -f #{File.join(ssh_dir, "id_rsa")} -N ''" do
   user node['jenkins']['server']['user']
   group node['jenkins']['server']['ssh_dir_group']
-  not_if { File.exists?(File.join(ssh_dir, 'id_rsa')) }
+  not_if { File.exist?(File.join(ssh_dir, 'id_rsa')) }
   notifies :create, 'ruby_block[store_server_ssh_pubkey]', :immediately
 end
 

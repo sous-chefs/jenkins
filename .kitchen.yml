@@ -1,135 +1,66 @@
-driver_plugin: vagrant
-driver_config:
-  require_chef_omnibus: true
-  customize:
-    cpus: 2
-    memory: 1024
+---
+driver:
+  name: rackspace
+  require_chef_omnibus: '11.8.2'
+  rackspace_username: <%= ENV['rackspace_username'] %>
+  rackspace_api_key:  <%= ENV['rackspace_api_key'] %>
+  rackspace_region: 'lon'
+  public_key_path: <%= ENV['sshpubkey'] %>
+  ssh_key: <%= ENV['ssh_key'] %>
 
 platforms:
-  - name: ubuntu-12.10
-    run_list:
-      - recipe[apt]
-  - name: ubuntu-12.04
-    run_list:
-      - recipe[apt]
-  - name: ubuntu-10.04
-    run_list:
-      - recipe[apt]
-  - name: centos-5.9
+- name: centos-6.4
+  driver_config:
+    image_id: 'f70ed7c7-b42e-4d77-83d8-40fa29825b85'
+  run_list:
+    - recipe[rackspace_yum]
+- name: ubuntu-12.04
+  driver_config:
+    image_id: '80fbcb55-b206-41f9-9bc2-2dd7aac6c061'
+  run_list:
+  - recipe[rackspace_apt]
+- name: debian-7.2
+  driver_config:
+    image_id: '857d7d36-34f3-409f-8435-693e8797be8b'
+  run_list:
+    - recipe[rackspace_apt]
 
 suites:
-  - name: server_package
+  - name: jenkins_master
     run_list:
     - recipe[jenkins::server]
-    - recipe[minitest-handler]
     attributes:
       jenkins:
         server:
+          pubkey: /var/lib/jenkins/.ssh/id_rsa.pub
           install_method: package
           plugins:
           - name: git-client
             version: 1.0.5
           - name: git
             version: 1.3.0
-  - name: server_war
+  - name: jenkins_slave
     run_list:
-    - recipe[jenkins::server]
-    - recipe[minitest-handler]
+    - recipe[jenkins::node]
     attributes:
       jenkins:
         server:
-          install_method: war
-          plugins:
-          - name: git-client
-            version: 1.0.5
-          - name: git
-            version: 1.3.0
-  - name: server-proxy-nginx
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: nginx
-          host_name: 33.33.33.10
-  - name: server-proxy-nginx-ssl
-    run_list:
-    - recipe[jenkins-test::generate_certs]
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: nginx
-          host_name: 33.33.33.10
-          ssl:
-            enabled: true
-            redirect_http: true
-  - name: server-proxy-nginx-basicauth
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: nginx
-          host_name: 33.33.33.10
-          server_auth_method: basic
-          basic_auth_username: foo
-          basic_auth_password: bar
-  - name: server-proxy-apache2
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: apache2
-          host_name: 33.33.33.10
-  - name: server-proxy-apache2-ssl
-    run_list:
-    - recipe[jenkins-test::generate_certs]
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: apache2
-          host_name: 33.33.33.10
-          ssl:
-            enabled: true
-            redirect_http: true
-            ca_cert_path: /var/lib/jenkins/ssl/jenkins.cert
-  - name: server-proxy-apache2-basicauth
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[jenkins::proxy]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
-        http_proxy:
-          variant: apache2
-          host_name: 33.33.33.10
-          server_auth_method: basic
-          basic_auth_username: foo
-          basic_auth_password: bar
-  - name: node
-    run_list:
-    - recipe[jenkins::server]
-    - recipe[jenkins::node]
-    - recipe[jenkins-test::generate_sshkey]
-    - recipe[jenkins-test::generate_user]
-    - recipe[minitest-handler]
-    attributes:
-      jenkins:
+          url: http://162.13.153.55:8080
         node:
+          executors: 2
+          name: slave01
+          agent_type: jnlp
           home: /home/jenkins
-          ssh_private_key: /home/jenkins/.ssh/id_rsa
-          env:
-            foo: bar
+
+  - name: jenkins_slave2
+    run_list:
+    - recipe[jenkins::node]
+    attributes:
+      jenkins:
+        server:
+          url: http://162.13.153.55:8080
+        node:
+          executors: 2
+          name: slave02
+          agent_type: jnlp
+          home: /home/jenkins

@@ -50,6 +50,7 @@ package 'jenkins' do
   unless node['jenkins']['server']['version'].nil?
     version node['jenkins']['server']['version']
   end
+  options "--force-yes"
 end
 
 template node['jenkins']['server']['config_path'] do

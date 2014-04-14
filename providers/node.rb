@@ -32,7 +32,6 @@ def action_update
 end
 
 def action_create
-
   gscript = "#{new_resource.remote_fs}/manage_#{new_resource.name}.groovy"
 
   file gscript do

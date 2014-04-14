@@ -81,7 +81,7 @@ end
 
 remote_file jenkins_exe do
   source node['jenkins']['node']['winsw_url']
-  not_if { File.exists?(jenkins_exe) }
+  not_if { File.exist?(jenkins_exe) }
 end
 
 execute "#{jenkins_exe} install" do

@@ -48,7 +48,7 @@ template "#{node['nginx']['dir']}/sites-available/jenkins.conf" do
     :ssl_listen_ports => node['jenkins']['http_proxy']['ssl']['ssl_listen_ports']
   )
 
-  if File.exists?("#{node['nginx']['dir']}/sites-enabled/jenkins.conf")
+  if File.exist?("#{node['nginx']['dir']}/sites-enabled/jenkins.conf")
     notifies  :restart, 'service[nginx]'
   end
 end

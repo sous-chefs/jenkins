@@ -131,7 +131,7 @@ if (env != null) {
 }
 
 slave = new DumbSlave("#{args[:name]}", "#{args[:description]}", "#{remote_fs}",
-                      "#{args[:executors]}", Node.Mode.#{args[:mode]}, "#{args[:labels].join(" ")}",
+                      "#{args[:executors]}", Node.Mode.#{args[:mode]}, "#{args[:labels].join(' ')}",
                        #{launcher},
                        new RetentionStrategy.#{args[:availability]}(#{rs_args}), props)
 

@@ -11,4 +11,6 @@ HashSyntax:
 LineLength:
   Enabled: false
 MethodLength:
-  Max: 30
+  Enabled: false
+CyclomaticComplexity:
+  Max: 20

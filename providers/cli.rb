@@ -31,6 +31,8 @@ def action_run # rubocop:disable MethodLength
 
   # recipes will chown to jenkins later if this doesn't already exist
   directory 'home for jenkins-cli.jar' do
+    owner node['jenkins']['node']['user']
+    group node['jenkins']['node']['group']
     action :create
     path node['jenkins']['node']['home']
   end
