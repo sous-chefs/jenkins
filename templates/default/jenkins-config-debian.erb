@@ -17,8 +17,9 @@ JAVA_ARGS="<%= node['jenkins']['master']['jvm_options'] %>"
 
 PIDFILE=/var/run/jenkins/jenkins.pid
 
-# user id to be invoked as (otherwise will run as root; not wise!)
-JENKINS_USER=<%= node['jenkins']['master']['user'] %>
+# user and group to be invoked as (default to jenkins)
+JENKINS_USER=jenkins
+JENKINS_GROUP=jenkins
 
 # location of the jenkins war file
 JENKINS_WAR=/usr/share/jenkins/jenkins.war

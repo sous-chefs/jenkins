@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'jenkins::master' do
+describe 'jenkins::_master_war' do
   let(:home)          { '/opt/bacon' }
   let(:log_directory) { '/opt/bacon/log' }
   let(:user)          { 'bacon' }
@@ -8,10 +8,14 @@ describe 'jenkins::master' do
 
   cached(:chef_run) do
     ChefSpec::Runner.new do |node|
-      node.set['jenkins']['master']['home']          = home
-      node.set['jenkins']['master']['log_directory'] = log_directory
-      node.set['jenkins']['master']['user']          = user
-      node.set['jenkins']['master']['group']         = group
+      node.set['jenkins']['master']['home']           = home
+      node.set['jenkins']['master']['log_directory']  = log_directory
+      node.set['jenkins']['master']['user']           = user
+      node.set['jenkins']['master']['group']          = group
+      node.set['jenkins']['master']['install_method'] = 'war'
+
+      # Workaround until https://github.com/hw-cookbooks/runit/pull/57 is merged.
+      node.set[:runit][:sv_bin] = '/usr/bin/sv'
     end.converge(described_recipe)
   end
 
