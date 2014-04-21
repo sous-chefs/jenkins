@@ -100,9 +100,13 @@ suites:
   # Slave suites
   #
   - name: jenkins_slave_create
-    run_list: jenkins_slave::create
+    run_list:
+      - jenkins_slave::create_jnlp
+      - jenkins_slave::create_ssh
   - name: jenkins_slave_delete
-    run_list: jenkins_slave::delete
+    run_list:
+      - jenkins_slave::delete_jnlp
+      - jenkins_slave::delete_ssh
   - name: jenkins_slave_connect
     run_list: jenkins_slave::connect
   - name: jenkins_slave_disconnect

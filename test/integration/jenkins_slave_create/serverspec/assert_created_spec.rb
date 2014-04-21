@@ -97,26 +97,17 @@ end
 # ------------------------------
 describe jenkins_slave('ssh-builder') do
   it { should be_a_jenkins_slave }
-  it { should have_description('Builder, but over SSH') }
-  it { should have_remote_fs('/tmp/jenkins/slaves/ssh-builder') }
+  it { should have_description('A builder, but over SSH') }
+  it { should have_remote_fs('/tmp/slave-ssh-builder') }
   it { should have_labels(%w(builer linux)) }
   it { should have_host('localhost') }
   it { should have_port(22) }
-  it { should have_credentials('jenkins-ssh-builder') }
+  it { should have_credentials('jenkins') }
   it { should be_connected }
   it { should be_online }
 end
 
-describe group('jenkins-ssh-builder') do
-  it { should exist }
-end
-
-describe user('jenkins-ssh-builder') do
-  it { should exist }
-  it { should belong_to_group('jenkins-ssh-builder') }
-end
-
-describe file('/tmp/jenkins/slaves/ssh-builder') do
+describe file('/tmp/slave-ssh-builder') do
   it { should be_directory }
 end
 
@@ -125,7 +116,8 @@ end
 # ------------------------------
 describe jenkins_slave('ssh-executor') do
   it { should be_a_jenkins_slave }
-  it { should have_remote_fs('/tmp/jenkins/slaves/ssh-executor') }
+  it { should have_description('An executor, but over SSH') }
+  it { should have_remote_fs('/tmp/slave-ssh-executor') }
   it { should have_labels(%w(ssh-executor freebsd jail)) }
   it { should have_host('localhost') }
   it { should have_port(22) }
@@ -134,16 +126,7 @@ describe jenkins_slave('ssh-executor') do
   it { should be_online }
 end
 
-describe group('jenkins-ssh-executor') do
-  it { should exist }
-end
-
-describe user('jenkins-ssh-executor') do
-  it { should exist }
-  it { should belong_to_group('jenkins-ssh-executor') }
-end
-
-describe file('/tmp/jenkins/slaves/ssh-executor') do
+describe file('/tmp/slave-ssh-executor') do
   it { should be_directory }
 end
 
@@ -152,24 +135,16 @@ end
 # ------------------------------
 describe jenkins_slave('ssh-smoke') do
   it { should be_a_jenkins_slave }
-  it { should have_remote_fs('/tmp/jenkins/slaves/ssh-smoke') }
+  it { should have_description('A smoke tester, but over SSH') }
+  it { should have_remote_fs('/tmp/slave-ssh-smoke') }
   it { should have_labels(%w(runner fast)) }
   it { should have_host('localhost') }
   it { should have_port(22) }
-  it { should have_credentials('jenkins-ssh-smoke') }
+  it { should have_credentials('jenkins') }
   it { should be_connected }
   it { should be_online }
 end
 
-describe group('jenkins-ssh-smoke') do
-  it { should exist }
-end
-
-describe user('jenkins-ssh-smoke') do
-  it { should exist }
-  it { should belong_to_group('jenkins-ssh-smoke') }
-end
-
-describe file('/tmp/jenkins/slaves/ssh-smoke') do
+describe file('/tmp/slave-ssh-smoke') do
   it { should be_directory }
 end
