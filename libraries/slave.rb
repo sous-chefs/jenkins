@@ -49,7 +49,6 @@ class Chef
       @in_demand_delay = 0
       @idle_delay      = 1
       @user            = 'jenkins'
-      @group           = 'jenkins'
 
       # State attributes that are set by the provider
       @exists    = false
@@ -203,8 +202,12 @@ class Chef
     #
     # The user that the slave process runs as.
     #
-    # On *nix systems the user account will be created if it does not
-    # exist. On Windows systems the following formats are supported:
+    # On SSH slaves the Jenkins master will use this username to connect
+    # to the slave.
+    #
+    # On JNLP *nix slaves the user account will be created if it does not
+    # exist. On Windows systems users of the the following formats are
+    # supported:
     #
     #  * LocalSystem => Default. Service runs with the machine account.
     #  * Administrator => Local Account
@@ -219,22 +222,6 @@ class Chef
         arg,
         kind_of: String,
         regex: Chef::Config[:user_valid_regex],
-      )
-    end
-
-    #
-    # Group slave prcess runs as. On *nix systems the group will be
-    # created if it does not exist.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def group(arg = nil)
-      set_or_return(
-        :group,
-        arg,
-        kind_of: String,
-        regex: Chef::Config[:group_valid_regex],
       )
     end
 
@@ -484,103 +471,6 @@ class Chef
     #
     def attribute_to_property_map
       {}
-    end
-
-    #
-    # The url of the +slave.jar+ on the Jenkins master.
-    #
-    # @return [String]
-    #
-    def slave_jar_url
-      @slave_jar_url ||= uri_join(endpoint, 'jnlpJars', 'slave.jar')
-    end
-
-    #
-    # The path to the +slave.jar+ on disk (which may or may not exist).
-    #
-    # @return [String]
-    #
-    def slave_jar
-      ::File.join(Chef::Config[:file_cache_path], 'slave.jar')
-    end
-
-    # Embedded Resources
-
-    #
-    # Creates a `group` resource that represents the system group
-    # specified the `group` attribute. The caller will need to call
-    # `run_action` on the resource.
-    #
-    # @return [Chef::Resource::Group]
-    #
-    def group_resource
-      return @group_resource if @group_resource
-      @group_resource = Chef::Resource::Group.new(new_resource.group, run_context)
-      @group_resource
-    end
-
-    #
-    # Creates a `user` resource that represents the system user
-    # specified the `user` attribute. The caller will need to call
-    # `run_action` on the resource.
-    #
-    # @return [Chef::Resource::User]
-    #
-    def user_resource
-      return @user_resource if @user_resource
-      @user_resource = Chef::Resource::User.new(new_resource.user, run_context)
-      @user_resource.gid(new_resource.group)
-      @user_resource.comment('Jenkins slave user - Created by Chef')
-      @user_resource.home(new_resource.remote_fs)
-      @user_resource
-    end
-
-    #
-    # Creates the parent `directory` resource that is a level above where
-    # the actual +remote_fs+ will live. This is required due to a Chef/RedHat
-    # bug where +--create-home-dir+ behavior changed and broke the Internet.
-    #
-    # @return [Chef::Resource::Directory]
-    #
-    def parent_remote_fs_dir_resource
-      return @parent_remote_fs_dir_resource if @parent_remote_fs_dir_resource
-
-      path = ::File.expand_path(new_resource.remote_fs, '..')
-      @parent_remote_fs_dir_resource = Chef::Resource::Directory.new(path, run_context)
-      @parent_remote_fs_dir_resource.recursive(true)
-      @parent_remote_fs_dir_resource
-    end
-
-    #
-    # Creates a `directory` resource that represents the directory
-    # specified the `remote_fs` attribute. The caller will need to call
-    # `run_action` on the resource.
-    #
-    # @return [Chef::Resource::Directory]
-    #
-    def remote_fs_dir_resource
-      return @remote_fs_dir_resource if @remote_fs_dir_resource
-      @remote_fs_dir_resource = Chef::Resource::Directory.new(new_resource.remote_fs, run_context)
-      @remote_fs_dir_resource.owner(new_resource.user)
-      @remote_fs_dir_resource.group(new_resource.group)
-      @remote_fs_dir_resource.recursive(true)
-      @remote_fs_dir_resource
-    end
-
-    #
-    # Creates a `remote_file` resource that represents the remote
-    # +slave.jar+ file on the Jenkins master. The caller will need to
-    # call `run_action` on the resource.
-    #
-    # @return [Chef::Resource::RemoteFile]
-    #
-    def slave_jar_resource
-      return @slave_jar_resource if @slave_jar_resource
-      @slave_jar_resource = Chef::Resource::RemoteFile.new(slave_jar, run_context)
-      @slave_jar_resource.source(slave_jar_url)
-      @slave_jar_resource.backup(false)
-      @slave_jar_resource.mode('0755')
-      @slave_jar_resource
     end
 
     private
