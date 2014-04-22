@@ -14,10 +14,13 @@ provisioner:
   name: chef_zero
   require_chef_omnibus: 11.12.2
   data_path: test/shared
+  data_bags_path: test/fixtures/data_bags
   attributes:
     jenkins:
       master:
         host: localhost
+        install_method: war
+        version: '1.555'
 
 platforms:
   - name: ubuntu-12.04
@@ -34,17 +37,21 @@ suites:
   # Smoke suite
   #
   - name: smoke_package
+    includes:
+      - centos-6.4 # [JENKINS-12295] APT repo does not allow version specification
     run_list: smoke::default
     attributes:
       jenkins:
         master:
           install_method: package
+          version: '1.555-1.1'
   - name: smoke_war
     run_list: smoke::default
     attributes:
       jenkins:
         master:
           install_method: war
+          version: '1.555'
 
   #
   # Authentication suites
