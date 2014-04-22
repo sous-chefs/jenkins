@@ -8,7 +8,7 @@ end
 
 describe jenkins_credentials('schisamo2') do
   it { should be_a_jenkins_credentials }
-  it { should have_id('38537014-ec66-49b5-aff2-aed1c19e2989') }
+  it { should have_id('63e11302-d446-4ba0-8aa4-f5821f74d36f') }
   it { should have_password('superseekret') }
 end
 

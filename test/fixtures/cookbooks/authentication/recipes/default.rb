@@ -45,4 +45,4 @@ jenkins_command 'clear-queue'
 jenkins_plugin 'greenballs'
 
 # Try creating another user
-jenkins_user 'schisamo'
+jenkins_user 'random-bob'
