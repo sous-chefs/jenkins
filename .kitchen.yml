@@ -21,6 +21,7 @@ provisioner:
         host: localhost
         install_method: war
         version: '1.555'
+        mirror: http://mirror.xmission.com/jenkins
 
 platforms:
   - name: ubuntu-12.04
