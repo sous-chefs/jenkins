@@ -47,7 +47,8 @@ include_recipe 'jenkins_script::execute'
 #
 # Slaves
 # ------------------------------
-include_recipe 'jenkins_slave::create'
+include_recipe 'jenkins_slave::create_jnlp'
+include_recipe 'jenkins_slave::create_ssh'
 
 #
 # Users

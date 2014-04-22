@@ -1,7 +1,7 @@
 include_recipe 'jenkins::master'
 
 # Include the create recipe so we have something to disconnect
-include_recipe 'jenkins_slave::create'
+include_recipe 'jenkins_slave::create_ssh'
 
 %w(ssh-builder ssh-executor ssh-smoke).each do |name|
   jenkins_slave name do
