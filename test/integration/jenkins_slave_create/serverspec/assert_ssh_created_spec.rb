@@ -10,13 +10,9 @@ describe jenkins_slave('ssh-builder') do
   it { should have_labels(%w(builer linux)) }
   it { should have_host('localhost') }
   it { should have_port(22) }
-  it { should have_credentials('jenkins-ssh') }
+  it { should have_credentials('jenkins-ssh-key') }
   it { should be_connected }
   it { should be_online }
-end
-
-describe file('/tmp/slave-ssh-builder') do
-  it { should be_directory }
 end
 
 #
@@ -34,25 +30,17 @@ describe jenkins_slave('ssh-executor') do
   it { should be_online }
 end
 
-describe file('/tmp/slave-ssh-executor') do
-  it { should be_directory }
-end
-
 #
 # SSH Slave #3
 # ------------------------------
 describe jenkins_slave('ssh-smoke') do
   it { should be_a_jenkins_slave }
   it { should have_description('A smoke tester, but over SSH') }
-  it { should have_remote_fs('/tmp/slave-ssh-smoke') }
+  it { should have_remote_fs('/home/jenkins-ssh-password') }
   it { should have_labels(%w(runner fast)) }
   it { should have_host('localhost') }
   it { should have_port(22) }
-  it { should have_credentials('jenkins-ssh') }
+  it { should have_credentials('jenkins-ssh-password') }
   it { should be_connected }
   it { should be_online }
-end
-
-describe file('/tmp/slave-ssh-smoke') do
-  it { should be_directory }
 end
