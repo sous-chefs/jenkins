@@ -14,4 +14,5 @@ exec chpst -u <%= node['jenkins']['master']['user'] %> -U <%= node['jenkins']['m
   JENKINS_HOME=<%= node['jenkins']['master']['home'] %> \
   <%= node['jenkins']['java'] %> <%= node['jenkins']['master']['jvm_options'] %> -jar jenkins.war \
   --httpPort=<%= node['jenkins']['master']['port'] %> \
-  --httpListenAddress=<%= node['jenkins']['master']['listen_address'] %>
+  --httpListenAddress=<%= node['jenkins']['master']['listen_address'] %> \
+  <%= node['jenkins']['master']['jenkins_args'] %>
