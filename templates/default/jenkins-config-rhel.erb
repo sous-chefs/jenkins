@@ -60,7 +60,7 @@ JENKINS_PORT="<%= node['jenkins']['master']['port'] %>"
 # IP address Jenkins listens on for HTTP requests.
 # Default is all interfaces (0.0.0.0).
 #
-JENKINS_LISTEN_ADDRESS=""
+JENKINS_LISTEN_ADDRESS="<%= node['jenkins']['master']['listen_address'] %>"
 
 ## Type:        integer(0:65535)
 ## Default:     ""
