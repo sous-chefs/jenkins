@@ -1,7 +1,7 @@
 include_recipe 'jenkins::master'
 
 # Include the create recipe so we have something to take offline
-include_recipe 'jenkins_slave::create'
+include_recipe 'jenkins_slave::create_jnlp'
 
 %w(builder executor smoke).each do |name|
   jenkins_slave name do

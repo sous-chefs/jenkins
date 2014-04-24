@@ -276,8 +276,8 @@ The following slave launch methods are supported:
 
 The `jenkins_slave` resource is actually the base resource for several resources that map directly back to a launch method:
 
-* `jenkins_jnlp_slave`
-* `jenkins_ssh_slave`
+* `jenkins_jnlp_slave` - As JNLP Slave connections are slave initiated, this resource should be part of a __slave__'s run list.
+* `jenkins_ssh_slave` - As SSH Slave connections are master initiated, this resource should be part of a __master__'s run list.
 
 The `:create` action idempotely creates a Jenkins slave on the master. The name attribute corresponds to the name of the slave (which is also used to uniquely identify the slave).
 
@@ -296,7 +296,7 @@ jenkins_ssh_slave 'executor' do
   labels      ['executor', 'freebsd', 'jail']
 
   # SSH specific attributes
-  host     'localhost'
+  host     '172.11.12.53' # or 'slave.example.org'
   username 'jenkins'
 end
 

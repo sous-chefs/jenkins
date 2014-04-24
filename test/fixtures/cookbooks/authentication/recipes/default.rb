@@ -1,12 +1,17 @@
+
 include_recipe 'jenkins::master'
 
 #
 # Setup
 # ------------------------------
 
-# Generate the SSH key pair
+# Load the private key from a data bag item. This should be an encrypted data
+# bag item in real deployments.
+jenkins = data_bag_item('keys', 'jenkins')
+
+require 'openssl'
 require 'net/ssh'
-key = OpenSSL::PKey::RSA.new(4096)
+key = OpenSSL::PKey::RSA.new(jenkins['private_key'])
 private_key = key.to_pem
 public_key  = "#{key.ssh_type} #{[key.to_blob].pack('m0')}"
 
@@ -45,4 +50,4 @@ jenkins_command 'clear-queue'
 jenkins_plugin 'greenballs'
 
 # Try creating another user
-jenkins_user 'schisamo'
+jenkins_user 'random-bob'

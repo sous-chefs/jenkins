@@ -106,8 +106,13 @@ module Serverspec
         config_url = "http://localhost:8080/computer/#{name}/config.xml"
         response = Net::HTTP.get_response(URI.parse(config_url))
 
-        @xml = if response.kind_of? Net::HTTPNotFound
+        @xml = if response.kind_of?(Net::HTTPNotFound)
                  nil
+               # If authn is enabled fall back to reading main config from disk
+               elsif response.kind_of?(Net::HTTPForbidden)
+                 contents = ::File.read('/var/lib/jenkins/config.xml')
+                 config_xml = REXML::Document.new(contents)
+                 REXML::Document.new(config_xml.elements["//slave[name='#{name}']"].to_s)
                else
                  REXML::Document.new(response.body)
                end

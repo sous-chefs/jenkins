@@ -10,5 +10,5 @@ end
 
 # Test installing from a URL
 jenkins_plugin 'copy-to-slave' do
-  source 'http://updates.jenkins-ci.org/download/plugins/copy-to-slave/1.4.3/copy-to-slave.hpi'
+  source 'http://mirror.xmission.com/jenkins/plugins/copy-to-slave/1.4.3/copy-to-slave.hpi'
 end
