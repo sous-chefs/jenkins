@@ -136,6 +136,12 @@ default['jenkins']['master'].tap do |master|
   master['host'] = 'localhost'
 
   #
+  # The address the Jenkins process will bind to.  The default nil value results
+  # in Jenkins binding to all interfaces (aka: 0.0.0.0).
+  #
+  master['listen_address'] = nil
+
+  #
   # The port which the Jenkins process will listen on.
   #
   master['port'] = 8080
