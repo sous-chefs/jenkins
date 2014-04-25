@@ -28,7 +28,7 @@ when 'debian'
   apt_repository 'jenkins' do
     uri          'http://pkg.jenkins-ci.org/debian'
     distribution 'binary/'
-    key          'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key'
+    key          'https://jenkins-ci.org/debian/jenkins-ci.org.key'
   end
 
   package 'jenkins' do
@@ -45,7 +45,7 @@ when 'rhel'
 
   yum_repository 'jenkins-ci' do
     baseurl 'http://pkg.jenkins-ci.org/redhat'
-    gpgkey  'http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key'
+    gpgkey  'https://jenkins-ci.org/redhat/jenkins-ci.org.key'
   end
 
   package 'jenkins' do
