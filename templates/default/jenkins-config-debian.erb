@@ -43,7 +43,7 @@ JENKINS_LOG=<%= node['jenkins']['master']['log_directory'] %>/$NAME.log
 MAXOPENFILES=8192
 
 # address bound to HTTP connector (default 0.0.0.0)
-HTTP_LISTEN_ADDRESS=<%= node['jenkins']['master']['listen_address'] %>
+HTTP_LISTEN_ADDRESS="<%= node['jenkins']['master']['listen_address'] %>"
 
 # port for HTTP connector (default 8080; disable with -1)
 HTTP_PORT=<%= node['jenkins']['master']['port'] %>
