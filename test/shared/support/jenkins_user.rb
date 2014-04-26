@@ -31,6 +31,10 @@ module Serverspec
         keys.include?(key.to_s)
       end
 
+      def password_hash
+        try { xml.elements['//passwordHash'].text }
+      end 
+
       private
 
       def xml

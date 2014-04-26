@@ -97,6 +97,20 @@ class Chef
     def exists?
       !!@exists
     end
+
+    #
+    # The password of the user.
+    # @param [String] password, if nil generate random password
+    # @return [String]
+    # 
+    def password(password = nil) 
+      if password.nil?
+        require 'securerandom'
+        @password = SecureRandom.hex
+      else
+        @password = password
+      end 
+    end
   end
 end
 
@@ -142,6 +156,9 @@ class Chef
 
             email = new hudson.tasks.Mailer.UserProperty('#{new_resource.email}')
             user.addProperty(email)
+
+            password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
+            user.addProperty(password)
 
             keys = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl('#{new_resource.public_keys.join("\n")}')
             user.addProperty(keys)
