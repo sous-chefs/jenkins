@@ -33,7 +33,7 @@ module Serverspec
 
       def password_hash
         try { xml.elements['//passwordHash'].text }
-      end 
+      end
 
       private
 

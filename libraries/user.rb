@@ -102,14 +102,14 @@ class Chef
     # The password of the user.
     # @param [String] password, if nil generate random password
     # @return [String]
-    # 
-    def password(password = nil) 
+    #
+    def password(password = nil)
       if password.nil?
         require 'securerandom'
         @password = SecureRandom.hex
       else
         @password = password
-      end 
+      end
     end
   end
 end
