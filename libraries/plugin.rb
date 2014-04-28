@@ -39,6 +39,7 @@ class Chef
       # Set the name attribute and default attributes
       @name    = name
       @version = :latest
+      @install_dependencies = false
 
       # State attributes that are set by the provider
       @installed = false
@@ -83,6 +84,16 @@ class Chef
     end
 
     #
+    # The source where to pull this plugin from.
+    #
+    # @param [Boolean] arg
+    # @return [Boolean]
+    #
+    def install_dependencies(arg = true)
+      set_or_return(:install_dependencies, arg, kind_of: [TrueClass, FalseClass])
+    end
+
+    #
     # Determine if the plugin is installed on the master. This value is set by
     # the provider when the current resource is loaded.
     #
@@ -112,6 +123,7 @@ EOH
       @current_resource ||= Resource::JenkinsPlugin.new(new_resource.name)
       @current_resource.source(new_resource.source)
       @current_resource.version(new_resource.version)
+      @current_resource.install_dependencies(new_resource.install_dependencies)
 
       if current_plugin
         @current_resource.installed = true
@@ -136,16 +148,16 @@ EOH
         # comment below for more information).
         name   = "#{new_resource.name}-#{new_resource.version}.plugin"
         path   = ::File.join(Chef::Config[:file_cache_path], name)
-        plugin = Chef::Resource::RemoteFile.new(path, run_context)
-        plugin.source(plugin_source)
-        plugin.backup(false)
-        plugin.run_action(:create)
+        cache(path)
+
+        # If installed_dependencies is true, install each plugin's dependencies
+        install_dependencies(path) if current_resource.install_dependencies
 
         # Install the plugin from our local cache on disk. There is a bug in
         # Jenkins that prevents Jenkins from following 302 redirects, so we
         # use Chef to download the plugin and then use Jenkins to install it.
         # It's a bit backwards, but so is Jenkins.
-        executor.execute!('install-plugin', escape(plugin.path), '-name', escape(new_resource.name))
+        executor.execute!('install-plugin', escape(path), '-name', escape(new_resource.name))
       end
 
       if current_resource.installed?
@@ -249,6 +261,60 @@ EOH
     end
 
     private
+
+    #
+    # Caches the plugin file
+    #
+    # @param [String] path
+    # @return
+    #
+    def cache(path)
+      plugin = Chef::Resource::RemoteFile.new(path, run_context)
+      plugin.source(plugin_source)
+      plugin.backup(false)
+      plugin.run_action(:create_if_missing)
+    end
+
+    #
+    # Find all dependencies and install them
+    # @param [String] String
+    # @return
+    #
+    def install_dependencies(plugin_file)
+      require 'zip'
+      require 'rexml/document'
+
+      dependencies = []
+
+      # Open the plugin as a jar/zip file
+      Zip::File.open(plugin_file) do |zip_file|
+        # Find the pom files & grab all of the dependencies
+        zip_file.glob('**/pom.xml').each do |pom|
+          # Parse it
+          parsed_pom = REXML::Document.new(zip_file.read(pom))
+          # Select the dependencies we want
+          dependency_elements = parsed_pom.get_elements('*/dependencies/dependency').select do |element|
+            next false if element.get_elements('scope').any? { |scope| scope.text == 'test' }
+            next true if element.get_elements('groupId').any? { |groupId| groupId.text == 'org.jenkinsci.plugins' || groupId.text == 'org.jenkins-ci.plugins' }
+          end
+          # Get the dependencies ID
+          dependencies += dependency_elements.map do |dependency_element|
+            {
+              name: dependency_element.get_elements('artifactId').first.text,
+              version: dependency_element.get_elements('version').first.text,
+            }
+          end
+        end
+      end
+
+      # Recursively install the dependencies
+      dependencies.each do |dependency|
+        plugin = Chef::Resource::JenkinsPlugin.new(dependency[:name], run_context)
+        plugin.version(dependency[:version])
+        plugin.install_dependencies
+        plugin.run_action(:install)
+      end
+    end
 
     #
     # Loads the local plugin into a hash
