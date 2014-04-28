@@ -296,8 +296,9 @@ jenkins_ssh_slave 'executor' do
   labels      ['executor', 'freebsd', 'jail']
 
   # SSH specific attributes
-  host     '172.11.12.53' # or 'slave.example.org'
-  username 'jenkins'
+  host        '172.11.12.53' # or 'slave.example.org'
+  user        'jenkins'
+  credentials 'wcoyote'
 end
 
 # A slave's executors, usage mode and availability can also be configured
