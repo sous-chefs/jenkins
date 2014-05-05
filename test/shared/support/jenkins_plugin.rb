@@ -3,7 +3,6 @@
 #
 module Serverspec
   module Type
-    # rubocop:disable PredicateName, CaseEquality
     class JenkinsPlugin < Base
       attr_reader :name
 
