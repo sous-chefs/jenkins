@@ -9,3 +9,10 @@ jenkins_user 'schisamo' do
   email       'schisamo@getchef.com'
   public_keys ['ssh-rsa AAAAAAA']
 end
+
+jenkins_user 'valyukov' do
+  full_name 'Vlad Alyukov'
+  email   'valyukov@gmail.com'
+  password  'test_password'
+  public_keys 'ssh-rsa BBBBBBB'
+end

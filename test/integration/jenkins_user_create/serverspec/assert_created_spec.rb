@@ -10,3 +10,8 @@ describe jenkins_user('schisamo') do
   it { should have_email('schisamo@getchef.com') }
   it { should have_public_key('ssh-rsa AAAAAAA') }
 end
+
+describe jenkins_user('valyukov') do
+  it { should be_a_jenkins_user }
+  its(:password_hash) { should start_with '#jbcrypt:' }
+end
