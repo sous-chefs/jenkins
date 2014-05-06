@@ -104,7 +104,7 @@ describe Jenkins::Executor do
 
     it 'calls execute!' do
       expect(subject).to receive(:execute!)
-        .with("groovy = <<-GROOVY_SCRIPT\nscript\nGROOVY_SCRIPT")
+        .with(/^groovy \S+/)
       subject.groovy('script')
     end
   end
@@ -114,7 +114,7 @@ describe Jenkins::Executor do
 
     it 'calls execute' do
       expect(subject).to receive(:execute)
-        .with("groovy = <<-GROOVY_SCRIPT\nscript\nGROOVY_SCRIPT")
+        .with(/^groovy \S+/)
       subject.groovy('script')
     end
   end
