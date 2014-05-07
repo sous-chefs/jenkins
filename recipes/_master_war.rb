@@ -27,6 +27,7 @@
 # Create the Jenkins user
 user node['jenkins']['master']['user'] do
   home node['jenkins']['master']['home']
+  system true
 end
 
 # Create the Jenkins group
