@@ -123,7 +123,6 @@ class Chef
     def action_create
       parent_remote_fs_dir_resource
       group_resource.run_action(:create)
-      user_resource.run_action(:create)
       remote_fs_dir_resource.run_action(:create)
       ssh_dir_resource.run_action(:create)
       authorized_keys_file_resource.run_action(:create)
