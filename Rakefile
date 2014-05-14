@@ -19,4 +19,4 @@ namespace :travis do
 end
 
 # The default rake task should just run it all
-task default: ['ci', 'integration']
+task default: ['travis:ci', 'integration']
