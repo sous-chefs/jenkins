@@ -73,7 +73,7 @@ module Jenkins
       command << " -p #{uri_escape(options[:proxy])}"    if options[:proxy]
       command << " #{pieces.join(' ')}"
 
-      command = Mixlib::ShellOut.new(command, timeout: options[:timeout])
+      command = Mixlib::ShellOut.new(command, timeout: options[:timeout]||60)
       command.run_command
       command.error!
       command.stdout.strip
