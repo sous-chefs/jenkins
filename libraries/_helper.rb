@@ -63,6 +63,7 @@ EOH
         h[:key]      = private_key_path if private_key_given?
         h[:proxy]    = proxy if proxy_given?
         h[:endpoint] = endpoint
+        h[:timeout]  = timeout if timeout_given?
       end
 
       Jenkins::Executor.new(options)
@@ -239,6 +240,15 @@ EOH
     #
     def timeout
       node['jenkins']['executor']['timeout']
+    end
+
+    #
+    # Boolean method to determine if proxy timeout was supplied.
+    #
+    # @return [Boolean]
+    #
+    def timeout_given?
+      !!node['jenkins']['executor']['timeout']
     end
 
     #
