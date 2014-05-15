@@ -63,6 +63,7 @@ EOH
         h[:key]      = private_key_path if private_key_given?
         h[:proxy]    = proxy if proxy_given?
         h[:endpoint] = endpoint
+        h[:timeout]  = timeout
       end
 
       Jenkins::Executor.new(options)
