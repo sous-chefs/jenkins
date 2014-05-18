@@ -50,8 +50,9 @@ module Jenkins
     #
     def initialize(options = {})
       @options = {
-        cli:  '/usr/share/jenkins/cli/java/cli.jar',
-        java: 'java',
+        cli:     '/usr/share/jenkins/cli/java/cli.jar',
+        java:    'java',
+        timeout: 60,
       }.merge(options)
     end
 
@@ -73,7 +74,7 @@ module Jenkins
       command << " -p #{uri_escape(options[:proxy])}"    if options[:proxy]
       command << " #{pieces.join(' ')}"
 
-      command = Mixlib::ShellOut.new(command, timeout: options[:timeout]||60)
+      command = Mixlib::ShellOut.new(command, timeout: options[:timeout])
       command.run_command
       command.error!
       command.stdout.strip
