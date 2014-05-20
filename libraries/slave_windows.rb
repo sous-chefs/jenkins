@@ -128,7 +128,7 @@ class Chef
         user_domain = match[1]
         user_account   = match[2]
       else
-        user_domain = nil
+        user_domain = "."
         user_account   = new_resource.user
       end
 
