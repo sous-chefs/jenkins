@@ -36,7 +36,7 @@ class Chef
       @remote_fs = 'C:\jenkins'
       @user      = 'LocalSystem'
       @password  = nil
-      @winsw_url = 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.13/winsw-1.13-bin.exe'
+      @winsw_url = 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.16/winsw-1.16-bin.exe'
     end
 
     #
