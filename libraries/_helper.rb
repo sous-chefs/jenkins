@@ -287,6 +287,7 @@ EOH
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
+               Errno::ENETUNREACH,
                OpenURI::HTTPError => e
           # If authentication has been enabled, the server will return an HTTP
           # 403. This is "OK", since it means that the server is actually
