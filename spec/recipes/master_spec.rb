@@ -20,7 +20,7 @@ describe 'jenkins::_master_war' do
   end
 
   before do
-    Chef::Recipe.any_instance.stub(:include_recipe)
+    allow_any_instance_of(Chef::Recipe).to receive(:include_recipe)
   end
 
   it 'creates the user' do

@@ -9,6 +9,12 @@ branches:
   only:
     - master
 
+env:
+  - USE_SYSTEM_GECODE=1
+
+before_install:
+  - sudo apt-get -y -qq install libgecode-dev
+
 script:
   - bundle exec rake travis:ci
 

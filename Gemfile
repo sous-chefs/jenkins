@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'chefspec',   '~> 3.2'
-gem 'berkshelf',  '~> 3.0.0'
+gem 'chefspec',   '~> 4.0'
+gem 'berkshelf',  '~> 3.1'
 gem 'rake'
 
 group :integration do

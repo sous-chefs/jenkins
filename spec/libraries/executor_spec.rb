@@ -17,7 +17,7 @@ describe Jenkins::Executor do
 
   describe '#execute!' do
     let(:shellout) { double(run_command: nil, error!: nil, stdout: '') }
-    before { Mixlib::ShellOut.stub(:new).and_return(shellout) }
+    before { allow(Mixlib::ShellOut).to receive(:new).and_return(shellout) }
 
     context 'when no options are given' do
       it 'builds the correct command' do
@@ -77,14 +77,14 @@ describe Jenkins::Executor do
 
     context 'when the command fails' do
       it 'raises an error' do
-        shellout.stub(:error!).and_raise(RuntimeError)
+        allow(shellout).to receive(:error!).and_raise(RuntimeError)
         expect { subject.execute!('bad') }.to raise_error
       end
     end
   end
 
   describe '#execute' do
-    before { subject.stub(:execute!) }
+    before { allow(subject).to receive(:execute!) }
 
     it 'calls #execute!' do
       expect(subject).to receive(:execute).with('foo', 'bar')
@@ -93,14 +93,14 @@ describe Jenkins::Executor do
 
     context 'when the command fails' do
       it 'does not raise an error' do
-        subject.stub(:execute!).and_raise(Mixlib::ShellOut::ShellCommandFailed)
+        allow(subject).to receive(:execute!).and_raise(Mixlib::ShellOut::ShellCommandFailed)
         expect { subject.execute('foo') }.to_not raise_error
       end
     end
   end
 
   describe '#groovy!' do
-    before { subject.stub(:execute!) }
+    before { allow(subject).to receive(:execute!) }
 
     it 'calls execute!' do
       expect(subject).to receive(:execute!)
@@ -110,7 +110,7 @@ describe Jenkins::Executor do
   end
 
   describe '#groovy' do
-    before { subject.stub(:execute) }
+    before { allow(subject).to receive(:execute) }
 
     it 'calls execute' do
       expect(subject).to receive(:execute)
