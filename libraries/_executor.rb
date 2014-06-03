@@ -74,10 +74,19 @@ module Jenkins
       command << " -p #{uri_escape(options[:proxy])}"    if options[:proxy]
       command << " #{pieces.join(' ')}"
 
+      Chef::Log.debug("Jenkins::Executor::execute! - executing jenkins CLI call:")
+      Chef::Log.debug(command)
+
       command = Mixlib::ShellOut.new(command, timeout: options[:timeout])
       command.run_command
       command.error!
-      command.stdout.strip
+      result = command.stdout.strip
+
+      Chef::Log.debug("Jenkins::Executor::execute! - jenkins CLI returned #{command.exitstatus} with output:")
+      Chef::Log.debug(result)
+      Chef::Log.debug(command.stderr.strip)
+
+      result
     end
 
     #
@@ -106,6 +115,10 @@ module Jenkins
       file = Tempfile.new('groovy')
       file.write script
       file.flush
+
+      Chef::Log.debug("Jenkins::Executor::groovy! - created groovy script @ #{file.path}:")
+      Chef::Log.debug(script)
+
       execute!("groovy #{file.path}")
     ensure
       file.close! if file
@@ -120,6 +133,10 @@ module Jenkins
       file = Tempfile.new('groovy')
       file.write script
       file.flush
+
+      Chef::Log.debug("Jenkins::Executor::groovy - created groovy script @ #{file.path}:")
+      Chef::Log.debug(script)
+
       execute("groovy #{file.path}")
     ensure
       file.close! if file
