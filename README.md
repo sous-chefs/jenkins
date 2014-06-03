@@ -298,7 +298,14 @@ jenkins_ssh_slave 'executor' do
   # SSH specific attributes
   host        '172.11.12.53' # or 'slave.example.org'
   user        'jenkins'
-  credentials 'wcoyote'
+
+  # use the UUID of a Jenkins "SYSTEM" level credential;
+  # this is useful if you create the credentials from an ERB template, like:
+  credentials '476f2a1d-6cc4-40af-aaaf-c72be6b2023c'
+
+  # an optional timeout of 60 seconds for the initial connection to the slave
+  # defaults to no timeout
+  launch_timeout 60
 end
 
 # A slave's executors, usage mode and availability can also be configured

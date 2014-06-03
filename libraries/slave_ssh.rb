@@ -38,6 +38,7 @@ class Chef
       @port           = 22
       @command_prefix = nil
       @command_suffix = nil
+      @launch_timeout = nil
     end
 
     #
@@ -99,6 +100,18 @@ class Chef
     def command_suffix(arg = nil)
       set_or_return(:command_suffix, arg, kind_of: String)
     end
+
+    #
+    # Timeout value for ssh slave launch in seconds. If nil, timeouts will be disabled.
+
+    # only applies as a timeout for slave launching; once launched, the timeout will not apply.
+    #
+    # @param [Integer] arg
+    # @return [Integer]
+    #
+    def launch_timeout(arg = nil)
+      set_or_return(:launch_timeout, arg, kind_of: Integer)
+    end
   end
 end
 
@@ -127,16 +140,35 @@ class Chef
     def launcher_groovy
       <<-EOH.gsub(/ ^{8}/, '')
         #{credential_lookup_groovy('credentials_id')}
-        launcher =
-          new hudson.plugins.sshslaves.SSHLauncher(
-            #{convert_to_groovy(new_resource.host)},
-            #{convert_to_groovy(new_resource.port)},
-            credentials_id,
-            #{convert_to_groovy(new_resource.jvm_options)},
-            null,
-            #{convert_to_groovy(new_resource.command_prefix)},
-            #{convert_to_groovy(new_resource.command_suffix)}
-          )
+
+        plugin = jenkins.model.Jenkins.instance.getPluginManager().getPlugin('ssh-slaves')
+        version = plugin.getVersionNumber()
+        supportsTimeout = ( version.compareTo(new hudson.util.VersionNumber('1.6')) >= 0 )
+
+        if (supportsTimeout) {
+          launcher = 
+            new hudson.plugins.sshslaves.SSHLauncher(
+              #{convert_to_groovy(new_resource.host)},
+              #{convert_to_groovy(new_resource.port)},
+              credentials_id,
+              #{convert_to_groovy(new_resource.jvm_options)},
+              null,
+              #{convert_to_groovy(new_resource.command_prefix)},
+              #{convert_to_groovy(new_resource.command_suffix)},
+              #{convert_to_groovy(new_resource.launch_timeout)}
+            )
+        } else {
+          launcher = 
+            new hudson.plugins.sshslaves.SSHLauncher(
+              #{convert_to_groovy(new_resource.host)},
+              #{convert_to_groovy(new_resource.port)},
+              credentials_id,
+              #{convert_to_groovy(new_resource.jvm_options)},
+              null,
+              #{convert_to_groovy(new_resource.command_prefix)},
+              #{convert_to_groovy(new_resource.command_suffix)}
+            )
+        }
       EOH
     end
 
@@ -150,6 +182,7 @@ class Chef
         jvm_options: 'slave.launcher.jvmOptions',
         command_prefix: 'slave.launcher.prefixStartSlaveCmd',
         command_suffix: 'slave.launcher.suffixStartSlaveCmd',
+        launch_timeout: 'slave.launcher.launchTimeoutSeconds',
       }
 
       if new_resource.credentials.match(UUID_REGEX)
