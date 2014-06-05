@@ -62,14 +62,15 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#credentials_groovy
     # @see https://github.com/jenkinsci/credentials-plugin/blob/master/src/main/java/com/cloudbees/plugins/credentials/impl/UsernamePasswordCredentialsImpl.java
     #
-    def credentials_groovy
+    def credentials_groovy(id=nil)
+      id = new_resource.id unless id
       <<-EOH.gsub(/ ^{8}/, '')
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.plugins.credentials.impl.*
 
         credentials = new UsernamePasswordCredentialsImpl(
           CredentialsScope.GLOBAL,
-          #{convert_to_groovy(new_resource.id)},
+          #{convert_to_groovy(id)},
           #{convert_to_groovy(new_resource.description)},
           #{convert_to_groovy(new_resource.username)},
           #{convert_to_groovy(new_resource.password)}

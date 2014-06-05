@@ -79,7 +79,8 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#credentials_groovy
     # @see https://github.com/jenkinsci/ssh-credentials-plugin/blob/master/src/main/java/com/cloudbees/jenkins/plugins/sshcredentials/impl/BasicSSHUserPrivateKey.java
     #
-    def credentials_groovy
+    def credentials_groovy(id=nil)
+      id = new_resource.id unless id
       <<-EOH.gsub(/ ^{8}/, '')
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
@@ -89,7 +90,7 @@ class Chef
 
         credentials = new BasicSSHUserPrivateKey(
           CredentialsScope.GLOBAL,
-          #{convert_to_groovy(new_resource.id)},
+          #{convert_to_groovy(id)},
           #{convert_to_groovy(new_resource.username)},
           new BasicSSHUserPrivateKey.DirectEntryPrivateKeySource(private_key),
           #{convert_to_groovy(new_resource.passphrase)},
