@@ -127,7 +127,7 @@ class Chef
         Chef::Log.debug("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
-          id = new_resource.id ? new_resource.id : current_resource.id
+          new_resource.id ||= current_resource.id
           executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
             import jenkins.model.*
             import com.cloudbees.plugins.credentials.*
@@ -140,7 +140,7 @@ class Chef
                 'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
               )[0].getStore()
 
-            #{credentials_groovy(id)}
+            #{credentials_groovy}
 
             // Create or update the credentials in the Jenkins instance
             #{credentials_for_username_groovy(new_resource.username, 'existing_credentials')}
