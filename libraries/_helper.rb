@@ -184,7 +184,14 @@ EOH
     #
     def private_key_path
       node.run_state[:jenkins_private_key_path] ||= begin
-        content = node['jenkins']['executor']['private_key']
+        # @todo remove in 3.0.0
+        if node['jenkins']['executor']['private_key']
+          Chef::Log.warn("Using node['jenkins']['executor']['private_key'] is deprecated!")
+          Chef::Log.warn("Persisting sensitive information in node attributes is not recommended.")
+          node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key']
+        end
+
+        content = node.run_state[:jenkins_private_key]
         destination = File.join(Chef::Config[:file_cache_path], 'jenkins-key')
 
         file = Chef::Resource::File.new(destination, run_context)
@@ -203,7 +210,9 @@ EOH
     # @return [Boolean]
     #
     def private_key_given?
-      !node['jenkins']['executor']['private_key'].nil?
+      # @todo remove in 3.0.0
+      !node['jenkins']['executor']['private_key'].nil? ||
+      !node.run_state[:jenkins_private_key].nil?
     end
 
     #

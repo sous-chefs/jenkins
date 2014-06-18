@@ -431,22 +431,22 @@ end
 Caveats
 -------
 ### Authentication
-If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to set a special node attribute:
+If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to set a special value in the `run_context`:
 
 ```ruby
-node['jenkins']['executor']['private_key']
+node.run_state[:jenkins_private_key]
 ```
 
-The underlying executor class (which all LWRPs use) intelligently adds authentication information to the Jenkins CLI commands if this attribute is set. The method used to generate and populate this key-pair is left to the user:
+The underlying executor class (which all LWRPs use) intelligently adds authentication information to the Jenkins CLI commands if this value is set. The method used to generate and populate this key-pair is left to the user:
 
 ```ruby
 # Using search
 master = search(:node, 'fqdn:master.ci.example.com').first
-node.set['jenkins']['executor']['private_key'] = master['jenkins']['private_key']
+node.run_state[:jenkins_private_key] = master['jenkins']['private_key']
 
 # Using encrypted data bags and chef-sugar
 private_key = encrypted_data_bag_item('jenkins', 'keys')['private_key']
-node.set['jenkins']['executor']['private_key'] = private_key
+node.run_state[:jenkins_private_key] = private_key
 ```
 
 The associated public key must be set on a Jenkins user. You can use the `jenkins_user` resource to create this pairing. Here's an example that uses OpenSSL to create a keypair and assigns it appropiately:
@@ -465,7 +465,7 @@ end
 
 # Set the private key on the Jenkins executor
 ruby_block 'set private key' do
-  block { node.set['jenkins']['executor']['private_key'] = private_key }
+  block { node.run_state[:jenkins_private_key] = private_key }
 end
 ```
 

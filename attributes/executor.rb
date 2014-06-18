@@ -30,20 +30,7 @@ default['jenkins']['executor'].tap do |executor|
   executor['timeout'] = 60
 
   #
-  # If your Jenkins master requires authentication, you must set the private
-  # key.
-  #
-  # For example, you could load this private key via a search:
-  #
-  #   master = search(:node, 'fqdn: master.ci.example.com')
-  #   node.set['jenkins']['executor']['private_key'] = master['jenkins']['private_key']
-  #
-  # Or you could set it from a data bag:
-  #
-  #   private_key = encrypted_data_bag_item('jenkins', 'keys')['private_key']
-  #   node.set['jenkins']['executor']['private_key'] = private_key
-  #
-  # Please see the +Authentication+ section of the README for more information.
+  # Deprecated: please use +node.run_state[:jenkins_private_key]+ instead.
   #
   executor['private_key'] = nil
 

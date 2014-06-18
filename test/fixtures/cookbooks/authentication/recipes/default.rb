@@ -23,7 +23,7 @@ end
 
 # Set the private key on the executor
 ruby_block 'set the private key' do
-  block { node.set['jenkins']['executor']['private_key'] = private_key }
+  block { node.run_state[:jenkins_private_key] = private_key }
 end
 
 # Turn on basic authentication
