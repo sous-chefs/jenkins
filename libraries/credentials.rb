@@ -247,7 +247,7 @@ class Chef
       end
 
       # Don't compare the ID as it is generated
-      current_credentials.dup.tap { |c| c.delete(:id) } == wanted_credentials
+      current_credentials.dup.tap { |c| c.delete(:id) } == convert_blank_values_to_nil(wanted_credentials)
     end
   end
 end
