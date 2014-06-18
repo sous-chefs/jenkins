@@ -19,74 +19,36 @@
 # limitations under the License.
 #
 
+require_relative '_helper'
+
 class Chef
-  class Resource::JenkinsUser < Resource
+  class Resource::JenkinsUser < Resource::LWRPBase
+    # Chef attributes
     identity_attr :id
+    provides :jenkins_user
+
+    # Set the resource name
+    self.resource_name = :jenkins_user
+
+    # Actions
+    actions :create, :delete
+    default_action :create
+
+    # Attributes
+    attribute :id,
+      kind_of: String,
+      name_attribute: true
+    attribute :full_name,
+      kind_of: String
+    attribute :email,
+      kind_of: String
+    attribute :public_keys,
+      kind_of: Array,
+      default: []
+    attribute :password,
+      kind_of: String
 
     attr_writer :exists
-
-    def initialize(id, run_context = nil)
-      super
-
-      # Set the resource name and provider
-      @resource_name = :jenkins_user
-      @provider = Provider::JenkinsUser
-
-      # Set default actions and allowed actions
-      @action = :create
-      @allowed_actions.push(:create, :delete)
-
-      # Set the name attribute and default attributes
-      @id          = id
-      @public_keys = []
-
-      # State attributes that are set by the provider
-      @exists = false
-    end
-
-    #
-    # The id of the user to create. This must be a unique id.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def id(arg = nil)
-      set_or_return(:id, arg, kind_of: String)
-    end
-
-    #
-    # The full name of the user to create.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def full_name(arg = nil)
-      set_or_return(:full_name, arg, kind_of: String)
-    end
-
-    #
-    # The email address of the user.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def email(arg = nil)
-      set_or_return(:source, arg, kind_of: String)
-    end
-
-    #
-    # The list of public keys for this user.
-    #
-    # @param [String, Array<String>] arg
-    # @return [Array<String>]
-    #
-    def public_keys(arg = nil)
-      if arg.nil?
-        @public_keys
-      else
-        @public_keys += Array(arg).compact.map(&:to_s)
-      end
-    end
 
     #
     # Determine if the user exists on the master. This value is set by
@@ -97,27 +59,16 @@ class Chef
     def exists?
       !!@exists
     end
-
-    #
-    # The password of the user.
-    # @param [String] password
-    # @return [String]
-    #
-    def password(arg = nil)
-      set_or_return(:password, arg, kind_of: [String])
-    end
   end
 end
 
 class Chef
-  class Provider::JenkinsUser < Provider
+  class Provider::JenkinsUser < Provider::LWRPBase
     require 'json'
-
-    require_relative '_helper'
     include Jenkins::Helper
 
     def load_current_resource
-      @current_resource ||= Resource::JenkinsUser.new(new_resource.id)
+      @current_resource = Resource::JenkinsUser.new(new_resource.id)
 
       if current_user
         @current_resource.exists = true
@@ -125,19 +76,15 @@ class Chef
         @current_resource.email(current_user[:email])
         @current_resource.public_keys(current_user[:public_keys])
       end
+
+      @current_resource
     end
 
-    #
-    # This provider supports why-run mode.
-    #
     def whyrun_supported?
       true
     end
 
-    #
-    # Create the given user.
-    #
-    def action_create
+    action(:create) do
       if current_resource.exists? &&
          current_resource.full_name  == new_resource.full_name  &&
          current_resource.email == new_resource.email &&
@@ -164,10 +111,7 @@ class Chef
       end
     end
 
-    #
-    # Delete the given user.
-    #
-    def action_delete
+    action(:delete) do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.groovy! <<-EOH.gsub(/^ {12}/, '')
@@ -230,3 +174,8 @@ class Chef
     end
   end
 end
+
+Chef::Platform.set(
+  resource: :jenkins_user,
+  provider: Chef::Provider::JenkinsUser
+)

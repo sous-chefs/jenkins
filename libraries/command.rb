@@ -19,38 +19,34 @@
 # limitations under the License.
 #
 
+require_relative '_helper'
+
 class Chef
-  class Resource::JenkinsCommand < Resource
+  class Resource::JenkinsCommand < Resource::LWRPBase
+    # Chef attributes
     identity_attr :command
+    provides :jenkins_command
 
-    def initialize(name, run_context = nil)
-      super
+    # Set the resource name
+    self.resource_name = :jenkins_command
 
-      # Set the resource name and provider
-      @resource_name = :jenkins_command
-      @provider = Provider::JenkinsCommand
+    # Actions
+    actions :execute
+    default_action :execute
 
-      # Set default actions and allowed actions
-      @action = :execute
-      @allowed_actions.push(:execute)
-
-      # Set the name attribute and default attributes
-      @command = name
-    end
-
-    def command(arg = nil)
-      set_or_return(:command, arg, kind_of: String)
-    end
+    # Attributes
+    attribute :command,
+      kind_of: String,
+      name_attribute: true
   end
 end
 
 class Chef
-  class Provider::JenkinsCommand < Provider
-    require_relative '_helper'
+  class Provider::JenkinsCommand < Provider::LWRPBase
     include Jenkins::Helper
 
     def load_current_resource
-      @current_resource ||= Resource::JenkinsCommand.new(new_resource.command)
+      @current_resource = Resource::JenkinsCommand.new(new_resource.command)
     end
 
     #
@@ -60,10 +56,15 @@ class Chef
       true
     end
 
-    def action_execute
+    action(:execute) do
       converge_by("Execute #{new_resource}") do
         executor.execute!(new_resource.command)
       end
     end
   end
 end
+
+Chef::Platform.set(
+  resource: :jenkins_command,
+  provider: Chef::Provider::JenkinsCommand
+)

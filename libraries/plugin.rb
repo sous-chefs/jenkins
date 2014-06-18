@@ -19,68 +19,32 @@
 # limitations under the License.
 #
 
+require_relative '_helper'
+
 class Chef
-  class Resource::JenkinsPlugin < Resource
+  class Resource::JenkinsPlugin < Resource::LWRPBase
+    # Chef attributes
     identity_attr :name
+    provides :jenkins_plugin
+
+    # Set the resource name
+    self.resource_name = :jenkins_plugin
+
+    # Actions
+    actions :install, :uninstall, :enable, :disable
+    default_action :install
+
+    # Attributes
+    attribute :name,
+      kind_of: String,
+      name_attribute: true
+    attribute :version,
+      kind_of: [String, Symbol],
+      default: :latest
+    attribute :source,
+      kind_of: String
 
     attr_writer :installed
-
-    def initialize(name, run_context = nil)
-      super
-
-      # Set the resource name and provider
-      @resource_name = :jenkins_plugin
-      @provider = Provider::JenkinsPlugin
-
-      # Set default actions and allowed actions
-      @action = :install
-      @allowed_actions.push(:install, :uninstall, :enable, :disable)
-
-      # Set the name attribute and default attributes
-      @name    = name
-      @version = :latest
-
-      # State attributes that are set by the provider
-      @installed = false
-    end
-
-    #
-    # The name of the plugin to install. This _can_ be the shortname of the
-    # plugin, but this can also be any random name of a plugin that does not
-    # yet exist. If a source is not specified, however, this is assumed to be
-    # the short name of the plugin in the update center.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def name(arg = nil)
-      set_or_return(:name, arg, kind_of: String)
-    end
-
-    #
-    # The version of the plugin to install. The default version is +:latest+,
-    # which pulls the latest plugin from the source or update center, however,
-    # you can specify a specific version of the plugin to lock and install.
-    #
-    # WARNING: If the +source+ parameter is specified, this parameter is *ignored*,
-    # since the source points to a specific +.jpi+ version.
-    #
-    # @param [String] arg
-    # @return [String] arg
-    #
-    def version(arg = nil)
-      set_or_return(:version, arg, kind_of: [String, Symbol])
-    end
-
-    #
-    # The source where to pull this plugin from.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def source(arg = nil)
-      set_or_return(:source, arg, kind_of: String)
-    end
 
     #
     # Determine if the plugin is installed on the master. This value is set by
@@ -95,7 +59,7 @@ class Chef
 end
 
 class Chef
-  class Provider::JenkinsPlugin < Provider
+  class Provider::JenkinsPlugin < Provider::LWRPBase
     class PluginNotInstalled < StandardError
       def initialize(plugin, action)
         super <<-EOH
@@ -105,11 +69,10 @@ EOH
       end
     end
 
-    require_relative '_helper'
     include Jenkins::Helper
 
     def load_current_resource
-      @current_resource ||= Resource::JenkinsPlugin.new(new_resource.name)
+      @current_resource = Resource::JenkinsPlugin.new(new_resource.name)
       @current_resource.source(new_resource.source)
       @current_resource.version(new_resource.version)
 
@@ -119,6 +82,8 @@ EOH
       else
         @current_resource.installed = false
       end
+
+      @current_resource
     end
 
     #
@@ -128,7 +93,7 @@ EOH
       true
     end
 
-    def action_install
+    action(:install) do
       # This block stores the actual command to execute, since its the same
       # for upgrades and installs.
       block = proc do
@@ -176,7 +141,7 @@ EOH
     # Plugins that are disabled can be re-enabled from the UI (or by removing
     # *.jpi.disabled file from the disk.)
     #
-    def action_disable
+    action(:disable) do
       unless current_resource.installed?
         fail PluginNotInstalled.new(new_resource.name, :disable)
       end
@@ -201,7 +166,7 @@ EOH
     #
     # Plugins may be disabled by re-adding the +.jpi.disabled+ plugin.
     #
-    def action_enable
+    action(:enable) do
       unless current_resource.installed?
         fail PluginNotInstalled.new(new_resource.name, :enable)
       end
@@ -234,7 +199,7 @@ EOH
     # those configurations that it didn't understand, and pretend as if it
     # didn't see such a fragment.
     #
-    def action_uninstall
+    action(:uninstall) do
       if current_resource.installed?
         converge_by("Uninstall #{new_resource}") do
           Resource::File.new(plugin_file, run_context).run_action(:delete)
@@ -342,3 +307,8 @@ EOH
     end
   end
 end
+
+Chef::Platform.set(
+  resource: :jenkins_plugin,
+  provider: Chef::Provider::JenkinsPlugin
+)

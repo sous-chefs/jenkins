@@ -19,67 +19,37 @@
 # limitations under the License.
 #
 
-class Chef
-  class Resource::JenkinsCredentials < Resource
-    require 'securerandom'
+require_relative '_helper'
 
-    require_relative '_helper'
+class Chef
+  class Resource::JenkinsCredentials < Resource::LWRPBase
+    require 'securerandom'
     include Jenkins::Helper
 
+    # Chef attributes
     identity_attr :username
+    provides :jenkins_credentials
+
+    # Set the resource name
+    self.resource_name = :jenkins_credentials
+
+    # Actions
+    actions :create, :delete
+    default_action :create
+
+    # Attributes
+    attribute :username,
+      kind_of: String,
+      name_attribute: true
+    attribute :id,
+      kind_of: String,
+      regex: UUID_REGEX,
+      default: DelayedEvaluator.new { SecureRandom.uuid }
+    attribute :description,
+      kind_of: String,
+      default: DelayedEvaluator.new { "Credentials for #{username} - created by Chef" }
 
     attr_writer :exists
-
-    def initialize(name, run_context = nil)
-      super
-
-      @resource_name = :jenkins_credentials
-      @provider = Provider::JenkinsCredentials
-
-      # Set default actions and allowed actions
-      @action = :create
-      @allowed_actions.push(:create, :delete)
-
-      # Set the name attribute and default attributes
-      @username    = name
-      # Matches how Jenkins generates IDs internally
-      # https://github.com/jenkinsci/credentials-plugin/blob/master/src/main/java/com/cloudbees/plugins/credentials/common/IdCredentials.java#L100
-      @id          = SecureRandom.uuid
-      @description = "Credentials for #{username} - created by Chef"
-
-      # State attributes that are set by the provider
-      @exists = false
-    end
-
-    #
-    # A unique identifier for the credentials.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def id(arg = nil)
-      set_or_return(:id, arg, kind_of: String, regex: UUID_REGEX)
-    end
-
-    #
-    # The description of the credentials.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def description(arg = nil)
-      set_or_return(:description, arg, kind_of: String)
-    end
-
-    #
-    # The username of the credentials.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def username(arg = nil)
-      set_or_return(:username, arg, kind_of: String)
-    end
 
     #
     # Determine if the credentials exists on the master. This value is
@@ -94,15 +64,14 @@ class Chef
 end
 
 class Chef
-  class Provider::JenkinsCredentials < Provider
+  class Provider::JenkinsCredentials < Provider::LWRPBase
     require 'json'
     require 'openssl'
 
-    require_relative '_helper'
     include Jenkins::Helper
 
     def load_current_resource
-      @current_resource ||= Resource::JenkinsCredentials.new(new_resource.name)
+      @current_resource = Resource::JenkinsCredentials.new(new_resource.name)
 
       if current_credentials
         @current_resource.exists = true
@@ -110,11 +79,10 @@ class Chef
         @current_resource.description(current_credentials[:description])
         @current_resource.username(current_credentials[:username])
       end
+
+      @current_resource
     end
 
-    #
-    # This provider supports why-run mode.
-    #
     def whyrun_supported?
       true
     end
@@ -122,7 +90,7 @@ class Chef
     #
     # Create the given credentials.
     #
-    def action_create
+    action(:create) do
       if current_resource.exists? && correct_config?
         Chef::Log.debug("#{new_resource} exists - skipping")
       else
@@ -161,7 +129,7 @@ class Chef
     #
     # Delete the given credentials.
     #
-    def action_delete
+    action(:delete) do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
@@ -283,3 +251,8 @@ class Chef
     end
   end
 end
+
+Chef::Platform.set(
+  resource: :jenkins_credentials,
+  provider: Chef::Provider::JenkinsCredentials
+)

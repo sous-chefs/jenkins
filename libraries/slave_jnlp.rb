@@ -19,65 +19,35 @@
 # limitations under the License.
 #
 
-require 'uri'
 require_relative 'slave'
 
 class Chef
   class Resource::JenkinsJNLPSlave < Resource::JenkinsSlave
+    # Chef attributes
     provides :jenkins_jnlp_slave
 
-    def initialize(name, run_context = nil)
-      super
+    # Set the resource name
+    self.resource_name = :jenkins_jnlp_slave
 
-      # Set the resource name and provider
-      @resource_name = :jenkins_jnlp_slave
-      @provider = Provider::JenkinsJNLPSlave
-
-      # Set the default attributes
-      @group           = 'jenkins'
-      @service_name    = 'jenkins-slave'
-    end
-
-    #
-    # Group slave prcess runs as. On *nix systems the group will be
-    # created if it does not exist.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def group(arg = nil)
-      set_or_return(
-        :group,
-        arg,
-        kind_of: String,
-        regex: Chef::Config[:group_valid_regex],
-      )
-    end
-
-    #
-    # Name of the service that manages the slave process.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def service_name(arg = nil)
-      set_or_return(:service_name, arg, kind_of: String)
-    end
+    # Attributes
+    attribute :group,
+      kind_of: String,
+      default: 'jenkins',
+      regex: Config[:group_valid_regex]
+    attribute :service_name,
+      kind_of: String,
+      default: 'jenkins-slave'
   end
 end
 
 class Chef
   class Provider::JenkinsJNLPSlave < Provider::JenkinsSlave
     def load_current_resource
-      @current_resource ||= Resource::JenkinsJNLPSlave.new(new_resource.name)
-
+      @current_resource = Resource::JenkinsJNLPSlave.new(new_resource.name)
       super
     end
 
-    #
-    # @see Chef::Resource::JenkinsSlave#action_create
-    #
-    def action_create
+    action(:create) do
       super
 
       parent_remote_fs_dir_resource.run_action(:create)
@@ -94,10 +64,7 @@ class Chef
       service_resource.run_action(:enable) unless Chef::Platform.windows?
     end
 
-    #
-    # @see Chef::Resource::JenkinsSlave#action_delete
-    #
-    def action_delete
+    action(:delete) do
       # Stop and remove the service
       service_resource.run_action(:disable)
 
@@ -270,3 +237,8 @@ class Chef
     end
   end
 end
+
+Chef::Platform.set(
+  resource: :jenkins_jnlp_slave,
+  provider: Chef::Provider::JenkinsJNLPSlave
+)

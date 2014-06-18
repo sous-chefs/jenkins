@@ -19,63 +19,43 @@
 # limitations under the License.
 #
 
-require 'uri'
+require_relative 'slave'
 require_relative 'slave_jnlp'
 
 class Chef
   class Resource::JenkinsWindowsSlave < Resource::JenkinsJNLPSlave
-    provides :jenkins_jnlp_slave, on_platforms: ['windows']
+    # Chef attributes
+    provides :jenkins_jnlp_slave, on_platforms: %w(windows)
 
-    def initialize(name, run_context = nil)
-      super
+    # Set the resource name
+    self.resource_name = :jenkins_jnlp_slave
 
-      # Set the provider
-      @provider = Provider::JenkinsWindowsSlave
-
-      # Set the default attributes
-      @remote_fs = 'C:\jenkins'
-      @user      = 'LocalSystem'
-      @password  = nil
-      @winsw_url = 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.16/winsw-1.16-bin.exe'
-    end
-
-    #
-    # Password of the user that manages the slave process. This is used
-    # to configure the service that manages the slave process.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def password(arg = nil)
-      set_or_return(:password, arg, kind_of: String)
-    end
-
-    #
-    # URL of the `winsw` wrapper executable which is used to install the
-    # Windows service which launches the slave process.
-    #
-    # @see https://github.com/kohsuke/winsw
-    # @param [String] arg
-    # @return [String]
-    #
-    def winsw_url(arg = nil)
-      set_or_return(:winsw_url, arg, kind_of: String)
-    end
+    # Attributes
+    attribute :password,
+      kind_of: String
+    attribute :user,
+      kind_of: String,
+      default: 'LocalSystem'
+    attribute :remote_fs,
+      kind_of: String,
+      default: 'C:\jenkins'
+    attribute :winsw_url,
+      kind_of: String,
+      default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.16/winsw-1.16-bin.exe'
   end
 end
 
 class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJNLPSlave
     def load_current_resource
-      @current_resource ||= Resource::JenkinsWindowsSlave.new(new_resource.name)
-
+      @current_resource = Resource::JenkinsWindowsSlave.new(new_resource.name)
       super
     end
 
     #
     # @see Chef::Resource::JenkinsSlave#action_create
     #
-    def action_create
+    action(:create) do
       super
 
       # The following resources are created in the parent:
@@ -190,3 +170,9 @@ class Chef
     end
   end
 end
+
+Chef::Platform.set(
+  resource: :jenkins_jnlp_slave,
+  platform: :windows,
+  provider: Chef::Provider::JenkinsWindowsSlave
+)

@@ -19,46 +19,29 @@
 # limitations under the License.
 #
 
-require 'base64'
-require 'openssl'
 require_relative 'slave'
+require_relative 'credentials'
 
 class Chef
   class Resource::JenkinsSSHSlave < Resource::JenkinsSlave
+    # Chef attributes
     provides :jenkins_ssh_slave
 
-    def initialize(name, run_context = nil)
-      super
+    # Set the resource name
+    self.resource_name = :jenkins_ssh_slave
 
-      # Set the resource name and provider
-      @resource_name = :jenkins_ssh_slave
-      @provider = Provider::JenkinsSSHSlave
-
-      # Set the name attribute and default attributes
-      @port           = 22
-      @command_prefix = nil
-      @command_suffix = nil
-    end
-
-    #
-    # The hostname of the slave. This can also be an IP address.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def host(arg = nil)
-      set_or_return(:host, arg, kind_of: String)
-    end
-
-    #
-    # The port on the slave on which the `sshd` service is listening.
-    #
-    # @param [Integer] arg
-    # @return [Integer]
-    #
-    def port(arg = nil)
-      set_or_return(:port, arg, kind_of: Integer)
-    end
+    # Attributes
+    attribute :host,
+      kind_of: String
+    attribute :port,
+      kind_of: Integer,
+      default: 22
+    attribute :credentials,
+      kind_of: [Resource::JenkinsCredentials, String]
+    attribute :command_prefix,
+      kind_of: String
+    attribute :command_suffix,
+      kind_of: String
 
     #
     # The credentials to SSH into the slave with. Credentials can be any
@@ -68,36 +51,14 @@ class Chef
     # * UUID of a Jenkins credentials instance.
     # * A `Chef::Resource::JenkinsCredentials` instnace.
     #
-    # @param [String] arg
     # @return [String]
     #
-    def credentials(arg = nil)
-      # Extract the username from a Chef::Resource::JenkinsCredentials
-      # instance
-      if arg.kind_of? Chef::Resource::JenkinsCredentials
-        arg = arg.send(:username)
+    def parsed_credentials
+      if credentials.is_a?(Resource::JenkinsCredentials)
+        credentials.send(:username)
+      else
+        credentials.to_s
       end
-      set_or_return(:credentials, arg, kind_of: String)
-    end
-
-    #
-    # The SSH command prefix.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def command_prefix(arg = nil)
-      set_or_return(:command_prefix, arg, kind_of: String)
-    end
-
-    #
-    # The SSH command suffix.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def command_suffix(arg = nil)
-      set_or_return(:command_suffix, arg, kind_of: String)
     end
   end
 end
@@ -105,7 +66,7 @@ end
 class Chef
   class Provider::JenkinsSSHSlave < Provider::JenkinsSlave
     def load_current_resource
-      @current_resource ||= Resource::JenkinsSSHSlave.new(new_resource.name)
+      @current_resource = Resource::JenkinsSSHSlave.new(new_resource.name)
 
       super
 
@@ -115,6 +76,8 @@ class Chef
         @current_resource.credentials(current_slave[:credentials])
         @current_resource.jvm_options(current_slave[:jvm_options])
       end
+
+      @current_resource
     end
 
     protected
@@ -152,7 +115,7 @@ class Chef
         command_suffix: 'slave.launcher.suffixStartSlaveCmd',
       }
 
-      if new_resource.credentials.match(UUID_REGEX)
+      if new_resource.parsed_credentials.match(UUID_REGEX)
         map[:credentials] = 'slave.launcher.credentialsId'
       else
         map[:credentials] = 'hudson.plugins.sshslaves.SSHLauncher.lookupSystemCredentials(slave.launcher.credentialsId).username'
@@ -164,20 +127,26 @@ class Chef
 
     #
     # A Groovy snippet that will set the requested local Groovy variable
-    # to an instance of the credentials represented by `new_resource.credentials`.
+    # to an instance of the credentials represented by
+    # `new_resource.parsed_credentials`.
     #
     # @param [String] groovy_variable_name
     # @return [String]
     #
     def credential_lookup_groovy(groovy_variable_name = 'credentials_id')
-      if new_resource.credentials.match(UUID_REGEX)
-        "#{groovy_variable_name} = #{convert_to_groovy(new_resource.credentials)}"
+      if new_resource.parsed_credentials.match(UUID_REGEX)
+        "#{groovy_variable_name} = #{convert_to_groovy(new_resource.parsed_credentials)}"
       else
         <<-EOH.gsub(/ ^{10}/, '')
-          #{credentials_for_username_groovy(new_resource.credentials, 'user_credentials')}
+          #{credentials_for_username_groovy(new_resource.parsed_credentials, 'user_credentials')}
           #{groovy_variable_name} = user_credentials.id
         EOH
       end
     end
   end
 end
+
+Chef::Platform.set(
+  resource: :jenkins_ssh_slave,
+  provider: Chef::Provider::JenkinsSSHSlave
+)

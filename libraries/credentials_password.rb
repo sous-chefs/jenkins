@@ -23,37 +23,31 @@ require_relative 'credentials'
 
 class Chef
   class Resource::JenkinsPasswordCredentials < Resource::JenkinsCredentials
+    # Chef attributes
     provides :jenkins_password_credentials
 
-    def initialize(name, run_context = nil)
-      super
+    # Set the resource name
+    self.resource_name = :jenkins_password_credentials
 
-      @resource_name = :jenkins_password_credentials
-      @provider = Provider::JenkinsPasswordCredentials
-    end
-
-    #
-    # The password of the credentials.
-    #
-    # @param [String] arg
-    # @return [String]
-    #
-    def password(arg = nil)
-      set_or_return(:password, arg, kind_of: String)
-    end
+    # Attributes
+    attribute :password,
+      kind_of: String,
+      required: true
   end
 end
 
 class Chef
   class Provider::JenkinsPasswordCredentials < Provider::JenkinsCredentials
     def load_current_resource
-      @current_resource ||= Resource::JenkinsPasswordCredentials.new(new_resource.name)
+      @current_resource = Resource::JenkinsPasswordCredentials.new(new_resource.name)
+
+      super
 
       if current_credentials
         @current_resource.password(current_credentials[:password])
       end
 
-      super
+      @current_credentials
     end
 
     protected
@@ -87,3 +81,8 @@ class Chef
     end
   end
 end
+
+Chef::Platform.set(
+  resource: :jenkins_password_credentials,
+  provider: Chef::Provider::JenkinsPasswordCredentials
+)
