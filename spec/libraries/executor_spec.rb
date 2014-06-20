@@ -16,7 +16,7 @@ describe Jenkins::Executor do
   end
 
   describe '#execute!' do
-    let(:shellout) { double(run_command: nil, error!: nil, stdout: '') }
+    let(:shellout) { double(run_command: nil, error!: nil, stdout: '', stderr: '', exitstatus: 0) }
     before { allow(Mixlib::ShellOut).to receive(:new).and_return(shellout) }
 
     context 'when no options are given' do
