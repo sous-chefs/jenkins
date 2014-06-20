@@ -95,6 +95,7 @@ class Chef
         Chef::Log.debug("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
+          new_resource.id ||= current_resource.id
           executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
             import jenkins.model.*
             import com.cloudbees.plugins.credentials.*
