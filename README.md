@@ -246,6 +246,14 @@ jenkins_plugin 'a_complicated_plugin' do
 end
 ```
 
+For advanced users, this resource exposes an `options` attribute that will be passed to the installation command. For more information on the possible values of these options, pleaes consult the documentation for your Jenkins installation.
+
+```ruby
+jenkins_plugin 'a_really_complicated_plugin' do
+  options '-deploy -cold'
+end
+```
+
 The `:uninstall` action removes (uninstalls) a Jenkins plugin idempotently on the current node.
 
 ```ruby
