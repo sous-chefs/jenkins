@@ -119,11 +119,9 @@ EOH
           Chef::Log.debug("#{new_resource} already installed - skipping")
         else
           converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{new_resource.version}", &block)
-          notify(:restart)
         end
       else
         converge_by("Install #{new_resource}", &block)
-        notify(:restart)
       end
     end
 
@@ -154,7 +152,6 @@ EOH
         converge_by("Disable #{new_resource}") do
           Resource::File.new(disabled, run_context).run_action(:create)
         end
-        notify(:restart)
       end
     end
 
@@ -177,7 +174,6 @@ EOH
         converge_by("Enable #{new_resource}") do
           Resource::File.new(disabled, run_context).run_action(:delete)
         end
-        notify(:restart)
       else
         Chef::Log.debug("#{new_resource} already enabled - skipping")
       end
@@ -207,7 +203,6 @@ EOH
           directory.recursive(true)
           directory.run_action(:delete)
         end
-        notify(:restart)
       else
         Chef::Log.debug("#{new_resource} not installed - skipping")
       end
@@ -282,28 +277,6 @@ EOH
       return new_resource.source if new_resource.source
 
       "#{node['jenkins']['master']['mirror']}/plugins/#{new_resource.name}/#{new_resource.version}/#{new_resource.name}.hpi"
-    end
-
-    #
-    # Restart the Jenkins master. If the +restart+ parameter is given, the
-    # master is restarted immediately. Otherwise, the master is restarted at
-    # the end of the Chef Client run.
-    #
-    def notify(action)
-      begin
-        service = run_context.resource_collection.find('service[jenkins]')
-      rescue Chef::Exceptions::ResourceNotFound
-        Chef::Log.warn <<-EOH
-I could not find service[jenkins] in the resource collection. The
-`jenkins_plugin' resource tries to #{action} the Jenkins master automatically
-after a plugin is installed or modified, but requires that a service resource
-exists for `jenkins'. If you are using your own Jenkins installation method,
-you must manually create a Jenkins service resource.
-EOH
-        return
-      end
-
-      new_resource.notifies(action, service, :delayed)
     end
   end
 end
