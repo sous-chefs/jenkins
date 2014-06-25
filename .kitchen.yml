@@ -46,7 +46,7 @@ suites:
         master:
           install_method: package
           version: '1.555-1.1'
-  - name: smoke_package_lastest
+  - name: smoke_package_latest
     run_list: smoke::default
     attributes:
       jenkins:
