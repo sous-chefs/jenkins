@@ -28,6 +28,10 @@ class Chef
 
     # Set the resource name
     self.resource_name = :jenkins_script
+
+    # Actions
+    actions :execute
+    default_action :execute
   end
 end
 

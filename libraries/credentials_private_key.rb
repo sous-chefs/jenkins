@@ -31,6 +31,10 @@ class Chef
     # Set the resource name
     self.resource_name = :jenkins_private_key_credentials
 
+    # Actions
+    actions :create, :delete
+    default_action :create
+
     # Attributes
     attribute :private_key,
       kind_of: [String, OpenSSL::PKey::RSA],

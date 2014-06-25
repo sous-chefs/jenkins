@@ -29,6 +29,10 @@ class Chef
     # Set the resource name
     self.resource_name = :jenkins_password_credentials
 
+    # Actions
+    actions :create, :delete
+    default_action :create
+
     # Attributes
     attribute :password,
       kind_of: String,

@@ -30,6 +30,10 @@ class Chef
     # Set the resource name
     self.resource_name = :jenkins_jnlp_slave
 
+    # Actions
+    actions :create, :delete, :connect, :disconnect, :online, :offline
+    default_action :create
+
     # Attributes
     attribute :password,
       kind_of: String
