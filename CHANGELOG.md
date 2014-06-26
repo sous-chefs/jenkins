@@ -2,6 +2,45 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.1.0 (2014-06-26)
+-------------------
+- Change Jenkins command prefix to use the slave object
+- Escape data given to the executor
+- Always read plugin manifest files as UTF
+- Typo: Shelllwords -> Shellwords
+- Upgrade to Berkshelf 3
+- Add ChefSpec tests for recipes
+- Add Jenkins::Executor tests
+- Bug: Use ::File instead of File
+- Remove foodcritic
+- Fix Rubocop warnings
+- Only create user, group and directories on war installations
+- Only create supporting resources on JNLP slaves
+- Split `jnlp` and `ssh` slave fixtures
+- Document that SSH slaves should be created on the master
+- Ensure compiled attributes respect overrides
+- Ensure plugin installs respect global mirror setting
+- Add fallback to `jenkins_slave` matcher if authn is enabled
+- Update authn int tests to load private key from data bag item
+- Add integration test coverage for smoke tests
+- Add support for listening on a specific address
+- Allow user to specify the password
+- Use a temporary file to run groovy scripts
+- Use executor['timeout'] for timeout in ShellOut in executor.execute!
+- Give timeout a default value (60) in the executor
+- Ignore Errno::ENETUNREACH until timeout
+- Fix a bug in default windows domain name
+- Update winsw version to 1.16
+- Upgrade to ChefSpec 4 and fix CI
+- Use the run_state to store sensitive information
+- Switch to LWHRPS for everything
+- Handle nil values in credentials comparison
+- Add ChefSpec matchers for all LWRPs
+- Don't automatically restart after plugin installation
+- Add the ability to pass in a list of additional options in `jenkins_plugin`
+- Specify actions and default_action in inherited resources
+
+
 v2.0.2 (2014-01-30)
 -------------------
 - Add support for prefix and suffix commands on SSH nodes
