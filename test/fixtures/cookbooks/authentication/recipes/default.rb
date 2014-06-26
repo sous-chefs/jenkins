@@ -21,11 +21,6 @@ jenkins_user 'chef' do
   public_keys [public_key]
 end
 
-# Set the private key on the executor
-ruby_block 'set the private key' do
-  block { node.run_state[:jenkins_private_key] = private_key }
-end
-
 # Turn on basic authentication
 jenkins_script 'setup authentication' do
   command <<-EOH.gsub(/^ {4}/, '')
@@ -41,6 +36,11 @@ jenkins_script 'setup authentication' do
 
     instance.save()
   EOH
+end
+
+# Set the private key on the executor
+ruby_block 'set the private key' do
+  block { node.run_state[:jenkins_private_key] = private_key }
 end
 
 # Run some commands - this will ensure the CLI is correctly passing attributes
