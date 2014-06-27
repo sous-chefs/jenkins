@@ -21,6 +21,8 @@
 
 require 'open-uri'
 require 'timeout'
+require 'uri'
+require 'net/http'
 
 module Jenkins
   module Helper
@@ -56,6 +58,7 @@ EOH
     def executor
       wait_until_ready!
       ensure_cli_present!
+      ensure_update_center_present!
 
       options = {}.tap do |h|
         h[:cli]      = cli
@@ -277,6 +280,10 @@ EOH
     def cli
       File.join(Chef::Config[:file_cache_path], 'jenkins-cli.jar')
     end
+    
+    def update_center
+      File.join(Chef::Config[:file_cache_path], 'update-center.json')
+    end
 
     #
     # Since the Jenkins service returns immediately and the actual Java process
@@ -326,6 +333,38 @@ EOH
         remote_file.mode('0755')
         remote_file.run_action(:create)
 
+        true
+      end
+    end
+    
+    #
+    # Idempotently download the remote +update-center.json+ file for the Jenkins
+    # server. This is needed to be able to install plugins throught the update-center.
+    #
+    def ensure_update_center_present!
+      node.run_state[:jenkins_update_center_present] ||= begin
+        source = uri_join(node['jenkins']['master']['mirror'], 'updates', 'update-center.json')
+        remote_file = Chef::Resource::RemoteFile.new(update_center, run_context)
+        remote_file.source(source)
+        remote_file.backup(false)
+        remote_file.mode('0755')
+        remote_file.run_action(:create)
+        
+        file_lines = ''
+
+        IO.readlines(update_center).map do |line|
+          file_lines = line unless line == 'updateCenter.post(' || line == ');'
+        end
+        
+        uri = URI(uri_join(endpoint, 'updateCenter', 'byId', 'default', 'postBack'))
+        headers = { 
+          "Accept" => "application/json"
+        }
+        http = Net::HTTP.new(uri.host, uri.port)
+        response = http.post(uri.path, file_lines, headers)
+        
+        puts response
+        
         true
       end
     end

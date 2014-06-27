@@ -101,18 +101,18 @@ EOH
       block = proc do
         # Use the remote_file resource to download and cache the plugin (see
         # comment below for more information).
-        name   = "#{new_resource.name}-#{new_resource.version}.plugin"
-        path   = ::File.join(Chef::Config[:file_cache_path], name)
-        plugin = Chef::Resource::RemoteFile.new(path, run_context)
-        plugin.source(plugin_source)
-        plugin.backup(false)
-        plugin.run_action(:create)
+        #name   = "#{new_resource.name}-#{new_resource.version}.plugin"
+        #path   = ::File.join(Chef::Config[:file_cache_path], name)
+        #plugin = Chef::Resource::RemoteFile.new(path, run_context)
+        #plugin.source(plugin_source)
+        #plugin.backup(false)
+        #plugin.run_action(:create)
 
         # Install the plugin from our local cache on disk. There is a bug in
         # Jenkins that prevents Jenkins from following 302 redirects, so we
         # use Chef to download the plugin and then use Jenkins to install it.
         # It's a bit backwards, but so is Jenkins.
-        executor.execute!('install-plugin', escape(plugin.path), '-name', escape(new_resource.name), new_resource.options)
+        executor.execute!('install-plugin', escape(new_resource.name), new_resource.options)
       end
 
       if current_resource.installed?
