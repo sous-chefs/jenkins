@@ -99,20 +99,25 @@ EOH
       # This block stores the actual command to execute, since its the same
       # for upgrades and installs.
       block = proc do
-        # Use the remote_file resource to download and cache the plugin (see
-        # comment below for more information).
-        #name   = "#{new_resource.name}-#{new_resource.version}.plugin"
-        #path   = ::File.join(Chef::Config[:file_cache_path], name)
-        #plugin = Chef::Resource::RemoteFile.new(path, run_context)
-        #plugin.source(plugin_source)
-        #plugin.backup(false)
-        #plugin.run_action(:create)
+        if plugin_source
+          # Use the remote_file resource to download and cache the plugin (see
+          # comment below for more information).
+          name   = "#{new_resource.name}-#{new_resource.version}.plugin"
+          path   = ::File.join(Chef::Config[:file_cache_path], name)
+          plugin = Chef::Resource::RemoteFile.new(path, run_context)
+          plugin.source(plugin_source)
+          plugin.backup(false)
+          plugin.run_action(:create)
 
-        # Install the plugin from our local cache on disk. There is a bug in
-        # Jenkins that prevents Jenkins from following 302 redirects, so we
-        # use Chef to download the plugin and then use Jenkins to install it.
-        # It's a bit backwards, but so is Jenkins.
-        executor.execute!('install-plugin', escape(new_resource.name), new_resource.options)
+          # Install the plugin from our local cache on disk. There is a bug in
+          # Jenkins that prevents Jenkins from following 302 redirects, so we
+          # use Chef to download the plugin and then use Jenkins to install it.
+          # It's a bit backwards, but so is Jenkins.
+          executor.execute!('install-plugin', escape(plugin.path), '-name', escape(new_resource.name), new_resource.options)
+        else
+          # Install the plugin from the update-center
+          executor.execute!('install-plugin', escape(new_resource.name), new_resource.options)
+        end
       end
 
       if current_resource.installed?
@@ -270,15 +275,12 @@ EOH
 
     #
     # The source where to install the plugin from. This defaults to
-    # +new_resource.source+. If that is not yet, a "default" URL is compiled
-    # using the default Update Center.
+    # +new_resource.source+.
     #
     # @return [String]
     #
     def plugin_source
       return new_resource.source if new_resource.source
-
-      "#{node['jenkins']['master']['mirror']}/plugins/#{new_resource.name}/#{new_resource.version}/#{new_resource.name}.hpi"
     end
   end
 end
