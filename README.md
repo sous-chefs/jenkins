@@ -421,7 +421,7 @@ This resource manages Jenkins users, supporting the following actions:
 
 This uses the Jenkins groovy API to create users.
 
-The `:create` action idempotently creates a Jenkins user on the current node. The id attribute corresponds to the username of the id of the user on the target node. You may also specify a name, email, and list of SSH keys.
+The `:create` action idempotently creates a Jenkins user on the current node. The id attribute corresponds to the username of the id of the user on the target node. You may also specify a name, email, password, and list of SSH keys.  If hashed_password is set to true, the password will be passed in as-is.  If false, Jenkins will hash, and then store it.
 
 ```ruby
 # Create a Jenkins user
