@@ -19,6 +19,7 @@
 # limitations under the License.
 #
 
+require_relative '_params_validate'
 require_relative 'slave'
 
 class Chef

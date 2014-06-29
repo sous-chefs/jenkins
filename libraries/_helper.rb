@@ -280,7 +280,7 @@ EOH
     def cli
       File.join(Chef::Config[:file_cache_path], 'jenkins-cli.jar')
     end
-    
+
     #
     # The path to the +update-center.json+ on disk (which may or may not exist).
     # The file contains all plugins from the jenkins update-center.
@@ -342,7 +342,7 @@ EOH
         true
       end
     end
-    
+
     #
     # Idempotently download the remote +update-center.json+ file for the Jenkins
     # server. This is needed to be able to install plugins throught the update-center.
@@ -355,7 +355,7 @@ EOH
         remote_file.backup(false)
         remote_file.mode('0644')
         remote_file.run_action(:create_if_missing)
-        
+
         extracted_json = ''
 
         # The downloaded file is composed of 3 lines. The first and the last line
@@ -364,17 +364,17 @@ EOH
         IO.readlines(update_center_json).map do |line|
           extracted_json = line unless line == 'updateCenter.post(' || line == ');'
         end
-        
+
         # Uri where update-center JSON's can be posted to. Jenkins is now aware of the
         # update-center data and can handle the plugin installation through CLI exactly
         # in the same way as through the user interface.
         uri = URI(uri_join(endpoint, 'updateCenter', 'byId', 'default', 'postBack'))
-        headers = { 
+        headers = {
           'Accept' => 'application/json'
         }
         http = Net::HTTP.new(uri.host, uri.port)
         response = http.post(uri.path, extracted_json, headers)
-        
+
         true
       end
     end

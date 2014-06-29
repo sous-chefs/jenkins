@@ -20,6 +20,7 @@
 #
 
 require_relative '_helper'
+require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsCredentials < Resource::LWRPBase
@@ -44,10 +45,12 @@ class Chef
     attribute :id,
       kind_of: String,
       regex: UUID_REGEX,
-      default: DelayedEvaluator.new { SecureRandom.uuid }
+      default: lazy { SecureRandom.uuid }
     attribute :description,
       kind_of: String,
-      default: DelayedEvaluator.new { "Credentials for #{username} - created by Chef" }
+      default: lazy { |new_resource|
+        "Credentials for #{new_resource.username} - created by Chef"
+      }
 
     attr_writer :exists
 
