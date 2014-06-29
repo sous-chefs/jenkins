@@ -46,7 +46,7 @@ class Chef
     include Jenkins::Helper
 
     def load_current_resource
-      @current_resource = Resource::JenkinsCommand.new(new_resource.command)
+      @current_resource ||= Resource::JenkinsCommand.new(new_resource.command)
     end
 
     #

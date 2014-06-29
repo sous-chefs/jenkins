@@ -43,7 +43,7 @@ end
 class Chef
   class Provider::JenkinsPasswordCredentials < Provider::JenkinsCredentials
     def load_current_resource
-      @current_resource = Resource::JenkinsPasswordCredentials.new(new_resource.name)
+      @current_resource ||= Resource::JenkinsPasswordCredentials.new(new_resource.name)
 
       super
 

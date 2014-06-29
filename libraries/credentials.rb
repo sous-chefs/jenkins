@@ -71,7 +71,7 @@ class Chef
     include Jenkins::Helper
 
     def load_current_resource
-      @current_resource = Resource::JenkinsCredentials.new(new_resource.name)
+      @current_resource ||= Resource::JenkinsCredentials.new(new_resource.name)
 
       if current_credentials
         @current_resource.exists = true

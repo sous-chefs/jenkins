@@ -79,7 +79,7 @@ EOH
     include Jenkins::Helper
 
     def load_current_resource
-      @current_resource = Resource::JenkinsJob.new(new_resource.name)
+      @current_resource ||= Resource::JenkinsJob.new(new_resource.name)
       @current_resource.name(new_resource.name)
       @current_resource.config(new_resource.config)
 

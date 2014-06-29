@@ -68,7 +68,7 @@ class Chef
     include Jenkins::Helper
 
     def load_current_resource
-      @current_resource = Resource::JenkinsUser.new(new_resource.id)
+      @current_resource ||= Resource::JenkinsUser.new(new_resource.id)
 
       if current_user
         @current_resource.exists = true

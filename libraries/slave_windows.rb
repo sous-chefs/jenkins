@@ -52,7 +52,7 @@ end
 class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJNLPSlave
     def load_current_resource
-      @current_resource = Resource::JenkinsWindowsSlave.new(new_resource.name)
+      @current_resource ||= Resource::JenkinsWindowsSlave.new(new_resource.name)
       super
     end
 

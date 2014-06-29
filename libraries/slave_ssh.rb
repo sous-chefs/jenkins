@@ -70,7 +70,7 @@ end
 class Chef
   class Provider::JenkinsSSHSlave < Provider::JenkinsSlave
     def load_current_resource
-      @current_resource = Resource::JenkinsSSHSlave.new(new_resource.name)
+      @current_resource ||= Resource::JenkinsSSHSlave.new(new_resource.name)
 
       super
 

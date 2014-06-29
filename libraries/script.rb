@@ -38,7 +38,8 @@ end
 class Chef
   class Provider::JenkinsScript < Provider::JenkinsCommand
     def load_current_resource
-      @current_resource = Resource::JenkinsScript.new(new_resource.command)
+      @current_resource ||= Resource::JenkinsScript.new(new_resource.command)
+      super
     end
 
     action(:execute) do
