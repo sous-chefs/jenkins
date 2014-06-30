@@ -370,7 +370,7 @@ EOH
         # in the same way as through the user interface.
         uri = URI(uri_join(endpoint, 'updateCenter', 'byId', 'default', 'postBack'))
         headers = { 
-          "Accept" => "application/json"
+          'Accept' => 'application/json'
         }
         http = Net::HTTP.new(uri.host, uri.port)
         response = http.post(uri.path, extracted_json, headers)

@@ -99,13 +99,17 @@ EOH
       # This block stores the actual command to execute, since its the same
       # for upgrades and installs.
       block = proc do
-        if plugin_source
+        # Install a plugin from a given hpi (or jpi) if a link was provided.
+        # In that case jenkins does not handle plugin dependencies automatically.
+        # Otherwise the plugin is installed through the jenkins update-center
+        # (default behaviour). In that case plugin dependencies are handled by jenkins.
+        if new_resource.source
           # Use the remote_file resource to download and cache the plugin (see
           # comment below for more information).
           name   = "#{new_resource.name}-#{new_resource.version}.plugin"
           path   = ::File.join(Chef::Config[:file_cache_path], name)
           plugin = Chef::Resource::RemoteFile.new(path, run_context)
-          plugin.source(plugin_source)
+          plugin.source(new_resource.source)
           plugin.backup(false)
           plugin.run_action(:create)
 
@@ -115,7 +119,8 @@ EOH
           # It's a bit backwards, but so is Jenkins.
           executor.execute!('install-plugin', escape(plugin.path), '-name', escape(new_resource.name), new_resource.options)
         else
-          # Install the plugin from the update-center
+          # Install the plugin from the update-center. This results in the
+          # same behaviour as using the UI to install plugins.
           executor.execute!('install-plugin', escape(new_resource.name), new_resource.options)
         end
       end
@@ -271,16 +276,6 @@ EOH
     #
     def plugin_data_directory
       ::File.join(plugins_directory, new_resource.name)
-    end
-
-    #
-    # The source where to install the plugin from. This defaults to
-    # +new_resource.source+.
-    #
-    # @return [String]
-    #
-    def plugin_source
-      return new_resource.source if new_resource.source
     end
   end
 end
