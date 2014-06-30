@@ -52,7 +52,7 @@ class Chef
       super
     end
 
-    action(:create) do
+    def action_create
       super
 
       parent_remote_fs_dir_resource.run_action(:create)
@@ -69,7 +69,7 @@ class Chef
       service_resource.run_action(:enable) unless Chef::Platform.windows?
     end
 
-    action(:delete) do
+    def action_delete
       # Stop and remove the service
       service_resource.run_action(:disable)
 
