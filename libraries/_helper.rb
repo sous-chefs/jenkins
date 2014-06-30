@@ -353,6 +353,14 @@ EOH
         remote_file = Chef::Resource::RemoteFile.new(update_center_json, run_context)
         remote_file.source(source)
         remote_file.backup(false)
+
+        # Setting sensitive(true) will suppress the long diff output, but this
+        # functionality is not available in older versions of Chef, so we need
+        # check if the resource responds to the method before calling it.
+        if remote_file.respond_to?(:sensitive)
+          remote_file.sensitive(true)
+        end
+
         remote_file.mode('0644')
         remote_file.run_action(:create_if_missing)
 
