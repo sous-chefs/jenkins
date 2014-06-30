@@ -74,6 +74,7 @@ class Chef
         @current_resource.exists = true
         @current_resource.full_name(current_user[:full_name])
         @current_resource.email(current_user[:email])
+        @current_resource.password(current_user[:password])
         @current_resource.public_keys(current_user[:public_keys])
       end
 
@@ -88,7 +89,8 @@ class Chef
       if current_resource.exists? &&
          current_resource.full_name  == new_resource.full_name  &&
          current_resource.email == new_resource.email &&
-         current_resource.public_keys  == new_resource.public_keys
+         current_resource.public_keys  == new_resource.public_keys &&
+         (new_resource.password !~ /^#jbcrypt:/ || current_resource.password == new_resource.password)
         Chef::Log.debug("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
@@ -99,7 +101,12 @@ class Chef
             email = new hudson.tasks.Mailer.UserProperty('#{new_resource.email}')
             user.addProperty(email)
 
-            password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
+            if ('#{new_resource.password}' ==~ /^#jbcrypt:.*/)
+            {
+              password = hudson.security.HudsonPrivateSecurityRealm.Details.fromHashedPassword('#{new_resource.password}')
+            } else {
+              password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
+            }
             user.addProperty(password)
 
             keys = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl('#{new_resource.public_keys.join("\n")}')
@@ -155,6 +162,11 @@ class Chef
         if(keysProperty != null) {
           keys = keysProperty.authorizedKeys.split('\\\\\\\\s+') - "" // Remove empty strings
         }
+        password = null
+        passwordProp = user.getProperty(hudson.security.HudsonPrivateSecurityRealm.Details)
+        if(passwordProp != null) {
+          password = passwordProp.getPassword()
+        }
 
         builder = new groovy.json.JsonBuilder()
         builder {
@@ -162,6 +174,7 @@ class Chef
           full_name name
           email email
           public_keys keys
+          password password
         }
 
         println(builder)
