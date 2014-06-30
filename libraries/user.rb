@@ -47,6 +47,9 @@ class Chef
       default: []
     attribute :password,
       kind_of: String
+    attribute :hashed_password,
+      kind_of: [TrueClass, FalseClass],
+      default: false
 
     attr_writer :exists
 
@@ -99,7 +102,7 @@ class Chef
             email = new hudson.tasks.Mailer.UserProperty('#{new_resource.email}')
             user.addProperty(email)
 
-            password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
+            password = hudson.security.HudsonPrivateSecurityRealm.Details.#{new_resource.hashed_password ? 'fromHashedPassword' : 'fromPlainPassword'}('#{new_resource.password}')
             user.addProperty(password)
 
             keys = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl('#{new_resource.public_keys.join("\n")}')
