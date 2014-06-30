@@ -69,8 +69,7 @@ class Chef
       kind_of: Integer,
       default: 1
     attribute :environment,
-      kind_of: Hash,
-      default: {}
+      kind_of: Hash
     attribute :offline_reason,
       kind_of: String
     attribute :user,
