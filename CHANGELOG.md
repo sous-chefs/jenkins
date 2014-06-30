@@ -2,6 +2,15 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.1.1 (2014-06-30)
+-------------------
+- Use the update-center to install plugins and their dependencies
+- Handle `super` calls correctly in `load_current_resource`
+- Backport Chef patches to temporary libraries
+- Default `Slave#environment` to `nil` instead of `{}`
+- Fix a bug where `super` was called in DSL methods
+
+
 v2.1.0 (2014-06-26)
 -------------------
 - Change Jenkins command prefix to use the slave object
