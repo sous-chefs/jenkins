@@ -26,10 +26,10 @@ require_relative 'slave_jnlp'
 class Chef
   class Resource::JenkinsWindowsSlave < Resource::JenkinsJNLPSlave
     # Chef attributes
-    provides :jenkins_jnlp_slave, on_platforms: %w(windows)
+    provides :jenkins_windows_slave, on_platforms: %w(windows)
 
     # Set the resource name
-    self.resource_name = :jenkins_jnlp_slave
+    self.resource_name = :jenkins_windows_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline
@@ -177,7 +177,7 @@ class Chef
 end
 
 Chef::Platform.set(
-  resource: :jenkins_jnlp_slave,
+  resource: :jenkins_windows_slave,
   platform: :windows,
   provider: Chef::Provider::JenkinsWindowsSlave
 )
