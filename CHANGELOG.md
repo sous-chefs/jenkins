@@ -2,6 +2,10 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.1.2 (2014-07-02)
+-------------------
+- Fix a bug where `jenkins_windows_slave` was being called as `jenkins_jnlp_slave`
+
 v2.1.1 (2014-06-30)
 -------------------
 - Use the update-center to install plugins and their dependencies
