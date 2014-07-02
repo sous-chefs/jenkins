@@ -18,11 +18,11 @@ Public Service Announcment
 ----------------------------
 If you are using jenkins with authentication:  until [JENKINS-22346](https://issues.jenkins-ci.org/browse/JENKINS-22346) is fixed, pin to version 1.555 of jenkins and use the `war` installation method:
 
-````
+```ruby
 node.default['jenkins']['master']['install_method'] = 'war'
 node.default['jenkins']['master']['version'] = '1.555'
 node.default['jenkins']['master']['source'] = "#{node['jenkins']['master']['mirror']}/war/#{node['jenkins']['master']['version']}/jenkins.war"
-````
+```
 
 JENKINS-22346 affects the `jenkins-cli` command, whose use by this cookbook is described in the Caveats section under Authentication.
 
@@ -220,8 +220,9 @@ This resource manages Jenkins plugins, supporting the following actions:
     :install, :uninstall, :enable, :disable
 
 This uses the Jenkins CLI to install plugins. By default, it does a cold deploy, meaning the plugin is installed while Jenkins is still running. Some plugins may require you restart the Jenkins instance for their changed to take affect.
-**Since 2.1.1 this resource does install plugin dependecies by default**
-**This resource does not install plugin dependencies from a a given hpi/jpi - you must specify all plugin dependencies or Jenkins may not startup correctly!**
+
+- **Since 2.1.1 this resource does install plugin dependecies by default**
+- **This resource does not install plugin dependencies from a a given hpi/jpi - you must specify all plugin dependencies or Jenkins may not startup correctly!**
 
 The `:install` action idempotely installs a Jenkins plugin on the current node. The name attribute corresponds to the name of the plugin on the Jenkins Update Center. You can also specify a particular version of the plugin to install. Finally, you can specify a full source URL or local path (on the node) to a plugin.
 
