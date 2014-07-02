@@ -209,6 +209,7 @@ class Chef
       @slave_jar_resource.source(slave_jar_url)
       @slave_jar_resource.backup(false)
       @slave_jar_resource.mode('0755')
+      @slave_jar_resource.atomic_update(false)
       @slave_jar_resource
     end
 
