@@ -65,7 +65,7 @@ EOH
         h[:java]     = java
         h[:key]      = private_key_path if private_key_given?
         h[:proxy]    = proxy if proxy_given?
-        h[:endpoint] = endpoint
+        h[:endpoint] = internal_endpoint
         h[:timeout]  = timeout if timeout_given?
       end
 
@@ -246,6 +246,18 @@ EOH
     end
 
     #
+    # The internal endpoint used for the the command line
+    # tools and verifying that Jenkins is running.
+    #
+    # For systems that aren't using a proxy, this will be
+    # identical to {endpoint}.
+    #
+    # @return [String]
+    def internal_endpoint
+      "http://#{node['jenkins']['master']['host']}:#{node['jenkins']['master']['port']}"
+    end
+
+    #
     # The global timeout for the executor.
     #
     # @return [Fixnum]
@@ -305,7 +317,7 @@ EOH
     def wait_until_ready!
       Timeout.timeout(timeout) do
         begin
-          open(endpoint)
+          open(internal_endpoint)
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
@@ -322,7 +334,7 @@ EOH
         end
       end
     rescue Timeout::Error
-      raise JenkinsNotReady.new(endpoint, timeout)
+      raise JenkinsNotReady.new(internal_endpoint, timeout)
     end
 
     #
@@ -332,7 +344,7 @@ EOH
     #
     def ensure_cli_present!
       node.run_state[:jenkins_cli_present] ||= begin
-        source = uri_join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
+        source = uri_join(internal_endpoint, 'jnlpJars', 'jenkins-cli.jar')
         remote_file = Chef::Resource::RemoteFile.new(cli, run_context)
         remote_file.source(source)
         remote_file.backup(false)
@@ -376,7 +388,7 @@ EOH
         # Uri where update-center JSON's can be posted to. Jenkins is now aware of the
         # update-center data and can handle the plugin installation through CLI exactly
         # in the same way as through the user interface.
-        uri = URI(uri_join(endpoint, 'updateCenter', 'byId', 'default', 'postBack'))
+        uri = URI(uri_join(internal_endpoint, 'updateCenter', 'byId', 'default', 'postBack'))
         headers = {
           'Accept' => 'application/json'
         }
