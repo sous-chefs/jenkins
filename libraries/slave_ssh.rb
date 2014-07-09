@@ -94,12 +94,12 @@ class Chef
     #
     def launcher_groovy
       <<-EOH.gsub(/ ^{8}/, '')
-        #{credential_lookup_groovy('credentials_id')}
+        #{credential_lookup_groovy('credentials')}
         launcher =
           new hudson.plugins.sshslaves.SSHLauncher(
             #{convert_to_groovy(new_resource.host)},
             #{convert_to_groovy(new_resource.port)},
-            credentials_id,
+            credentials,
             #{convert_to_groovy(new_resource.jvm_options)},
             null,
             #{convert_to_groovy(new_resource.command_prefix)},
@@ -123,7 +123,7 @@ class Chef
       if new_resource.parsed_credentials.match(UUID_REGEX)
         map[:credentials] = 'slave.launcher.credentialsId'
       else
-        map[:credentials] = 'hudson.plugins.sshslaves.SSHLauncher.lookupSystemCredentials(slave.launcher.credentialsId).username'
+        map[:credentials] = 'slave.launcher.credentialsId == null ? null : hudson.plugins.sshslaves.SSHLauncher.lookupSystemCredentials(slave.launcher.credentialsId).username'
       end
       map
     end
@@ -140,11 +140,10 @@ class Chef
     #
     def credential_lookup_groovy(groovy_variable_name = 'credentials_id')
       if new_resource.parsed_credentials.match(UUID_REGEX)
-        "#{groovy_variable_name} = #{convert_to_groovy(new_resource.parsed_credentials)}"
+        "#{groovy_variable_name} = hudson.plugins.sshslaves.SSHLauncher.lookupSystemCredentials(#{convert_to_groovy(new_resource.parsed_credentials)})"
       else
         <<-EOH.gsub(/ ^{10}/, '')
-          #{credentials_for_username_groovy(new_resource.parsed_credentials, 'user_credentials')}
-          #{groovy_variable_name} = user_credentials.id
+          #{credentials_for_username_groovy(new_resource.parsed_credentials, groovy_variable_name)}
         EOH
       end
     end
