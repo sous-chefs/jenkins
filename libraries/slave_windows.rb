@@ -92,7 +92,6 @@ class Chef
       @slave_exe_resource = Chef::Resource::RemoteFile.new(slave_exe, run_context)
       @slave_exe_resource.source(new_resource.winsw_url)
       @slave_exe_resource.backup(false)
-      @slave_exe_resource.notifies(:restart, "service[#{new_resource.service_name}]")
       @slave_exe_resource
     end
 
@@ -131,7 +130,6 @@ class Chef
         user_account:  user_account,
         user_password: new_resource.password,
       )
-      @slave_xml_resource.notifies(:restart, "service[#{new_resource.service_name}]")
       @slave_xml_resource
     end
 
