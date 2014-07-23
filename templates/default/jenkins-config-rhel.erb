@@ -132,7 +132,7 @@ JENKINS_HANDLER_MAX="100"
 JENKINS_HANDLER_IDLE="20"
 
 ## Type:        string
-## Default:     ""
+## Default:     "ENV['PATH']"
 ## ServiceRestart: jenkins
 #
 # Pass arbitrary arguments to Jenkins.
@@ -140,4 +140,14 @@ JENKINS_HANDLER_IDLE="20"
 #
 <% if node['jenkins']['master']['jenkins_args'] %>
 JENKINS_ARGS="$JENKINS_ARGS <%= node['jenkins']['master']['jenkins_args'] %>"
+<% end %>
+
+## Type:        string
+## Default:     ""
+## ServiceRestart: jenkins
+#
+# Supplement the PATH value for Jenkins
+#
+<% if node['jenkins']['append_path'] %>
+PATH="$PATH:<%= node['jenkins']['append_path'] %>"
 <% end %>
