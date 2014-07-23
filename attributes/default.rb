@@ -51,4 +51,14 @@ default['jenkins'].tap do |jenkins|
                     else
                       'java'
                     end
+
+  #
+  # A string to append to the PATH environment variable. This is a convenient
+  # way to add custom tools into the jenkins PATH without having to modify any
+  # global system configurations.
+  #
+  #   node.set['jenkins']['append_path'] = '/path/one:/path/two'
+  #
+  jenkins['append_path'] = nil
+
 end
