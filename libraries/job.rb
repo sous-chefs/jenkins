@@ -216,7 +216,7 @@ EOH
       disabled = xml.elements['//disabled']
 
       @current_job = {
-        enabled: disabled.text == 'false',
+        enabled: disabled.nil? ? true : disabled.text == 'false',
         xml:     xml,
         raw:     response,
       }
