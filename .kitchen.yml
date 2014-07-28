@@ -85,7 +85,9 @@ suites:
   # Job suites
   #
   - name: jenkins_job_create
-    run_list: jenkins_job::create
+    run_list:
+      - jenkins_job::create
+      - jenkins_job::create_folder
   - name: jenkins_job_delete
     run_list: jenkins_job::delete
   - name: jenkins_job_disable

@@ -29,6 +29,11 @@ module Serverspec
         command === try { xml.elements['//command'].text }
       end
 
+      def has_plugin_like?(rx)
+        plugin = try { xml.root.attributes['plugin'] }
+        plugin.nil? ? false : plugin =~ rx
+      end
+
       private
 
       def xml
