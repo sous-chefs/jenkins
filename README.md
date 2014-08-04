@@ -55,8 +55,6 @@ This resource executes arbitrary commands against the [Jenkins CLI](https://wiki
 
     :execute
 
-Here's an [example list of Jenkins commands](https://gist.github.com/sethvargo/7814182), although these can change with major version releases. For example, to perform a Jenkins safe restart:
-
 ```ruby
 jenkins_command 'safe-restart'
 ```
