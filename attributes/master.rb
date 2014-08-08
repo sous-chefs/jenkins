@@ -174,4 +174,12 @@ default['jenkins']['master'].tap do |master|
   #   node.set['jenkins']['master']['log_directory'] = '/var/log/jenkins'
   #
   master['log_directory'] = '/var/log/jenkins'
+
+  #
+  # The timeout passed to the runit cookbook's service resource. Override the
+  # default timeout of 7 seconds. This option implies verbose.
+  #
+  #   node.set['jenkins']['master']['runit']['sv_timeout'] = 60
+  #
+  master['runit']['sv_timeout'] = 7
 end

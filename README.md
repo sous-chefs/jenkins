@@ -241,11 +241,20 @@ end
 
 Depending on the plugin, you may need to restart the Jenkins instance for the plugin to take affect:
 
+Package installation method:
 ```ruby
 jenkins_plugin 'a_complicated_plugin' do
   notifies :restart, 'service[jenkins]', :immediately
 end
 ```
+
+War installation method:
+```ruby
+jenkins_plugin 'a_complicated_plugin' do
+  notifies :restart, 'runit_service[jenkins]', :immediately
+end
+```
+
 
 For advanced users, this resource exposes an `options` attribute that will be passed to the installation command. For more information on the possible values of these options, pleaes consult the documentation for your Jenkins installation.
 
