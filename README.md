@@ -243,7 +243,7 @@ Depending on the plugin, you may need to restart the Jenkins instance for the pl
 
 ```ruby
 jenkins_plugin 'a_complicated_plugin' do
-  notifies :restart, 'service[jenkins]', :immediately
+  notifies :restart, 'runit_service[jenkins]', :immediately
 end
 ```
 

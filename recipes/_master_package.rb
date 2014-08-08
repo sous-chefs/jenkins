@@ -38,7 +38,7 @@ when 'debian'
   template '/etc/default/jenkins' do
     source   'jenkins-config-debian.erb'
     mode     '0644'
-    notifies :restart, 'service[jenkins]', :immediately
+    notifies :restart, 'runit_service[jenkins]', :immediately
   end
 when 'rhel'
   include_recipe 'yum::default'
@@ -55,7 +55,7 @@ when 'rhel'
   template '/etc/sysconfig/jenkins' do
     source   'jenkins-config-rhel.erb'
     mode     '0644'
-    notifies :restart, 'service[jenkins]', :immediately
+    notifies :restart, 'runit_service[jenkins]', :immediately
   end
 end
 
