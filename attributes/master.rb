@@ -126,6 +126,15 @@ default['jenkins']['master'].tap do |master|
   master['group'] = 'jenkins'
 
   #
+  # Jenkins user/group should be created as `system` accounts for `war` install.
+  # The default of `true` will ensure that **new** jenkins user accounts are
+  # created in the system ID range, exisitng users will not be modified.
+  #
+  #   node.set['jenkins']['master']['use_system_accounts'] = false
+  #
+  master['use_system_accounts'] = true
+
+  #
   # The host the Jenkins master is running on. For single-installs, the default
   # value of +localhost+ will suffice. For multi-node installs, you will likely
   # need to update this attribute to the FQDN of your Jenkins master.
