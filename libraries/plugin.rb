@@ -44,6 +44,12 @@ class Chef
       default: :latest
     attribute :source,
       kind_of: String
+    attribute :install_dependencies,
+      kind_of: [TrueClass, FalseClass],
+      default: false
+    attribute :downgrade,
+      kind_of: [TrueClass, FalseClass],
+      default: true
     attribute :options,
       kind_of: String
 
@@ -78,6 +84,8 @@ EOH
       @current_resource ||= Resource::JenkinsPlugin.new(new_resource.name)
       @current_resource.source(new_resource.source)
       @current_resource.version(new_resource.version)
+      @current_resource.install_dependencies(new_resource.install_dependencies)
+      @current_resource.install_dependencies(new_resource.downgrade)
 
       if current_plugin
         @current_resource.installed = true
@@ -112,7 +120,10 @@ EOH
           plugin = Chef::Resource::RemoteFile.new(path, run_context)
           plugin.source(new_resource.source)
           plugin.backup(false)
-          plugin.run_action(:create)
+          plugin.run_action(:create_if_missing)
+
+          # If installed_dependencies is true, install each plugin's dependencies
+          install_dependencies(plugin.path) if new_resource.install_dependencies == true
 
           # Install the plugin from our local cache on disk. There is a bug in
           # Jenkins that prevents Jenkins from following 302 redirects, so we
@@ -127,9 +138,10 @@ EOH
       end
 
       if current_resource.installed?
-        if current_resource.version == new_resource.version ||
-           new_resource.version.to_sym == :latest
+        if current_resource.version == new_resource.version || new_resource.version.to_sym == :latest
           Chef::Log.debug("#{new_resource} already installed - skipping")
+        elsif compare_versions(current_resource.version, new_resource.version) > 0 && new_resource.downgrade == false
+          Chef::Log.debug("#{new_resource} is older than current plugin & downgrading is disabled - skipping")
         else
           converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{new_resource.version}", &block)
         end
@@ -224,6 +236,55 @@ EOH
     private
 
     #
+    # Find all dependencies and install them
+    # @param [String] String
+    # @return
+    #
+    def install_dependencies(plugin_file)
+      require 'zip'
+      require 'rexml/document'
+
+      dependencies = []
+
+      # Open the plugin as a jar/zip file
+      Zip::File.open(plugin_file) do |zip_file|
+        # Find the pom files & grab all of the dependencies
+        zip_file.glob('**/pom.xml').each do |pom|
+          pom_props = {}
+          # Parse it
+          parsed_pom = REXML::Document.new(zip_file.read(pom))
+          # Get the Pom Properties
+          parsed_pom.get_elements('*/properties/*').each do |element|
+            pom_props[element.name] = element.text
+          end
+          # Select the dependencies we want
+          dependency_elements = parsed_pom.get_elements('*/dependencies/dependency').select do |element|
+            next false if element.get_elements('scope').any? { |scope| scope.text == 'test' }
+            next true if element.get_elements('groupId').any? { |groupId| groupId.text == 'org.jenkinsci.plugins' || groupId.text == 'org.jenkins-ci.plugins' }
+          end
+          # Get the dependencies ID
+          dependency_elements.each do |dependency_element|
+            version = dependency_element.get_elements('version').first.text
+            dependencies << {
+              name: dependency_element.get_elements('artifactId').first.text,
+              # Here we need to evaluate the version if it is given by in the pom properties
+              version: version.match(/\$\{(.*)\}/) ? pom_props[version.match(/\$\{(.*)\}/)[1]] : version,
+            }
+          end
+        end
+      end
+
+      # Recursively install the dependencies
+      dependencies.each do |dependency|
+        plugin = Chef::Resource::JenkinsPlugin.new(dependency[:name], run_context)
+        plugin.version(dependency[:version])
+        plugin.install_dependencies(true)
+        plugin.downgrade(false)
+        plugin.run_action(:install)
+      end
+    end
+
+    #
     # Loads the local plugin into a hash
     #
     def current_plugin
@@ -277,6 +338,28 @@ EOH
     #
     def plugin_data_directory
       ::File.join(plugins_directory, new_resource.name)
+    end
+
+    #
+    # Compare versions. Returns -1 if v1<v2, 0 if v1==v2, 1 if v1>v2
+    #
+    # @param [v1] String
+    # @param [v2] String
+    # @return [Fixnum]
+    #
+    def compare_versions(v1, v2)
+      v1split = v1.to_s.split('.')
+      v2split = v2.to_s.split('.')
+      [v1split.count, v2split.count].min.times do |i|
+        v1int = v1split[i].to_i
+        v2int = v2split[i].to_i
+        if v1int < v2int
+          return -1
+        elsif v1int > v2int
+          return 1
+        end
+      end
+      return 0
     end
   end
 end
