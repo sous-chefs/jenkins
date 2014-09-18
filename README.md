@@ -108,6 +108,11 @@ end
 ### jenkins_credentials
 **NOTE** The use of the Jenkins credentials resource requries the Jenkins credentials plugin. This plugin began shipping with Jenkins 1.536. On older Jenkins installations, you will need to install the credentials plugin at version 1.5 or higher to utilize this resource. On newer versions of Jenkins, this resource should work correctly.
 
+Each credential can be referenced in job by its UUID.
+You can set this UUID when creating credential, and set the same UUID in job configuration.
+To generate UUID, you can use linux command `uuidgen`.
+
+
 This resource manages Jenkins credentials, supporting the following actions:
 
     :create, :delete
@@ -129,12 +134,14 @@ The `:create` action idempotently creates a set of Jenkins credentials on the cu
 ```ruby
 # Create password credentials
 jenkins_password_credentials 'wcoyote' do
+  id 'f2361e6b-b8e0-4b2b-890b-82e85bc1a59f'
   description 'Wile E Coyote'
   password    'beepbeep'
 end
 
 # Create private key credentials
 jenkins_private_key_credentials 'wcoyote' do
+  id 'fa3aab48-4edc-446d-b1e2-1d89d86f4458'
   description 'Wile E Coyote'
   private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
 end
