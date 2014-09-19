@@ -96,6 +96,21 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_proxy
+  def config_jenkins_proxy(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_proxy,
+      :config,
+      resource_name)
+  end
+
+  def remove_jenkins_proxy(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_proxy,
+      :remove,
+      resource_name)
+  end
+
   ChefSpec.define_matcher :jenkins_plugin
   def install_jenkins_plugin(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(

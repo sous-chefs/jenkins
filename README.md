@@ -223,6 +223,33 @@ jenkins_job 'my-parameterized-job' do
 end
 ```
 
+### jenkins_proxy
+This resource manages Jenkins HTTP proxy information, supporting the following actions:
+
+    :config, :remove
+
+This uses the Jenkins groovy API to configure the HTTP proxy information, that is provided on the *Advanced* tab of the *Plugin Manager*.
+
+The `:config` action idempotently configure the Jenkins HTTP proxy information on the current node. The proxy attribute corresponds to the proxy server name and port number that have to use on the target node. You may also specify a list of no proxy host names with the noproxy attribute. The default is *localhost* and *127.0.0.1*.
+
+```ruby
+# Basic proxy configuration
+jenkins_proxy '1.2.3.4:5678'
+
+# Expanded proxy configuration
+jenkins_proxy '5.6.7.8:9012' do
+  noproxy ['localhost', '127.0.0.1', 'nohost', '*.nodomain']
+end
+```
+
+The `:remove` action removes the Jenkins HTTP proxy information from the system.
+
+```ruby
+jenkins_proxy '1.2.3.4:5678' do
+  action :remove
+end
+```
+
 ### jenkins_plugin
 This resource manages Jenkins plugins, supporting the following actions:
 
@@ -581,6 +608,7 @@ License & Authors
 - Contributor: Fletcher Nichol <fnichol@nichol.ca>
 - Contributor: Roman Kamyk <rkj@go2.pl>
 - Contributor: Darko Fabijan <darko@renderedtext.com>
+- Contributor: Stephan Linz <linz@li-pro.net>
 
 ```text
 Copyright 2010 VMware, Inc.
