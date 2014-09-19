@@ -14,6 +14,10 @@ module RSpec
         Serverspec::Type::JenkinsPlugin.new(name)
       end
 
+      def jenkins_proxy(name)
+        Serverspec::Type::JenkinsProxy.new(name)
+      end
+
       def jenkins_slave(name)
         Serverspec::Type::JenkinsSlave.new(name)
       end
