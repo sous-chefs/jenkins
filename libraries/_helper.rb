@@ -26,6 +26,8 @@ require 'uri'
 
 module Jenkins
   module Helper
+    class JenkinsTimeout < Timeout::Error; end
+
     class JenkinsNotReady < StandardError
       def initialize(endpoint, timeout)
         super <<-EOH
@@ -319,13 +321,14 @@ EOH
     #   if the Jenkins master does not respond within (+timeout+) seconds
     #
     def wait_until_ready!
-      Timeout.timeout(timeout) do
+      Timeout.timeout(timeout, JenkinsTimeout) do
         begin
           open(endpoint)
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
                Errno::ENETUNREACH,
+               Timeout::Error,
                OpenURI::HTTPError => e
           # If authentication has been enabled, the server will return an HTTP
           # 403. This is "OK", since it means that the server is actually
@@ -337,7 +340,7 @@ EOH
           retry
         end
       end
-    rescue Timeout::Error
+    rescue JenkinsTimeout
       raise JenkinsNotReady.new(endpoint, timeout)
     end
 
