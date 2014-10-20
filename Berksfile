@@ -10,5 +10,6 @@ group :integration do
   cookbook 'jenkins_script',      path: 'test/fixtures/cookbooks/jenkins_script'
   cookbook 'jenkins_slave',       path: 'test/fixtures/cookbooks/jenkins_slave'
   cookbook 'jenkins_user',        path: 'test/fixtures/cookbooks/jenkins_user'
+  cookbook 'jenkins_view',        path: 'test/fixtures/cookbooks/jenkins_view'
   cookbook 'smoke',               path: 'test/fixtures/cookbooks/smoke'
 end
