@@ -444,6 +444,32 @@ jenkins_user 'grumpy' do
 end
 ```
 
+### jenkins_view
+This resource manages simple regex-based Jenkins-views, supporting the following actions:
+
+    :create, :delete
+
+This uses the Jenkins Groovy API to create and delete views.
+
+The `:create` action idempotently creates a Jenkins view on the current node. The name attribute (default) corresponds to the name of the view, which will be displayed on the Jenkins front door. You may additionally specify a regex pattern for the view.
+
+```ruby
+# Create a Jenkins view
+jenkins_view 'master'
+
+# Create a Jenkins view with a regex filter
+jenkins_view 'master' do
+  regex 'master.*'
+end
+```
+
+The `:delete` action removes a Jenkins view from the current node.
+
+```ruby
+jenkins_view 'master' do
+  action :delete
+end
+```
 
 Caveats
 -------
