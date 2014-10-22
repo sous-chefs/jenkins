@@ -75,6 +75,15 @@ describe Jenkins::Executor do
       end
     end
 
+    context 'when execute! with options' do
+      let(:stdin) { "hello\nworld" }
+      it 'pass to shellout' do
+        command = 'java -jar /usr/share/jenkins/cli/java/cli.jar foo'
+        expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60, input: stdin)
+        subject.execute!('foo', input: stdin)
+      end
+    end
+
     context 'when the command fails' do
       it 'raises an error' do
         allow(shellout).to receive(:error!).and_raise(RuntimeError)
