@@ -381,6 +381,7 @@ EOH
           'Accept' => 'application/json'
         }
         http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true if uri.scheme == 'https'
         response = http.post(uri.path, extracted_json, headers)
 
         true
