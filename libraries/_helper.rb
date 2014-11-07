@@ -201,6 +201,11 @@ EOH
         file.content(content)
         file.backup(false)
         file.mode('0600')
+        # Setting sensitive so the contents of the private key file aren't included in the log.
+        # This functionality is not available in older versions of Chef, so check before we use it.
+        if file.respond_to?(:sensitive)
+          file.sensitive(true)
+        end
         file.run_action(:create)
 
         destination
