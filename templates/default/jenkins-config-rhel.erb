@@ -113,7 +113,7 @@ JENKINS_DEBUG_LEVEL="5"
 #
 # Whether to enable access logging or not.
 #
-JENKINS_ENABLE_ACCESS_LOG="no"
+JENKINS_ENABLE_ACCESS_LOG="<%= node['jenkins']['master']['access_log_enabled'] ? 'yes' : 'no' %>"
 
 ## Type:        integer
 ## Default:     100

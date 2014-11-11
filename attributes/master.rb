@@ -174,4 +174,15 @@ default['jenkins']['master'].tap do |master|
   #   node.set['jenkins']['master']['log_directory'] = '/var/log/jenkins'
   #
   master['log_directory'] = '/var/log/jenkins'
+
+  #
+  # The file name for access logging into node['jenkins']['master']['log_directory'].
+  #
+  master['access_log'] = 'access_log'
+
+  #
+  # Whether to enable access logging.
+  #
+  master['access_log_enabled'] = false
+
 end

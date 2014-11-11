@@ -35,6 +35,13 @@ RUN_STANDALONE=true
 # log location.  this may be a syslog facility.priority
 JENKINS_LOG=<%= node['jenkins']['master']['log_directory'] %>/$NAME.log
 
+# Enable access log
+JENKINS_ENABLE_ACCESS_LOG="<%= node['jenkins']['master']['access_log_enabled'] ? 'yes' : 'no' %>"
+
+if [ "$JENKINS_ENABLE_ACCESS_LOG" = "yes" ]; then
+  JENKINS_ACCESSLOG="--accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=<%= node['jenkins']['master']['log_directory'] %>/<%= node['jenkins']['master']['access_log'] %>"
+fi
+
 # OS LIMITS SETUP
 #   comment this out to observe /etc/security/limits.conf
 #   this is on by default because http://github.com/jenkinsci/jenkins/commit/2fb288474e980d0e7ff9c4a3b768874835a3e92e
@@ -64,7 +71,7 @@ PREFIX=/jenkins
 # --webroot=~/.jenkins/war
 # --prefix=$PREFIX
 
-JENKINS_ARGS="--webroot=/var/cache/jenkins/war --httpListenAddress=$HTTP_LISTEN_ADDRESS --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT"
+JENKINS_ARGS="--webroot=/var/cache/jenkins/war --httpListenAddress=$HTTP_LISTEN_ADDRESS --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT $JENKINS_ACCESSLOG"
 <% if node['jenkins']['master']['jenkins_args'] %>
 JENKINS_ARGS="$JENKINS_ARGS <%= node['jenkins']['master']['jenkins_args'] %>"
 <% end %>

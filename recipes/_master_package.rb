@@ -35,6 +35,20 @@ when 'debian'
     version node['jenkins']['master']['version']
   end
 
+  bash "Modify packaged log rotation directory" do
+    code <<-EOH
+      sed -i "s|/var/log/jenkins|#{node['jenkins']['master']['log_directory']}|g" /etc/logrotate.d/jenkins
+    EOH
+  end
+
+  bash "Modify packaged log rotation file name" do
+    code <<-EOH
+      if [ -z "`grep #{node['jenkins']['master']['access_log']} /etc/logrotate.d/jenkins`" ]; then
+        sed -i "s|{|#{node['jenkins']['master']['log_directory']}/#{node['jenkins']['master']['access_log']} {|" /etc/logrotate.d/jenkins
+      fi
+    EOH
+  end
+
   template '/etc/default/jenkins' do
     source   'jenkins-config-debian.erb'
     mode     '0644'
@@ -50,6 +64,25 @@ when 'rhel'
 
   package 'jenkins' do
     version node['jenkins']['master']['version']
+  end
+
+  bash "Modify packaged log rotation directory" do
+    code <<-EOH
+      sed -i "s|/var/log/jenkins|#{node['jenkins']['master']['log_directory']}|g" /etc/logrotate.d/jenkins
+    EOH
+  end
+
+  bash "Modify packaged log rotation file name" do
+    code <<-EOH
+      sed -i "s|access_log|#{node['jenkins']['master']['access_log']}|g"          /etc/logrotate.d/jenkins
+    EOH
+  end
+
+  bash "Modify packaged access log" do
+    code <<-EOH
+      sed -i "/accessLogger/ s|/var/log/jenkins|#{node['jenkins']['master']['log_directory']}|g" /etc/init.d/jenkins
+      sed -i "/accessLogger/ s|access_log|#{node['jenkins']['master']['access_log']}|g"          /etc/init.d/jenkins
+    EOH
   end
 
   template '/etc/sysconfig/jenkins' do
