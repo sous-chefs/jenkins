@@ -74,6 +74,7 @@ class Chef
       #  * slave_jar_resource
       #
       slave_exe_resource.run_action(:create)
+      slave_compat_xml.run_action(:create)
       slave_xml_resource.run_action(:create)
       install_service_resource.run_action(:run)
       service_resource.run_action(:start)
@@ -99,6 +100,32 @@ class Chef
       @slave_exe_resource.checksum(new_resource.winsw_checksum)
       @slave_exe_resource.backup(false)
       @slave_exe_resource
+    end
+
+    #
+    # winsw technically only runs under .NET 2.0 but we can force 4.0
+    # compat by dropping off the following file. More details at:
+    #
+    #   https://github.com/kohsuke/winsw#net-runtime-40
+    #
+    # The caller will need to call `run_action` on the resource.
+    #
+    # @return [Chef::Resource::File]
+    #
+    def slave_compat_xml
+      return @slave_compat_xml if @slave_compat_xml
+      slave_compat_xml = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.exe.config")
+      @slave_compat_xml = Chef::Resource::File.new(slave_compat_xml, run_context)
+      @slave_compat_xml.content(<<-EOH.gsub(/ ^{8}/, '')
+        <configuration>
+          <startup>
+            <supportedRuntime version="v2.0.50727" />
+            <supportedRuntime version="v4.0" />
+          </startup>
+        </configuration>
+      EOH
+      )
+      @slave_compat_xml
     end
 
     #
