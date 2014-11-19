@@ -131,6 +131,9 @@ EOH
       when nil
         'null'
       when String
+        # This is ugly but it ensures any backslashes appear as
+        # double-backslashes in the resulting Groovy code.
+        val.gsub!(/\\/, '\\\\\\\\')
         %Q("#{val}")
       when Array
         list_members = val.map do |v|
