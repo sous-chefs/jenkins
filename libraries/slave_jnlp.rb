@@ -210,6 +210,7 @@ class Chef
       @slave_jar_resource.backup(false)
       @slave_jar_resource.mode('0755')
       @slave_jar_resource.atomic_update(false)
+      @slave_jar_resource.notifies(:restart, service_resource)
       @slave_jar_resource
     end
 

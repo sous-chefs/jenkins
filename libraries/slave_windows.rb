@@ -164,6 +164,7 @@ class Chef
         user_password: new_resource.password,
         path:          new_resource.path,
       )
+      @slave_xml_resource.notifies(:restart, service_resource)
       @slave_xml_resource
     end
 
