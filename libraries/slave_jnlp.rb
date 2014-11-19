@@ -130,7 +130,7 @@ class Chef
     # @return [String]
     #
     def slave_jar
-      ::File.join(Chef::Config[:file_cache_path], 'slave.jar')
+      ::File.join(new_resource.remote_fs, 'slave.jar')
     end
 
     # Embedded Resources
