@@ -94,7 +94,7 @@ class Chef
     #
     def slave_exe_resource
       return @slave_exe_resource if @slave_exe_resource
-      slave_exe = ::File.join(new_resource.remote_fs, 'jenkins-slave.exe')
+      slave_exe = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.exe")
       @slave_exe_resource = Chef::Resource::RemoteFile.new(slave_exe, run_context)
       @slave_exe_resource.source(new_resource.winsw_url)
       @slave_exe_resource.checksum(new_resource.winsw_checksum)
@@ -138,7 +138,7 @@ class Chef
     def slave_xml_resource
       return @slave_xml_resource if @slave_xml_resource
 
-      slave_xml = ::File.join(new_resource.remote_fs, 'jenkins-slave.xml')
+      slave_xml = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.xml")
       # Determine if our user has a domain
       user_parts = new_resource.user.match(/(.*)\\(.*)/)
       if user_parts
