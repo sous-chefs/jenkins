@@ -176,6 +176,19 @@ EOH
       Shellwords.escape(value)
     end
 
+    #
+    # Performs a WMI query using WIN32OLE from the Ruby Stdlib
+    #
+    # @return [String]
+    #
+    def wmi_property_from_query(wmi_property, wmi_query)
+      require 'win32ole'
+      wmi = ::WIN32OLE.connect('winmgmts://')
+      result = wmi.ExecQuery(wmi_query)
+      return nil unless result.each.count > 0
+      result.each.next.send(wmi_property)
+    end
+
     private
 
     #

@@ -181,11 +181,8 @@ class Chef
       @install_service_resource = Chef::Resource::Execute.new(description, run_context)
       @install_service_resource.command('jenkins-slave.exe install')
       @install_service_resource.cwd(new_resource.remote_fs)
-      @install_service_resource.only_if do
-        WMI::Win32_Service.find(
-          :first,
-          conditions: { name: new_resource.service_name },
-        ).nil?
+      @install_service_resource.not_if do
+        wmi_property_from_query(:name, "select * from Win32_Service where name = '#{new_resource.service_name}'")
       end
       @install_service_resource
     end
@@ -198,10 +195,7 @@ class Chef
 
       @service_resource = Chef::Resource::Service.new(new_resource.service_name, run_context)
       @service_resource.only_if do
-        WMI::Win32_Service.find(
-          :first,
-          conditions: { name: new_resource.service_name },
-        )
+        wmi_property_from_query(:name, "select * from Win32_Service where name = '#{new_resource.service_name}'")
       end
       @service_resource
     end
