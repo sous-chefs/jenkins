@@ -47,6 +47,9 @@ class Chef
     attribute :winsw_url,
       kind_of: String,
       default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.16/winsw-1.16-bin.exe'
+    attribute :winsw_checksum,
+      kind_of: String,
+      default: '052f82c167fbe68a4025bcebc19fff5f11b43576a2ec62b0415432832fa2272d'
   end
 end
 
@@ -91,6 +94,7 @@ class Chef
       slave_exe = ::File.join(new_resource.remote_fs, 'jenkins-slave.exe')
       @slave_exe_resource = Chef::Resource::RemoteFile.new(slave_exe, run_context)
       @slave_exe_resource.source(new_resource.winsw_url)
+      @slave_exe_resource.checksum(new_resource.winsw_checksum)
       @slave_exe_resource.backup(false)
       @slave_exe_resource
     end
