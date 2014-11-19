@@ -50,6 +50,8 @@ class Chef
     attribute :winsw_checksum,
       kind_of: String,
       default: '052f82c167fbe68a4025bcebc19fff5f11b43576a2ec62b0415432832fa2272d'
+    attribute :path,
+      kind_of: String
   end
 end
 
@@ -133,6 +135,7 @@ class Chef
         user_domain:   user_domain,
         user_account:  user_account,
         user_password: new_resource.password,
+        path:          new_resource.path,
       )
       @slave_xml_resource
     end
