@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'jenkins::java' do
   context 'on Debian' do
     cached(:chef_run) do
-      ChefSpec::Runner.new(platform: 'debian', version: '7.1')
+      ChefSpec::ServerRunner.new(platform: 'debian', version: '7.1')
         .converge(described_recipe)
     end
 
@@ -14,7 +14,7 @@ describe 'jenkins::java' do
 
   context 'on RHEL' do
     cached(:chef_run) do
-      ChefSpec::Runner.new(platform: 'redhat', version: '6.5')
+      ChefSpec::ServerRunner.new(platform: 'redhat', version: '6.5')
         .converge(described_recipe)
     end
 
@@ -25,7 +25,7 @@ describe 'jenkins::java' do
 
   context 'on an unsupported platform' do
     cached(:chef_run) do
-      ChefSpec::Runner.new(platform: 'mac_os_x', version: '10.8.2')
+      ChefSpec::ServerRunner.new(platform: 'mac_os_x', version: '10.8.2')
         .converge(described_recipe)
     end
 

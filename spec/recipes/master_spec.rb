@@ -7,7 +7,7 @@ describe 'jenkins::_master_war' do
   let(:group)         { 'meats' }
 
   cached(:chef_run) do
-    ChefSpec::Runner.new do |node|
+    ChefSpec::ServerRunner.new do |node|
       node.set['jenkins']['master']['home']           = home
       node.set['jenkins']['master']['log_directory']  = log_directory
       node.set['jenkins']['master']['user']           = user
