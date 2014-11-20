@@ -131,6 +131,9 @@ EOH
       when nil
         'null'
       when String
+        # This is ugly but it ensures any backslashes appear as
+        # double-backslashes in the resulting Groovy code.
+        val.gsub!(/\\/, '\\\\\\\\')
         %Q("#{val}")
       when Array
         list_members = val.map do |v|
@@ -174,6 +177,19 @@ EOH
     #
     def escape(value)
       Shellwords.escape(value)
+    end
+
+    #
+    # Performs a WMI query using WIN32OLE from the Ruby Stdlib
+    #
+    # @return [String]
+    #
+    def wmi_property_from_query(wmi_property, wmi_query)
+      require 'win32ole'
+      wmi = ::WIN32OLE.connect('winmgmts://')
+      result = wmi.ExecQuery(wmi_query)
+      return nil unless result.each.count > 0
+      result.each.next.send(wmi_property)
     end
 
     private
