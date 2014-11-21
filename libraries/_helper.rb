@@ -315,6 +315,17 @@ EOH
     end
 
     #
+    # The path to the fully-extracted, raw JSON structure contained in Jenkin's
+    # +update-center.json+. This is the universe of Jenkin's plugins is used
+    # by the +jenkins_plugin+ resoure.
+    #
+    # @return [String]
+    #
+    def extracted_update_center_json
+      File.join(Chef::Config[:file_cache_path], 'extracted-update-center.json')
+    end
+
+    #
     # Since the Jenkins service returns immediately and the actual Java process
     # is started in the background, we block the Chef Client run until the
     # service endpoint(s) are _actually_ ready to accept requests.
@@ -396,6 +407,21 @@ EOH
         IO.readlines(update_center_json).map do |line|
           extracted_json = line unless line == 'updateCenter.post(' || line == ');'
         end
+
+        # Write the extracted JSON to a file so `jenkins_plugin` can read it.
+        extracted_json_file = Chef::Resource::File.new(extracted_update_center_json, run_context)
+        extracted_json_file.content(extracted_json)
+        extracted_json_file.backup(false)
+
+        # Setting sensitive(true) will suppress the long diff output, but this
+        # functionality is not available in older versions of Chef, so we need
+        # check if the resource responds to the method before calling it.
+        if extracted_json_file.respond_to?(:sensitive)
+          extracted_json_file.sensitive(true)
+        end
+
+        extracted_json_file.mode('0644')
+        extracted_json_file.run_action(:create)
 
         # Uri where update-center JSON's can be posted to. Jenkins is now aware of the
         # update-center data and can handle the plugin installation through CLI exactly
