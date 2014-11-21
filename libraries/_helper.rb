@@ -136,7 +136,7 @@ EOH
         # This is ugly but it ensures any backslashes appear as
         # double-backslashes in the resulting Groovy code.
         val.gsub!(/\\/, '\\\\\\\\')
-        %Q("#{val}")
+        "'#{val}'"
       when Array
         list_members = val.map do |v|
           convert_to_groovy(v)

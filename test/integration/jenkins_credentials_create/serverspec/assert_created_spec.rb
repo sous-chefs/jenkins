@@ -23,3 +23,8 @@ describe jenkins_credentials('jenkins2') do
   it { should have_private_key(File.read(File.expand_path('../../../../kitchen/data/data/test_id_rsa_with_passphrase', __FILE__)), 'secret') }
   it { should have_passphrase('secret') }
 end
+
+describe jenkins_credentials('dollarbills') do
+  it { should be_a_jenkins_credentials }
+  it { should have_password('$uper$ecret') }
+end
