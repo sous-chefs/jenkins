@@ -211,7 +211,9 @@ EOH
     action(:uninstall) do
       if current_resource.installed?
         converge_by("Uninstall #{new_resource}") do
-          Resource::File.new(plugin_file, run_context).run_action(:delete)
+          file = Resource::File.new(plugin_file, run_context)
+          file.backup(false)
+          file.run_action(:delete)
           directory = Resource::Directory.new(plugin_data_directory, run_context)
           directory.recursive(true)
           directory.run_action(:delete)
