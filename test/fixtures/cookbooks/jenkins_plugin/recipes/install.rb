@@ -14,4 +14,11 @@ jenkins_plugin 'copy-to-slave' do
 end
 
 # Install a plugin with many deps
-jenkins_plugin 'github-oauth'
+jenkins_plugin 'github-oauth' do
+  install_deps true
+end
+
+# Skip this plugins deps
+jenkins_plugin 'jquery-ui' do
+  install_deps false
+end

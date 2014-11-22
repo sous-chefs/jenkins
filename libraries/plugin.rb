@@ -47,6 +47,9 @@ class Chef
       default: :latest
     attribute :source,
       kind_of: String
+    attribute :install_deps,
+      kind_of: [TrueClass, FalseClass],
+      default: true
     attribute :options,
       kind_of: String
 
@@ -110,9 +113,19 @@ EOH
         # Otherwise the plugin is installed through the jenkins update-center
         # (default behaviour). In that case plugin dependencies are handled by jenkins.
         if new_resource.source
-          install_plugin_from_url(new_resource.source, new_resource.name, nil, new_resource.options)
+          install_plugin_from_url(
+            new_resource.source,
+            new_resource.name,
+            nil,
+            cli_opts: new_resource.options,
+          )
         else
-          install_plugin_from_update_center(new_resource.name, new_resource.version, new_resource.options)
+          install_plugin_from_update_center(
+            new_resource.name,
+            new_resource.version,
+            cli_opts: new_resource.options,
+            install_deps: new_resource.install_deps,
+          )
         end
       end
 
@@ -229,7 +242,7 @@ EOH
     # Installs a plugin along with all of it's dependencies using the
     # update-center.json data.
     #
-    def install_plugin_from_update_center(plugin_name, plugin_version, options='')
+    def install_plugin_from_update_center(plugin_name, plugin_version, opts={})
       remote_plugin_data = plugin_universe[plugin_name]
       local_plugin_data  = plugin_installation_manifest(plugin_name)
 
@@ -240,7 +253,7 @@ EOH
       desired_version   = (plugin_version.to_sym == :latest) ? latest_version : Gem::Version.new(plugin_version)
 
       # Brute-force install all dependencies
-      if remote_plugin_data['dependencies'].any?
+      if opts[:install_deps] && remote_plugin_data['dependencies'].any?
         Chef::Log.debug "Installing plugin dependencies for #{plugin_name}"
 
         remote_plugin_data['dependencies'].each do |dep|
@@ -250,7 +263,7 @@ EOH
             next
           else
             # only install required dependencies
-            install_plugin_from_update_center(dep['name'], dep['version']) if dep['optional'] == false
+            install_plugin_from_update_center(dep['name'], dep['version'], opts) if dep['optional'] == false
           end
         end
       end
@@ -259,13 +272,13 @@ EOH
       source_url = remote_plugin_data['url']
       source_url.gsub!(latest_version.to_s, desired_version.to_s)
 
-      install_plugin_from_url(source_url, plugin_name, plugin_version, options)
+      install_plugin_from_url(source_url, plugin_name, plugin_version, opts)
     end
 
     #
     # Install a plugin from a given hpi (or jpi) source url.
     #
-    def install_plugin_from_url(source_url, plugin_name, plugin_version=nil, options='')
+    def install_plugin_from_url(source_url, plugin_name, plugin_version=nil, opts={})
       version = plugin_version || Digest::MD5.hexdigest(source_url)
 
       # Use the remote_file resource to download and cache the plugin (see
@@ -280,7 +293,7 @@ EOH
       # Jenkins that prevents Jenkins from following 302 redirects, so we
       # use Chef to download the plugin and then use Jenkins to install it.
       # It's a bit backwards, but so is Jenkins.
-      executor.execute!('install-plugin', escape(plugin.path), '-name', escape(plugin_name), options)
+      executor.execute!('install-plugin', escape(plugin.path), '-name', escape(plugin_name), opts[:cli_opts])
     end
 
     #

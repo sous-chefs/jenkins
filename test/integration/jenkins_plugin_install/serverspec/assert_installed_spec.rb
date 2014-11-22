@@ -23,3 +23,16 @@ end
 describe jenkins_plugin('github-api') do
   it { should be_a_jenkins_plugin }
 end
+
+# Ensure a transitive dep has been installed
+#
+#   github-oauth -> git -> scm-api
+#
+describe jenkins_plugin('scm-api') do
+  it { should be_a_jenkins_plugin }
+end
+
+# Ensure the jquery-ui's deps were not installed
+describe jenkins_plugin('jquery') do
+  it { should_not be_a_jenkins_plugin }
+end
