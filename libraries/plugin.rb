@@ -242,6 +242,12 @@ EOH
     # Installs a plugin along with all of it's dependencies using the
     # update-center.json data.
     #
+    # @param [String] name of the plugin to be installed
+    # @param [String] version of the plugin to be installed
+    # @param [Hash] opts the options install plugin with
+    # @option opts [Boolean] :cli_opts additional flags to pass the jenkins cli command
+    # @option opts [Boolean] :install_deps indicates a plugins dependencies should be installed
+    #
     def install_plugin_from_update_center(plugin_name, plugin_version, opts={})
       remote_plugin_data = plugin_universe[plugin_name]
       local_plugin_data  = plugin_installation_manifest(plugin_name)
@@ -278,6 +284,13 @@ EOH
     #
     # Install a plugin from a given hpi (or jpi) source url.
     #
+    # @param [String] full url of the *.hpi/*.jpi to install
+    # @param [String] name of the plugin to be installed
+    # @param [String] version of the plugin to be installed
+    # @param [Hash] opts the options install plugin with
+    # @option opts [Boolean] :cli_opts additional flags to pass the jenkins cli command
+    # @option opts [Boolean] :install_deps indicates a plugins dependencies should be installed
+    #
     def install_plugin_from_url(source_url, plugin_name, plugin_version=nil, opts={})
       version = plugin_version || Digest::MD5.hexdigest(source_url)
 
@@ -299,6 +312,8 @@ EOH
     #
     # Uninstalling a plugin removes the plugin binary (*.jpi) from the disk.
     #
+    # @param [String] name of the plugin to be uninstall
+    #
     def uninstall_plugin(plugin_name)
       file = Resource::File.new(plugin_file(plugin_name), run_context)
       file.backup(false)
@@ -319,6 +334,9 @@ EOH
 
     #
     # The path to the actual plugin file on disk (+.jpi+)
+    #
+    # @param [String] name of the plugin to be installed
+    # @return [String]
     #
     def plugin_file(plugin_name)
       hpi = ::File.join(plugins_directory, "#{plugin_name}.hpi")
@@ -350,7 +368,8 @@ EOH
     # Return the installation manifest for +plugin_name+. If the plugin is not
     # installed +nil+ is returned.
     #
-    # @return [Gem::Version]
+    # @param [String] name of the plugin to be installed
+    # @return [Hash]
     #
     def plugin_installation_manifest(plugin_name)
       manifest = ::File.join(plugins_directory, plugin_name, 'META-INF', 'MANIFEST.MF')
