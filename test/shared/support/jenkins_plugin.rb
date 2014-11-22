@@ -36,7 +36,7 @@ module Serverspec
 
           key, value = line.strip.split(' ', 2).map(&:strip)
           key = key.gsub(':', '').gsub('-', '_').downcase.to_sym
-
+          next unless key && value
           [key, value]
         end.flatten.compact]
       rescue Errno::ENOENT
