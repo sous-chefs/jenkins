@@ -423,6 +423,9 @@ EOH
         extracted_json_file.mode('0644')
         extracted_json_file.run_action(:create)
 
+        # Ensure Jenkins is alive and kicking
+        wait_until_ready!
+
         # Uri where update-center JSON's can be posted to. Jenkins is now aware of the
         # update-center data and can handle the plugin installation through CLI exactly
         # in the same way as through the user interface.
