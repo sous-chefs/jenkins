@@ -50,6 +50,13 @@ directory node['jenkins']['master']['log_directory'] do
   recursive true
 end
 
+# Log rotation for access log
+logrotate_app 'jenkins' do
+  cookbook  'logrotate'
+  enable    node['jenkins']['master']['access_log_enabled']
+  path      "#{node['jenkins']['master']['log_directory']}/#{node['jenkins']['master']['access_log']}"
+end
+
 # Include runit to setup the service
 include_recipe 'runit::default'
 
