@@ -25,3 +25,8 @@ jenkins_private_key_credentials 'jenkins2' do
   private_key OpenSSL::PKey::RSA.new(File.read(File.expand_path('../../../../../data/data/test_id_rsa_with_passphrase', __FILE__)), 'secret').to_pem
   passphrase 'secret'
 end
+
+# Test creating a password with a dollar sign in it
+jenkins_password_credentials 'dollarbills' do
+  password '$uper$ecret'
+end

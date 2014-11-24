@@ -274,11 +274,10 @@ class Chef
     # launcher implementation. The launcher instance should be set to
     # a Groovy variable named `launcher`.
     #
-    # @abstract
     # @return [String]
     #
     def launcher_groovy
-      fail NotImplementedError, 'You must implement #launcher_groovy.'
+      'launcher = new hudson.slaves.JNLPLauncher()'
     end
 
     #

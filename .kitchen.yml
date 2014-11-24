@@ -12,7 +12,7 @@ driver:
 
 provisioner:
   name: chef_zero
-  require_chef_omnibus: 11.12.2
+  require_chef_omnibus: 12.0.0.rc.1
   data_path: test/shared
   data_bags_path: test/fixtures/data_bags
   attributes:
@@ -20,8 +20,8 @@ provisioner:
       master:
         host: localhost
         install_method: war
-        version: '1.555'
-        mirror: http://mirror.xmission.com/jenkins
+        version: '1.590'
+        mirror: http://mirrors.jenkins-ci.org
 
 platforms:
   - name: ubuntu-12.04
@@ -45,7 +45,7 @@ suites:
       jenkins:
         master:
           install_method: package
-          version: '1.555-1.1'
+          version: '1.580-1.1'
   - name: smoke_package_latest
     run_list: smoke::default
     attributes:
@@ -59,7 +59,8 @@ suites:
       jenkins:
         master:
           install_method: war
-          version: '1.555'
+          version: '1.580.1'
+          source: http://mirrors.jenkins-ci.org/war-stable/1.580.1/jenkins.war
 
   #
   # Authentication suites

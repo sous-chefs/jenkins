@@ -26,6 +26,8 @@ require 'uri'
 
 module Jenkins
   module Helper
+    class JenkinsTimeout < Timeout::Error; end
+
     class JenkinsNotReady < StandardError
       def initialize(endpoint, timeout)
         super <<-EOH
@@ -131,7 +133,10 @@ EOH
       when nil
         'null'
       when String
-        %Q("#{val}")
+        # This is ugly but it ensures any backslashes appear as
+        # double-backslashes in the resulting Groovy code.
+        val.gsub!(/\\/, '\\\\\\\\')
+        "'#{val}'"
       when Array
         list_members = val.map do |v|
           convert_to_groovy(v)
@@ -176,6 +181,19 @@ EOH
       Shellwords.escape(value)
     end
 
+    #
+    # Performs a WMI query using WIN32OLE from the Ruby Stdlib
+    #
+    # @return [String]
+    #
+    def wmi_property_from_query(wmi_property, wmi_query)
+      require 'win32ole'
+      wmi = ::WIN32OLE.connect('winmgmts://')
+      result = wmi.ExecQuery(wmi_query)
+      return nil unless result.each.count > 0
+      result.each.next.send(wmi_property)
+    end
+
     private
 
     #
@@ -201,6 +219,11 @@ EOH
         file.content(content)
         file.backup(false)
         file.mode('0600')
+        # Setting sensitive so the contents of the private key file aren't included in the log.
+        # This functionality is not available in older versions of Chef, so check before we use it.
+        if file.respond_to?(:sensitive)
+          file.sensitive(true)
+        end
         file.run_action(:create)
 
         destination
@@ -303,13 +326,14 @@ EOH
     #   if the Jenkins master does not respond within (+timeout+) seconds
     #
     def wait_until_ready!
-      Timeout.timeout(timeout) do
+      Timeout.timeout(timeout, JenkinsTimeout) do
         begin
           open(endpoint)
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
                Errno::ENETUNREACH,
+               Timeout::Error,
                OpenURI::HTTPError => e
           # If authentication has been enabled, the server will return an HTTP
           # 403. This is "OK", since it means that the server is actually
@@ -321,7 +345,7 @@ EOH
           retry
         end
       end
-    rescue Timeout::Error
+    rescue JenkinsTimeout
       raise JenkinsNotReady.new(endpoint, timeout)
     end
 
@@ -381,6 +405,7 @@ EOH
           'Accept' => 'application/json'
         }
         http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true if uri.scheme == 'https'
         response = http.post(uri.path, extracted_json, headers)
 
         true

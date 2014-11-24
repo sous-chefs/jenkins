@@ -27,11 +27,13 @@
 # Create the Jenkins user
 user node['jenkins']['master']['user'] do
   home node['jenkins']['master']['home']
+  system node['jenkins']['master']['use_system_accounts']
 end
 
 # Create the Jenkins group
 group node['jenkins']['master']['group'] do
   members node['jenkins']['master']['user']
+  system node['jenkins']['master']['use_system_accounts']
 end
 
 # Create the home directory
@@ -66,8 +68,12 @@ remote_file File.join(node['jenkins']['master']['home'], 'jenkins.war') do
   checksum node['jenkins']['master']['checksum'] if node['jenkins']['master']['checksum']
   owner    node['jenkins']['master']['user']
   group    node['jenkins']['master']['group']
-  notifies :restart, 'service[jenkins]'
+  notifies :restart, 'runit_service[jenkins]'
 end
 
+Chef::Log.warn('Here we go with the runit service')
+
 # Create runit service
-runit_service 'jenkins'
+runit_service 'jenkins' do
+  sv_timeout node['jenkins']['master']['runit']['sv_timeout']
+end

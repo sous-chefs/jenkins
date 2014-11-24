@@ -67,14 +67,15 @@ module Jenkins
     #   the standard out from the command
     #
     def execute!(*pieces)
-      command =  "#{Shellwords.escape(options[:java])}"
-      command << " -jar #{Shellwords.escape(options[:cli])}"
+      command_options = pieces.last.is_a?(Hash) ? pieces.pop : {}
+      command =  %Q("#{options[:java]}")
+      command << %Q( -jar "#{options[:cli]}")
       command << " -s #{URI.escape(options[:endpoint])}" if options[:endpoint]
-      command << " -i #{shl_escape(options[:key])}"      if options[:key]
+      command << %Q( -i "#{options[:key]}")  if options[:key]
       command << " -p #{uri_escape(options[:proxy])}"    if options[:proxy]
       command << " #{pieces.join(' ')}"
 
-      command = Mixlib::ShellOut.new(command, timeout: options[:timeout])
+      command = Mixlib::ShellOut.new(command, command_options.merge(timeout: options[:timeout]))
       command.run_command
       command.error!
       command.stdout.strip
