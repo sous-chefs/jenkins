@@ -63,6 +63,30 @@ describe Jenkins::Executor do
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
       end
+
+      context 'the private key is unknown to the Jenkins instance' do
+        before do
+          # This is really ugly but there is no easy way to stub a method to
+          # raise an exception a set number of times.
+          @times = 0
+          allow(shellout).to receive(:error!) { @times += 1; raise Mixlib::ShellOut::ShellCommandFailed unless @times > 2 }
+          allow(shellout).to receive(:exitstatus).and_return(255, 1, 0)
+          allow(shellout).to receive(:stderr).and_return(
+            'Authentication failed. No private key accepted.',
+            'Exception in thread "main" java.io.EOFException',
+            '',
+          )
+        end
+
+        it 'retrys the command without a private key' do
+          subject.options[:key] = '/key/path.pem'
+          command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" -i "/key/path.pem" foo|
+          expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
+          command_no_key = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo|
+          expect(Mixlib::ShellOut).to receive(:new).with(command_no_key, timeout: 60)
+          subject.execute!('foo')
+        end
+      end
     end
 
     context 'when a :proxy option is given' do
