@@ -2,6 +2,36 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.2.0 (2014-12-02)
+-------------------
+### Bug
+- Handle jobs that do not have a `disabled` attribute
+- Remove unneeded service restart in Windows slaves
+- Update Jenkins service check to use `WIN32OLE`
+- Properly quote executor file paths cause $WINDOWS
+- Properly escape backslashes in generated Groovy code
+- Jenkins timeout shouldn't rescue Net::HTTP timeout
+- Make sure Net::HTTP#use_ssl is turned on for https end-point
+- Wrap converted Groovy strings in single quotes
+- Recover from commands executed with unknown credentials. This should also fix some cases of JENKINS-22346.
+
+### Improvement
+- Use atomic updates when downloading the slave JAR
+- Create the `slave.jar` in a slave’s JENKINS_HOME
+- Support a checksum attribute for `winsw.exe` download
+- Support setting the `PATH` on Windows slave
+- Add .NET 4.0 compat fix for `winsw`
+- Restart services when `slave.jar` is updated
+- Allow `jenkins_slave` to be used as a standalone resource
+- Add attribute for configuring Runit sv_timeout on masters installed from war
+- Add attribute for creating `jenkins` user as a system account
+- Allow `Executor#execute!` to pass options to underlying `Shellout` instance.
+- Set the senstive attribute for the jenkins cli private key file
+- Don’t backup plugins on uninstall
+- Properly allow installation of specific versions of a plugin. Previously this only worked when a source URL was provided.
+- Optionally ensure a plugin’s dependencies are installed before proceeding with it’s installation
+- Handle plugin downgrades correctly (requires an uninstall of existing, newer version).
+
 v2.1.2 (2014-07-02)
 -------------------
 - Fix a bug where `jenkins_windows_slave` was being called as `jenkins_jnlp_slave`
