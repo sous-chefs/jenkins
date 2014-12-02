@@ -68,17 +68,34 @@ module Jenkins
     #
     def execute!(*pieces)
       command_options = pieces.last.is_a?(Hash) ? pieces.pop : {}
-      command =  %Q("#{options[:java]}")
-      command << %Q( -jar "#{options[:cli]}")
-      command << " -s #{URI.escape(options[:endpoint])}" if options[:endpoint]
-      command << %Q( -i "#{options[:key]}")  if options[:key]
-      command << " -p #{uri_escape(options[:proxy])}"    if options[:proxy]
-      command << " #{pieces.join(' ')}"
+      command = []
+      command << %Q("#{options[:java]}")
+      command << %Q(-jar "#{options[:cli]}")
+      command << %Q(-s #{URI.escape(options[:endpoint])}) if options[:endpoint]
+      command << %Q(-i "#{options[:key]}")                if options[:key]
+      command << %Q(-p #{uri_escape(options[:proxy])})    if options[:proxy]
+      command.push(pieces)
 
-      command = Mixlib::ShellOut.new(command, command_options.merge(timeout: options[:timeout]))
-      command.run_command
-      command.error!
-      command.stdout.strip
+      begin
+        cmd = Mixlib::ShellOut.new(command.join(' '), command_options.merge(timeout: options[:timeout]))
+        cmd.run_command
+        cmd.error!
+        cmd.stdout.strip
+      rescue Mixlib::ShellOut::ShellCommandFailed
+        exitstatus = cmd.exitstatus
+        stderr = cmd.stderr
+        # We'll fall back to executing the command without authentication if the
+        # command fails in a very specific way. This is a sign the provided
+        # private key is unknown to the Jenkins master. This exception is commonly
+        # thrown the first time a Chef run enables authentication on the Jenkins
+        # master. This should also fix some cases of JENKINS-22346.
+        if ((exitstatus == 255) && (stderr =~ /^Authentication failed\. No private key accepted\.$/)) ||
+          ((exitstatus == 1) && (stderr =~ /^Exception in thread "main" java\.io\.EOFException/))
+          command.reject! {|c| c =~ /-i/}
+          retry
+        end
+        raise
+      end
     end
 
     #
