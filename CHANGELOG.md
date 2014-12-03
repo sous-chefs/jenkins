@@ -2,6 +2,11 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.2.1 (2014-12-02)
+-------------------
+### Bug
+- Ensure Win service install command respects alternate service names
+
 v2.2.0 (2014-12-02)
 -------------------
 ### Bug
