@@ -180,7 +180,7 @@ class Chef
 
       description = "Install '#{new_resource.service_name}' service"
       @install_service_resource = Chef::Resource::Execute.new(description, run_context)
-      @install_service_resource.command('jenkins-slave.exe install')
+      @install_service_resource.command("#{new_resource.service_name}.exe install")
       @install_service_resource.cwd(new_resource.remote_fs)
       @install_service_resource.not_if do
         wmi_property_from_query(:name, "select * from Win32_Service where name = '#{new_resource.service_name}'")
