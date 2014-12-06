@@ -142,7 +142,7 @@ jenkins_private_key_credentials 'wcoyote' do
 end
 ```
 
-The `:delete` action idempotently removes a set of Jenkins credentials from the system. You can use the base `jenkins_credentials` resource or any of it's children to perform the deletion.
+The `:delete` action idempotently removes a set of Jenkins credentials from the system. You can use the base `jenkins_credentials` resource or any of its children to perform the deletion.
 
 ```ruby
 jenkins_credentials 'wcoyote' do
@@ -168,7 +168,7 @@ This resource manages Jenkins jobs, supporting the following actions:
 
 The resource is fully idempotent and convergent. It also supports whyrun mode.
 
-The `:create` action requires a Jenkins job `config.xml`. This config file must exist on the target node and contain a valid Jenkins job configuration file. Because the Jenkins CLI actually reads and generates it's own copy of this file, **do NOT** write this configuration inside of the Jenkins job. We recommend putting them in Chef's file cache path:
+The `:create` action requires a Jenkins job `config.xml`. This config file must exist on the target node and contain a valid Jenkins job configuration file. Because the Jenkins CLI actually reads and generates its own copy of this file, **do NOT** write this configuration inside of the Jenkins job. We recommend putting them in Chef's file cache path:
 
 ```ruby
 xml = File.join(Chef::Config[:file_cache_path], 'bacon-config.xml')
@@ -370,7 +370,7 @@ jenkins_ssh_slave 'executor' do
 end
 ```
 
-The `:connect` action idempotently forces the master to reconnect to the specified slave. You can use the base `jenkins_slave` resource or any of it's children to perform the connection.
+The `:connect` action idempotently forces the master to reconnect to the specified slave. You can use the base `jenkins_slave` resource or any of its children to perform the connection.
 
 ```ruby
 jenkins_slave 'builder' do
@@ -382,7 +382,7 @@ jenkins_ssh_slave 'executor' do
 end
 ```
 
-The `:disconnect` action idempotently forces the master to disconnect the specified slave. You can use the base `jenkins_slave` resource or any of it's children to perform the connection.
+The `:disconnect` action idempotently forces the master to disconnect the specified slave. You can use the base `jenkins_slave` resource or any of its children to perform the connection.
 
 ```ruby
 jenkins_slave 'builder' do
@@ -394,7 +394,7 @@ jenkins_ssh_slave 'executor' do
 end
 ```
 
-The `:online` action idempotently brings a slave back online. You can use the base `jenkins_slave` resource or any of it's children to bring the slave online.
+The `:online` action idempotently brings a slave back online. You can use the base `jenkins_slave` resource or any of its children to bring the slave online.
 
 ```ruby
 jenkins_slave 'builder' do
@@ -406,7 +406,7 @@ jenkins_ssh_slave 'executor' do
 end
 ```
 
-The `:offline` action idempotently takes a slave temporarily offline. An optional reason for going offline can be provided with the `offline_reason` attribute. You can use the base `jenkins_slave` resource or any of it's children to take a slave offline.
+The `:offline` action idempotently takes a slave temporarily offline. An optional reason for going offline can be provided with the `offline_reason` attribute. You can use the base `jenkins_slave` resource or any of its children to take a slave offline.
 
 ```ruby
 jenkins_slave 'builder' do
