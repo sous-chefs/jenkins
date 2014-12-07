@@ -142,8 +142,17 @@ EOH
            new_resource.version.to_sym == :latest
           Chef::Log.debug("#{new_resource} already installed - skipping")
         else
-          current_version = Gem::Version.new(current_resource.version)
-          new_version     = Gem::Version.new(new_resource.version)
+          # https://github.com/opscode-cookbooks/jenkins/issues/292
+          # Prefer to use Gem::Version as that will be more accurate than
+          # comparing strings, but sadly Jenkins plugins may not always
+          # follow "normal" version patterns
+          begin
+            current_version = Gem::Version.new(current_resource.version)
+            new_version     = Gem::Version.new(new_resource.version)
+          rescue ArgumentError
+            current_version = current_resource.version
+            new_version = new_resource.version
+          end
 
           if current_version < new_version
             converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{new_resource.version}", &install_block)
