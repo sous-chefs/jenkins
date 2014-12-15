@@ -360,7 +360,7 @@ EOH
     def plugin_universe
       @plugin_universe ||= begin
         ensure_update_center_present!
-        JSON.parse(IO.read(extracted_update_center_json))['plugins']
+        JSON.parse(IO.read(extracted_update_center_json).force_encoding('UTF-8'))['plugins']
       end
     end
 
