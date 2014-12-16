@@ -68,6 +68,7 @@ module Jenkins
     #
     def execute!(*pieces)
       command_options = pieces.last.is_a?(Hash) ? pieces.pop : {}
+      cli_user, cli_password = options.fetch(:cli_credentials, [])
       command = []
       command << %Q("#{options[:java]}")
       command << %Q(-jar "#{options[:cli]}")
@@ -75,6 +76,7 @@ module Jenkins
       command << %Q(-i "#{options[:key]}")                if options[:key]
       command << %Q(-p #{uri_escape(options[:proxy])})    if options[:proxy]
       command.push(pieces)
+      command << %Q(--username #{cli_user} --password #{cli_password}) unless cli_user.nil?
 
       begin
         cmd = Mixlib::ShellOut.new(command.join(' '), command_options.merge(timeout: options[:timeout]))
