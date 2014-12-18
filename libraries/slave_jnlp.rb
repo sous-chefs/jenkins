@@ -140,6 +140,7 @@ class Chef
     def group_resource
       return @group_resource if @group_resource
       @group_resource = Chef::Resource::Group.new(new_resource.group, run_context)
+      @group_resource.system(node['jenkins']['master']['use_system_accounts'])
       @group_resource
     end
 
@@ -156,6 +157,7 @@ class Chef
       @user_resource.gid(new_resource.group)
       @user_resource.comment('Jenkins slave user - Created by Chef')
       @user_resource.home(new_resource.remote_fs)
+      @user_resource.system(node['jenkins']['master']['use_system_accounts'])
       @user_resource
     end
 
