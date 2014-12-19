@@ -217,7 +217,7 @@ This uses the Jenkins CLI to install plugins. By default, it does a cold deploy,
 - **A plugin's dependencies are also installed by default, this behavior can be disabled by setting the `install_deps` attribute to `false`.**
 - **This resource does not install plugin dependencies from a a given hpi/jpi URL - you must specify all plugin dependencies or Jenkins may not startup correctly!**
 
-The `:install` action idempotely installs a Jenkins plugin on the current node. The name attribute corresponds to the name of the plugin on the Jenkins Update Center. You can also specify a particular version of the plugin to install. Finally, you can specify a full source URL or local path (on the node) to a plugin.
+The `:install` action idempotently installs a Jenkins plugin on the current node. The name attribute corresponds to the name of the plugin on the Jenkins Update Center. You can also specify a particular version of the plugin to install. Finally, you can specify a full source URL or local path (on the node) to a plugin.
 
 ```ruby
 # Install the latest version of the greenballs plugin
@@ -305,7 +305,7 @@ The `jenkins_slave` resource is actually the base resource for several resources
 * `jenkins_jnlp_slave` - As JNLP Slave connections are slave initiated, this resource should be part of a __slave__'s run list.
 * `jenkins_ssh_slave` - As SSH Slave connections are master initiated, this resource should be part of a __master__'s run list.
 
-The `:create` action idempotely creates a Jenkins slave on the master. The name attribute corresponds to the name of the slave (which is also used to uniquely identify the slave).
+The `:create` action idempotently creates a Jenkins slave on the master. The name attribute corresponds to the name of the slave (which is also used to uniquely identify the slave).
 
 ```ruby
 # Create a basic JNLP slave
