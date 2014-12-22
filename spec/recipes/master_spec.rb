@@ -102,5 +102,35 @@ describe 'jenkins::_master_war' do
         .with_mode('0755')
         .with_recursive(true)
     end
+  end  
+end
+describe 'jenkins::_master_package' do
+  context 'jenkins user is set' do
+    let(:home)          { '/opt/bacon' }
+    let(:log_directory) { '/opt/bacon/log' }
+    let(:user)          { 'bacon' }
+    let(:group)         { 'meats' }
+
+    cached(:chef_run) do
+      ChefSpec::ServerRunner.new(platform: 'centos', version: '6.5') do |node|
+        node.set['jenkins']['master']['home']           = home
+        node.set['jenkins']['master']['log_directory']  = log_directory
+        node.set['jenkins']['master']['user']           = user
+        node.set['jenkins']['master']['group']          = group
+        node.set['jenkins']['master']['install_method'] = 'package'
+        node.set['jenkins']['master']['use_system_accounts'] = true
+
+        # Workaround until https://github.com/hw-cookbooks/runit/pull/57 is merged.
+        node.set[:runit][:sv_bin] = '/usr/bin/sv'
+      end.converge(described_recipe)
+    end
+
+    before do
+      allow_any_instance_of(Chef::Recipe).to receive(:include_recipe)
+    end
+
+    it 'sets the jenkins user in /etc/sysconfig/jenkins' do
+      expect(chef_run).to render_file('/etc/sysconfig/jenkins').with_content('JENKINS_USER="bacon"')
+    end
   end
 end
