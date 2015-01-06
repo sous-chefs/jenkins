@@ -75,6 +75,8 @@ class Chef
               default: 'jenkins'
     attribute :jvm_options,
               kind_of: String
+    attribute :java_path,
+              kind_of: String
 
     attr_writer :exists
     attr_writer :connected

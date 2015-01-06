@@ -79,6 +79,7 @@ class Chef
         @current_resource.port(current_slave[:port])
         @current_resource.credentials(current_slave[:credentials])
         @current_resource.jvm_options(current_slave[:jvm_options])
+        @current_resource.java_path(current_slave[:java_path])
       end
 
       @current_resource
@@ -100,7 +101,7 @@ class Chef
             #{convert_to_groovy(new_resource.port)},
             credentials,
             #{convert_to_groovy(new_resource.jvm_options)},
-            null,
+            #{convert_to_groovy(new_resource.java_path)},
             #{convert_to_groovy(new_resource.command_prefix)},
             #{convert_to_groovy(new_resource.command_suffix)}
           )
@@ -115,6 +116,7 @@ class Chef
         host: 'slave.launcher.host',
         port: 'slave.launcher.port',
         jvm_options: 'slave.launcher.jvmOptions',
+        java_path: 'slave.launcher.javaPath',
         command_prefix: 'slave.launcher.prefixStartSlaveCmd',
         command_suffix: 'slave.launcher.suffixStartSlaveCmd',
       }
