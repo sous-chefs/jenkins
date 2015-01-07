@@ -19,8 +19,9 @@
 # limitations under the License.
 #
 
-require 'net/http'
-require 'open-uri'
+require 'fileutils'
+require 'mixlib/shellout'
+require 'securerandom'
 require 'timeout'
 require 'uri'
 
@@ -60,6 +61,7 @@ EOH
     def executor
       wait_until_ready!
       ensure_cli_present!
+      create_keystore!
 
       options = {}.tap do |h|
         h[:cli]      = cli
@@ -358,7 +360,19 @@ EOH
     # @return [String]
     #
     def jvm_options
-      node['jenkins']['executor']['jvm_options']
+      jvm_options = node['jenkins']['executor']['jvm_options']
+      jvm_options += %( -Djavax.net.ssl.trustStore=#{keystore} -Djavax.net.ssl.trustStorePassword=#{keystore_pass!}) if ::File.file?(keystore)
+      jvm_options
+    end
+
+    #
+    # The path to the keytool binary.
+    #
+    # @return [String]
+    #
+    def keytool
+      java_dirname = ::File.dirname(java)
+      java_dirname == '.' ? 'keytool' : ::File.join(java_dirname, 'keytool')
     end
 
     #
@@ -388,6 +402,15 @@ EOH
     #
     def cli
       File.join(Chef::Config[:file_cache_path], 'jenkins-cli.jar')
+    end
+
+    #
+    # The path to the +jenkins.ks+ on disk (which may or may not exist).
+    #
+    # @return [String]
+    #
+    def keystore
+      File.join(Chef::Config[:file_cache_path], 'jenkins.ks')
     end
 
     #
@@ -425,13 +448,16 @@ EOH
     def wait_until_ready!
       Timeout.timeout(timeout, JenkinsTimeout) do
         begin
-          open(endpoint)
+          http = Chef::HTTP.new(endpoint)
+          http.get(endpoint)
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
                Errno::ENETUNREACH,
                Timeout::Error,
-               OpenURI::HTTPError => e
+               Net::HTTPError,
+               Net::HTTPServerException,
+               Net::HTTPFatalError => e
           # If authentication has been enabled, the server will return an HTTP
           # 403. This is "OK", since it means that the server is actually
           # ready to accept requests.
@@ -514,9 +540,54 @@ EOH
         # in the same way as through the user interface.
         uri = URI(uri_join(endpoint, 'updateCenter', 'byId', 'default', 'postBack'))
         headers = { 'Accept' => 'application/json' }
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true if uri.scheme == 'https'
-        http.post(uri.path, extracted_json, headers)
+
+        begin
+          http = Chef::HTTP.new(uri)
+          http.post(uri, extracted_json, headers)
+        rescue SocketError,
+               Errno::ECONNREFUSED,
+               Errno::ECONNRESET,
+               Errno::ENETUNREACH,
+               Timeout::Error,
+               Net::HTTPError,
+               Net::HTTPServerException,
+               Net::HTTPFatalError => e
+          Chef::Log.warn "Could not post to #{uri} - #{e.message}"
+        end
+
+        true
+      end
+    end
+
+    #
+    # Idempotently create password for the keystore
+    #
+    def keystore_pass!
+      node.run_state[:jenkins_keystore_pass] ||= SecureRandom.uuid # ~FC001
+    end
+
+    #
+    # Idempotently create a java keystore from the CA certs in the trusted_cert_dir
+    #
+    def create_keystore!
+      node.run_state[:jenkins_create_keystore] ||= begin # ~FC001
+        FileUtils.rm_f(keystore)
+        certs = Dir.glob(File.join(Chef::Util::PathHelper.escape_glob(Chef::Config.trusted_certs_dir), '*.{crt,pem}'))
+        certs.each do |cert_file|
+          command = []
+          command << keytool
+          command << '-import'
+          command << '-noprompt'
+          command << '-trustcacerts'
+          command << %(-alias "#{File.basename(cert_file, File.extname(cert_file))}")
+          command << %(-file "#{cert_file}")
+          command << %(-keystore "#{keystore}")
+          command << %(-storepass "#{keystore_pass!}")
+
+          cmd = Mixlib::ShellOut.new(command.join(' '), timeout: 60)
+          cmd.run_command
+          cmd.error!
+        end
 
         true
       end

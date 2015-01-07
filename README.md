@@ -601,6 +601,14 @@ default['jenkins']['master']['jvm_options'] = '-Djenkins.install.runSetupWizard=
 
 This is done by default, but must be kept when overriding the jvm_options!
 
+### Java Keystore
+The `Jenkins::Helper` module creates a Java keystore with includes all the certificates in the `Chef::Config[:trusted_certs_dir]`. This keystore is then used passed to the executor class as options for the `java` command line options jenkins cli. The cookbook creates a new keystore every time you run Chef and stores information in the runstate:
+
+```ruby
+node.run_state[:jenkins_keystore_pass]   # random UUID as a password for the keystore
+node.run_state[:jenkins_create_keystore] # the path to the keystore
+```
+
 ### Proxies
 
 If you need to pass through a proxy to communicate between your masters and slaves, you will need to set a special node attribute:
