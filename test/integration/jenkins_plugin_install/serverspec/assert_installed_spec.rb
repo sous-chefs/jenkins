@@ -36,3 +36,8 @@ end
 describe jenkins_plugin('jquery') do
   it { should_not be_a_jenkins_plugin }
 end
+
+describe jenkins_plugin('build-monitor-plugin') do
+  it { should be_a_jenkins_plugin }
+  it { should have_version('1.6+build.135') }
+end

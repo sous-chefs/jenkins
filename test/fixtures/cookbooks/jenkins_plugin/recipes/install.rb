@@ -22,3 +22,10 @@ end
 jenkins_plugin 'jquery-ui' do
   install_deps false
 end
+
+# Install with a wacky version number
+jenkins_plugin 'build-monitor-plugin' do
+  version '1.6+build.135'
+  install_deps true
+  notifies :restart, 'service[jenkins]'
+end
