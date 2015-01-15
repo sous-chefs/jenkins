@@ -142,8 +142,8 @@ class Chef
       # Determine if our user has a domain
       user_parts = new_resource.user.match(/(.*)\\(.*)/)
       if user_parts
-        user_domain = match[1]
-        user_account   = match[2]
+        user_domain = user_parts[1]
+        user_account   = user_parts[2]
       else
         user_domain = "."
         user_account   = new_resource.user
