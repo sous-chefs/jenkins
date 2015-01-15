@@ -2,6 +2,13 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.2.2 (2015-01-15)
+-------------------
+### Bug
+- Gem::Version raising ArgumentError for weirdly versioned Jenkins plugins
+- Force UTF-8 encoding when parsing update center JSON
+- README grammer fixes
+
 v2.2.1 (2014-12-02)
 -------------------
 ### Bug
