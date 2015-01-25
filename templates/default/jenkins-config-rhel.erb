@@ -69,7 +69,7 @@ JENKINS_LISTEN_ADDRESS="<%= node['jenkins']['master']['listen_address'] %>"
 # HTTPS port Jenkins is listening on.
 # Default is disabled.
 #
-JENKINS_HTTPS_PORT=""
+JENKINS_HTTPS_PORT="<%= node['jenkins']['master']['https_port'] %>"
 
 ## Type:        string
 ## Default:     ""
@@ -78,7 +78,7 @@ JENKINS_HTTPS_PORT=""
 # IP address Jenkins listens on for HTTPS requests.
 # Default is disabled.
 #
-JENKINS_HTTPS_LISTEN_ADDRESS=""
+JENKINS_HTTPS_LISTEN_ADDRESS="<%= node['jenkins']['master']['https_listen_address'] %>"
 
 ## Type:        integer(0:65535)
 ## Default:     8009
@@ -87,7 +87,7 @@ JENKINS_HTTPS_LISTEN_ADDRESS=""
 # Ajp13 Port Jenkins is listening on.
 # Set to -1 to disable
 #
-JENKINS_AJP_PORT="8009"
+JENKINS_AJP_PORT="<%= node['jenkins']['master']['ajp_port'] || node['jenkins']['master']['port'] - 71 %>"
 
 ## Type:        string
 ## Default:     ""
@@ -96,7 +96,7 @@ JENKINS_AJP_PORT="8009"
 # IP address Jenkins listens on for Ajp13 requests.
 # Default is all interfaces (0.0.0.0).
 #
-JENKINS_AJP_LISTEN_ADDRESS=""
+JENKINS_AJP_LISTEN_ADDRESS="<%= node['jenkins']['master']['ajp_listen_address'] %>"
 
 ## Type:        integer(1:9)
 ## Default:     5
@@ -105,7 +105,7 @@ JENKINS_AJP_LISTEN_ADDRESS=""
 # Debug level for logs -- the higher the value, the more verbose.
 # 5 is INFO.
 #
-JENKINS_DEBUG_LEVEL="5"
+JENKINS_DEBUG_LEVEL="<%= node['jenkins']['master']['debug_level'] || 5%>"
 
 ## Type:        yesno
 ## Default:     no
@@ -113,7 +113,7 @@ JENKINS_DEBUG_LEVEL="5"
 #
 # Whether to enable access logging or not.
 #
-JENKINS_ENABLE_ACCESS_LOG="no"
+JENKINS_ENABLE_ACCESS_LOG="<%= node['jenkins']['master']['enable_access_log'] || 'no' %>"
 
 ## Type:        integer
 ## Default:     100
@@ -121,7 +121,7 @@ JENKINS_ENABLE_ACCESS_LOG="no"
 #
 # Maximum number of HTTP worker threads.
 #
-JENKINS_HANDLER_MAX="100"
+JENKINS_HANDLER_MAX="<%= node['jenkins']['master']['handler_max_threads'] || 100%>"
 
 ## Type:        integer
 ## Default:     20
@@ -129,7 +129,7 @@ JENKINS_HANDLER_MAX="100"
 #
 # Maximum number of idle HTTP worker threads.
 #
-JENKINS_HANDLER_IDLE="20"
+JENKINS_HANDLER_IDLE="<%= node['jenkins']['master']['handler_max_idle'] || 20 %>"
 
 ## Type:        string
 ## Default:     ""
