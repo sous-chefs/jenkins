@@ -351,10 +351,10 @@ jenkins_jnlp_slave 'integration' do
 end
 
 # Windows JNLP slave
-jenkins_jnlp_slave 'builder' do
-  remote_fs 'C:\jenkins'
-  user      'Administrator'
-  labels    ['builder', 'windows']
+jenkins_windows_slave 'mywinslave' do
+  remote_fs 'C:/jenkins'
+  user       '.\Administrator'
+  password   'MyPassword'
 end
 ```
 
