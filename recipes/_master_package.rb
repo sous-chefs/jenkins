@@ -29,6 +29,7 @@ when 'debian'
     uri          'http://pkg.jenkins-ci.org/debian'
     distribution 'binary/'
     key          'https://jenkins-ci.org/debian/jenkins-ci.org.key'
+    only_if node['jenkins']['master']['install_repositories']
   end
 
   package 'jenkins' do
@@ -46,6 +47,7 @@ when 'rhel'
   yum_repository 'jenkins-ci' do
     baseurl 'http://pkg.jenkins-ci.org/redhat'
     gpgkey  'https://jenkins-ci.org/redhat/jenkins-ci.org.key'
+    only_if node['jenkins']['master']['install_repositories']
   end
 
   package 'jenkins' do

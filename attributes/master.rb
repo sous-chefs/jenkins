@@ -38,6 +38,14 @@ default['jenkins']['master'].tap do |master|
                              end
 
   #
+  # Allow users to specify using inbuilt repositories for installing
+  # jenkins as a package
+  #
+  #   node.set['jenkins']['master']['install_repositories'] = true
+  #
+  master['install_repositories'] = true
+
+  #
   # The version of the Jenkins master to install. This can be a specific
   # package version (from the yum or apt repo), or the version of the war
   # file to download from the Jenkins mirror.
