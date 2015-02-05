@@ -69,7 +69,7 @@ EOH
         h[:proxy]    = proxy if proxy_given?
         h[:endpoint] = endpoint
         h[:timeout]  = timeout if timeout_given?
-        h[:cli_user] = cli_user if cli_user_given?
+        h[:cli_username] = cli_username if cli_username_given?
         h[:cli_password] = cli_password if cli_password_given?
       end
  
@@ -293,8 +293,8 @@ EOH
     #
     # @return [String]
     #
-    def cli_user
-      node['jenkins']['executor']['cli_user']
+    def cli_username
+      node['jenkins']['executor']['cli_username']
     end
 
     #
@@ -302,8 +302,8 @@ EOH
     #
     # @return [Boolean]
     #
-    def cli_user_given?
-      !!node['jenkins']['executor']['cli_user']
+    def cli_username_given?
+      !!node['jenkins']['executor']['cli_username']
     end
 
     #
