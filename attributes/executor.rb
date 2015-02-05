@@ -51,7 +51,7 @@ default['jenkins']['executor'].tap do |executor|
   # It is best to set this in a spot within your cookbook after an authentication scheme is activated
   # Otherwise, Jenkins wont understand the --username flag
   #
-  executor['cli_user'] = nil
+  executor['cli_username'] = nil
 
   #
   # This is the user name you wish to use to authenticate with the Jenkins CLI
