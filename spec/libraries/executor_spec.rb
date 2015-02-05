@@ -49,9 +49,9 @@ describe Jenkins::Executor do
       end
     end
 
-    context 'when a :cli_user option is given' do
+    context 'when a :cli_username option is given' do
       it 'adds --username option' do
-        subject.options[:cli_user] = 'user'
+        subject.options[:cli_username] = 'user'
         command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo --username user|
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
