@@ -93,6 +93,16 @@ jenkins_script 'add_authentication' do
 end
 ```
 
+### jenkins_scriptFile 
+This resource executes external groovy file against the Jenkins master. By the nature of this command, it is **not** idempotent.
+The file can be a resource of the recipe
+```ruby
+jenkins_scriptFile "initJenkins" do
+  file "/tmp/initJenkins.groovy"  
+end
+```
+
+
 ### jenkins_credentials
 **NOTE** The use of the Jenkins credentials resource requries the Jenkins credentials plugin. This plugin began shipping with Jenkins 1.536. On older Jenkins installations, you will need to install the credentials plugin at version 1.5 or higher to utilize this resource. On newer versions of Jenkins, this resource should work correctly.
 
