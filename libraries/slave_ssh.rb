@@ -2,7 +2,7 @@
 # Cookbook Name:: jenkins
 # HWRP:: ssh_slave
 #
-# Author:: Seth Chisamore <schisamo@getchef.com>
+# Author:: Seth Chisamore <schisamo@chef.io>
 #
 # Copyright 2013-2014, Chef Software, Inc.
 #

@@ -20,7 +20,7 @@
 #
 
 #
-# HACK: https://github.com/opscode/chef/pull/1559
+# HACK: https://github.com/chef/chef/pull/1559
 # This file can be removed when PR #1559 is merged.
 #
 require 'chef/mixin/params_validate'

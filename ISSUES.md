@@ -40,4 +40,4 @@ Here's a snippet you can copy-paste into the issue and fill out:
     ```
 ```
 
-[Create a ticket](https://github.com/opscode-cookbooks/jenkins/issues/new) describing your problem and include the information above.
+[Create a ticket](https://github.com/chef-cookbooks/jenkins/issues/new) describing your problem and include the information above.

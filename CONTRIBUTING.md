@@ -23,7 +23,7 @@ This second details Pull Requests that we will **not** merge.
 
 1. New features without accompanying Test Kitchen tests
 1. New features without accompanying usage documentation
-1. Pull requests with a broken build (Travis will automatically mark the build as passing/failing on GitHub, but you can also check the build manually by visiting https://travis-ci.org/opscode-cookbooks/jenkins)
+1. Pull requests with a broken build (Travis will automatically mark the build as passing/failing on GitHub, but you can also check the build manually by visiting https://travis-ci.org/chef-cookbooks/jenkins)
 
 
 Coding Standards
@@ -51,14 +51,14 @@ Developing this cookbook requires a sane Ruby 1.9+ environment with `bundler` in
 - [VirtualBox](https://virtualbox.org)
 
 ### CLA
-For non-trival updates (such as new features or bugfixes), we do require a Contributor License Agreement from Chef Software. If you have already signed a CLA under Opscode or Chef Software, you are already covered. For more information, see [Chef Software's Contribution Guidelines](https://wiki.opscode.com/display/chef/How+to+Contribute), but please note that we do **not** use the JIRA ticketing system.
+For non-trival updates (such as new features or bugfixes), we do require a Contributor License Agreement from Chef Software. If you have already signed a CLA under Chef Software or Chef Software, you are already covered. For more information, see [Chef Software's Contribution Guidelines](https://wiki.chef.io/display/chef/How+to+Contribute), but please note that we do **not** use the JIRA ticketing system.
 
 
 Process
 -------
 1. Clone the git repository from GitHub:
 
-        $ git clone git@github.com:opscode-cookbooks/jenkins.git
+        $ git clone git@github.com:chef-cookbooks/jenkins.git
 
 2. Install the dependencies using bundler:
 

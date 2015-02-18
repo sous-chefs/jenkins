@@ -2,7 +2,7 @@
 # Cookbook Name:: jenkins
 # Recipe:: java
 #
-# Author: Seth Vargo <sethvargo@getchef.com>
+# Author: Seth Vargo <sethvargo@chef.io>
 #
 # Copyright 2014, Chef Software, Inc.
 #

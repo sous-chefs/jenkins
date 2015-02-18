@@ -3,7 +3,7 @@
 # HWRP:: plugin
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
-# Author:: Seth Chisamore <schisamo@getchef.com>
+# Author:: Seth Chisamore <schisamo@chef.io>
 #
 # Copyright 2013-2014, Chef Software, Inc.
 #
@@ -399,7 +399,7 @@ EOH
     end
     #
     # Return the plugin version for +version+.
-    # https://github.com/opscode-cookbooks/jenkins/issues/292
+    # https://github.com/chef-cookbooks/jenkins/issues/292
     # Prefer to use Gem::Version as that will be more accurate than
     # comparing strings, but sadly Jenkins plugins may not always
     # follow "normal" version patterns

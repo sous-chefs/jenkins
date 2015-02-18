@@ -5,7 +5,7 @@
 # Author: AJ Christensen <aj@junglist.gen.nz>
 # Author: Dough MacEachern <dougm@vmware.com>
 # Author: Fletcher Nichol <fnichol@nichol.ca>
-# Author: Seth Chisamore <schisamo@getchef.com>
+# Author: Seth Chisamore <schisamo@chef.io>
 # Author: Guilhem Lettron <guilhem.lettron@youscribe.com>
 # Author: Seth Vargo <sethvargo@gmail.com>
 #

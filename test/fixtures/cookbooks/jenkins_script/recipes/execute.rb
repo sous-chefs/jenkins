@@ -12,7 +12,7 @@ jenkins_script 'create user' do
     user = hudson.model.User.get('yzl')
     user.setFullName('Yvonne Lam')
 
-    email = new hudson.tasks.Mailer.UserProperty('yzl@getchef.com')
+    email = new hudson.tasks.Mailer.UserProperty('yzl@chef.io')
     user.addProperty(email)
 
     user.save()
