@@ -52,8 +52,10 @@ directory node['jenkins']['master']['log_directory'] do
   recursive true
 end
 
-# Include runit to setup the service
-include_recipe 'runit::default'
+if node['jenkins']['master']['runit']['enabled']
+  # Include runit to setup the service
+  include_recipe 'runit::default'
+end
 
 # Download the remote WAR file
 remote_file File.join(node['jenkins']['master']['home'], 'jenkins.war') do
