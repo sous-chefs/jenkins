@@ -61,12 +61,17 @@ remote_file File.join(node['jenkins']['master']['home'], 'jenkins.war') do
   checksum node['jenkins']['master']['checksum'] if node['jenkins']['master']['checksum']
   owner    node['jenkins']['master']['user']
   group    node['jenkins']['master']['group']
-  notifies :restart, 'runit_service[jenkins]'
+  if node['jenkins']['master']['runit']['enabled']
+    notifies :restart, 'runit_service[jenkins]'
+  end
 end
 
-Chef::Log.warn('Here we go with the runit service')
+# do we even use runit?
+if node['jenkins']['master']['runit']['enabled']
+  Chef::Log.warn('Here we go with the runit service')
 
-# Create runit service
-runit_service 'jenkins' do
-  sv_timeout node['jenkins']['master']['runit']['sv_timeout']
+  # Create runit service
+  runit_service 'jenkins' do
+    sv_timeout node['jenkins']['master']['runit']['sv_timeout']
+  end
 end
