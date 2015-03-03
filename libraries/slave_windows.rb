@@ -52,7 +52,7 @@ class Chef
       default: '052f82c167fbe68a4025bcebc19fff5f11b43576a2ec62b0415432832fa2272d'
     attribute :path,
       kind_of: String
-    attribute :pre_run_args,
+    attribute :pre_run_cmds,
       kind_of: Array,
       default: []
   end
@@ -181,7 +181,7 @@ class Chef
       @slave_bat_resource.cookbook('jenkins')
       @slave_bat_resource.source('jenkins-slave.bat.erb')
       @slave_bat_resource.variables(
-        pre_run_args:  new_resource.pre_run_args,
+        pre_run_cmds:  new_resource.pre_run_cmds,
         new_resource:  new_resource,
         java_bin:      java,
         slave_jar:     slave_jar,
