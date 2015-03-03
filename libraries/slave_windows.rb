@@ -172,6 +172,9 @@ class Chef
       @slave_xml_resource
     end
 
+    # Create bat file from jenkins-slave.bat.erb to launches Jenkins jar as
+    # service. 
+    # Optionally run any commands in :pre_run_cmds before launching jar
     def slave_bat_resource
       return @slave_bat_resource if @slave_bat_resource
 
