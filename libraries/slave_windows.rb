@@ -66,13 +66,12 @@ class Chef
     # @see Chef::Resource::JenkinsSlave#action_create
     #
     def action_create
-      super
-
-      # The following resources are created in the parent:
-      #
-      #  * remote_fs_dir_resource
-      #  * slave_jar_resource
-      #
+      super #call parent but disable direct parent via unless statement.
+      
+      parent_remote_fs_dir_resource.run_action(:create)
+      remote_fs_dir_resource.run_action(:create)  #had to override locally
+      slave_jar_resource.run_action(:create)
+      
       slave_exe_resource.run_action(:create)
       slave_compat_xml.run_action(:create)
       slave_xml_resource.run_action(:create)
@@ -81,9 +80,24 @@ class Chef
     end
 
     protected
-
+    
     # Embedded Resources
 
+    # Creates a `directory` resource that represents the directory
+    # specified the `remote_fs` attribute. The caller will need to call
+    # `run_action` on the resource.
+    #
+    # @return [Chef::Resource::Directory]
+    #
+    def remote_fs_dir_resource
+      return @remote_fs_dir_resource if @remote_fs_dir_resource
+      @remote_fs_dir_resource = Chef::Resource::Directory.new(new_resource.remote_fs, run_context)
+      user_parts = user_hash
+      @remote_fs_dir_resource.rights(:full_control, user_parts['username'])
+      @remote_fs_dir_resource.recursive(true)
+      @remote_fs_dir_resource
+    end
+    
     #
     # Creates a `remote_file` resource that represents the remote
     # +winsw.exe+ file. This file is a wrapper executable that is used
@@ -128,6 +142,22 @@ class Chef
       @slave_compat_xml
     end
 
+    
+    def user_hash
+      userhash= Hash.new
+      
+      user_parts = new_resource.user.match(/(.*)\\(.*)/)
+      if user_parts
+        userhash['domain'] = user_parts[1]
+        userhash['username']   = user_parts[2]
+      else
+        userhash['domain'] = "."
+        userhash['username']   = new_resource.user
+      end
+      
+      return userhash
+    end
+    
     #
     # Creates a `template` resource that represents the config file used
     # to create the Window's service. The caller will need to call
@@ -139,16 +169,12 @@ class Chef
       return @slave_xml_resource if @slave_xml_resource
 
       slave_xml = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.xml")
-      # Determine if our user has a domain
-      user_parts = new_resource.user.match(/(.*)\\(.*)/)
-      if user_parts
-        user_domain = match[1]
-        user_account   = match[2]
-      else
-        user_domain = "."
-        user_account   = new_resource.user
-      end
-
+      
+      # Get User object
+      user_parts = user_hash()
+      user_domain=user_parts['domain']
+      user_account=user_parts['username']
+      
       @slave_xml_resource = Chef::Resource::Template.new(slave_xml, run_context)
       @slave_xml_resource.cookbook('jenkins')
       @slave_xml_resource.source('jenkins-slave.xml.erb')
