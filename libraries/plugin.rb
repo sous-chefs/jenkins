@@ -138,17 +138,15 @@ EOH
       end
 
       if current_resource.installed?
-        if current_resource.version == new_resource.version ||
-           new_resource.version.to_sym == :latest
-          Chef::Log.debug("#{new_resource} already installed - skipping")
+        if plugin_version(current_resource.version) == desired_version
+          Chef::Log.debug("#{new_resource} version #{current_resource.version} already installed - skipping")
         else
           current_version = plugin_version(current_resource.version)
-          new_version = plugin_version(new_resource.version)
 
-          if current_version < new_version
-            converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{new_resource.version}", &install_block)
+          if current_version < desired_version
+            converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &install_block)
           else
-            converge_by("Downgrade #{new_resource} from #{current_resource.version} to #{new_resource.version}", &downgrade_block)
+            converge_by("Downgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &downgrade_block)
           end
         end
       else
@@ -238,6 +236,18 @@ EOH
 
     private
 
+    def desired_version(name = nil, version = nil)
+      name = new_resource.name if name.nil?
+      version = new_resource.version if version.nil?
+
+      if version.to_sym == :latest
+        remote_plugin_data = plugin_universe[name]
+        plugin_version(remote_plugin_data['version'])
+      else
+        plugin_version(version)
+      end
+    end
+
     #
     # Installs a plugin along with all of it's dependencies using the
     # update-center.json data.
@@ -256,7 +266,6 @@ EOH
       # comparisons.
       installed_version = local_plugin_data ? plugin_version(local_plugin_data['plugin_version']) : nil
       latest_version    = plugin_version(remote_plugin_data['version'])
-      desired_version   = (plugin_version.to_sym == :latest) ? latest_version : plugin_version(plugin_version)
 
       # Brute-force install all dependencies
       if opts[:install_deps] && remote_plugin_data['dependencies'].any?
@@ -276,9 +285,9 @@ EOH
 
       # Replace the latest version with the desired version in the URL
       source_url = remote_plugin_data['url']
-      source_url.gsub!(latest_version.to_s, desired_version.to_s)
+      source_url.gsub!(latest_version.to_s, desired_version(plugin_name, plugin_version).to_s)
 
-      install_plugin_from_url(source_url, plugin_name, plugin_version, opts)
+      install_plugin_from_url(source_url, plugin_name, desired_version(plugin_name, plugin_version), opts)
     end
 
     #
