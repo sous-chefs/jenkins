@@ -68,3 +68,7 @@ JENKINS_ARGS="--webroot=/var/cache/jenkins/war --httpListenAddress=$HTTP_LISTEN_
 <% if node['jenkins']['master']['jenkins_args'] %>
 JENKINS_ARGS="$JENKINS_ARGS <%= node['jenkins']['master']['jenkins_args'] %>"
 <% end %>
+<% if node['jenkins']['master']['https_port'] && node['jenkins']['master']['pem_file'] && node['jenkins']['master']['key_file'] %>
+JENKINS_ARGS="$JENKINS_ARGS --httpsCertificate=<% node['jenkins']['master']['pem_file'] %> --httpsPrivateKey=<% node['jenkins']['master']['key_file'] %>  --httpsPort=<% node['jenkins']['master']['https_port'] %>"
+<% end %>
+

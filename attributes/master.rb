@@ -155,6 +155,22 @@ default['jenkins']['master'].tap do |master|
   master['port'] = 8080
 
   #
+  # The https_port which the Jenkins process will listen on.
+  #
+  master['https_port'] = nil
+
+  #
+  # The pem formatted cert file
+  #
+  master['pem_file'] = nil
+
+  #
+  # The pem formatted cert file
+  #
+  master['key_file'] = nil
+  
+  
+  #
   # The top-level endpoint for the Jenkins master. By default, this is a
   # "compiled" attribute from +jenkins.master.host+ and +jenkins.master.port+,
   # but you will need to change this attribute if you choose to serve Jenkins
