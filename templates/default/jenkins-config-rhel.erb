@@ -69,7 +69,7 @@ JENKINS_LISTEN_ADDRESS="<%= node['jenkins']['master']['listen_address'] %>"
 # HTTPS port Jenkins is listening on.
 # Default is disabled.
 #
-JENKINS_HTTPS_PORT=""
+JENKINS_HTTPS_PORT="<%= node['jenkins']['master']['https_port'] %>"
 
 ## Type:        string
 ## Default:     ""
@@ -141,3 +141,10 @@ JENKINS_HANDLER_IDLE="20"
 <% if node['jenkins']['master']['jenkins_args'] %>
 JENKINS_ARGS="$JENKINS_ARGS <%= node['jenkins']['master']['jenkins_args'] %>"
 <% end %>
+#
+# If https_port, pem_file and key_file are ALL set add it to JENKINS_ARGS
+#
+<% if node['jenkins']['master']['https_port'] && node['jenkins']['master']['pem_file'] && node['jenkins']['master']['key_file'] %>
+JENKINS_ARGS="$JENKINS_ARGS --httpsCertificate=<%= node['jenkins']['master']['pem_file'] %> --httpsPrivateKey=<%= node['jenkins']['master']['key_file'] %>  --httpsPort=<%= node['jenkins']['master']['https_port'] %>"
+<% end %>
+
