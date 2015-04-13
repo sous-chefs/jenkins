@@ -167,7 +167,7 @@ default['jenkins']['master'].tap do |master|
   #
   # The pem formatted cert file
   #
-  master['key_file'] = nil
+  master['key_file'] = 'farts'
   
   
   #
