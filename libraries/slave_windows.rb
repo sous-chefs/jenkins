@@ -220,7 +220,7 @@ class Chef
     def service_resource
       return @service_resource if @service_resource
 
-      @service_resource = Chef::Resource::Service.new(new_resource.service_name, run_context)
+      @service_resource = Chef::Resource.resource_for_node(:service, node).new(new_resource.service_name, run_context)
       @service_resource.only_if do
         wmi_property_from_query(:name, "select * from Win32_Service where name = '#{new_resource.service_name}'")
       end
