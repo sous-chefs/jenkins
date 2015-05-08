@@ -80,6 +80,10 @@ module Serverspec
         port === try { xml.elements['//port'].text.to_i }
       end
 
+      def has_java_path?(path)
+        path === try { xml.elements['//javaPath'].text }
+      end
+
       def has_credentials?(credentials)
         credentials_id = try { xml.elements['//credentialsId'].text }
         credentials_xml = credentials_xml_for_id(credentials_id)
