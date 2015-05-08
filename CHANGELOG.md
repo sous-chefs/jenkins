@@ -7,7 +7,7 @@ v2.2.2 (2015-01-15)
 ### Bug
 - Gem::Version raising ArgumentError for weirdly versioned Jenkins plugins
 - Force UTF-8 encoding when parsing update center JSON
-- README grammer fixes
+- README grammar fixes
 
 v2.2.1 (2014-12-02)
 -------------------
@@ -107,7 +107,7 @@ v2.0.2 (2014-01-30)
 - Document the need for the Jenkins credentials plugin
 - Fix a typo in the slave jar URL
 - Fix typos in README
-- Fix grammer in the Jenkins helper error
+- Fix grammar in the Jenkins helper error
 - Update Rubocop
 
 
