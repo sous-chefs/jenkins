@@ -102,7 +102,7 @@ class Chef
             password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
             user.addProperty(password)
 
-            keys = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl('#{new_resource.public_keys.join("\n")}')
+            keys = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl('#{new_resource.public_keys.join('\n')}')
             user.addProperty(keys)
 
             user.save()
