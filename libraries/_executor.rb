@@ -74,6 +74,8 @@ module Jenkins
       command << %Q(-s #{URI.escape(options[:endpoint])}) if options[:endpoint]
       command << %Q(-i "#{options[:key]}")                if options[:key]
       command << %Q(-p #{uri_escape(options[:proxy])})    if options[:proxy]
+      command << %Q(--username #{options[:cli_username]}) if options[:cli_username]
+      command << %Q(--password '#{options[:cli_password]}') if options[:cli_password]
       command.push(pieces)
 
       begin
