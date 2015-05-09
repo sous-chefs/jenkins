@@ -44,4 +44,20 @@ default['jenkins']['executor'].tap do |executor|
   # Please see the +Proxies+ section of the README for more information.
   #
   executor['proxy'] = nil
+
+  #
+  # This is the user name you wish to use to authenticate with the Jenkins CLI
+  # If left nil, no user will be specified (anonymous).
+  # It is best to set this in a spot within your cookbook after an authentication scheme is activated
+  # Otherwise, Jenkins wont understand the --username flag
+  #
+  executor['cli_username'] = nil
+
+  #
+  # This is the user name you wish to use to authenticate with the Jenkins CLI
+  # If left nil, no password will be used.
+  # It is best to set this in a spot within your cookbook after an authentication scheme is activated
+  # Otherwise, Jenkins wont understand the --password flag
+  #
+  executor['cli_password'] = nil
 end
