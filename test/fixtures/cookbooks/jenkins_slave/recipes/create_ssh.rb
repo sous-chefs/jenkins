@@ -60,6 +60,7 @@ jenkins_ssh_slave 'ssh-builder' do
   remote_fs   '/tmp/slave-ssh-builder'
   labels      %w(builer linux)
   user        'jenkins-ssh-key'
+  java_path    '/usr/bin/java'
   # SSH specific attributes
   host        'localhost'
   credentials credentials

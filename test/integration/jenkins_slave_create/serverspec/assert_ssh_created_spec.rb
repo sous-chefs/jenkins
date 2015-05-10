@@ -11,6 +11,7 @@ describe jenkins_slave('ssh-builder') do
   it { should have_host('localhost') }
   it { should have_port(22) }
   it { should have_credentials('jenkins-ssh-key') }
+  it { should have_java_path('/usr/bin/java') }
   it { should be_connected }
   it { should be_online }
 end
