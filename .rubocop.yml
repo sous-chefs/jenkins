@@ -5,13 +5,13 @@ AllCops:
     - 'test/shared/support/**/*'
 
 AbcSize:
-  Max: 50
+  Enabled: false
 ClassAndModuleChildren:
   Enabled: false
 ClassLength:
   Enabled: false
 CyclomaticComplexity:
-  Max: 15
+  Enabled: false
 Documentation:
   Enabled: false
 Encoding:
@@ -21,7 +21,7 @@ LineLength:
 MethodLength:
   Enabled: false
 PerceivedComplexity:
-  Max: 10
+  Enabled: false
 RaiseArgs:
   Enabled: false
 SignalException:
