@@ -20,7 +20,6 @@
 #
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsJob < Resource::LWRPBase
@@ -37,9 +36,9 @@ class Chef
 
     # Attributes
     attribute :name,
-      kind_of: String
+              kind_of: String
     attribute :config,
-      kind_of: String
+              kind_of: String
 
     attr_writer :enabled, :exists
 
@@ -50,7 +49,7 @@ class Chef
     # @return [Boolean]
     #
     def exists?
-      !!@exists
+      !@exists.nil? && @exists
     end
 
     #
@@ -60,7 +59,7 @@ class Chef
     # @return [Boolean]
     #
     def enabled?
-      !!@enabled
+      !@enabled.nil? && @enabled
     end
   end
 end
@@ -269,5 +268,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_job,
-  provider: Chef::Provider::JenkinsJob
+  provider: Chef::Provider::JenkinsJob,
 )

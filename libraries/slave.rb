@@ -20,7 +20,6 @@
 #
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 require 'json'
 
@@ -39,45 +38,43 @@ class Chef
 
     # Attributes
     attribute :slave_name,
-      kind_of: String,
-      name_attribute: true
+              kind_of: String,
+              name_attribute: true
     attribute :description,
-      kind_of: String,
-      default: lazy { |new_resource|
-        "Jenkins slave #{new_resource.slave_name}"
-      }
+              kind_of: String,
+              default: lazy { |new_resource| "Jenkins slave #{new_resource.slave_name}" }
     attribute :remote_fs,
-      kind_of: String,
-      default: '/home/jenkins'
+              kind_of: String,
+              default: '/home/jenkins'
     attribute :executors,
-      kind_of: Integer,
-      default: 1
+              kind_of: Integer,
+              default: 1
     attribute :usage_mode,
-      kind_of: String,
-      equal_to: %w(exclusive normal),
-      default: 'normal'
+              kind_of: String,
+              equal_to: %w(exclusive normal),
+              default: 'normal'
     attribute :labels,
-      kind_of: Array,
-      default: []
+              kind_of: Array,
+              default: []
     attribute :availability,
-      kind_of: String,
-      equal_to: %w(always demand)
+              kind_of: String,
+              equal_to: %w(always demand)
     attribute :in_demand_delay,
-      kind_of: Integer,
-      default: 0
+              kind_of: Integer,
+              default: 0
     attribute :idle_delay,
-      kind_of: Integer,
-      default: 1
+              kind_of: Integer,
+              default: 1
     attribute :environment,
-      kind_of: Hash
+              kind_of: Hash
     attribute :offline_reason,
-      kind_of: String
+              kind_of: String
     attribute :user,
-      kind_of: String,
-      regex: Config[:user_valid_regex],
-      default: 'jenkins'
+              kind_of: String,
+              regex: Config[:user_valid_regex],
+              default: 'jenkins'
     attribute :jvm_options,
-      kind_of: String
+              kind_of: String
 
     attr_writer :exists
     attr_writer :connected
@@ -90,7 +87,7 @@ class Chef
     # @return [Boolean]
     #
     def exists?
-      !!@exists
+      !@exists.nil? && @exists
     end
 
     #
@@ -100,7 +97,7 @@ class Chef
     # @return [Boolean]
     #
     def connected?
-      !!@connected
+      !@connected.nil? && @connected
     end
 
     #
@@ -110,7 +107,7 @@ class Chef
     # @return [Boolean]
     #
     def online?
-      !!@online
+      !@online.nil? && @online
     end
   end
 end
@@ -401,5 +398,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_slave,
-  provider: Chef::Provider::JenkinsSlave
+  provider: Chef::Provider::JenkinsSlave,
 )

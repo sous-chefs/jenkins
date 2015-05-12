@@ -27,13 +27,13 @@
 # Create the Jenkins user
 user node['jenkins']['master']['user'] do
   home node['jenkins']['master']['home']
-  system node['jenkins']['master']['use_system_accounts']
+  system node['jenkins']['master']['use_system_accounts'] # ~FC048
 end
 
 # Create the Jenkins group
 group node['jenkins']['master']['group'] do
   members node['jenkins']['master']['user']
-  system node['jenkins']['master']['use_system_accounts']
+  system node['jenkins']['master']['use_system_accounts'] # ~FC048
 end
 
 # Create the home directory

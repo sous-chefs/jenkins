@@ -20,7 +20,6 @@
 #
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsCommand < Resource::LWRPBase
@@ -37,8 +36,8 @@ class Chef
 
     # Attributes
     attribute :command,
-      kind_of: String,
-      name_attribute: true
+              kind_of: String,
+              name_attribute: true
   end
 end
 
@@ -67,5 +66,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_command,
-  provider: Chef::Provider::JenkinsCommand
+  provider: Chef::Provider::JenkinsCommand,
 )

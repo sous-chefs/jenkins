@@ -19,7 +19,6 @@
 # limitations under the License.
 #
 
-require_relative '_params_validate'
 require_relative 'slave'
 require_relative 'credentials'
 
@@ -37,16 +36,16 @@ class Chef
 
     # Attributes
     attribute :host,
-      kind_of: String
+              kind_of: String
     attribute :port,
-      kind_of: Integer,
-      default: 22
+              kind_of: Integer,
+              default: 22
     attribute :credentials,
-      kind_of: [Resource::JenkinsCredentials, String]
+              kind_of: [Resource::JenkinsCredentials, String]
     attribute :command_prefix,
-      kind_of: String
+              kind_of: String
     attribute :command_suffix,
-      kind_of: String
+              kind_of: String
 
     #
     # The credentials to SSH into the slave with. Credentials can be any
@@ -152,5 +151,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_ssh_slave,
-  provider: Chef::Provider::JenkinsSSHSlave
+  provider: Chef::Provider::JenkinsSSHSlave,
 )

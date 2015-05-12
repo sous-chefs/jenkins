@@ -20,7 +20,6 @@
 #
 
 require_relative 'credentials'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsPasswordCredentials < Resource::JenkinsCredentials
@@ -36,8 +35,8 @@ class Chef
 
     # Attributes
     attribute :password,
-      kind_of: String,
-      required: true
+              kind_of: String,
+              required: true
   end
 end
 
@@ -89,5 +88,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_password_credentials,
-  provider: Chef::Provider::JenkinsPasswordCredentials
+  provider: Chef::Provider::JenkinsPasswordCredentials,
 )

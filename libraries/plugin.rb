@@ -23,7 +23,6 @@
 require 'digest'
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsPlugin < Resource::LWRPBase
@@ -40,18 +39,18 @@ class Chef
 
     # Attributes
     attribute :name,
-      kind_of: String,
-      name_attribute: true
+              kind_of: String,
+              name_attribute: true
     attribute :version,
-      kind_of: [String, Symbol],
-      default: :latest
+              kind_of: [String, Symbol],
+              default: :latest
     attribute :source,
-      kind_of: String
+              kind_of: String
     attribute :install_deps,
-      kind_of: [TrueClass, FalseClass],
-      default: true
+              kind_of: [TrueClass, FalseClass],
+              default: true
     attribute :options,
-      kind_of: String
+              kind_of: String
 
     attr_writer :installed
 
@@ -62,7 +61,7 @@ class Chef
     # @return [Boolean]
     #
     def installed?
-      !!@installed
+      !@installed.nil? && @installed
     end
   end
 end
@@ -248,13 +247,11 @@ EOH
     # @option opts [Boolean] :cli_opts additional flags to pass the jenkins cli command
     # @option opts [Boolean] :install_deps indicates a plugins dependencies should be installed
     #
-    def install_plugin_from_update_center(plugin_name, plugin_version, opts={})
+    def install_plugin_from_update_center(plugin_name, plugin_version, opts = {})
       remote_plugin_data = plugin_universe[plugin_name]
-      local_plugin_data  = plugin_installation_manifest(plugin_name)
 
       # Compute some versions; Parse them as `Gem::Version` instances for easy
       # comparisons.
-      installed_version = local_plugin_data ? plugin_version(local_plugin_data['plugin_version']) : nil
       latest_version    = plugin_version(remote_plugin_data['version'])
       desired_version   = (plugin_version.to_sym == :latest) ? latest_version : plugin_version(plugin_version)
 
@@ -291,7 +288,7 @@ EOH
     # @option opts [Boolean] :cli_opts additional flags to pass the jenkins cli command
     # @option opts [Boolean] :install_deps indicates a plugins dependencies should be installed
     #
-    def install_plugin_from_url(source_url, plugin_name, plugin_version=nil, opts={})
+    def install_plugin_from_url(source_url, plugin_name, plugin_version = nil, opts = {})
       version = plugin_version || Digest::MD5.hexdigest(source_url)
 
       # Use the remote_file resource to download and cache the plugin (see
@@ -408,16 +405,14 @@ EOH
     # @return [String]
     #
     def plugin_version(version)
-      begin
-        plugin_version = Gem::Version.new(version)
-      rescue ArgumentError
-        plugin_version = version
-      end
+      Gem::Version.new(version)
+    rescue ArgumentError
+      version
     end
   end
 end
 
 Chef::Platform.set(
   resource: :jenkins_plugin,
-  provider: Chef::Provider::JenkinsPlugin
+  provider: Chef::Provider::JenkinsPlugin,
 )

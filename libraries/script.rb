@@ -20,7 +20,6 @@
 #
 
 require_relative 'command'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsScript < Resource::JenkinsCommand
@@ -53,5 +52,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_script,
-  provider: Chef::Provider::JenkinsScript
+  provider: Chef::Provider::JenkinsScript,
 )
