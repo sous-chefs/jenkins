@@ -9,5 +9,6 @@ version          '2.2.2'
 recipe 'master', 'Installs a Jenkins master'
 
 depends 'apt',   '~> 2.0'
+depends 'logrotate'
 depends 'runit', '~> 1.5'
 depends 'yum',   '~> 3.0'
