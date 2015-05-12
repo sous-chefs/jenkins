@@ -49,6 +49,15 @@ describe Jenkins::Executor do
       end
     end
 
+    context 'when a :cli_credentials option is given' do
+      it 'adds --username and --password options' do
+        subject.options[:cli_credentials] = ["user", "passw0rd"]
+        command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo --username user --password passw0rd|
+        expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
+        subject.execute!('foo')
+      end
+    end
+
     context 'when a :key option is given' do
       it 'builds the correct command' do
         subject.options[:key] = '/key/path.pem'
