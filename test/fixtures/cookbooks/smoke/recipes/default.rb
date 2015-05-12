@@ -12,6 +12,8 @@
 #   - Execute some Groovy scripts
 #   - Manage JNLP slaves (create)
 #   - Manage SSH slaves (create)
+#   - Manage users
+#   - Manage views
 #
 
 #
@@ -54,3 +56,8 @@ include_recipe 'jenkins_slave::create_ssh'
 # Users
 # ------------------------------
 include_recipe 'jenkins_user::create'
+
+#
+# Views
+# ------------------------------
+include_recipe 'jenkins_view::create'
