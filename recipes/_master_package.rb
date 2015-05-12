@@ -26,9 +26,9 @@ when 'debian'
   include_recipe 'apt::default'
 
   apt_repository 'jenkins' do
-    uri          'http://pkg.jenkins-ci.org/debian'
+    uri          node['jenkins']['master']['repository']
     distribution 'binary/'
-    key          'https://jenkins-ci.org/debian/jenkins-ci.org.key'
+    key          node['jenkins']['master']['repository_key']
   end
 
   package 'jenkins' do
@@ -44,8 +44,8 @@ when 'rhel'
   include_recipe 'yum::default'
 
   yum_repository 'jenkins-ci' do
-    baseurl 'http://pkg.jenkins-ci.org/redhat'
-    gpgkey  'https://jenkins-ci.org/redhat/jenkins-ci.org.key'
+    baseurl node['jenkins']['master']['repository']
+    gpgkey  node['jenkins']['master']['repository_key']
   end
 
   package 'jenkins' do
