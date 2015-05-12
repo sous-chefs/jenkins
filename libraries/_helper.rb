@@ -204,15 +204,15 @@ EOH
     #   the path to the private key on disk
     #
     def private_key_path
-      node.run_state[:jenkins_private_key_path] ||= begin
+      node.run_state[:jenkins_private_key_path] ||= begin # ~FC001
         # @todo remove in 3.0.0
         if node['jenkins']['executor']['private_key']
           Chef::Log.warn("Using node['jenkins']['executor']['private_key'] is deprecated!")
           Chef::Log.warn('Persisting sensitive information in node attributes is not recommended.')
-          node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key']
+          node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key'] # ~FC001
         end
 
-        content = node.run_state[:jenkins_private_key]
+        content = node.run_state[:jenkins_private_key] # ~FC001
         destination = File.join(Chef::Config[:file_cache_path], 'jenkins-key')
 
         file = Chef::Resource::File.new(destination, run_context)
@@ -236,7 +236,7 @@ EOH
     def private_key_given?
       # @todo remove in 3.0.0
       !node['jenkins']['executor']['private_key'].nil? ||
-        !node.run_state[:jenkins_private_key].nil?
+        !node.run_state[:jenkins_private_key].nil? # ~FC001
     end
 
     #
@@ -364,7 +364,7 @@ EOH
     # unavailable or is not accepting requests.
     #
     def ensure_cli_present!
-      node.run_state[:jenkins_cli_present] ||= begin
+      node.run_state[:jenkins_cli_present] ||= begin # ~FC001
         source = uri_join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
         remote_file = Chef::Resource::RemoteFile.new(cli, run_context)
         remote_file.source(source)
@@ -381,7 +381,7 @@ EOH
     # server. This is needed to be able to install plugins throught the update-center.
     #
     def ensure_update_center_present!
-      node.run_state[:jenkins_update_center_present] ||= begin
+      node.run_state[:jenkins_update_center_present] ||= begin # ~FC001
         source = uri_join(node['jenkins']['master']['mirror'], 'updates', 'update-center.json')
         remote_file = Chef::Resource::RemoteFile.new(update_center_json, run_context)
         remote_file.source(source)
