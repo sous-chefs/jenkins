@@ -20,7 +20,6 @@
 #
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsCredentials < Resource::LWRPBase
@@ -48,9 +47,7 @@ class Chef
               default: lazy { SecureRandom.uuid }
     attribute :description,
               kind_of: String,
-              default: lazy do |new_resource|
-                "Credentials for #{new_resource.username} - created by Chef"
-              end
+              default: lazy { |new_resource| "Credentials for #{new_resource.username} - created by Chef" }
 
     attr_writer :exists
 
