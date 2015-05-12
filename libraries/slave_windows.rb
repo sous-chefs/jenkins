@@ -52,6 +52,9 @@ class Chef
       default: '052f82c167fbe68a4025bcebc19fff5f11b43576a2ec62b0415432832fa2272d'
     attribute :path,
       kind_of: String
+    attribute :pre_run_cmds,
+      kind_of: Array,
+      default: []
   end
 end
 
@@ -75,6 +78,7 @@ class Chef
       slave_exe_resource.run_action(:create)
       slave_compat_xml.run_action(:create)
       slave_xml_resource.run_action(:create)
+      slave_bat_resource.run_action(:create)
       install_service_resource.run_action(:run)
       service_resource.run_action(:start)
     end
@@ -194,6 +198,27 @@ class Chef
       @slave_xml_resource
     end
 
+    # Create bat file from jenkins-slave.bat.erb to launches Jenkins jar as
+    # service. 
+    # Optionally run any commands in :pre_run_cmds before launching jar
+    def slave_bat_resource
+      return @slave_bat_resource if @slave_bat_resource
+
+      slave_bat = ::File.join(new_resource.remote_fs, 'jenkins-slave.bat')
+
+      @slave_bat_resource = Chef::Resource::Template.new(slave_bat, run_context)
+      @slave_bat_resource.cookbook('jenkins')
+      @slave_bat_resource.source('jenkins-slave.bat.erb')
+      @slave_bat_resource.variables(
+        pre_run_cmds:  new_resource.pre_run_cmds,
+        new_resource:  new_resource,
+        java_bin:      java,
+        slave_jar:     slave_jar,
+        jnlp_url:      jnlp_url,
+        jnlp_secret:   jnlp_secret,
+      )
+      @slave_bat_resource
+    end
     #
     # Creates an `execute` resource which is used to install the
     # Window's service. The caller will need to call `run_action` on the
