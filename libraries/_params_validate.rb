@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: jenkins
-# Hack:: params_validate
+# Library:: params_validate
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
@@ -27,26 +27,24 @@ require 'chef/mixin/params_validate'
 class Chef
   module Mixin::ParamsValidate
     def set_or_return(symbol, arg, validation)
-      iv_symbol = "@#{symbol.to_s}".to_sym
-      if arg == nil && self.instance_variable_defined?(iv_symbol) == true
-        ivar = self.instance_variable_get(iv_symbol)
-        if(ivar.is_a?(DelayedEvaluator))
-          validate({ symbol => ivar.call }, { symbol => validation })[symbol]
+      iv_symbol = "@#{symbol}".to_sym
+      if arg.nil? && self.instance_variable_defined?(iv_symbol) == true
+        ivar = instance_variable_get(iv_symbol)
+        if ivar.is_a?(DelayedEvaluator)
+          validate({ symbol => ivar.call }, { symbol => validation })[symbol] # rubocop:disable BracesAroundHashParameters
         else
           ivar
         end
       else
-        if(arg.is_a?(DelayedEvaluator))
+        if arg.is_a?(DelayedEvaluator)
           val = arg
         else
-          val = validate({ symbol => arg }, { symbol => validation })[symbol]
+          val = validate({ symbol => arg }, { symbol => validation })[symbol] # rubocop:disable BracesAroundHashParameters
 
           # Handle the case where the "default" was a DelayedEvaluator
-          if val.is_a?(DelayedEvaluator)
-            val = val.call(self)
-          end
+          val = val.call(self) if val.is_a?(DelayedEvaluator)
         end
-        self.instance_variable_set(iv_symbol, val)
+        instance_variable_set(iv_symbol, val)
       end
     end
   end

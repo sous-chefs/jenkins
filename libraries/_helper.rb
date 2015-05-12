@@ -144,7 +144,7 @@ EOH
         "[#{list_members.join(',')}]"
       when Hash
         map_members = val.map do |k, v|
-          %Q("#{k}":#{convert_to_groovy(v)})
+          %("#{k}":#{convert_to_groovy(v)})
         end
         "[#{map_members.join(',')}]"
       else # Integer, TrueClass/FalseClass etc.
@@ -162,7 +162,7 @@ EOH
     #
     def convert_blank_values_to_nil(hash)
       mapped_hash = hash.dup.map do |k, v|
-        v = nil if v.kind_of?(String) && v.empty?
+        v = nil if v.is_a?(String) && v.empty?
         [k, v]
       end
       Hash[mapped_hash]
@@ -208,7 +208,7 @@ EOH
         # @todo remove in 3.0.0
         if node['jenkins']['executor']['private_key']
           Chef::Log.warn("Using node['jenkins']['executor']['private_key'] is deprecated!")
-          Chef::Log.warn("Persisting sensitive information in node attributes is not recommended.")
+          Chef::Log.warn('Persisting sensitive information in node attributes is not recommended.')
           node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key']
         end
 
@@ -221,9 +221,7 @@ EOH
         file.mode('0600')
         # Setting sensitive so the contents of the private key file aren't included in the log.
         # This functionality is not available in older versions of Chef, so check before we use it.
-        if file.respond_to?(:sensitive)
-          file.sensitive(true)
-        end
+        file.sensitive(true) if file.respond_to?(:sensitive)
         file.run_action(:create)
 
         destination
@@ -238,7 +236,7 @@ EOH
     def private_key_given?
       # @todo remove in 3.0.0
       !node['jenkins']['executor']['private_key'].nil? ||
-      !node.run_state[:jenkins_private_key].nil?
+        !node.run_state[:jenkins_private_key].nil?
     end
 
     #
@@ -256,7 +254,7 @@ EOH
     # @return [Boolean]
     #
     def proxy_given?
-      !!node['jenkins']['executor']['proxy']
+      !node['jenkins']['executor']['proxy'].nil?
     end
 
     #
@@ -283,7 +281,7 @@ EOH
     # @return [Boolean]
     #
     def timeout_given?
-      !!node['jenkins']['executor']['timeout']
+      !node['jenkins']['executor']['timeout'].nil?
     end
 
     #
@@ -392,10 +390,7 @@ EOH
         # Setting sensitive(true) will suppress the long diff output, but this
         # functionality is not available in older versions of Chef, so we need
         # check if the resource responds to the method before calling it.
-        if remote_file.respond_to?(:sensitive)
-          remote_file.sensitive(true)
-        end
-
+        remote_file.sensitive(true) if remote_file.respond_to?(:sensitive)
         remote_file.mode('0644')
         remote_file.run_action(:create_if_missing)
 
@@ -431,11 +426,11 @@ EOH
         # in the same way as through the user interface.
         uri = URI(uri_join(endpoint, 'updateCenter', 'byId', 'default', 'postBack'))
         headers = {
-          'Accept' => 'application/json'
+          'Accept' => 'application/json',
         }
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true if uri.scheme == 'https'
-        response = http.post(uri.path, extracted_json, headers)
+        http.post(uri.path, extracted_json, headers)
 
         true
       end

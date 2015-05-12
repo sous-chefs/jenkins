@@ -40,17 +40,17 @@ class Chef
 
     # Attributes
     attribute :username,
-      kind_of: String,
-      name_attribute: true
+              kind_of: String,
+              name_attribute: true
     attribute :id,
-      kind_of: String,
-      regex: UUID_REGEX,
-      default: lazy { SecureRandom.uuid }
+              kind_of: String,
+              regex: UUID_REGEX,
+              default: lazy { SecureRandom.uuid }
     attribute :description,
-      kind_of: String,
-      default: lazy { |new_resource|
-        "Credentials for #{new_resource.username} - created by Chef"
-      }
+              kind_of: String,
+              default: lazy do |new_resource|
+                "Credentials for #{new_resource.username} - created by Chef"
+              end
 
     attr_writer :exists
 
@@ -61,7 +61,7 @@ class Chef
     # @return [Boolean]
     #
     def exists?
-      !!@exists
+      !@exists.nil? && @exists
     end
   end
 end
@@ -199,7 +199,7 @@ class Chef
       credentials_attributes = []
       attribute_to_property_map.each_pair do |resource_attribute, groovy_property|
         credentials_attributes <<
-        "current_credentials['#{resource_attribute}'] = #{groovy_property}"
+          "current_credentials['#{resource_attribute}'] = #{groovy_property}"
       end
 
       json = executor.groovy! <<-EOH.gsub(/ ^{8}/, '')
@@ -257,5 +257,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_credentials,
-  provider: Chef::Provider::JenkinsCredentials
+  provider: Chef::Provider::JenkinsCredentials,
 )

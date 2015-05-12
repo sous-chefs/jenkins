@@ -37,21 +37,21 @@ class Chef
 
     # Attributes
     attribute :password,
-      kind_of: String
+              kind_of: String
     attribute :user,
-      kind_of: String,
-      default: 'LocalSystem'
+              kind_of: String,
+              default: 'LocalSystem'
     attribute :remote_fs,
-      kind_of: String,
-      default: 'C:\jenkins'
+              kind_of: String,
+              default: 'C:\jenkins'
     attribute :winsw_url,
-      kind_of: String,
-      default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.16/winsw-1.16-bin.exe'
+              kind_of: String,
+              default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.16/winsw-1.16-bin.exe'
     attribute :winsw_checksum,
-      kind_of: String,
-      default: '052f82c167fbe68a4025bcebc19fff5f11b43576a2ec62b0415432832fa2272d'
+              kind_of: String,
+              default: '052f82c167fbe68a4025bcebc19fff5f11b43576a2ec62b0415432832fa2272d'
     attribute :path,
-      kind_of: String
+              kind_of: String
   end
 end
 
@@ -66,12 +66,12 @@ class Chef
     # @see Chef::Resource::JenkinsSlave#action_create
     #
     def action_create
-      super #call parent but disable direct parent via unless statement.
-      
+      super # call parent but disable direct parent via unless statement.
+
       parent_remote_fs_dir_resource.run_action(:create)
-      remote_fs_dir_resource.run_action(:create)  #had to override locally
+      remote_fs_dir_resource.run_action(:create) # had to override locally
       slave_jar_resource.run_action(:create)
-      
+
       slave_exe_resource.run_action(:create)
       slave_compat_xml.run_action(:create)
       slave_xml_resource.run_action(:create)
@@ -80,7 +80,7 @@ class Chef
     end
 
     protected
-    
+
     # Embedded Resources
 
     # Creates a `directory` resource that represents the directory
@@ -97,7 +97,7 @@ class Chef
       @remote_fs_dir_resource.recursive(true)
       @remote_fs_dir_resource
     end
-    
+
     #
     # Creates a `remote_file` resource that represents the remote
     # +winsw.exe+ file. This file is a wrapper executable that is used
@@ -142,22 +142,21 @@ class Chef
       @slave_compat_xml
     end
 
-    
     def user_hash
-      userhash= Hash.new
-      
+      userhash = {}
+
       user_parts = new_resource.user.match(/(.*)\\(.*)/)
       if user_parts
         userhash['domain'] = user_parts[1]
         userhash['username']   = user_parts[2]
       else
-        userhash['domain'] = "."
+        userhash['domain'] = '.'
         userhash['username']   = new_resource.user
       end
-      
-      return userhash
+
+      userhash
     end
-    
+
     #
     # Creates a `template` resource that represents the config file used
     # to create the Window's service. The caller will need to call
@@ -169,12 +168,12 @@ class Chef
       return @slave_xml_resource if @slave_xml_resource
 
       slave_xml = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.xml")
-      
+
       # Get User object
-      user_parts = user_hash()
-      user_domain=user_parts['domain']
-      user_account=user_parts['username']
-      
+      user_parts = user_hash
+      user_domain = user_parts['domain']
+      user_account = user_parts['username']
+
       @slave_xml_resource = Chef::Resource::Template.new(slave_xml, run_context)
       @slave_xml_resource.cookbook('jenkins')
       @slave_xml_resource.source('jenkins-slave.xml.erb')
@@ -232,5 +231,5 @@ end
 Chef::Platform.set(
   resource: :jenkins_windows_slave,
   platform: :windows,
-  provider: Chef::Provider::JenkinsWindowsSlave
+  provider: Chef::Provider::JenkinsWindowsSlave,
 )

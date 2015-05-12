@@ -38,10 +38,10 @@ class Chef
 
     # Attributes
     attribute :private_key,
-      kind_of: [String, OpenSSL::PKey::RSA],
-      required: true
+              kind_of: [String, OpenSSL::PKey::RSA],
+              required: true
     attribute :passphrase,
-      kind_of: String
+              kind_of: String
 
     #
     # Private key of the credentials . This should be the actual key
@@ -128,5 +128,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_private_key_credentials,
-  provider: Chef::Provider::JenkinsPrivateKeyCredentials
+  provider: Chef::Provider::JenkinsPrivateKeyCredentials,
 )

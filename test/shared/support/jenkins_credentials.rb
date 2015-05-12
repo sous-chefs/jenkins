@@ -28,7 +28,7 @@ module Serverspec
       end
 
       # TODO: encrypt provided password and compare to Jenkins value
-      def has_password?(password)
+      def has_password?(_password)
         !(try { xml.elements['password'].text }).nil?
       end
 
@@ -43,7 +43,7 @@ module Serverspec
       end
 
       # TODO: encrypt provided passphrase and compare to Jenkins value
-      def has_passphrase?(passphrase)
+      def has_passphrase?(_passphrase)
         !(try { xml.elements['passphrase'].text }).nil?
       end
 

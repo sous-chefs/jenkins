@@ -37,8 +37,8 @@ class Chef
 
     # Attributes
     attribute :command,
-      kind_of: String,
-      name_attribute: true
+              kind_of: String,
+              name_attribute: true
   end
 end
 
@@ -67,5 +67,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_command,
-  provider: Chef::Provider::JenkinsCommand
+  provider: Chef::Provider::JenkinsCommand,
 )

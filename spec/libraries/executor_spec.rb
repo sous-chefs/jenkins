@@ -20,14 +20,14 @@ describe Jenkins::Executor do
     before { allow(Mixlib::ShellOut).to receive(:new).and_return(shellout) }
 
     it 'wraps the java and jar paths in quotes' do
-      command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo|
+      command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo)
       expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
       subject.execute!('foo')
     end
 
     context 'when no options are given' do
       it 'builds the correct command' do
-        command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo|
+        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo)
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
       end
@@ -36,14 +36,14 @@ describe Jenkins::Executor do
     context 'when an :endpoint option is given' do
       it 'builds the correct command' do
         subject.options[:endpoint] = 'http://jenkins.ci'
-        command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" -s http://jenkins.ci foo|
+        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -s http://jenkins.ci foo)
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
       end
 
       it 'escapes the endpoint' do
         subject.options[:endpoint] = 'http://jenkins.ci?foo=this is a text'
-        command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" -s http://jenkins.ci?foo=this%20is%20a%20text foo|
+        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -s http://jenkins.ci?foo=this%20is%20a%20text foo)
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
       end
@@ -52,14 +52,14 @@ describe Jenkins::Executor do
     context 'when a :key option is given' do
       it 'builds the correct command' do
         subject.options[:key] = '/key/path.pem'
-        command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" -i "/key/path.pem" foo|
+        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -i "/key/path.pem" foo)
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
       end
 
       it 'wraps key path in quotes' do
         subject.options[:key] = '/key/path/to /pem with/spaces.pem'
-        command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" -i "/key/path/to /pem with/spaces.pem" foo|
+        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -i "/key/path/to /pem with/spaces.pem" foo)
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
       end
@@ -69,7 +69,10 @@ describe Jenkins::Executor do
           # This is really ugly but there is no easy way to stub a method to
           # raise an exception a set number of times.
           @times = 0
-          allow(shellout).to receive(:error!) { @times += 1; raise Mixlib::ShellOut::ShellCommandFailed unless @times > 2 }
+          allow(shellout).to receive(:error!) do
+            @times += 1
+            raise Mixlib::ShellOut::ShellCommandFailed unless @times > 2
+          end
           allow(shellout).to receive(:exitstatus).and_return(255, 1, 0)
           allow(shellout).to receive(:stderr).and_return(
             'Authentication failed. No private key accepted.',
@@ -80,9 +83,9 @@ describe Jenkins::Executor do
 
         it 'retrys the command without a private key' do
           subject.options[:key] = '/key/path.pem'
-          command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" -i "/key/path.pem" foo|
+          command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -i "/key/path.pem" foo)
           expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
-          command_no_key = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo|
+          command_no_key = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo)
           expect(Mixlib::ShellOut).to receive(:new).with(command_no_key, timeout: 60)
           subject.execute!('foo')
         end
@@ -92,14 +95,14 @@ describe Jenkins::Executor do
     context 'when a :proxy option is given' do
       it 'builds the correct command' do
         subject.options[:proxy] = 'http://proxy.jenkins.ci'
-        command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" -p http://proxy.jenkins.ci foo|
+        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -p http://proxy.jenkins.ci foo)
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
       end
 
       it 'escapes the proxy' do
         subject.options[:proxy] = 'http://proxy.jenkins.ci?foo=this is a text'
-        command = %|"java" -jar "/usr/share/jenkins/cli/java/cli.jar" -p http://proxy.jenkins.ci?foo=this%20is%20a%20text foo|
+        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -p http://proxy.jenkins.ci?foo=this%20is%20a%20text foo)
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
       end

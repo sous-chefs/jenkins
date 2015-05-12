@@ -53,5 +53,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_script,
-  provider: Chef::Provider::JenkinsScript
+  provider: Chef::Provider::JenkinsScript,
 )

@@ -36,12 +36,12 @@ class Chef
 
     # Attributes
     attribute :group,
-      kind_of: String,
-      default: 'jenkins',
-      regex: Config[:group_valid_regex]
+              kind_of: String,
+              default: 'jenkins',
+              regex: Config[:group_valid_regex]
     attribute :service_name,
-      kind_of: String,
-      default: 'jenkins-slave'
+              kind_of: String,
+              default: 'jenkins-slave'
   end
 end
 
@@ -54,18 +54,15 @@ class Chef
 
     def action_create
       super
-    
-      unless Chef::Platform.windows?
-        parent_remote_fs_dir_resource.run_action(:create)    
-        group_resource.run_action(:create)
-        user_resource.run_action(:create)
-       
 
-        remote_fs_dir_resource.run_action(:create)
-        slave_jar_resource.run_action(:create)
+      return if Chef::Platform.windows?
 
-        service_resource.run_action(:enable)
-      end
+      parent_remote_fs_dir_resource.run_action(:create)
+      group_resource.run_action(:create)
+      user_resource.run_action(:create)
+      remote_fs_dir_resource.run_action(:create)
+      slave_jar_resource.run_action(:create)
+      service_resource.run_action(:enable)
     end
 
     def action_delete
@@ -246,5 +243,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_jnlp_slave,
-  provider: Chef::Provider::JenkinsJNLPSlave
+  provider: Chef::Provider::JenkinsJNLPSlave,
 )
