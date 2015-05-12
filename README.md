@@ -96,9 +96,9 @@ end
 ### jenkins_credentials
 **NOTE** The use of the Jenkins credentials resource requries the Jenkins credentials plugin. This plugin began shipping with Jenkins 1.536. On older Jenkins installations, you will need to install the credentials plugin at version 1.5 or higher to utilize this resource. On newer versions of Jenkins, this resource should work correctly.
 
-Each credential can be referenced in job by its UUID.
-You can set this UUID when creating credential, and set the same UUID in job configuration.
-To generate UUID, you can use linux command `uuidgen`.
+Each credential can be referenced in job by its unique ID.
+You can set this ID when creating credential, and set the same ID in job configuration.
+To generate a unique ID, you can use linux command `uuidgen`.
 
 
 This resource manages Jenkins credentials, supporting the following actions:

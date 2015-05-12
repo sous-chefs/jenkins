@@ -44,7 +44,6 @@ class Chef
       name_attribute: true
     attribute :id,
       kind_of: String,
-      regex: UUID_REGEX,
       default: lazy { SecureRandom.uuid }
     attribute :description,
       kind_of: String,
