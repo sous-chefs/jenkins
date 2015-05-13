@@ -498,6 +498,14 @@ node.run_state[:jenkins_private_key] = private_key
 
 Please note that older versions of Jenkins (< 1.555) permitted login via CLI for a user defined in Jenkins configuration with an SSH public key but not present in the actual SecurityRealm, and this is no longer permitted. If an operation requires any special permission at all, you must authenticate as a real user. This means that if you have LDAP or GitHub OAuth based authn/authz enabled the user you are using for configuraiton tasks must have an associated account in the external services. Please see [JENKINS-22346](https://issues.jenkins-ci.org/browse/JENKINS-22346) for more details.
 
+If (and __only if__) you have your Jenkins instance configured to use the PAM (Unix user/group database) security realm you can set the
+username and password the CLI uses via these two `run_context` values:
+
+```ruby
+node.run_state[:jenkins_username]
+node.run_state[:jenkins_password]
+```
+
 ### Proxies
 If you need to pass through a proxy to communicate between your masters and slaves, you will need to set a special node attribute:
 

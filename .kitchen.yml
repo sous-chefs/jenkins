@@ -65,8 +65,10 @@ suites:
   #
   # Authentication suites
   #
-  - name: authentication
-    run_list: authentication::default
+  - name: authentication_private_key
+    run_list: authentication::private_key
+  - name: authentication_username_password
+    run_list: authentication::username_password
 
   #
   # Command suites

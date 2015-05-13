@@ -69,6 +69,8 @@ EOH
         h[:proxy]    = proxy if proxy_given?
         h[:endpoint] = endpoint
         h[:timeout]  = timeout if timeout_given?
+        h[:username] = username unless username.nil?
+        h[:password] = password unless password.nil?
       end
 
       Jenkins::Executor.new(options)
@@ -282,6 +284,23 @@ EOH
     #
     def timeout_given?
       !node['jenkins']['executor']['timeout'].nil?
+    end
+
+    # Username used when invoking cli
+    #
+    # @return [String]
+    #
+    def username
+      node.run_state[:jenkins_username]
+    end
+
+    #
+    # password used when invoking cli
+    #
+    # @return [String]
+    #
+    def password
+      node.run_state[:jenkins_password]
     end
 
     #
