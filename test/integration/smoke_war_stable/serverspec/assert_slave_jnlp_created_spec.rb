@@ -1,0 +1,1 @@
+../../jenkins_slave_create/serverspec/assert_jnlp_created_spec.rb

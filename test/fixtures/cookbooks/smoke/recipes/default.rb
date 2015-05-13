@@ -17,7 +17,7 @@
 #
 # Authentication
 # ------------------------------
-include_recipe 'authentication::default'
+include_recipe 'authentication::private_key'
 
 #
 # Commands
