@@ -33,6 +33,13 @@ class Chef
     # Set the resource name
     self.resource_name = :jenkins_credentials
 
+    # Default all crendentials resources to sensitive so secret data
+    # is not printed out in the Chef logs.
+    def initialize(name, run_context=nil)
+      super(name, run_context)
+      @sensitive = true
+    end
+
     # Actions
     actions :create, :delete
     default_action :create
