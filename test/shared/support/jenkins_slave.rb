@@ -113,9 +113,18 @@ module Serverspec
                  nil
                # If authn is enabled fall back to reading main config from disk
                elsif response.is_a?(Net::HTTPForbidden)
-                 contents = ::File.read('/var/lib/jenkins/config.xml')
-                 config_xml = REXML::Document.new(contents)
-                 REXML::Document.new(config_xml.elements["//slave[name='#{name}']"].to_s)
+                 # attempt to read from dedicated slave xml file first
+                 config_path = "/var/lib/jenkins/nodes/#{name}/config.xml"
+
+                 if ::File.exist?(config_path)
+                   contents = ::File.read(config_path)
+                   REXML::Document.new(contents)
+                 # Fall back to reading from the main config xml
+                 else
+                   contents = ::File.read('/var/lib/jenkins/config.xml')
+                   config_xml = REXML::Document.new(contents)
+                   REXML::Document.new(config_xml.elements["//slave[name='#{name}']"].to_s)
+                 end
                else
                  REXML::Document.new(response.body)
                end
