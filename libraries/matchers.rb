@@ -237,6 +237,48 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  def create_jenkins_windows_slave(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_windows_slave,
+      :create,
+      resource_name)
+  end
+
+  def delete_jenkins_windows_slave(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_windows_slave,
+      :delete,
+      resource_name)
+  end
+
+  def connect_jenkins_windows_slave(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_windows_slave,
+      :connect,
+      resource_name)
+  end
+
+  def disconnect_jenkins_windows_slave(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_windows_slave,
+      :disconnect,
+      resource_name)
+  end
+
+  def online_jenkins_windows_slave(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_windows_slave,
+      :online,
+      resource_name)
+  end
+
+  def offline_jenkins_windows_slave(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_windows_slave,
+      :offline,
+      resource_name)
+  end
+
   def create_jenkins_user(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_user,
