@@ -2,6 +2,31 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.3.0 (2015-05-14)
+-------------------
+### New Feature
+- Add stable source support for package installation
+- Add support for `jvm_options` on `slave_ssh` resource
+- Support executing commands prior to launching Jenkins Windows slave
+- Add username/password support to executor
+
+### Improvement
+- Remove EOL Ruby, update with current supported Rubies
+- Update `.kitchen.yml`
+- Use ChefDK for all Travis testing
+- Fix all Rubocop 0.28.0 style errors
+- Create system user and group for jnlp slave if `use_system_account` flag is set.
+- `jenkins_plugin`: Do a better job understanding "latest" version
+- Mark all credential resources as sensitive; Fixes #288
+- Password credentials ID does not need to be a UUID
+- Restart Windows service on failure; Fixes #334
+- Re-install the Windows service if the winsw XML changes
+- Properly restart the service if the slave jar is updated
+
+### Bug
+- Instantiate Windows-specific resource class; Fixes #336
+- Need to escape the `\n` when there are multiple public keys.
+
 v2.2.2 (2015-01-15)
 -------------------
 ### Bug
