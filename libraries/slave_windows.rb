@@ -68,12 +68,13 @@ class Chef
     # @see Chef::Resource::JenkinsSlave#action_create
     #
     def action_create
-      super # call parent but disable direct parent via unless statement.
+      super
 
-      parent_remote_fs_dir_resource.run_action(:create)
-      remote_fs_dir_resource.run_action(:create) # had to override locally
-      slave_jar_resource.run_action(:create)
-
+      # The following resources are created in the parent:
+      #
+      #  * remote_fs_dir_resource
+      #  * slave_jar_resource
+      #
       slave_exe_resource.run_action(:create)
       slave_compat_xml.run_action(:create)
       slave_bat_resource.run_action(:create)

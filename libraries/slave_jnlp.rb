@@ -54,14 +54,17 @@ class Chef
     def action_create
       super
 
-      return if Chef::Platform.windows?
-
       parent_remote_fs_dir_resource.run_action(:create)
-      group_resource.run_action(:create)
-      user_resource.run_action(:create)
+
+      unless Chef::Platform.windows?
+        group_resource.run_action(:create)
+        user_resource.run_action(:create)
+      end
+
       remote_fs_dir_resource.run_action(:create)
       slave_jar_resource.run_action(:create)
-      service_resource.run_action(:enable)
+
+      service_resource.run_action(:enable) unless Chef::Platform.windows?
     end
 
     def action_delete
