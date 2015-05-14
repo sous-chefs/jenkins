@@ -56,6 +56,11 @@ THE SOFTWARE.
   <env name="PATH" value="<%= @path %>" />
 <%- end -%>
 
+  <!--
+    Restart the service on failure.
+  -->
+  <onfailure action="restart" delay="6 sec" />
+
   <serviceaccount>
 <%- if @user_domain -%>
     <domain><%= @user_domain %></domain>
