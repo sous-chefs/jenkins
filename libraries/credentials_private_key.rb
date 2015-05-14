@@ -36,6 +36,10 @@ class Chef
     default_action :create
 
     # Attributes
+    attribute :id,
+              kind_of: String,
+              regex: UUID_REGEX, # Private Key credentials must still have a UUID based ID
+              default: lazy { SecureRandom.uuid }
     attribute :private_key,
               kind_of: [String, OpenSSL::PKey::RSA],
               required: true
