@@ -13,6 +13,10 @@ jenkins_password_credentials 'schisamo2' do
   action :delete
 end
 
+jenkins_password_credentials 'schisamo3' do
+  action :delete
+end
+
 # test deletion with base resource
 jenkins_credentials 'jenkins2' do
   action :delete
@@ -20,5 +24,9 @@ end
 
 # test deletion with `jenkins_private_key_credentials` child resource
 jenkins_private_key_credentials 'jenkins' do
+  action :delete
+end
+
+jenkins_private_key_credentials 'jenkins3' do
   action :delete
 end
