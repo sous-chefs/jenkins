@@ -64,7 +64,12 @@ class Chef
       remote_fs_dir_resource.run_action(:create)
       slave_jar_resource.run_action(:create)
 
-      service_resource.run_action(:enable) unless Chef::Platform.windows?
+      # The Windows's specific child class manages it's own service
+      return if Chef::Platform.windows?
+
+      service_resource.run_action(:enable)
+      # We need to restart the service if the slave jar is updated
+      service_resource.run_action(:restart) if slave_jar_resource.updated?
     end
 
     def action_delete
@@ -210,7 +215,6 @@ class Chef
       @slave_jar_resource.backup(false)
       @slave_jar_resource.mode('0755')
       @slave_jar_resource.atomic_update(false)
-      @slave_jar_resource.notifies(:restart, service_resource)
       @slave_jar_resource
     end
 

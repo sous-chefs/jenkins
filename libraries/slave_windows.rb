@@ -80,7 +80,14 @@ class Chef
       slave_bat_resource.run_action(:create)
       slave_xml_resource.run_action(:create)
       install_service_resource.run_action(:run) if slave_xml_resource.updated?
-      service_resource.run_action(:start)
+
+      # We need to restart the service if the slave jar or bat file change
+      if slave_jar_resource.updated? || slave_bat_resource.updated?
+        service_resource.run_action(:restart)
+      # otherwise just ensure it's running
+      else
+        service_resource.run_action(:start)
+      end
     end
 
     protected
@@ -194,7 +201,6 @@ class Chef
         path:          new_resource.path,
       )
       @slave_xml_resource.notifies(:run, install_service_resource)
-      @slave_xml_resource.notifies(:restart, service_resource)
       @slave_xml_resource
     end
 
@@ -244,7 +250,6 @@ class Chef
       @install_service_resource = Chef::Resource::Batch.new("install-#{new_resource.service_name}", run_context)
       @install_service_resource.code(code)
       @install_service_resource.cwd(new_resource.remote_fs)
-      @install_service_resource.notifies(:restart, service_resource)
       @install_service_resource
     end
 
