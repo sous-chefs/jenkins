@@ -76,9 +76,9 @@ class Chef
 
       slave_exe_resource.run_action(:create)
       slave_compat_xml.run_action(:create)
-      slave_xml_resource.run_action(:create)
       slave_bat_resource.run_action(:create)
-      install_service_resource.run_action(:run)
+      slave_xml_resource.run_action(:create)
+      install_service_resource.run_action(:run) if slave_xml_resource.updated?
       service_resource.run_action(:start)
     end
 
@@ -192,6 +192,7 @@ class Chef
         user_password: new_resource.password,
         path:          new_resource.path,
       )
+      @slave_xml_resource.notifies(:run, install_service_resource)
       @slave_xml_resource.notifies(:restart, service_resource)
       @slave_xml_resource
     end
@@ -231,13 +232,18 @@ class Chef
     def install_service_resource
       return @install_service_resource if @install_service_resource
 
-      description = "Install '#{new_resource.service_name}' service"
-      @install_service_resource = Chef::Resource::Execute.new(description, run_context)
-      @install_service_resource.command("#{new_resource.service_name}.exe install")
+      code = <<-EOH.gsub(/ ^{8}/, '')
+        IF "#{wmi_property_from_query(:name, "select * from Win32_Service where name = '#{new_resource.service_name}'")}" == "#{new_resource.service_name}" (
+          #{new_resource.service_name}.exe stop
+          #{new_resource.service_name}.exe uninstall
+        )
+        #{new_resource.service_name}.exe install
+      EOH
+
+      @install_service_resource = Chef::Resource::Batch.new("install-#{new_resource.service_name}", run_context)
+      @install_service_resource.code(code)
       @install_service_resource.cwd(new_resource.remote_fs)
-      @install_service_resource.not_if do
-        wmi_property_from_query(:name, "select * from Win32_Service where name = '#{new_resource.service_name}'")
-      end
+      @install_service_resource.notifies(:restart, service_resource)
       @install_service_resource
     end
 
