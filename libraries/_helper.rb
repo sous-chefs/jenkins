@@ -411,7 +411,7 @@ EOH
         # check if the resource responds to the method before calling it.
         remote_file.sensitive(true) if remote_file.respond_to?(:sensitive)
         remote_file.mode('0644')
-        remote_file.run_action(:create_if_missing)
+        remote_file.run_action(:create)
 
         extracted_json = ''
 
