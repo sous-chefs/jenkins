@@ -23,6 +23,7 @@
 require 'digest'
 
 require_relative '_helper'
+require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsPlugin < Resource::LWRPBase

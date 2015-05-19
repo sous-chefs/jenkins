@@ -20,6 +20,7 @@
 #
 
 require_relative '_helper'
+require_relative '_params_validate'
 
 require 'json'
 
@@ -42,7 +43,9 @@ class Chef
               name_attribute: true
     attribute :description,
               kind_of: String,
-              default: lazy { |new_resource| "Jenkins slave #{new_resource.slave_name}" }
+              default: lazy do |new_resource|
+                "Jenkins slave #{new_resource.slave_name}"
+              end
     attribute :remote_fs,
               kind_of: String,
               default: '/home/jenkins'
