@@ -2,6 +2,16 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.3.1 (2015-05-19)
+-------------------
+# Bug
+- Fix Travis badge
+- Re-enable lazy attribute defaults in LWRP workaround for Chef 11
+- Properly escape single quotes in Groovy code
+
+# Improvement
+- Download update center metadata every time
+
 v2.3.0 (2015-05-14)
 -------------------
 ### New Feature
