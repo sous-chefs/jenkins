@@ -43,9 +43,7 @@ class Chef
               name_attribute: true
     attribute :description,
               kind_of: String,
-              default: lazy do |new_resource|
-                "Jenkins slave #{new_resource.slave_name}"
-              end
+              default: lazy { |new_resource| "Jenkins slave #{new_resource.slave_name}" }
     attribute :remote_fs,
               kind_of: String,
               default: '/home/jenkins'
