@@ -20,6 +20,7 @@
 #
 
 require_relative 'command'
+require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsScript < Resource::JenkinsCommand
