@@ -29,6 +29,9 @@ when 'debian'
     uri          node['jenkins']['master']['repository']
     distribution 'binary/'
     key          node['jenkins']['master']['repository_key']
+    unless node['jenkins']['master']['repository_keyserver'].nil?
+      keyserver    node['jenkins']['master']['repository_keyserver']
+    end
   end
 
   package 'jenkins' do
