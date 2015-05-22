@@ -207,6 +207,29 @@ jenkins_job 'bacon' do
 end
 ```
 
+### jenkins_view
+This resource manages Jenkins view, supporting the following actions:
+
+    :create, :delete
+
+The resource is fully idempotent and convergent as long as you're not using free hand code. It also supports whyrun mode.
+
+The `:create` action requires an array of jobs:
+
+```ruby
+jenkins_view 'ham' do
+  jobs [ "pig", "giraffe" ]
+end
+```
+
+The `:delete` action deleted a configured view:
+
+```ruby
+jenkins_view 'ham' do
+  action :delete
+end
+```
+
 ### jenkins_plugin
 This resource manages Jenkins plugins, supporting the following actions:
 
