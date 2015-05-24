@@ -39,6 +39,10 @@ class Chef
     attribute :jobs,
               kind_of: Array,
               default: []
+    attribute :code,
+              kind_of: String,
+              default: '',
+              required: false
 
     attr_writer :exists
 
@@ -94,14 +98,16 @@ EOH
     # view does not exist, one will be created from the given # `config` XML
     # file using the Jenkins CLI.
     #
-    # Requirements:
-    #   - `type` parameter
+    # If `code` is passed then the view is not necessarily created idempotently
+    # as we cannot guarantee what the user has in mind
     #
     action(:create) do
       current_view_jobs = current_view[:jobs]
       current_view_jobs ||= []
 
-      if current_resource.exists? && current_view_jobs == new_resource.jobs
+      if current_resource.exists? &&
+         current_view_jobs == new_resource.jobs &&
+         '' == new_resource.code
         Chef::Log.debug("#{new_resource} exists - skipping")
       else
         jobs_to_remove = current_view_jobs - new_resource.jobs
@@ -122,6 +128,8 @@ EOH
               #{jobs_to_remove}.each { view.remove(jenkins.getItem(it)) }
               #{jobs_to_add}.each    { view.add(jenkins.getItem(it)) }
             }
+
+            #{new_resource.code}
 
             def view = jenkins.getView(view_name)
             if (!view) {

@@ -230,6 +230,28 @@ jenkins_view 'ham' do
 end
 ```
 
+It is possible to pass a snippet of groovy code in order to create more sophisticated views, the idea is to override the `create_view` and `configure_view` groovy closures.
+
+```ruby
+code = <<-GROOVY
+create_view = { name ->
+  // Return a new view
+  return new BuildPipelineView(...)
+}
+
+configure_view = { view ->
+  // Configure view
+  view.setCssUrl("")
+}
+GROOVY
+
+jenkins_view 'pipline_view' do
+  code    code
+  action :create
+end
+
+Please note that if you pass `code`, it will always run the `:create` action as the provider cannot determine when a change has to be made and when not.
+
 ### jenkins_plugin
 This resource manages Jenkins plugins, supporting the following actions:
 
