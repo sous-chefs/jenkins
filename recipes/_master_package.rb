@@ -52,6 +52,15 @@ when 'rhel'
     version node['jenkins']['master']['version']
   end
 
+  # The package install creates the Jenkins user so now is the time to set the home
+  # directory permissions.
+  directory node['jenkins']['master']['home'] do
+    owner     node['jenkins']['master']['user']
+    group     node['jenkins']['master']['group']
+    mode      '0755'
+    recursive true
+  end
+
   template '/etc/sysconfig/jenkins' do
     source   'jenkins-config-rhel.erb'
     mode     '0644'
