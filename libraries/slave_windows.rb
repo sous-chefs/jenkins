@@ -46,10 +46,10 @@ class Chef
               default: 'C:\jenkins'
     attribute :winsw_url,
               kind_of: String,
-      default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.17/winsw-1.17-bin.exe'
+              default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.17/winsw-1.17-bin.exe'
     attribute :winsw_checksum,
               kind_of: String,
-      default: '5859b114d96800a2b98ef9d19eaa573a786a422dad324547ef25be181389df01'
+              default: '5859b114d96800a2b98ef9d19eaa573a786a422dad324547ef25be181389df01'
     attribute :path,
               kind_of: String
     attribute :pre_run_cmds,
