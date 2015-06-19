@@ -143,7 +143,7 @@ EOH
         else
           current_version = plugin_version(current_resource.version)
 
-          if current_version < desired_version
+          if plugin_upgrade?(current_version, desired_version)
             converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &install_block)
           else
             converge_by("Downgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &downgrade_block)
@@ -404,6 +404,24 @@ EOH
 
       plugin_manifest
     end
+
+    #
+    # Return whether plugin should be upgraded to desired version
+    # (i.e. that current < desired).
+    # https://github.com/opscode-cookbooks/jenkins/issues/380
+    # If only one of the two versions is a Gem::Version, we
+    # fallback to String comparison.
+    #
+    # @param [Gem::Version, String] current_version
+    # @param [Gem::Version, String] desired_version
+    # @return [Boolean]
+    #
+    def plugin_upgrade?(current_version, desired_version)
+      current_version < desired_version
+    rescue ArgumentError
+      current_version.to_s < desired_version.to_s
+    end
+
     #
     # Return the plugin version for +version+.
     # https://github.com/chef-cookbooks/jenkins/issues/292
