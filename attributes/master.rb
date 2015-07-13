@@ -58,6 +58,15 @@ default['jenkins']['master'].tap do |master|
   master['mirror'] = 'http://mirrors.jenkins-ci.org'
 
   #
+  # The branch of the Jenkins master to install.   This attribute is
+  # only used in the "war" installation method
+  #
+  # You can pick from the default of 'war' or optionally the LTS release
+  # via 'war-stable' or an LTS RC via 'war-stable-rc'.
+  #
+  master['branch'] = 'war'
+
+  #
   # The full URL to the Jenkins WAR file on the remote mirror. This attribute is
   # only used in the "war" installation method. This is a compiled attribute
   # from the +mirror+ and +version+ attributes, but you can override this
@@ -70,7 +79,7 @@ default['jenkins']['master'].tap do |master|
   # Warning: Setting this attribute will negate/ignore any values for +mirror+
   # and +version+.
   #
-  master['source'] = "#{node['jenkins']['master']['mirror']}/war/#{node['jenkins']['master']['version'] || 'latest'}/jenkins.war"
+  master['source'] = "#{node['jenkins']['master']['mirror']}/#{node['jenkins']['master']['branch']}/#{node['jenkins']['master']['version'] || 'latest'}/jenkins.war"
 
   #
   # The checksum of the war file. This is use to verify that the remote war file
