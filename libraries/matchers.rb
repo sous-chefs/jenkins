@@ -111,6 +111,13 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  def execute_jenkins_scriptFile(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_scriptFile,
+      :execute,
+      resource_name)
+  end
+  
   def create_jenkins_slave(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_slave,

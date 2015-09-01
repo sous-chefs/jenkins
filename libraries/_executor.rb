@@ -153,6 +153,20 @@ module Jenkins
       file.close! if file
     end
 
+
+
+    #
+    # Same as {Executor#groovy!}, but with the script file as parameter.
+    #
+    # @see groovy!
+    #
+    def groovyFile!(script)
+      scriptFile = File.open(script)
+      execute!("groovy #{scriptFile.path}")
+    ensure
+      scriptFile.close if scriptFile
+    end
+    
     private
 
     #
