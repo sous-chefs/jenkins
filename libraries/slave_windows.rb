@@ -142,14 +142,15 @@ class Chef
       return @slave_compat_xml if @slave_compat_xml
       slave_compat_xml = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.exe.config")
       @slave_compat_xml = Chef::Resource::File.new(slave_compat_xml, run_context)
-      @slave_compat_xml.content(<<-EOH.gsub(/ ^{8}/, '')
+      @slave_compat_xml.content(
+        <<-EOH.gsub(/ ^{8}/, '')
         <configuration>
           <startup>
             <supportedRuntime version="v2.0.50727" />
             <supportedRuntime version="v4.0" />
           </startup>
         </configuration>
-      EOH
+        EOH
       )
       @slave_compat_xml
     end

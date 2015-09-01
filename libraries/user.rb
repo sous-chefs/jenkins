@@ -87,9 +87,9 @@ class Chef
 
     action(:create) do
       if current_resource.exists? &&
-         current_resource.full_name  == new_resource.full_name  &&
+         current_resource.full_name == new_resource.full_name &&
          current_resource.email == new_resource.email &&
-         current_resource.public_keys  == new_resource.public_keys
+         current_resource.public_keys == new_resource.public_keys
         Chef::Log.debug("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
