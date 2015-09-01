@@ -207,4 +207,9 @@ default['jenkins']['master'].tap do |master|
                              when 'debian' then 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key'
                              when 'rhel' then 'http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key'
                              end
+
+  #
+  # Keyserver to use. Disabled by default
+  #
+  master['repository_keyserver'] = nil
 end

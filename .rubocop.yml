@@ -20,6 +20,8 @@ LineLength:
   Enabled: false
 MethodLength:
   Enabled: false
+ModuleLength:
+  Enabled: false
 PerceivedComplexity:
   Enabled: false
 RaiseArgs:

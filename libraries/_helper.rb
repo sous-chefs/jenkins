@@ -137,9 +137,9 @@ EOH
       when String
         # This is ugly but it ensures any backslashes appear as
         # double-backslashes in the resulting Groovy code.
-        val.gsub!(/\\/, '\\\\\\\\')
+        val = val.gsub(/\\/, '\\\\\\\\')
         # Escape single quotes
-        val.gsub!(/'/, "\\\\'")
+        val = val.gsub(/'/, "\\\\'")
         "'#{val}'"
       when Array
         list_members = val.map do |v|

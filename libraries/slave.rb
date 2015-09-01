@@ -331,7 +331,7 @@ class Chef
           executors:slave.numExecutors.toInteger(),
           usage_mode:slave.mode.toString().toLowerCase(),
           labels:slave.labelString.split().sort(),
-          environment:slave.nodeProperties.get(EnvironmentVariablesNodeProperty.class)?.envVars,
+          environment:new java.util.HashMap<String,String>(slave.nodeProperties.get(EnvironmentVariablesNodeProperty.class)?.envVars),
           connected:(slave.computer.connectTime > 0),
           online:slave.computer.online
         ]

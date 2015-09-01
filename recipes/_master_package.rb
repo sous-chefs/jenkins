@@ -29,6 +29,9 @@ when 'debian'
     uri          node['jenkins']['master']['repository']
     distribution 'binary/'
     key          node['jenkins']['master']['repository_key']
+    unless node['jenkins']['master']['repository_keyserver'].nil?
+      keyserver    node['jenkins']['master']['repository_keyserver']
+    end
   end
 
   package 'jenkins' do
@@ -50,6 +53,15 @@ when 'rhel'
 
   package 'jenkins' do
     version node['jenkins']['master']['version']
+  end
+
+  # The package install creates the Jenkins user so now is the time to set the home
+  # directory permissions.
+  directory node['jenkins']['master']['home'] do
+    owner     node['jenkins']['master']['user']
+    group     node['jenkins']['master']['group']
+    mode      '0755'
+    recursive true
   end
 
   template '/etc/sysconfig/jenkins' do
