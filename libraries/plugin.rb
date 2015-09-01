@@ -143,10 +143,14 @@ EOH
         else
           current_version = plugin_version(current_resource.version)
 
-          if current_version < desired_version
-            converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &install_block)
-          else
-            converge_by("Downgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &downgrade_block)
+          unless current_version.to_s.include? 'SNAPSHOT'
+            if current_version < desired_version
+              puts "current_version < desired_version"
+              converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &install_block)
+            else
+              puts "current_version > desired_version"
+              converge_by("Downgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &downgrade_block)
+            end
           end
         end
       else
