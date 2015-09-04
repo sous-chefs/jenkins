@@ -324,6 +324,11 @@ class Chef
           return null
         }
 
+        def slave_environment = null
+        slave_env_vars = slave.nodeProperties.get(EnvironmentVariablesNodeProperty.class)?.envVars
+        if (slave_env_vars)
+          slave_environment = new java.util.HashMap<String,String>(slave_env_vars)
+
         current_slave = [
           name:slave.name,
           description:slave.nodeDescription,
@@ -331,7 +336,7 @@ class Chef
           executors:slave.numExecutors.toInteger(),
           usage_mode:slave.mode.toString().toLowerCase(),
           labels:slave.labelString.split().sort(),
-          environment:new java.util.HashMap<String,String>(slave.nodeProperties.get(EnvironmentVariablesNodeProperty.class)?.envVars),
+          environment:slave_environment,
           connected:(slave.computer.connectTime > 0),
           online:slave.computer.online
         ]
