@@ -76,10 +76,10 @@ class Chef
       #  * remote_fs_dir_resource
       #  * slave_jar_resource
       #
-      
-      #The jenkins-slave.exe is needed to get the slave up and running under a windows service.
-      #However, once it is created Jenkins Master wants to control the version.  So we should only
-      #create the file if it is missing.
+
+      # The jenkins-slave.exe is needed to get the slave up and running under a windows service.
+      # However, once it is created Jenkins Master wants to control the version.  So we should only
+      # create the file if it is missing.
       slave_exe_resource.run_action(:create_if_missing)
       
       slave_compat_xml.run_action(:create)
