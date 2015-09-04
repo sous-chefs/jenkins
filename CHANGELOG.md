@@ -2,6 +2,19 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.4.0 (2015-09-03)
+-------------------
+# Bug
+- Ensure Jenkins home directory has correct ownership after package installation
+- Fix for NPE when creating already registered slave with env vars defined
+- Fix ArgumentError when comparing two versions not of the same type
+- Don’t mutate value when converting to Groovy; Fixes #371
+
+# Improvement
+- Automatically add "Logon As A Service" right to Windows slaves
+- Allow optional 'keyserver' attribute for apt
+- Add a `MAINTAINERS` file
+
 v2.3.1 (2015-05-19)
 -------------------
 # Bug
