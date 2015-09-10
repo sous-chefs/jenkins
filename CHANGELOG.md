@@ -2,6 +2,11 @@ jenkins Cookbook CHANGELOG
 ==========================
 This file is used to list changes made in each version of the jenkins cookbook.
 
+v2.4.1 (2015-09-10)
+-------------------
+# Bug
+- Make slave_exe resource only get created if it is missing.
+
 v2.4.0 (2015-09-03)
 -------------------
 # Bug
