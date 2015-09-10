@@ -117,6 +117,7 @@ EOH
             new_resource.source,
             new_resource.name,
             nil,
+            false,
             cli_opts: new_resource.options,
           )
         else
@@ -285,7 +286,7 @@ EOH
       source_url = remote_plugin_data['url']
       source_url.gsub!(latest_version.to_s, desired_version(plugin_name, plugin_version).to_s)
 
-      install_plugin_from_url(source_url, plugin_name, desired_version(plugin_name, plugin_version), opts)
+      install_plugin_from_url(source_url, plugin_name, desired_version(plugin_name, plugin_version), true, opts)
     end
 
     #
@@ -298,7 +299,9 @@ EOH
     # @option opts [Boolean] :cli_opts additional flags to pass the jenkins cli command
     # @option opts [Boolean] :install_deps indicates a plugins dependencies should be installed
     #
-    def install_plugin_from_url(source_url, plugin_name, plugin_version = nil, opts = {})
+    def install_plugin_from_url(source_url, plugin_name, plugin_version = nil, is_dependency = false, opts = {})
+      source_url = source_url.gsub('http://updates.jenkins-ci.org/download', node['jenkins']['master']['mirror']) if is_dependency
+
       version = plugin_version || Digest::MD5.hexdigest(source_url)
 
       # Use the remote_file resource to download and cache the plugin (see
