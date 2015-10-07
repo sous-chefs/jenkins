@@ -89,13 +89,13 @@ describe Jenkins::Executor do
           @times = 0
           allow(shellout).to receive(:error!) do
             @times += 1
-            raise Mixlib::ShellOut::ShellCommandFailed unless @times > 2
+            fail Mixlib::ShellOut::ShellCommandFailed unless @times > 2
           end
           allow(shellout).to receive(:exitstatus).and_return(255, 1, 0)
           allow(shellout).to receive(:stderr).and_return(
             'Authentication failed. No private key accepted.',
             'Exception in thread "main" java.io.EOFException',
-            '',
+            ''
           )
         end
 
