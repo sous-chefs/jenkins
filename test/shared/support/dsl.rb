@@ -6,6 +6,10 @@ module RSpec
         Serverspec::Type::JenkinsUserCredentials.new(username)
       end
 
+      def jenkins_secret_text_credentials(description)
+        Serverspec::Type::JenkinsSecretTextCredentials.new(description)
+      end
+
       def jenkins_job(name)
         Serverspec::Type::JenkinsJob.new(name)
       end
