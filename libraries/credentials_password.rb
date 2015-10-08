@@ -20,10 +20,11 @@
 #
 
 require_relative 'credentials'
+require_relative 'credentials_user'
 require_relative '_params_validate'
 
 class Chef
-  class Resource::JenkinsPasswordCredentials < Resource::JenkinsCredentials
+  class Resource::JenkinsPasswordCredentials < Resource::JenkinsCredentialsUser
     # Chef attributes
     provides :jenkins_password_credentials
 
@@ -42,7 +43,7 @@ class Chef
 end
 
 class Chef
-  class Provider::JenkinsPasswordCredentials < Provider::JenkinsCredentials
+  class Provider::JenkinsPasswordCredentials < Provider::JenkinsCredentialsUser
     def load_current_resource
       @current_resource ||= Resource::JenkinsPasswordCredentials.new(new_resource.name)
 

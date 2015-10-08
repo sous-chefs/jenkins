@@ -4,7 +4,7 @@ include_recipe 'jenkins::master'
 include_recipe 'jenkins_credentials::create'
 
 # test deletion with base resource
-jenkins_credentials 'schisamo' do
+jenkins_password_credentials 'schisamo' do
   action :delete
 end
 
@@ -18,7 +18,7 @@ jenkins_password_credentials 'schisamo3' do
 end
 
 # test deletion with base resource
-jenkins_credentials 'jenkins2' do
+jenkins_private_key_credentials 'jenkins2' do
   action :delete
 end
 

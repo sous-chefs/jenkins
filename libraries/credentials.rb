@@ -25,10 +25,8 @@ require_relative '_params_validate'
 class Chef
   class Resource::JenkinsCredentials < Resource::LWRPBase
     require 'securerandom'
-    include Jenkins::Helper
 
     # Chef attributes
-    identity_attr :username
     provides :jenkins_credentials
 
     # Set the resource name
@@ -46,15 +44,9 @@ class Chef
     default_action :create
 
     # Attributes
-    attribute :username,
-              kind_of: String,
-              name_attribute: true
     attribute :id,
               kind_of: String,
               default: lazy { SecureRandom.uuid }
-    attribute :description,
-              kind_of: String,
-              default: lazy { |new_resource| "Credentials for #{new_resource.username} - created by Chef" }
 
     attr_writer :exists
 
@@ -84,7 +76,6 @@ class Chef
         @current_resource.exists = true
         @current_resource.id(current_credentials[:id])
         @current_resource.description(current_credentials[:description])
-        @current_resource.username(current_credentials[:username])
       end
 
       @current_resource
@@ -116,8 +107,7 @@ class Chef
 
             #{credentials_groovy}
 
-            // Create or update the credentials in the Jenkins instance
-            #{credentials_for_username_groovy(new_resource.username, 'existing_credentials')}
+            #{fetch_existing_credentials_groovy('existing_credentials')}
 
             if(existing_credentials != null) {
               credentials_store.updateCredentials(
@@ -149,7 +139,7 @@ class Chef
                 'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
               )[0].getStore()
 
-            #{credentials_for_username_groovy(new_resource.username, 'existing_credentials')}
+            #{fetch_existing_credentials_groovy('existing_credentials')}
 
             if(existing_credentials != null) {
               credentials_store.removeCredentials(
@@ -176,6 +166,38 @@ class Chef
     #
     def credentials_groovy
       fail NotImplementedError, 'You must implement #credentials_groovy.'
+    end
+
+    #
+    # Returns a Groovy snippet that fetches credentials from the
+    # credentials store. The snippet relies on the existence of both
+    # 'credentials_store' and 'credentials' variables, representing the
+    # Jenkins credentials store and the credentials to be fetched, respectively
+    # @abstract
+    # @return [String]
+    #
+    def fetch_existing_credentials_groovy(_groovy_variable_name)
+      fail NotImplementedError, 'You must implement #fetch_existing_credentials_groovy.'
+    end
+
+    #
+    # Returns a Groovy snippet with an array of the resource attributes. The snippet
+    # relies on the existence of a variable credentials that represents the resource
+    # @abstract
+    # @return [String]
+    #
+    def resource_attributes_groovy(_groovy_variable_name)
+      fail NotImplementedError, 'You must implement #resource_attributes_groovy.'
+    end
+
+    #
+    # Helper method for determining if the given JSON is in sync with the
+    # current configuration on the Jenkins instance.
+    #
+    # @return [Boolean]
+    #
+    def correct_config?
+      fail NotImplementedError, 'You must implement #correct_config?.'
     end
 
     #
@@ -210,17 +232,13 @@ class Chef
         import com.cloudbees.plugins.credentials.impl.*;
         import com.cloudbees.jenkins.plugins.sshcredentials.impl.*;
 
-        #{credentials_for_username_groovy(new_resource.username, 'credentials')}
+        #{fetch_existing_credentials_groovy('credentials')}
 
         if(credentials == null) {
           return null
         }
 
-        current_credentials = [
-          id:credentials.id,
-          description:credentials.description,
-          username:credentials.username
-        ]
+        #{resource_attributes_groovy('current_credentials')}
 
         #{credentials_attributes.join("\n")}
 
@@ -235,26 +253,6 @@ class Chef
       # Values that were serialized as nil/null are deserialized as an
       # empty string! :( Let's ensure we convert back to nil.
       @current_credentials = convert_blank_values_to_nil(@current_credentials)
-    end
-
-    #
-    # Helper method for determining if the given JSON is in sync with the
-    # current configuration on the Jenkins instance.
-    #
-    # @return [Boolean]
-    #
-    def correct_config?
-      wanted_credentials = {
-        description: new_resource.description,
-        username: new_resource.username,
-      }
-
-      attribute_to_property_map.keys.each do |key|
-        wanted_credentials[key] = new_resource.send(key)
-      end
-
-      # Don't compare the ID as it is generated
-      current_credentials.dup.tap { |c| c.delete(:id) } == convert_blank_values_to_nil(wanted_credentials)
     end
   end
 end
