@@ -23,6 +23,23 @@ module Serverspec
         id === try { xml.elements['id'].text }
       end
 
+      private
+
+      def try(&block)
+        block.call
+      rescue NoMethodError
+        nil
+      end
+    end
+
+    class JenkinsUserCredentials < JenkinsCredentials
+      attr_reader :username
+
+      def initialize(username)
+        @username = username
+        super
+      end
+
       def has_description?(description)
         description === try { xml.elements['description'].text }
       end
@@ -58,11 +75,8 @@ module Serverspec
       rescue Errno::ENOENT
         @xml = nil
       end
+    end
 
-      def try(&block)
-        block.call
-      rescue NoMethodError
-        nil
       end
     end
   end
