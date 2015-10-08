@@ -41,3 +41,8 @@ describe jenkins_user_credentials('dollarbills') do
   it { should be_a_jenkins_credentials }
   it { should have_password('$uper$ecret') }
 end
+
+describe jenkins_secret_text_credentials('dollarbills_secret') do
+  it { should be_a_jenkins_credentials }
+  it { should have_secret('$uper$ecret') }
+end

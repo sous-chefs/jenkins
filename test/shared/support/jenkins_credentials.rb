@@ -77,6 +77,29 @@ module Serverspec
       end
     end
 
+    class JenkinsSecretTextCredentials < JenkinsCredentials
+      attr_reader :description
+
+      def initialize(description)
+        @description = description
+        super
+      end
+
+      # TODO: encrypt provided secret and compare to Jenkins value
+      def has_secret?(_secret)
+        !(try { xml.elements['secret'].text }).nil?
+      end
+
+      private
+
+      def xml
+        return @xml if @xml
+
+        contents = ::File.read('/var/lib/jenkins/credentials.xml')
+        doc = REXML::Document.new(contents)
+        @xml = REXML::XPath.first(doc, "//*[description/text() = '#{description}']/")
+      rescue Errno::ENOENT
+        @xml = nil
       end
     end
   end
