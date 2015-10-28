@@ -26,7 +26,7 @@ require_relative 'slave_jnlp'
 class Chef
   class Resource::JenkinsWindowsSlave < Resource::JenkinsJNLPSlave
     # Chef attributes
-    provides :jenkins_windows_slave, on_platforms: %w(windows)
+    provides :jenkins_windows_slave, platform: %w(windows)
 
     # Set the resource name
     self.resource_name = :jenkins_windows_slave
