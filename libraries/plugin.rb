@@ -408,7 +408,7 @@ EOH
     #
     # Return whether plugin should be upgraded to desired version
     # (i.e. that current < desired).
-    # https://github.com/opscode-cookbooks/jenkins/issues/380
+    # https://github.com/chef-cookbooks/jenkins/issues/380
     # If only one of the two versions is a Gem::Version, we
     # fallback to String comparison.
     #
