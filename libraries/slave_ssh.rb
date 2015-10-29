@@ -48,9 +48,9 @@ class Chef
     attribute :command_suffix,
               kind_of: String
     attribute :ssh_retries,
-              kind_of: String
+              kind_of: Integer
     attribute :ssh_wait_retries,
-              kind_of: String
+              kind_of: Integer
 
     #
     # The credentials to SSH into the slave with. Credentials can be any
