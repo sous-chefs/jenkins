@@ -86,7 +86,7 @@ class Chef
         @current_resource.jvm_options(current_slave[:jvm_options])
         @current_resource.java_path(current_slave[:java_path])
         @current_resource.ssh_retries(current_slave[:ssh_retries])
-        @current_resource.ssh_retries(current_slave[:ssh_wait_retries])
+        @current_resource.ssh_wait_retries(current_slave[:ssh_wait_retries])
         
       end
 
@@ -129,8 +129,8 @@ class Chef
         java_path: 'slave.launcher.javaPath',
         command_prefix: 'slave.launcher.prefixStartSlaveCmd',
         command_suffix: 'slave.launcher.suffixStartSlaveCmd',
-        maxNumRetries: 'slave.launcher.maxNumRetries',
-        retryWaitTime: 'slave.launcher.retryWaitTime',
+        ssh_retries: 'slave.launcher.maxNumRetries',
+        ssh_wait_retries: 'slave.launcher.retryWaitTime',
       }
 
       if new_resource.parsed_credentials.match(UUID_REGEX)
