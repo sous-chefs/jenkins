@@ -330,7 +330,7 @@ jenkins_ssh_slave 'executor' do
   ssh_wait_retries 60
 end
 
-# A slave's executors, usage mode, and availability can also be configured
+# A slave's executors, usage mode and availability can also be configured
 jenkins_jnlp_slave 'smoke' do
   description     'Runs a series of high-level smoke tests'
   remote_fs       '/home/jenkins'
