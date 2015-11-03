@@ -109,8 +109,7 @@ class Chef
     def remote_fs_dir_resource
       return @remote_fs_dir_resource if @remote_fs_dir_resource
       @remote_fs_dir_resource = Chef::Resource::Directory.new(new_resource.remote_fs, run_context)
-      user_parts = user_hash
-      @remote_fs_dir_resource.rights(:full_control, user_parts['username'])
+      @remote_fs_dir_resource.rights(:full_control, new_resource.user)
       @remote_fs_dir_resource.recursive(true)
       @remote_fs_dir_resource
     end
