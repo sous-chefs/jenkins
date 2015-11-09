@@ -1,4 +1,5 @@
 if defined?(ChefSpec)
+  ChefSpec.define_matcher :jenkins_command
   def execute_jenkins_command(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_command,
@@ -6,6 +7,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_credentials
   def create_jenkins_credentials(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_credentials,
@@ -20,6 +22,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_password_credentials
   def create_jenkins_password_credentials(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_password_credentials,
@@ -34,6 +37,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_private_key_credentials
   def create_jenkins_private_key_credentials(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_private_key_credentials,
@@ -48,6 +52,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_job
   def create_jenkins_job(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_job,
@@ -76,6 +81,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_plugin
   def install_jenkins_plugin(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_plugin,
@@ -104,6 +110,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_script
   def execute_jenkins_script(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_script,
@@ -111,6 +118,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_slave
   def create_jenkins_slave(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_slave,
@@ -153,6 +161,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_jnlp_slave
   def create_jenkins_jnlp_slave(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_jnlp_slave,
@@ -195,6 +204,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_ssh_slave
   def create_jenkins_ssh_slave(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_ssh_slave,
@@ -237,6 +247,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_windows_slave
   def create_jenkins_windows_slave(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_windows_slave,
@@ -279,6 +290,7 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_user
   def create_jenkins_user(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_user,
