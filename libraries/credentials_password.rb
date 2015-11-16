@@ -80,9 +80,7 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#attribute_to_property_map
     #
     def attribute_to_property_map
-      {
-        password: 'credentials.password.plainText',
-      }
+      { password: 'credentials.password.plainText' }
     end
   end
 end

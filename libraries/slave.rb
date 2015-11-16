@@ -256,7 +256,7 @@ class Chef
     def action_offline
       if current_resource.online?
         converge_by("Offline #{new_resource}") do
-          command_pieces  = [escape(new_resource.slave_name)]
+          command_pieces = [escape(new_resource.slave_name)]
           if new_resource.offline_reason
             command_pieces << "-m '#{escape(new_resource.offline_reason)}'"
           end

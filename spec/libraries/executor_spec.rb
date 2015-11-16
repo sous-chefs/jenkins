@@ -95,7 +95,7 @@ describe Jenkins::Executor do
           allow(shellout).to receive(:stderr).and_return(
             'Authentication failed. No private key accepted.',
             'Exception in thread "main" java.io.EOFException',
-            ''
+            '',
           )
         end
 

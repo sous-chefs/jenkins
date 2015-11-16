@@ -263,7 +263,7 @@ EOH
 
       # Compute some versions; Parse them as `Gem::Version` instances for easy
       # comparisons.
-      latest_version    = plugin_version(remote_plugin_data['version'])
+      latest_version = plugin_version(remote_plugin_data['version'])
 
       # Brute-force install all dependencies
       if opts[:install_deps] && remote_plugin_data['dependencies'].any?
@@ -395,7 +395,7 @@ EOH
           #   Plugin-Version: 1.4
           #
           config, value = line.split(/:\s/, 2)
-          config = config.gsub('-', '_').downcase
+          config = config.tr('-', '_').downcase
           value = value.strip if value # remove trailing \r\n
 
           plugin_manifest[config] = value
