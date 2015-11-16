@@ -23,6 +23,23 @@ module Serverspec
         id === try { xml.elements['id'].text }
       end
 
+      private
+
+      def try(&block)
+        block.call
+      rescue NoMethodError
+        nil
+      end
+    end
+
+    class JenkinsUserCredentials < JenkinsCredentials
+      attr_reader :username
+
+      def initialize(username)
+        @username = username
+        super
+      end
+
       def has_description?(description)
         description === try { xml.elements['description'].text }
       end
@@ -58,11 +75,31 @@ module Serverspec
       rescue Errno::ENOENT
         @xml = nil
       end
+    end
 
-      def try(&block)
-        block.call
-      rescue NoMethodError
-        nil
+    class JenkinsSecretTextCredentials < JenkinsCredentials
+      attr_reader :description
+
+      def initialize(description)
+        @description = description
+        super
+      end
+
+      # TODO: encrypt provided secret and compare to Jenkins value
+      def has_secret?(_secret)
+        !(try { xml.elements['secret'].text }).nil?
+      end
+
+      private
+
+      def xml
+        return @xml if @xml
+
+        contents = ::File.read('/var/lib/jenkins/credentials.xml')
+        doc = REXML::Document.new(contents)
+        @xml = REXML::XPath.first(doc, "//*[description/text() = '#{description}']/")
+      rescue Errno::ENOENT
+        @xml = nil
       end
     end
   end

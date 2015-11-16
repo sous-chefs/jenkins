@@ -48,6 +48,20 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  def create_jenkins_secret_text_credentials(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_secret_text_credentials,
+      :create,
+      resource_name)
+  end
+
+  def delete_jenkins_secret_text_credentials(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_secret_text_credentials,
+      :delete,
+      resource_name)
+  end
+
   def create_jenkins_job(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_job,

@@ -43,3 +43,15 @@ end
 jenkins_password_credentials 'dollarbills' do
   password '$uper$ecret'
 end
+
+# Plugin required for Secret Text credentials
+jenkins_plugin 'plain-credentials' do
+  install_deps true
+  notifies :restart, 'service[jenkins]',       :immediately
+  notifies :restart, 'runit_service[jenkins]', :immediately
+end
+
+# Test creating a secret text with a dollar sign in it
+jenkins_secret_text_credentials 'dollarbills_secret' do
+  secret '$uper$ecret'
+end
