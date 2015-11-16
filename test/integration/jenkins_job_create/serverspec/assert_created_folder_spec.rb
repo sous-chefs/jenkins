@@ -1,4 +1,4 @@
-require_relative '../../../kitchen/data/spec_helper'
+require 'spec_helper'
 
 describe jenkins_job('my-folder') do
   it { should be_a_jenkins_job }

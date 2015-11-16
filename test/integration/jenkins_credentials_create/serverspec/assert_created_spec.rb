@@ -1,4 +1,4 @@
-require_relative '../../../kitchen/data/spec_helper'
+require 'spec_helper'
 
 describe jenkins_user_credentials('schisamo') do
   it { should be_a_jenkins_credentials }
@@ -21,12 +21,12 @@ end
 describe jenkins_user_credentials('jenkins') do
   it { should be_a_jenkins_credentials }
   it { should have_description('this is more like it') }
-  it { should have_private_key(File.read(File.expand_path('../../../../kitchen/data/data/test_id_rsa', __FILE__))) }
+  it { should have_private_key(File.read("#{fixture_data_base_path}/test_id_rsa")) }
 end
 
 describe jenkins_user_credentials('jenkins2') do
   it { should be_a_jenkins_credentials }
-  it { should have_private_key(File.read(File.expand_path('../../../../kitchen/data/data/test_id_rsa_with_passphrase', __FILE__)), 'secret') }
+  it { should have_private_key(File.read("#{fixture_data_base_path}/test_id_rsa_with_passphrase"), 'secret') }
   it { should have_passphrase('secret') }
 end
 
@@ -34,7 +34,7 @@ describe jenkins_user_credentials('jenkins3') do
   it { should be_a_jenkins_credentials }
   it { should have_description('I specified an ID') }
   it { should have_id('766952b8-e1ea-4ee1-b769-e159681cb893') }
-  it { should have_private_key(File.read(File.expand_path('../../../../kitchen/data/data/test_id_rsa', __FILE__))) }
+  it { should have_private_key(File.read("#{fixture_data_base_path}/test_id_rsa")) }
 end
 
 describe jenkins_user_credentials('dollarbills') do

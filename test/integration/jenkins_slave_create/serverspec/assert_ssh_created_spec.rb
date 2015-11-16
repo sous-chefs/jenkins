@@ -1,4 +1,4 @@
-require_relative '../../../kitchen/data/spec_helper'
+require 'spec_helper'
 
 #
 # SSH Slave #1

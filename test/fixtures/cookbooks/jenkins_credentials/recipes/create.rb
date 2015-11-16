@@ -2,6 +2,8 @@ require 'openssl'
 
 include_recipe 'jenkins::master'
 
+fixture_data_base_path = '/tmp/kitchen/data'
+
 # Test basic password credentials creation
 jenkins_password_credentials 'schisamo' do
   description 'passwords are for suckers'
@@ -23,12 +25,12 @@ end
 # Test basic private key credentials creation
 jenkins_private_key_credentials 'jenkins' do
   description 'this is more like it'
-  private_key File.read(File.expand_path('../../../../../data/data/test_id_rsa', __FILE__))
+  private_key File.read("#{fixture_data_base_path}/test_id_rsa")
 end
 
 # Test private key credentials with passphrase
 jenkins_private_key_credentials 'jenkins2' do
-  private_key OpenSSL::PKey::RSA.new(File.read(File.expand_path('../../../../../data/data/test_id_rsa_with_passphrase', __FILE__)), 'secret').to_pem
+  private_key OpenSSL::PKey::RSA.new(File.read("#{fixture_data_base_path}/test_id_rsa_with_passphrase"), 'secret').to_pem
   passphrase 'secret'
 end
 
@@ -36,7 +38,7 @@ end
 jenkins_private_key_credentials 'jenkins3' do
   description 'I specified an ID'
   id '766952b8-e1ea-4ee1-b769-e159681cb893'
-  private_key File.read(File.expand_path('../../../../../data/data/test_id_rsa', __FILE__))
+  private_key File.read("#{fixture_data_base_path}/test_id_rsa")
 end
 
 # Test creating a password with a dollar sign in it

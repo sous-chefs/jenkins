@@ -1,4 +1,4 @@
-require_relative '../../../kitchen/data/spec_helper'
+require 'spec_helper'
 
 # JNLP Slaves
 %w(builder executor smoke).each do |name|
