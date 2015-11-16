@@ -446,9 +446,7 @@ EOH
         # update-center data and can handle the plugin installation through CLI exactly
         # in the same way as through the user interface.
         uri = URI(uri_join(endpoint, 'updateCenter', 'byId', 'default', 'postBack'))
-        headers = {
-          'Accept' => 'application/json',
-        }
+        headers = { 'Accept' => 'application/json' }
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true if uri.scheme == 'https'
         http.post(uri.path, extracted_json, headers)

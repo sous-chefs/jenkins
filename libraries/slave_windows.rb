@@ -165,11 +165,11 @@ class Chef
 
       user_parts = new_resource.user.match(/(.*)\\(.*)/)
       if user_parts
-        userhash['domain'] = user_parts[1]
-        userhash['username']   = user_parts[2]
+        userhash['domain']   = user_parts[1]
+        userhash['username'] = user_parts[2]
       else
-        userhash['domain'] = '.'
-        userhash['username']   = new_resource.user
+        userhash['domain']   = '.'
+        userhash['username'] = new_resource.user
       end
 
       userhash
