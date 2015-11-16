@@ -159,21 +159,6 @@ class Chef
       @slave_compat_xml
     end
 
-    def user_hash
-      userhash = {}
-
-      user_parts = new_resource.user.match(/(.*)\\(.*)/)
-      if user_parts
-        userhash['domain']   = user_parts[1]
-        userhash['username'] = user_parts[2]
-      else
-        userhash['domain']   = '.'
-        userhash['username'] = new_resource.user
-      end
-
-      userhash
-    end
-
     #
     # Creates a `template` resource that represents the config file used
     # to create the Window's service. The caller will need to call
@@ -185,11 +170,6 @@ class Chef
       return @slave_xml_resource if @slave_xml_resource
 
       slave_xml = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.xml")
-
-      # Get User object
-      user_parts = user_hash
-      user_domain = user_parts['domain']
-      user_account = user_parts['username']
 
       @slave_xml_resource = Chef::Resource::Template.new(slave_xml, run_context)
       @slave_xml_resource.cookbook('jenkins')
@@ -270,6 +250,37 @@ class Chef
         wmi_property_from_query(:name, "select * from Win32_Service where name = '#{new_resource.service_name}'")
       end
       @service_resource
+    end
+
+    #
+    # Windows domain for the user or `.` if a domain is not set.
+    #
+    # @return [String]
+    #
+    def user_domain
+      @user_domain ||= begin
+        if (parts = new_resource.user.match(/(?<domain>.*)\\(?<account>.*)/))
+          parts[:domain]
+        else
+          '.'
+        end
+      end
+    end
+
+    #
+    # Account name of the configured user. The domain prefix is also properly
+    # stripped off.
+    #
+    # @return [String]
+    #
+    def user_account
+      @user_account ||= begin
+        if (parts = new_resource.user.match(/(?<domain>.*)\\(?<account>.*)/))
+          parts[:account]
+        else
+          new_resource.user
+        end
+      end
     end
   end
 end
