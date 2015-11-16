@@ -325,7 +325,7 @@ EOH
     # @return [String]
     #
     def username
-      node.run_state[:jenkins_username]
+      node.run_state[:jenkins_username] # ~FC001
     end
 
     #
@@ -334,7 +334,7 @@ EOH
     # @return [String]
     #
     def password
-      node.run_state[:jenkins_password]
+      node.run_state[:jenkins_password] # ~FC001
     end
 
     #
