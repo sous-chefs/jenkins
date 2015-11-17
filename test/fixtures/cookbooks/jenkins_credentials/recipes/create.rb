@@ -1,6 +1,6 @@
 require 'openssl'
 
-include_recipe 'jenkins::master'
+include_recipe 'jenkins_server_wrapper::default'
 
 fixture_data_base_path = '/tmp/kitchen/data'
 

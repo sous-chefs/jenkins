@@ -1,4 +1,4 @@
-include_recipe 'jenkins::master'
+include_recipe 'jenkins_server_wrapper::default'
 
 # Load user data from a data bag item. This should be an encrypted data
 # bag item in real deployments.

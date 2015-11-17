@@ -1,4 +1,4 @@
-include_recipe 'jenkins::master'
+include_recipe 'jenkins_server_wrapper::default'
 
 # Include the disconnect recipe so we have something to connect
 include_recipe 'jenkins_slave::disconnect'

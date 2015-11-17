@@ -1,4 +1,4 @@
-include_recipe 'jenkins::master'
+include_recipe 'jenkins_server_wrapper::default'
 
 # Include the offline recipe so we have something to take online
 include_recipe 'jenkins_slave::offline'

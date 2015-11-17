@@ -14,6 +14,7 @@ group :integration do
   fixture 'job'
   fixture 'plugin'
   fixture 'script'
+  fixture 'server_wrapper'
   fixture 'slave'
   fixture 'smoke'
   fixture 'user'
