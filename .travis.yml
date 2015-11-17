@@ -1,5 +1,5 @@
-# Use Travis's cointainer based infrastructure
-sudo: false
+sudo: required
+
 addons:
   apt:
     sources:
@@ -14,11 +14,27 @@ branches:
   only:
     - master
 
+services:
+  - docker
+
+env:
+  global:
+    # Ignore warnings when running specs.
+    - RUBYOPT="-W0"
+  matrix:
+    - CHEF_VERSION=12.0.3
+    - CHEF_VERSION=latest
+
+matrix:
+  fast_finish: true
+
 # Ensure we make ChefDK's Ruby the default
 before_script:
   - eval "$(/opt/chefdk/bin/chef shell-init bash)"
   # We have to install chef-sugar for ChefSpec
   - /opt/chefdk/embedded/bin/chef gem install chef-sugar
+  # Ensure kitchen-docker is available for testing
+  - /opt/chefdk/embedded/bin/chef gem install kitchen-docker
 script:
   - /opt/chefdk/embedded/bin/chef --version
   - /opt/chefdk/embedded/bin/rubocop --version
@@ -26,3 +42,4 @@ script:
   - /opt/chefdk/embedded/bin/foodcritic --version
   - /opt/chefdk/embedded/bin/foodcritic . --exclude spec
   - /opt/chefdk/embedded/bin/rspec spec
+  - KITCHEN_LOCAL_YAML=.kitchen.docker.yml /opt/chefdk/embedded/bin/kitchen verify smoke-war-stable-ubuntu-docker
