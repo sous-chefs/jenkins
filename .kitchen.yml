@@ -23,11 +23,11 @@ provisioner:
         mirror: http://mirrors.jenkins-ci.org
 
 platforms:
-  - name: ubuntu-12.04
+  - name: ubuntu-14.04
     run_list:
       - apt::default
       - jenkins::java
-  - name: centos-6.6
+  - name: centos-7.1
     run_list:
       - yum::default
       - jenkins::java
