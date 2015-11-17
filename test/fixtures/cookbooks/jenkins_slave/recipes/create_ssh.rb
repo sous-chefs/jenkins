@@ -27,6 +27,9 @@ user 'jenkins-ssh-key' do
   supports manage_home: true
 end
 
+# disable password-based access to the account while allowing SSH access
+execute "usermod -p '*' jenkins-ssh-key"
+
 directory ::File.join('/home/jenkins-ssh-key', '.ssh') do
   owner 'jenkins-ssh-key'
   mode  '0700'

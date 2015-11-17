@@ -1,5 +1,7 @@
 include_recipe 'jenkins_server_wrapper::default'
 
+return if docker? # the runit_service resource has issues under Docker
+
 #
 # JNLP
 # ------------------------------

@@ -37,6 +37,7 @@ suites:
   # Smoke suite
   #
   - name: smoke_package_latest
+    excludes: ubuntu-docker
     run_list: jenkins_smoke::default
     attributes:
       jenkins:
@@ -50,6 +51,7 @@ suites:
           install_method: war
           source: http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
   - name: smoke_war_latest
+    excludes: ubuntu-docker
     run_list: jenkins_smoke::default
     attributes:
       jenkins:
