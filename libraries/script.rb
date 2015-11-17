@@ -24,11 +24,7 @@ require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsScript < Resource::JenkinsCommand
-    # Chef attributes
-    provides :jenkins_script
-
-    # Set the resource name
-    self.resource_name = :jenkins_script
+    resource_name :jenkins_script
 
     # Actions
     actions :execute
@@ -38,9 +34,18 @@ end
 
 class Chef
   class Provider::JenkinsScript < Provider::JenkinsCommand
+    provides :jenkins_script
+
     def load_current_resource
       @current_resource ||= Resource::JenkinsScript.new(new_resource.command)
       super
+    end
+
+    #
+    # This provider supports why-run mode.
+    #
+    def whyrun_supported?
+      true
     end
 
     action(:execute) do
@@ -50,8 +55,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_script,
-  provider: Chef::Provider::JenkinsScript,
-)

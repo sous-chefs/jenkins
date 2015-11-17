@@ -1,4 +1,4 @@
-include_recipe 'jenkins::master'
+include_recipe 'jenkins_server_wrapper::default'
 
 # Execute some simple commands
 jenkins_command 'clear-queue'

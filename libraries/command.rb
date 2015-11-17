@@ -24,12 +24,10 @@ require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsCommand < Resource::LWRPBase
+    resource_name :jenkins_command
+
     # Chef attributes
     identity_attr :command
-    provides :jenkins_command
-
-    # Set the resource name
-    self.resource_name = :jenkins_command
 
     # Actions
     actions :execute
@@ -45,6 +43,8 @@ end
 class Chef
   class Provider::JenkinsCommand < Provider::LWRPBase
     include Jenkins::Helper
+
+    provides :jenkins_command
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsCommand.new(new_resource.command)
@@ -64,8 +64,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_command,
-  provider: Chef::Provider::JenkinsCommand,
-)

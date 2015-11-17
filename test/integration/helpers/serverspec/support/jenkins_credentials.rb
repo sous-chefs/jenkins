@@ -3,6 +3,7 @@
 #
 module Serverspec
   module Type
+    # rubocop:disable PredicateName
     class JenkinsCredentials < Base
       require 'openssl'
       require 'rexml/document'
@@ -16,11 +17,11 @@ module Serverspec
       end
 
       def jenkins_credentials?
-        !!xml
+        !xml.nil?
       end
 
       def has_id?(id)
-        id === try { xml.elements['id'].text }
+        id == try { xml.elements['id'].text }
       end
 
       private
@@ -41,7 +42,7 @@ module Serverspec
       end
 
       def has_description?(description)
-        description === try { xml.elements['description'].text }
+        description == try { xml.elements['description'].text }
       end
 
       # TODO: encrypt provided password and compare to Jenkins value
@@ -53,7 +54,7 @@ module Serverspec
         pk_in_jenkins = xml.elements['privateKeySource/privateKey'].text
 
         if pk_in_jenkins
-          OpenSSL::PKey::RSA.new(private_key, passphrase).to_der === OpenSSL::PKey::RSA.new(pk_in_jenkins, passphrase).to_der
+          OpenSSL::PKey::RSA.new(private_key, passphrase).to_der == OpenSSL::PKey::RSA.new(pk_in_jenkins, passphrase).to_der
         else
           false
         end

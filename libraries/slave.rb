@@ -19,19 +19,17 @@
 # limitations under the License.
 #
 
+require 'json'
+
 require_relative '_helper'
 require_relative '_params_validate'
 
-require 'json'
-
 class Chef
   class Resource::JenkinsSlave < Resource::LWRPBase
+    resource_name :jenkins_slave
+
     # Chef attributes
     identity_attr :slave_name
-    provides :jenkins_slave
-
-    # Set the resource name
-    self.resource_name = :jenkins_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline
@@ -119,9 +117,7 @@ class Chef
   class Provider::JenkinsSlave < Provider::LWRPBase
     include Jenkins::Helper
 
-    def whyrun_supported?
-      true
-    end
+    provides :jenkins_slave
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsSlave.new(new_resource.name)
@@ -141,9 +137,16 @@ class Chef
       @current_resource
     end
 
+    #
+    # This provider supports why-run mode.
+    #
+    def whyrun_supported?
+      true
+    end
+
     def action_create
       if current_resource.exists? && correct_config?
-        Chef::Log.debug("#{new_resource} exists - skipping")
+        Chef::Log.info("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
           executor.groovy! <<-EOH.gsub(/ ^{12}/, '')

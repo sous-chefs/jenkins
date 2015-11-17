@@ -1,4 +1,4 @@
-include_recipe 'jenkins::master'
+include_recipe 'jenkins_server_wrapper::default'
 
 # Test basic plugin installation
 jenkins_plugin 'greenballs'

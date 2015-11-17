@@ -1,2 +1,2 @@
 name 'jenkins_plugin'
-depends 'jenkins'
+depends 'jenkins_server_wrapper'

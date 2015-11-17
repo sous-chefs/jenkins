@@ -3,6 +3,7 @@
 #
 module Serverspec
   module Type
+    # rubocop:disable PredicateName
     class JenkinsPlugin < Base
       attr_reader :name
 
@@ -19,7 +20,7 @@ module Serverspec
       end
 
       def has_version?(version)
-        version === config[:plugin_version]
+        version == config[:plugin_version]
       end
 
       private
@@ -35,7 +36,7 @@ module Serverspec
           next if line.strip.empty?
 
           key, value = line.strip.split(' ', 2).map(&:strip)
-          key = key.gsub(':', '').gsub('-', '_').downcase.to_sym
+          key = key.delete(':').tr('-', '_').downcase.to_sym
           next unless key && value
           [key, value]
         end.flatten.compact]

@@ -1,4 +1,4 @@
-require_relative '../../../kitchen/data/spec_helper'
+require 'spec_helper'
 
 %w(builder executor smoke).each do |name|
   describe jenkins_slave(name) do

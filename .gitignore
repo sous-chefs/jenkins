@@ -44,3 +44,5 @@ vendor/
 .vagrant/
 .vagrant.d/
 .kitchen/
+
+Dockerfile*

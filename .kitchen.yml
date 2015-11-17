@@ -12,8 +12,8 @@ driver:
 
 provisioner:
   name: chef_zero
-  require_chef_omnibus: 12.3.0
-  data_path: test/shared
+  require_chef_omnibus: <%= ENV['CHEF_VERSION'] || '12.5.1' %>
+  data_path: test/fixtures/keys
   data_bags_path: test/fixtures/data_bags
   attributes:
     jenkins:
@@ -23,11 +23,11 @@ provisioner:
         mirror: http://mirrors.jenkins-ci.org
 
 platforms:
-  - name: ubuntu-12.04
+  - name: ubuntu-14.04
     run_list:
       - apt::default
       - jenkins::java
-  - name: centos-6.6
+  - name: centos-7.1
     run_list:
       - yum::default
       - jenkins::java
@@ -37,20 +37,22 @@ suites:
   # Smoke suite
   #
   - name: smoke_package_latest
-    run_list: smoke::default
+    excludes: ubuntu-docker
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
           install_method: package
   - name: smoke_war_stable
-    run_list: smoke::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
           install_method: war
           source: http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
   - name: smoke_war_latest
-    run_list: smoke::default
+    excludes: ubuntu-docker
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
@@ -61,9 +63,9 @@ suites:
   # Authentication suites
   #
   - name: authentication_private_key
-    run_list: authentication::private_key
+    run_list: jenkins_authentication::private_key
   - name: authentication_username_password
-    run_list: authentication::username_password
+    run_list: jenkins_authentication::username_password
 
   #
   # Command suites

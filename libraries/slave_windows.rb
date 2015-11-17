@@ -24,12 +24,8 @@ require_relative 'slave'
 require_relative 'slave_jnlp'
 
 class Chef
-  class Resource::JenkinsWindowsSlave < Resource::JenkinsJNLPSlave
-    # Chef attributes
-    provides :jenkins_windows_slave, platform: %w(windows)
-
-    # Set the resource name
-    self.resource_name = :jenkins_windows_slave
+  class Resource::JenkinsWindowsSlave < Resource::JenkinsJnlpSlave
+    resource_name :jenkins_windows_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline
@@ -59,7 +55,9 @@ class Chef
 end
 
 class Chef
-  class Provider::JenkinsWindowsSlave < Provider::JenkinsJNLPSlave
+  class Provider::JenkinsWindowsSlave < Provider::JenkinsJnlpSlave
+    provides :jenkins_windows_slave, platform: %w(windows)
+
     def load_current_resource
       @current_resource ||= Resource::JenkinsWindowsSlave.new(new_resource.name)
       super
@@ -284,9 +282,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_windows_slave,
-  platform: :windows,
-  provider: Chef::Provider::JenkinsWindowsSlave,
-)

@@ -1,4 +1,4 @@
-include_recipe 'jenkins::master'
+include_recipe 'jenkins_server_wrapper::default'
 
 # Execute a simple script
 jenkins_script 'println("This is Groovy code!")'

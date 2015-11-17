@@ -1,4 +1,4 @@
-include_recipe 'jenkins::master'
+include_recipe 'jenkins_server_wrapper::default'
 
 config = File.join(Chef::Config[:file_cache_path], 'job-config.xml')
 template(config) { source 'config.xml.erb' }

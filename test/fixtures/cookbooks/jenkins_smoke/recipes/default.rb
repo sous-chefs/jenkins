@@ -1,3 +1,5 @@
+include_recipe 'jenkins_server_wrapper::default'
+
 #
 # This recipe is a meta-collection of some common paths in the Jenkins cookbook.
 # It should be run instead of the individual resource tests during trivial
@@ -17,7 +19,7 @@
 #
 # Authentication
 # ------------------------------
-include_recipe 'authentication::private_key'
+include_recipe 'jenkins_authentication::private_key'
 
 #
 # Commands

@@ -1,2 +1,2 @@
 name 'jenkins_slave'
-depends 'jenkins'
+depends 'jenkins_server_wrapper'

@@ -3,6 +3,7 @@
 #
 module Serverspec
   module Type
+    # rubocop:disable PredicateName
     class JenkinsSlave < Base
       require 'json'
       require 'net/http'
@@ -16,7 +17,7 @@ module Serverspec
       end
 
       def jenkins_slave?
-        !!xml
+        !xml.nil?
       end
 
       def connected?
@@ -31,11 +32,11 @@ module Serverspec
       # Base Slave Attributes
       ############################################
       def has_description?(description)
-        description === try { xml.elements['//description'].text }
+        description == try { xml.elements['//description'].text }
       end
 
       def has_remote_fs?(remote_fs)
-        remote_fs === try { xml.elements['//remoteFS'].text }
+        remote_fs == try { xml.elements['//remoteFS'].text }
       end
 
       def has_labels?(labels)
@@ -44,28 +45,28 @@ module Serverspec
       end
 
       def has_usage_mode?(mode)
-        mode.downcase === try { xml.elements['//mode'].text }.downcase
+        mode.downcase == try { xml.elements['//mode'].text }.downcase
       end
 
       def has_availability?(availability)
         # returns something like `hudson.slaves.RetentionStrategy$Always`
         retention_class = try { xml.elements['//retentionStrategy'].attributes['class'] }
         type = retention_class.split('$').last
-        availability.downcase === type.downcase
+        availability.downcase == type.downcase
       end
 
       def has_in_demand_delay?(in_demand_delay)
-        in_demand_delay === try { xml.elements['//inDemandDelay'].text }.to_i
+        in_demand_delay == try { xml.elements['//inDemandDelay'].text }.to_i
       end
 
       def has_idle_delay?(idle_delay)
-        idle_delay === try { xml.elements['//idleDelay'].text }.to_i
+        idle_delay == try { xml.elements['//idleDelay'].text }.to_i
       end
 
       def has_environment?(environment)
         environment.all? do |k, v|
           value_in_jenkins = REXML::XPath.first(xml, "//*/string[text()='#{k}']/following-sibling::string[1]").text
-          v.to_s === value_in_jenkins
+          v.to_s == value_in_jenkins
         end
       end
 
@@ -73,24 +74,24 @@ module Serverspec
       # SSH Slave Attributes
       ############################################
       def has_host?(host)
-        host === try { xml.elements['//host'].text }
+        host == try { xml.elements['//host'].text }
       end
 
       def has_port?(port)
-        port === try { xml.elements['//port'].text.to_i }
+        port == try { xml.elements['//port'].text.to_i }
       end
 
       def has_java_path?(path)
-        path === try { xml.elements['//javaPath'].text }
+        path == try { xml.elements['//javaPath'].text }
       end
 
       def has_credentials?(credentials)
         credentials_id = try { xml.elements['//credentialsId'].text }
         credentials_xml = credentials_xml_for_id(credentials_id)
         if credentials =~ /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/ # UUID regex
-          credentials === try { credentials_xml.elements['id'].text }
+          credentials == try { credentials_xml.elements['id'].text }
         else
-          credentials === try { credentials_xml.elements['username'].text }
+          credentials == try { credentials_xml.elements['username'].text }
         end
       end
 
@@ -98,7 +99,7 @@ module Serverspec
       # Offline Attributes
       ############################################
       def has_offline_reason?(reason)
-        reason === json[:offlineCauseReason]
+        reason == json[:offlineCauseReason]
       end
 
       private

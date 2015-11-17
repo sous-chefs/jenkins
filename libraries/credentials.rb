@@ -19,23 +19,19 @@
 # limitations under the License.
 #
 
+require 'json'
+require 'openssl'
+require 'securerandom'
+
 require_relative '_helper'
 require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsCredentials < Resource::LWRPBase
-    require 'securerandom'
-
-    # Chef attributes
-    provides :jenkins_credentials
-
-    # Set the resource name
-    self.resource_name = :jenkins_credentials
-
     # Default all crendentials resources to sensitive so secret data
     # is not printed out in the Chef logs.
     def initialize(name, run_context = nil)
-      super(name, run_context)
+      super
       @sensitive = true
     end
 
@@ -64,9 +60,6 @@ end
 
 class Chef
   class Provider::JenkinsCredentials < Provider::LWRPBase
-    require 'json'
-    require 'openssl'
-
     include Jenkins::Helper
 
     def load_current_resource
@@ -81,6 +74,9 @@ class Chef
       @current_resource
     end
 
+    #
+    # This provider supports why-run mode.
+    #
     def whyrun_supported?
       true
     end
@@ -90,7 +86,7 @@ class Chef
     #
     action(:create) do
       if current_resource.exists? && correct_config?
-        Chef::Log.debug("#{new_resource} exists - skipping")
+        Chef::Log.info("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
           executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
@@ -256,8 +252,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_credentials,
-  provider: Chef::Provider::JenkinsCredentials,
-)

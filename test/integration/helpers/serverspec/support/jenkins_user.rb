@@ -3,6 +3,7 @@
 #
 module Serverspec
   module Type
+    # rubocop:disable PredicateName
     class JenkinsUser < Base
       require 'rexml/document'
 
@@ -14,15 +15,15 @@ module Serverspec
       end
 
       def jenkins_user?
-        !!xml
+        !xml.nil?
       end
 
       def has_email?(email)
-        email === try { xml.elements['//emailAddress'].text }
+        email == try { xml.elements['//emailAddress'].text }
       end
 
       def has_full_name?(name)
-        name === try { xml.elements['//fullName'].text }
+        name == try { xml.elements['//fullName'].text }
       end
 
       def has_public_key?(key)

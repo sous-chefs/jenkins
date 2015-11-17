@@ -1,4 +1,4 @@
-include_recipe 'jenkins::master'
+include_recipe 'jenkins_server_wrapper::default'
 
 # Load user data from a data bag item. This should be an encrypted data
 # bag item in real deployments.
@@ -26,6 +26,9 @@ user 'jenkins-ssh-key' do
   home     '/home/jenkins-ssh-key'
   supports manage_home: true
 end
+
+# disable password-based access to the account while allowing SSH access
+execute "usermod -p '*' jenkins-ssh-key"
 
 directory ::File.join('/home/jenkins-ssh-key', '.ssh') do
   owner 'jenkins-ssh-key'

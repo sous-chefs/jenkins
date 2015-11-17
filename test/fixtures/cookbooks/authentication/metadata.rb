@@ -1,2 +1,0 @@
-name 'authentication'
-depends 'jenkins'

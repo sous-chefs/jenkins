@@ -3,6 +3,7 @@
 #
 module Serverspec
   module Type
+    # rubocop:disable PredicateName
     class JenkinsJob < Base
       require 'rexml/document'
 
@@ -14,11 +15,11 @@ module Serverspec
       end
 
       def jenkins_job?
-        !!xml
+        !xml.nil?
       end
 
       def disabled?
-        !!try { xml.elements['//disabled'].text.to_s == 'true' }
+        !try { xml.elements['//disabled'].text.to_s == 'true' }.nil?
       end
 
       def enabled?
@@ -26,7 +27,7 @@ module Serverspec
       end
 
       def has_command?(command)
-        command === try { xml.elements['//command'].text }
+        command == try { xml.elements['//command'].text }
       end
 
       def has_plugin_like?(rx)
