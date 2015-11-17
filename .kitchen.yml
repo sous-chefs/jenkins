@@ -37,20 +37,20 @@ suites:
   # Smoke suite
   #
   - name: smoke_package_latest
-    run_list: smoke::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
           install_method: package
   - name: smoke_war_stable
-    run_list: smoke::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
           install_method: war
           source: http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
   - name: smoke_war_latest
-    run_list: smoke::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
@@ -61,9 +61,9 @@ suites:
   # Authentication suites
   #
   - name: authentication_private_key
-    run_list: authentication::private_key
+    run_list: jenkins_authentication::private_key
   - name: authentication_username_password
-    run_list: authentication::username_password
+    run_list: jenkins_authentication::username_password
 
   #
   # Command suites
