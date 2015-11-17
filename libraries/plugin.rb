@@ -27,12 +27,10 @@ require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsPlugin < Resource::LWRPBase
+    resource_name :jenkins_plugin
+
     # Chef attributes
     identity_attr :name
-    provides :jenkins_plugin
-
-    # Set the resource name
-    self.resource_name = :jenkins_plugin
 
     # Actions
     actions :install, :uninstall, :enable, :disable
@@ -69,6 +67,10 @@ end
 
 class Chef
   class Provider::JenkinsPlugin < Provider::LWRPBase
+    include Jenkins::Helper
+
+    provides :jenkins_plugin
+
     class PluginNotInstalled < StandardError
       def initialize(plugin, action)
         super <<-EOH
@@ -77,8 +79,6 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
 EOH
       end
     end
-
-    include Jenkins::Helper
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsPlugin.new(new_resource.name)
@@ -139,7 +139,7 @@ EOH
 
       if current_resource.installed?
         if plugin_version(current_resource.version) == desired_version
-          Chef::Log.debug("#{new_resource} version #{current_resource.version} already installed - skipping")
+          Chef::Log.info("#{new_resource} version #{current_resource.version} already installed - skipping")
         else
           current_version = plugin_version(current_resource.version)
 

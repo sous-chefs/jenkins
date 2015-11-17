@@ -24,12 +24,8 @@ require_relative 'slave'
 require_relative 'credentials'
 
 class Chef
-  class Resource::JenkinsSSHSlave < Resource::JenkinsSlave
-    # Chef attributes
-    provides :jenkins_ssh_slave
-
-    # Set the resource name
-    self.resource_name = :jenkins_ssh_slave
+  class Resource::JenkinsSshSlave < Resource::JenkinsSlave
+    resource_name :jenkins_ssh_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline
@@ -69,9 +65,11 @@ class Chef
 end
 
 class Chef
-  class Provider::JenkinsSSHSlave < Provider::JenkinsSlave
+  class Provider::JenkinsSshSlave < Provider::JenkinsSlave
+    provides :jenkins_ssh_slave
+
     def load_current_resource
-      @current_resource ||= Resource::JenkinsSSHSlave.new(new_resource.name)
+      @current_resource ||= Resource::JenkinsSshSlave.new(new_resource.name)
 
       super
 
@@ -151,8 +149,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_ssh_slave,
-  provider: Chef::Provider::JenkinsSSHSlave,
-)

@@ -24,18 +24,13 @@ require_relative 'credentials_user'
 require_relative '_params_validate'
 
 class Chef
-  class Resource::JenkinsPasswordCredentials < Resource::JenkinsCredentialsUser
-    # Chef attributes
-    provides :jenkins_password_credentials
-
-    # Set the resource name
-    self.resource_name = :jenkins_password_credentials
-
-    # Actions
-    actions :create, :delete
-    default_action :create
+  class Resource::JenkinsPasswordCredentials < Resource::JenkinsUserCredentials
+    resource_name :jenkins_password_credentials
 
     # Attributes
+    attribute :username,
+              kind_of: String,
+              name_attribute: true
     attribute :password,
               kind_of: String,
               required: true
@@ -43,7 +38,9 @@ class Chef
 end
 
 class Chef
-  class Provider::JenkinsPasswordCredentials < Provider::JenkinsCredentialsUser
+  class Provider::JenkinsPasswordCredentials < Provider::JenkinsUserCredentials
+    provides :jenkins_password_credentials
+
     def load_current_resource
       @current_resource ||= Resource::JenkinsPasswordCredentials.new(new_resource.name)
 
@@ -85,8 +82,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_password_credentials,
-  provider: Chef::Provider::JenkinsPasswordCredentials,
-)

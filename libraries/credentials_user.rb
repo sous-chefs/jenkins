@@ -20,17 +20,7 @@
 #
 
 class Chef
-  class Resource::JenkinsCredentialsUser < Resource::JenkinsCredentials
-    require 'securerandom'
-    include Jenkins::Helper
-
-    # Chef attributes
-    identity_attr :username
-
-    # Attributes
-    attribute :username,
-              kind_of: String,
-              name_attribute: true
+  class Resource::JenkinsUserCredentials < Resource::JenkinsCredentials
     attribute :description,
               kind_of: String,
               default: lazy { |new_resource| "Credentials for #{new_resource.username} - created by Chef" }
@@ -38,7 +28,7 @@ class Chef
 end
 
 class Chef
-  class Provider::JenkinsCredentialsUser < Provider::JenkinsCredentials
+  class Provider::JenkinsUserCredentials < Provider::JenkinsCredentials
     include Jenkins::Helper
 
     def load_current_resource

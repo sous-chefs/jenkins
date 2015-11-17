@@ -24,16 +24,10 @@ require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsSecretTextCredentials < Resource::JenkinsCredentials
+    resource_name :jenkins_secret_text_credentials
+
     # Chef attributes
     identity_attr :description
-    provides :jenkins_secret_text_credentials
-
-    # Set the resource name
-    self.resource_name = :jenkins_secret_text_credentials
-
-    # Actions
-    actions :create, :delete
-    default_action :create
 
     # Attributes
     attribute :description,
@@ -47,6 +41,8 @@ end
 
 class Chef
   class Provider::JenkinsSecretTextCredentials < Provider::JenkinsCredentials
+    provides :jenkins_secret_text_credentials
+
     def load_current_resource
       @current_resource ||= Resource::JenkinsSecretTextCredentials.new(new_resource.name)
 
@@ -127,8 +123,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_secret_text_credentials,
-  provider: Chef::Provider::JenkinsSecretTextCredentials,
-)

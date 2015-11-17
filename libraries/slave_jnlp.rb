@@ -23,12 +23,8 @@ require_relative '_params_validate'
 require_relative 'slave'
 
 class Chef
-  class Resource::JenkinsJNLPSlave < Resource::JenkinsSlave
-    # Chef attributes
-    provides :jenkins_jnlp_slave
-
-    # Set the resource name
-    self.resource_name = :jenkins_jnlp_slave
+  class Resource::JenkinsJnlpSlave < Resource::JenkinsSlave
+    resource_name :jenkins_jnlp_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline
@@ -46,9 +42,11 @@ class Chef
 end
 
 class Chef
-  class Provider::JenkinsJNLPSlave < Provider::JenkinsSlave
+  class Provider::JenkinsJnlpSlave < Provider::JenkinsSlave
+    provides :jenkins_jnlp_slave
+
     def load_current_resource
-      @current_resource ||= Resource::JenkinsJNLPSlave.new(new_resource.name)
+      @current_resource ||= Resource::JenkinsJnlpSlave.new(new_resource.name)
       super
     end
 
@@ -249,8 +247,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_jnlp_slave,
-  provider: Chef::Provider::JenkinsJNLPSlave,
-)

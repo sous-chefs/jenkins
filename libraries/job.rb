@@ -19,17 +19,17 @@
 # limitations under the License.
 #
 
+require 'rexml/document'
+
 require_relative '_helper'
 require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsJob < Resource::LWRPBase
+    resource_name :jenkins_job
+
     # Chef attributes
     identity_attr :name
-    provides :jenkins_job
-
-    # Set the resource name
-    self.resource_name = :jenkins_job
 
     # Actions
     actions :create, :delete, :disable, :enable
@@ -67,6 +67,10 @@ end
 
 class Chef
   class Provider::JenkinsJob < Provider::LWRPBase
+    include Jenkins::Helper
+
+    provides :jenkins_job
+
     class JobDoesNotExist < StandardError
       def initialize(job, action)
         super <<-EOH
@@ -75,9 +79,6 @@ job must first exist on the Jenkins master!
 EOH
       end
     end
-
-    require 'rexml/document'
-    include Jenkins::Helper
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsJob.new(new_resource.name)
@@ -119,7 +120,7 @@ EOH
       validate_config!
 
       if current_resource.exists?
-        Chef::Log.debug("#{new_resource} exists - skipping")
+        Chef::Log.info("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
           executor.execute!('create-job', escape(new_resource.name), '<', escape(new_resource.config))
@@ -127,7 +128,7 @@ EOH
       end
 
       if correct_config?
-        Chef::Log.debug("#{new_resource} config up to date - skipping")
+        Chef::Log.info("#{new_resource} config up to date - skipping")
       else
         converge_by("Update #{new_resource} config") do
           executor.execute!('update-job', escape(new_resource.name), '<', escape(new_resource.config))
@@ -266,8 +267,3 @@ EOH
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_job,
-  provider: Chef::Provider::JenkinsJob,
-)
