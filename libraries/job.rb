@@ -32,14 +32,26 @@ class Chef
     identity_attr :name
 
     # Actions
-    actions :create, :delete, :disable, :enable
+    actions :build, :create, :delete, :disable, :enable
     default_action :create
 
     # Attributes
     attribute :name,
-              kind_of: String
+              kind_of: String,
+              name_attribute: true
     attribute :config,
               kind_of: String
+
+    # Execute specific attributes
+    attribute :parameters,
+              kind_of: Hash,
+              default: {}
+    attribute :stream_job_output,
+              kind_of: [TrueClass, FalseClass],
+              default: true
+    attribute :wait_for_completion,
+              kind_of: [TrueClass, FalseClass],
+              default: true
 
     attr_writer :enabled, :exists
 
@@ -71,10 +83,13 @@ class Chef
 
     provides :jenkins_job
 
+    # After some careful discussions internally, it was decided that
+    # raising an exception when the job does not exist is the best
+    # developer experience.
     class JobDoesNotExist < StandardError
       def initialize(job, action)
         super <<-EOH
-The Jenkins job `#{job}' does not exist. In order to #{action} `#{job}', that
+The Jenkins job `#{job}' does not exist. In order to :#{action} `#{job}', that
 job must first exist on the Jenkins master!
 EOH
       end
@@ -101,6 +116,61 @@ EOH
     #
     def whyrun_supported?
       true
+    end
+
+    #
+    # Executes a Jenkins job.
+    #
+    # @raise [JobDoesNotExist]
+    #   if the job does not exist
+    #
+    action(:build) do
+      unless current_resource.exists?
+        fail JobDoesNotExist.new(new_resource.name, :build)
+      end
+
+      if current_resource.enabled?
+        converge_by("Build #{new_resource}") do
+          command_args = [
+            'build',
+            escape(new_resource.name),
+          ]
+
+          if new_resource.wait_for_completion
+            command_args << '-s' # Wait until the completion/abortion of the command.
+          end
+
+          new_resource.parameters.each_pair do |key, value|
+            command_args << "-p #{key}='#{value}'"
+          end
+
+          if new_resource.stream_job_output && new_resource.wait_for_completion && stdout_stream
+            command_args << '-v' # Prints out the console output of the build.
+
+            stdout_stream.print <<-EOH
+
+
+================================================================================
+= BEGIN '#{new_resource.name}' Jenkins job output
+================================================================================
+
+            EOH
+
+            executor.execute!(*command_args, live_stream: stdout_stream)
+
+            stdout_stream.print <<-EOH
+
+================================================================================
+= END '#{new_resource.name}' Jenkins job output
+================================================================================
+            EOH
+          else
+            executor.execute!(*command_args)
+          end
+        end
+      else
+        Chef::Log.info("#{new_resource} disabled - skipping")
+      end
     end
 
     #
@@ -147,14 +217,12 @@ EOH
           executor.execute!('delete-job', escape(new_resource.name))
         end
       else
-        Chef::Log.debug("#{new_resource} does not exist - skipping")
+        Chef::Log.info("#{new_resource} does not exist - skipping")
       end
     end
 
     #
-    # Disable an existing Jenkins job. After some careful discussions
-    # internally, it was decided that raising an exception when the job
-    # does not exist is the best developer experience.
+    # Disable an existing Jenkins job.
     #
     # @raise [JobDoesNotExist]
     #   if the job does not exist
@@ -169,14 +237,12 @@ EOH
           executor.execute!('disable-job', escape(new_resource.name))
         end
       else
-        Chef::Log.debug("#{new_resource} disabled - skipping")
+        Chef::Log.info("#{new_resource} disabled - skipping")
       end
     end
 
     #
-    # Enable an existing Jenkins job. After some careful discussions
-    # internally, it was decided that raising an exception when the job
-    # does not exist is the best developer experience.
+    # Enable an existing Jenkins job.
     #
     # @raise [JobDoesNotExist]
     #   if the job does not exist
@@ -187,7 +253,7 @@ EOH
       end
 
       if current_resource.enabled?
-        Chef::Log.debug("#{new_resource} enabled - skipping")
+        Chef::Log.info("#{new_resource} enabled - skipping")
       else
         converge_by("Enable #{new_resource}") do
           executor.execute!('enable-job', escape(new_resource.name))
@@ -262,6 +328,25 @@ EOH
           REXML::Document.new(::File.read(new_resource.config))
         rescue REXML::ParseException
           raise("#{new_resource} config `#{new_resource.config}` is not valid XML!")
+        end
+      end
+    end
+
+    # Inspired by chef/chef/#4040
+    def formatter?
+      if run_context.events.respond_to?(:subscribers)
+        run_context.events.subscribers.any? { |s| s.respond_to?(:is_formatter?) && s.is_formatter? }
+      else
+        false
+      end
+    end
+
+    def stdout_stream
+      @stdout_stream ||= begin
+        if formatter?
+          Chef::EventDispatch::EventsOutputStream.new(run_context.events, name: new_resource.name.to_sym)
+        elsif STDOUT.tty? && !Chef::Config[:daemon]
+          STDOUT
         end
       end
     end

@@ -27,7 +27,7 @@ module Serverspec
       end
 
       def has_command?(command)
-        command == try { xml.elements['//command'].text }
+        command == try { xml.elements['//command'].text }.strip
       end
 
       def has_plugin_like?(rx)
