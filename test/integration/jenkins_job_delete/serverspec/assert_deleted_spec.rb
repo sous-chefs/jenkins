@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe jenkins_job('my-project') do
+describe jenkins_job('simple-execute') do
   it { should_not be_a_jenkins_job }
 end
 

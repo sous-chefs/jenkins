@@ -19,7 +19,7 @@ module Serverspec
       end
 
       def disabled?
-        !try { xml.elements['//disabled'].text.to_s == 'true' }.nil?
+        (try { xml.elements['//disabled'].text.to_s == 'true' }) != (nil || false)
       end
 
       def enabled?

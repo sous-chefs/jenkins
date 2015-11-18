@@ -8,7 +8,8 @@ jenkins_plugin 'cloudbees-folder' do
 end
 
 config = File.join(Chef::Config[:file_cache_path], 'folder-config.xml')
-template(config) { source 'folder/config.xml.erb' }
+cookbook_file config
+
 jenkins_job 'my-folder' do
   config config
 end

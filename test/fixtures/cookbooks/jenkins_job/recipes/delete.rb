@@ -4,7 +4,7 @@ include_recipe 'jenkins_server_wrapper::default'
 include_recipe 'jenkins_job::create'
 
 # Test basic job deletion
-jenkins_job 'my-project' do
+jenkins_job 'simple-execute' do
   action :delete
 end
 
