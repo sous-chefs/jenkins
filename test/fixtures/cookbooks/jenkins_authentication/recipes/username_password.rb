@@ -38,7 +38,7 @@ jenkins_command 'clear-queue'
 
 # Install a plugin
 jenkins_plugin 'greenballs' do
-  notifies :restart, 'service[jenkins]'
+  notifies :restart, 'service[jenkins]', :immediately
 end
 
 # Try creating another user
