@@ -19,7 +19,7 @@ module Serverspec
       end
 
       def disabled?
-        !try { xml.elements['//disabled'].text.to_s == 'true' }.nil?
+        (try { xml.elements['//disabled'].text.to_s == 'true' }) != (nil || false)
       end
 
       def enabled?
@@ -27,7 +27,7 @@ module Serverspec
       end
 
       def has_command?(command)
-        command == try { xml.elements['//command'].text }
+        command == try { xml.elements['//command'].text }.strip
       end
 
       def has_plugin_like?(rx)

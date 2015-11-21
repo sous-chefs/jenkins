@@ -35,6 +35,7 @@ include_recipe 'jenkins_credentials::create'
 # Jobs
 # ------------------------------
 include_recipe 'jenkins_job::create'
+include_recipe 'jenkins_job::build'
 
 #
 # Plugins

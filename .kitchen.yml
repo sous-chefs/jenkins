@@ -94,6 +94,8 @@ suites:
     run_list: jenkins_job::disable
   - name: jenkins_job_enable
     run_list: jenkins_job::enable
+  - name: jenkins_job_build
+    run_list: jenkins_job::build
 
   #
   # Script suites
