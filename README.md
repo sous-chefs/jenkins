@@ -164,7 +164,7 @@ The credentials created with the `jenkins_credentials` are assigned a `GLOBAL` s
 ### jenkins_job
 This resource manages Jenkins jobs, supporting the following actions:
 
-    :create, :delete, :disable, :enable
+    :create, :delete, :disable, :enable, :build
 
 The resource is fully idempotent and convergent. It also supports whyrun mode.
 
@@ -204,6 +204,22 @@ You can enable a Jenkins job by specifying the `:enable` option. This will enabl
 ```ruby
 jenkins_job 'bacon' do
   action :enable
+end
+```
+
+You can execute a Jenkins job by specifying the `:build` option. This will run the job, if and only if that job exists and is enabled. If the job does not exist, an exception is raised.
+
+```ruby
+jenkins_job 'my-parameterized-job' do
+  parameters(
+    'STRING_PARAM' => 'meeseeks',
+    'BOOLEAN_PARAM' => true,
+  )
+  # if true will live stream the console output of the executing job  (default is true)
+  stream_job_output true
+  # if true will block the Chef client run until the build is completed or aboarted (defaults to true)
+  wait_for_completion true
+  action :build
 end
 ```
 

@@ -1,9 +1,15 @@
 include_recipe 'jenkins_server_wrapper::default'
 
-config = File.join(Chef::Config[:file_cache_path], 'job-config.xml')
-template(config) { source 'config.xml.erb' }
+%w(
+  simple-execute
+  execute-with-params
+).each do |job_name|
+  config = File.join(Chef::Config[:file_cache_path], "#{job_name}.xml")
+  cookbook_file config
 
-# Test basic job creation
-jenkins_job 'my-project' do
-  config config
+  # Test basic job creation
+  jenkins_job job_name do
+    config config
+    action :create
+  end
 end
