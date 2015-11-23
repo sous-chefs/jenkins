@@ -43,6 +43,12 @@ class Chef
               kind_of: String
     attribute :command_suffix,
               kind_of: String
+    attribute :launch_timeout,
+              kind_of: Integer
+    attribute :ssh_retries,
+              kind_of: Integer
+    attribute :ssh_wait_retries,
+              kind_of: Integer
 
     #
     # The credentials to SSH into the slave with. Credentials can be any
@@ -79,6 +85,9 @@ class Chef
         @current_resource.credentials(current_slave[:credentials])
         @current_resource.jvm_options(current_slave[:jvm_options])
         @current_resource.java_path(current_slave[:java_path])
+        @current_resource.launch_timeout(current_slave[:launch_timeout])
+        @current_resource.ssh_retries(current_slave[:ssh_retries])
+        @current_resource.ssh_wait_retries(current_slave[:ssh_wait_retries])
       end
 
       @current_resource
@@ -102,7 +111,10 @@ class Chef
             #{convert_to_groovy(new_resource.jvm_options)},
             #{convert_to_groovy(new_resource.java_path)},
             #{convert_to_groovy(new_resource.command_prefix)},
-            #{convert_to_groovy(new_resource.command_suffix)}
+            #{convert_to_groovy(new_resource.command_suffix)},
+            #{convert_to_groovy(new_resource.launch_timeout)},
+            #{convert_to_groovy(new_resource.ssh_retries)},
+            #{convert_to_groovy(new_resource.ssh_wait_retries)}
           )
       EOH
     end
@@ -118,6 +130,9 @@ class Chef
         java_path: 'slave.launcher.javaPath',
         command_prefix: 'slave.launcher.prefixStartSlaveCmd',
         command_suffix: 'slave.launcher.suffixStartSlaveCmd',
+        launch_timeout: 'slave.launcher.launchTimeoutSeconds',
+        ssh_retries: 'slave.launcher.maxNumRetries',
+        ssh_wait_retries: 'slave.launcher.retryWaitTime',
       }
 
       if new_resource.parsed_credentials.match(UUID_REGEX)
