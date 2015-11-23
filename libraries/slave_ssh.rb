@@ -133,7 +133,7 @@ class Chef
         command_suffix: 'slave.launcher.suffixStartSlaveCmd',
         launch_timeout: 'slave.launcher.launchTimeoutSeconds',
         ssh_retries: 'slave.launcher.maxNumRetries',
-        ssh_wait_retries: 'slave.launcher.retryWaitTime',
+        ssh_wait_retries: 'slave.launcher.retryWaitTime'
       }
 
       map[:credentials] = 'slave.launcher.credentialsId'
