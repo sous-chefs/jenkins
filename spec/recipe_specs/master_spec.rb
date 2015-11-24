@@ -16,7 +16,7 @@ describe 'jenkins::_master_war' do
         node.set['jenkins']['master']['install_method'] = 'war'
 
         # Workaround until https://github.com/hw-cookbooks/runit/pull/57 is merged.
-        node.set[:runit][:sv_bin] = '/usr/bin/sv'
+        node.set['runit']['sv_bin'] = '/usr/bin/sv'
       end.converge(described_recipe)
     end
 
@@ -67,7 +67,7 @@ describe 'jenkins::_master_war' do
         node.set['jenkins']['master']['use_system_accounts'] = true
 
         # Workaround until https://github.com/hw-cookbooks/runit/pull/57 is merged.
-        node.set[:runit][:sv_bin] = '/usr/bin/sv'
+        node.set['runit']['sv_bin'] = '/usr/bin/sv'
       end.converge(described_recipe)
     end
 
