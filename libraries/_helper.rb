@@ -390,7 +390,7 @@ EOH
     def wait_until_ready!
       Timeout.timeout(timeout, JenkinsTimeout) do
         begin
-          open(endpoint)
+          open("#{endpoint}/whoAmI/")
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
