@@ -100,7 +100,8 @@ module Jenkins
            ((exitstatus == 1) && (stderr =~ /^Exception in thread "main" java\.io\.EOFException/))
           command.reject! { |c| c =~ /-i/ }
           retry
-        elsif (exitstatus == 255) && (stderr =~ /^"--username" is not a valid option/)
+        elsif ((exitstatus == 255) && (stderr =~ /^"--username" is not a valid option/)) ||
+              ((exitstatus == 1) && (stderr =~ /^"--username" is not a valid option/))
           command.reject! { |c| c =~ /--username|--password/ }
           retry
         end
