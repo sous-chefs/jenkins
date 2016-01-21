@@ -307,7 +307,7 @@ EOH
       plugin = Chef::Resource::RemoteFile.new(path, run_context)
       plugin.source(source_url)
       plugin.backup(false)
-      plugin.run_action(:create)
+      plugin.run_action(:create_if_missing)
 
       # Install the plugin from our local cache on disk. There is a bug in
       # Jenkins that prevents Jenkins from following 302 redirects, so we
