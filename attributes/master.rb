@@ -193,6 +193,20 @@ default['jenkins']['master'].tap do |master|
   master['runit']['sv_timeout'] = 7
 
   #
+  # Override the default Runit user to start the jenkins service with.
+  #
+  #   node.set['jenkins']['master']['runit']['user'] = 'jenkins:rvm'
+  #
+  master['runit']['user'] = master['user']
+
+  #
+  # Override the default Runit group to start the jenkins service with.
+  #
+  #   node.set['jenkins']['master']['runit']['group'] = 'jenkins:jenkins:rvm'
+  #
+  master['runit']['group'] = master['group']
+
+  #
   # Repository URL. Default is latest
   #
   master['repository'] = case node['platform_family']
