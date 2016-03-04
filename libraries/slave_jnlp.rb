@@ -231,7 +231,7 @@ class Chef
                                 'init.d', new_resource.service_name)
 
       sysv_script_template = \
-          Chef::Resource::Template.new(init_script, run_context)
+        Chef::Resource::Template.new(init_script, run_context)
       sysv_script_template.cookbook('jenkins')
       sysv_script_template.mode('0755')
       sysv_script_template.source('jenkins-slave-init.erb')
@@ -240,12 +240,12 @@ class Chef
         java_bin:     java,
         slave_jar: 	  slave_jar,
         jnlp_url:     jnlp_url,
-        jnlp_secret:  jnlp_secret,
+        jnlp_secret:  jnlp_secret
       )
       sysv_script_template.run_action(:create)
 
       sysv_service_resource = \
-          Chef::Resource::Service.new(new_resource.service_name, run_context)
+        Chef::Resource::Service.new(new_resource.service_name, run_context)
       sysv_service_resource.init_command(init_script)
 
       sysv_service_resource
@@ -279,7 +279,7 @@ class Chef
           java_bin:    java,
           slave_jar:   slave_jar,
           jnlp_url:    jnlp_url,
-          jnlp_secret: jnlp_secret,
+          jnlp_secret: jnlp_secret
         )
       end
       @service_resource

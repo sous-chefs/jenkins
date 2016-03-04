@@ -40,19 +40,19 @@ module Serverspec
       end
 
       def has_labels?(labels)
-        all_labels = try { xml.elements['//label'].text.split("\s").map(&:strip) } || []
+        all_labels = try { xml.elements['//label'].text.split(' ').map(&:strip) } || []
         !(all_labels & labels).empty?
       end
 
       def has_usage_mode?(mode)
-        mode.downcase == try { xml.elements['//mode'].text }.downcase
+        mode.casecmp(try { xml.elements['//mode'].text }.downcase).zero?
       end
 
       def has_availability?(availability)
         # returns something like `hudson.slaves.RetentionStrategy$Always`
         retention_class = try { xml.elements['//retentionStrategy'].attributes['class'] }
         type = retention_class.split('$').last
-        availability.downcase == type.downcase
+        availability.casecmp(type.downcase).zero?
       end
 
       def has_in_demand_delay?(in_demand_delay)
@@ -88,11 +88,11 @@ module Serverspec
       def has_credentials?(credentials)
         credentials_id = try { xml.elements['//credentialsId'].text }
         credentials_xml = credentials_xml_for_id(credentials_id)
-        if credentials =~ /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/ # UUID regex
-          credentials == try { credentials_xml.elements['id'].text }
-        else
-          credentials == try { credentials_xml.elements['username'].text }
-        end
+        credentials == if credentials =~ /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/ # UUID regex
+                         try { credentials_xml.elements['id'].text }
+                       else
+                         try { credentials_xml.elements['username'].text }
+                       end
       end
 
       ############################################
@@ -152,8 +152,8 @@ module Serverspec
         nil
       end
 
-      def try(&block)
-        block.call
+      def try(&_block)
+        yield
       rescue NoMethodError
         nil
       end

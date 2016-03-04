@@ -52,6 +52,6 @@ jenkins_jnlp_slave 'executor' do
   group        'jenkins-executor'
   environment(
     'FOO' => 'bar',
-    'BAZ' => 'qux',
+    'BAZ' => 'qux'
   )
 end

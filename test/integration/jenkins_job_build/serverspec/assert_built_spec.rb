@@ -22,7 +22,7 @@ describe jenkins_build('execute-with-params', 'lastSuccessfulBuild') do
   it 'was executed with the correct parameters' do
     expect(subject.parameters).to include(
       'STRING_PARAM' => 'meeseeks',
-      'BOOLEAN_PARAM' => true,
+      'BOOLEAN_PARAM' => true
     )
   end
 end

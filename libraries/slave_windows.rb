@@ -182,7 +182,7 @@ class Chef
         user_domain:   user_domain,
         user_account:  user_account,
         user_password: new_resource.password,
-        path:          new_resource.path,
+        path:          new_resource.path
       )
       @slave_xml_resource.notifies(:run, install_service_resource)
       @slave_xml_resource
@@ -208,7 +208,7 @@ class Chef
         java_bin:      java,
         slave_jar:     slave_jar,
         jnlp_url:      jnlp_url,
-        jnlp_secret:   jnlp_secret,
+        jnlp_secret:   jnlp_secret
       )
       @slave_bat_resource
     end
