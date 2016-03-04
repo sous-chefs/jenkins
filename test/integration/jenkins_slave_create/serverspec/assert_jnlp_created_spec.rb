@@ -1,5 +1,16 @@
 require 'spec_helper'
 
+describe 'JNLP SysV Slave', if: docker? do
+  describe jenkins_slave('jnlp-sysv-builder') do
+    it { should be_a_jenkins_slave }
+    it { should have_description('A generic SysV JNLP slave builder') }
+    it { should have_remote_fs('/tmp/jenkins/slaves/sysv-builder') }
+    it { should have_labels(%w(builder linux)) }
+    it { should be_connected }
+    it { should be_online }
+  end
+end
+
 describe 'JNLP Slave', if: !docker? do
   #
   # JNLP Slave #1

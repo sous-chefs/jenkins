@@ -233,7 +233,7 @@ class Chef
       sysv_script_template = \
           Chef::Resource::Template.new(init_script, run_context)
       sysv_script_template.cookbook('jenkins')
-      sysv_script_template.mode('0700')
+      sysv_script_template.mode('0755')
       sysv_script_template.source('jenkins-slave-init.erb')
       sysv_script_template.variables(
         new_resource: new_resource,
@@ -262,7 +262,7 @@ class Chef
       return @service_resource if @service_resource
 
       case new_resource.service_type
-      when 'init'
+      when 'sysv'
         @service_resource = sysv_service_resource
       else
         # Ensure runit is installed on the slave.

@@ -331,6 +331,14 @@ jenkins_jnlp_slave 'builder' do
   labels      ['builder', 'linux']
 end
 
+# A basic JNLP slave with SysV service (for docker containers)
+# for when runit service won't work but you want JNLP *nix slaves
+jenkins_jnlp_slave 'jnlp-sysv-builder' do
+  service_type 'sysv'
+  description  'Generic SysV managed slave'
+  labels       ['builder', 'linux']
+end
+
 # Create a slave launched via SSH
 jenkins_ssh_slave 'executor' do
   description 'Run test suites'

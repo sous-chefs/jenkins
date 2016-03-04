@@ -1,5 +1,16 @@
 include_recipe 'jenkins_server_wrapper::default'
 
+# This JNLP slave can run on docker
+jenkins_jnlp_slave 'jnlp-sysv-builder' do
+  description  'A generic SysV JNLP slave builder'
+  remote_fs    '/tmp/jenkins/slaves/sysv-builder'
+  service_name 'jenkins-slave-jnlp-sysv-builder'
+  service_type 'sysv'
+  labels       %w(builder linux)
+  user         'jenkins-builder'
+  group        'jenkins-builder'
+end
+
 return if docker? # the runit_service resource has issues under Docker
 
 #
