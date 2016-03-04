@@ -38,6 +38,9 @@ class Chef
     attribute :service_name,
               kind_of: String,
               default: 'jenkins-slave'
+    attribute :service_type,
+              kind_of: String,
+              default: 'runit'
   end
 end
 
@@ -217,6 +220,37 @@ class Chef
       @slave_jar_resource
     end
 
+    # Returns a fully configured SysV style service resource that can start the
+    # JNLP slave process. The caller will need to call `run_action` on
+    # the resource.
+    #
+    # @return [Chef::Resource::Service]
+    #
+    def sysv_service_resource
+      init_script = ::File.join(::File::SEPARATOR, 'etc',
+                                'init.d', new_resource.service_name)
+
+      sysv_script_template = \
+          Chef::Resource::Template.new(init_script, run_context)
+      sysv_script_template.cookbook('jenkins')
+      sysv_script_template.mode('0700')
+      sysv_script_template.source('jenkins-slave-init.erb')
+      sysv_script_template.variables(
+        new_resource: new_resource,
+        java_bin:     java,
+        slave_jar: 	  slave_jar,
+        jnlp_url:     jnlp_url,
+        jnlp_secret:  jnlp_secret,
+      )
+      sysv_script_template.run_action(:create)
+
+      sysv_service_resource = \
+          Chef::Resource::Service.new(new_resource.service_name, run_context)
+      sysv_service_resource.init_command(init_script)
+
+      sysv_service_resource
+    end
+
     #
     # Returns a fully configured service resource that can start the
     # JNLP slave process. The caller will need to call `run_action` on
@@ -227,22 +261,27 @@ class Chef
     def service_resource
       return @service_resource if @service_resource
 
-      # Ensure runit is installed on the slave.
-      recipe_eval do
-        run_context.include_recipe 'runit'
-      end
+      case new_resource.service_type
+      when 'init'
+        @service_resource = sysv_service_resource
+      else
+        # Ensure runit is installed on the slave.
+        recipe_eval do
+          run_context.include_recipe 'runit'
+        end
 
-      @service_resource = Chef::Resource::RunitService.new(new_resource.service_name, run_context)
-      @service_resource.cookbook('jenkins')
-      @service_resource.run_template_name('jenkins-slave')
-      @service_resource.log_template_name('jenkins-slave')
-      @service_resource.options(
-        new_resource: new_resource,
-        java_bin:    java,
-        slave_jar:   slave_jar,
-        jnlp_url:    jnlp_url,
-        jnlp_secret: jnlp_secret,
-      )
+        @service_resource = Chef::Resource::RunitService.new(new_resource.service_name, run_context)
+        @service_resource.cookbook('jenkins')
+        @service_resource.run_template_name('jenkins-slave')
+        @service_resource.log_template_name('jenkins-slave')
+        @service_resource.options(
+          new_resource: new_resource,
+          java_bin:    java,
+          slave_jar:   slave_jar,
+          jnlp_url:    jnlp_url,
+          jnlp_secret: jnlp_secret,
+        )
+      end
       @service_resource
     end
   end
