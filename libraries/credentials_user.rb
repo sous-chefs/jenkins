@@ -19,6 +19,8 @@
 # limitations under the License.
 #
 
+require_relative 'credentials'
+
 class Chef
   class Resource::JenkinsUserCredentials < Resource::JenkinsCredentials
     attribute :description,
