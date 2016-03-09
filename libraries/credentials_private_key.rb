@@ -53,12 +53,10 @@ class Chef
     def rsa_private_key
       if private_key.is_a?(OpenSSL::PKey::RSA)
         private_key.to_pem
+      elsif passphrase
+        OpenSSL::PKey::RSA.new(private_key, passphrase).to_pem
       else
-        if passphrase
-          OpenSSL::PKey::RSA.new(private_key, passphrase).to_pem
-        else
-          OpenSSL::PKey::RSA.new(private_key).to_pem
-        end
+        OpenSSL::PKey::RSA.new(private_key).to_pem
       end
     end
   end
