@@ -54,7 +54,11 @@ class Chef
       if private_key.is_a?(OpenSSL::PKey::RSA)
         private_key.to_pem
       else
-        OpenSSL::PKey::RSA.new(private_key).to_pem
+        if passphrase
+          OpenSSL::PKey::RSA.new(private_key, passphrase).to_pem
+        else
+          OpenSSL::PKey::RSA.new(private_key).to_pem
+        end
       end
     end
   end
@@ -119,7 +123,12 @@ class Chef
 
       # Normalize the private key
       if @current_credentials && @current_credentials[:private_key]
-        @current_credentials[:private_key] = OpenSSL::PKey::RSA.new(@current_credentials[:private_key]).to_pem
+        @current_credentials[:private_key] = if @current_credentials[:passphrase]
+                                               OpenSSL::PKey::RSA.new(@current_credentials[:private_key],
+                                                                      @current_credentials[:passphrase]).to_pem
+                                             else
+                                               OpenSSL::PKey::RSA.new(@current_credentials[:private_key]).to_pem
+                                             end
       end
 
       @current_credentials
