@@ -41,6 +41,12 @@ jenkins_private_key_credentials 'jenkins3' do
   private_key File.read("#{fixture_data_base_path}/test_id_rsa")
 end
 
+# Test private key credentials with passphrase
+jenkins_private_key_credentials 'jenkins4' do
+  private_key File.read("#{fixture_data_base_path}/test_id_rsa_with_passphrase")
+  passphrase 'secret'
+end
+
 # Test creating a password with a dollar sign in it
 jenkins_password_credentials 'dollarbills' do
   password '$uper$ecret'

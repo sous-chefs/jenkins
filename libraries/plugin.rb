@@ -274,9 +274,9 @@ EOH
           if plugin_installation_manifest(dep['name'])
             Chef::Log.debug "A version of dependency #{dep['name']} is already installed - skipping"
             next
-          else
+          elsif dep['optional'] == false
             # only install required dependencies
-            install_plugin_from_update_center(dep['name'], dep['version'], opts) if dep['optional'] == false
+            install_plugin_from_update_center(dep['name'], dep['version'], opts)
           end
         end
       end

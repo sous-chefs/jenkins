@@ -159,7 +159,7 @@ class Chef
             availability = #{convert_to_groovy(new_resource.availability)}
             usage_mode = #{convert_to_groovy(new_resource.usage_mode)}
             env_map = #{convert_to_groovy(new_resource.environment)}
-            labels = #{convert_to_groovy(new_resource.labels.sort.join("\s"))}
+            labels = #{convert_to_groovy(new_resource.labels.sort.join('\s'))}
 
             // Compute the usage mode
             if (usage_mode == 'normal') {

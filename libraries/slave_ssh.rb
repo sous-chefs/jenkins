@@ -120,11 +120,11 @@ class Chef
         command_suffix: 'slave.launcher.suffixStartSlaveCmd',
       }
 
-      if new_resource.parsed_credentials.match(UUID_REGEX)
-        map[:credentials] = 'slave.launcher.credentialsId'
-      else
-        map[:credentials] = 'slave.launcher.credentialsId == null ? null : hudson.plugins.sshslaves.SSHLauncher.lookupSystemCredentials(slave.launcher.credentialsId).username'
-      end
+      map[:credentials] = if new_resource.parsed_credentials.match(UUID_REGEX)
+                            'slave.launcher.credentialsId'
+                          else
+                            'slave.launcher.credentialsId == null ? null : hudson.plugins.sshslaves.SSHLauncher.lookupSystemCredentials(slave.launcher.credentialsId).username'
+                          end
       map
     end
 
