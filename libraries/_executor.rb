@@ -70,6 +70,7 @@ module Jenkins
       command_options = pieces.last.is_a?(Hash) ? pieces.pop : {}
       command = []
       command << %("#{options[:java]}")
+      command << %(#{options[:jvm_options]})             if options[:jvm_options]
       command << %(-jar "#{options[:cli]}")
       command << %(-s #{URI.escape(options[:endpoint])}) if options[:endpoint]
       command << %(-i "#{options[:key]}")                if options[:key]

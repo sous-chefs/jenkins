@@ -126,6 +126,15 @@ describe Jenkins::Executor do
       end
     end
 
+    context 'when :jvm_options option is given' do
+      it 'builds the correct command' do
+        subject.options[:jvm_options] = '-Djava.arg1=foo -Djava.arg2=bar'
+        command = %("java" -Djava.arg1=foo -Djava.arg2=bar -jar "/usr/share/jenkins/cli/java/cli.jar" foo)
+        expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
+        subject.execute!('foo')
+      end
+    end
+
     context 'when execute! with options' do
       let(:stdin) { "hello\nworld" }
       it 'pass to shellout' do
