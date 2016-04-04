@@ -23,7 +23,7 @@ cmd="$cmd -secret <%= @jnlp_secret %>"
 do_start()
 {
   cd $JENKINS_HOME
-  su $JENKINS_USER -c "$cmd >>$logfile 2>&1" &
+  su - $JENKINS_USER -s /bin/sh -c "$cmd >>$logfile 2>&1" &
 }
 
 do_stop()
