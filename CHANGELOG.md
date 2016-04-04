@@ -1,44 +1,51 @@
-jenkins Cookbook CHANGELOG
-==========================
+# jenkins Cookbook CHANGELOG
+
 This file is used to list changes made in each version of the jenkins cookbook.
 
-v2.4.1 (2015-09-10)
--------------------
-# Bug
+## v2.4.1 (2015-09-10)
+
+### Bug
+
 - Make slave_exe resource only get created if it is missing.
 
-v2.4.0 (2015-09-03)
--------------------
-# Bug
+## v2.4.0 (2015-09-03)
+
+### Bug
+
 - Ensure Jenkins home directory has correct ownership after package installation
 - Fix for NPE when creating already registered slave with env vars defined
 - Fix ArgumentError when comparing two versions not of the same type
-- Don’t mutate value when converting to Groovy; Fixes #371
+- Don't mutate value when converting to Groovy; Fixes #371
 
-# Improvement
+### Improvement
+
 - Automatically add "Logon As A Service" right to Windows slaves
 - Allow optional 'keyserver' attribute for apt
 - Add a `MAINTAINERS` file
 
-v2.3.1 (2015-05-19)
--------------------
-# Bug
+## v2.3.1 (2015-05-19)
+
+### Bug
+
 - Fix Travis badge
 - Re-enable lazy attribute defaults in LWRP workaround for Chef 11
 - Properly escape single quotes in Groovy code
 
-# Improvement
+### Improvement
+
 - Download update center metadata every time
 
-v2.3.0 (2015-05-14)
--------------------
+## v2.3.0 (2015-05-14)
+
 ### New Feature
+
 - Add stable source support for package installation
 - Add support for `jvm_options` on `slave_ssh` resource
 - Support executing commands prior to launching Jenkins Windows slave
 - Add username/password support to executor
 
 ### Improvement
+
 - Remove EOL Ruby, update with current supported Rubies
 - Update `.kitchen.yml`
 - Use ChefDK for all Travis testing
@@ -52,24 +59,28 @@ v2.3.0 (2015-05-14)
 - Properly restart the service if the slave jar is updated
 
 ### Bug
+
 - Instantiate Windows-specific resource class; Fixes #336
 - Need to escape the `\n` when there are multiple public keys.
 
-v2.2.2 (2015-01-15)
--------------------
+## v2.2.2 (2015-01-15)
+
 ### Bug
+
 - Gem::Version raising ArgumentError for weirdly versioned Jenkins plugins
 - Force UTF-8 encoding when parsing update center JSON
 - README grammar fixes
 
-v2.2.1 (2014-12-02)
--------------------
+## v2.2.1 (2014-12-02)
+
 ### Bug
+
 - Ensure Win service install command respects alternate service names
 
-v2.2.0 (2014-12-02)
--------------------
+## v2.2.0 (2014-12-02)
+
 ### Bug
+
 - Handle jobs that do not have a `disabled` attribute
 - Remove unneeded service restart in Windows slaves
 - Update Jenkins service check to use `WIN32OLE`
@@ -81,8 +92,9 @@ v2.2.0 (2014-12-02)
 - Recover from commands executed with unknown credentials. This should also fix some cases of JENKINS-22346.
 
 ### Improvement
+
 - Use atomic updates when downloading the slave JAR
-- Create the `slave.jar` in a slave’s JENKINS_HOME
+- Create the `slave.jar` in a slave's JENKINS_HOME
 - Support a checksum attribute for `winsw.exe` download
 - Support setting the `PATH` on Windows slave
 - Add .NET 4.0 compat fix for `winsw`
@@ -92,26 +104,25 @@ v2.2.0 (2014-12-02)
 - Add attribute for creating `jenkins` user as a system account
 - Allow `Executor#execute!` to pass options to underlying `Shellout` instance.
 - Set the senstive attribute for the jenkins cli private key file
-- Don’t backup plugins on uninstall
+- Don't backup plugins on uninstall
 - Properly allow installation of specific versions of a plugin. Previously this only worked when a source URL was provided.
-- Optionally ensure a plugin’s dependencies are installed before proceeding with it’s installation
+- Optionally ensure a plugin's dependencies are installed before proceeding with it's installation
 - Handle plugin downgrades correctly (requires an uninstall of existing, newer version).
 
-v2.1.2 (2014-07-02)
--------------------
+## v2.1.2 (2014-07-02)
+
 - Fix a bug where `jenkins_windows_slave` was being called as `jenkins_jnlp_slave`
 
-v2.1.1 (2014-06-30)
--------------------
+## v2.1.1 (2014-06-30)
+
 - Use the update-center to install plugins and their dependencies
 - Handle `super` calls correctly in `load_current_resource`
 - Backport Chef patches to temporary libraries
 - Default `Slave#environment` to `nil` instead of `{}`
 - Fix a bug where `super` was called in DSL methods
 
+## v2.1.0 (2014-06-26)
 
-v2.1.0 (2014-06-26)
--------------------
 - Change Jenkins command prefix to use the slave object
 - Escape data given to the executor
 - Always read plugin manifest files as UTF
@@ -148,9 +159,8 @@ v2.1.0 (2014-06-26)
 - Add the ability to pass in a list of additional options in `jenkins_plugin`
 - Specify actions and default_action in inherited resources
 
+## v2.0.2 (2014-01-30)
 
-v2.0.2 (2014-01-30)
--------------------
 - Add support for prefix and suffix commands on SSH nodes
 - Don't commit documentation into git
 - Fix YARD-generated documentation
@@ -163,10 +173,10 @@ v2.0.2 (2014-01-30)
 - Fix grammar in the Jenkins helper error
 - Update Rubocop
 
+## v2.0.0 (2014-01-14)
 
-v2.0.0 (2014-01-14)
--------------------
 **This is a major refactor of the Jenkins cookbook and is not backwards-compatible.**
+
 - Updated to the latest gems
 - Added a full Test Kitchen integration suite for every resource
 - Added Rubocop + Foodcritic + Travis
@@ -177,6 +187,7 @@ v2.0.0 (2014-01-14)
 - Move testing instructions into contribution guidelines
 - Remove old TODO file
 - Refactor attributes into semantic groupings and namespaces
+
   - `jenkins.cli` has been removed
   - `jenkins.java_home` has been changed to `jenkins.java` and accepts the full path to the java binary, not the JAVA_HOME
   - `jenkins.iptables_allow` has been removed
@@ -193,6 +204,7 @@ v2.0.0 (2014-01-14)
   - `jenkins.master.log_directory` created
   - `jenkins.node` attributes have all been removed
   - `jenkins.server` attributes have all been removed
+
 - Removed Chef MiniTest handler
 - Created a new executor class for running commands through the CLI
 - Create `jenkins_command` resource for executing arbitrary commands against the Jenkins CLI
@@ -223,27 +235,28 @@ v2.0.0 (2014-01-14)
 - "node" renamed to "slave"
 - "server" renamed to "master"
 
+## v1.2.2
 
-v1.2.2
-------
 ### Bug
+
 - **[COOK-3742](https://tickets.chef.io/browse/COOK-3742)** - Remove trailing comma (restores compatability with Ruby 1.8)
 
+## v1.2.0
 
-v1.2.0
-------
 ### Improvement
+
 - **[COOK-3710](https://tickets.chef.io/browse/COOK-3710)** - Allow winsw url to be changed with a node attribute
 
 ### Bug
+
 - **[COOK-3709](https://tickets.chef.io/browse/COOK-3709)** - Use correct attribute value for `java_home`
 - **[COOK-3701](https://tickets.chef.io/browse/COOK-3701)** - Fix a refactor bug where a template variable was removed that was used in a nested template
 - **[COOK-3594](https://tickets.chef.io/browse/COOK-3594)** - Fix MiniTest Chef Handler tests for directory permissions
 
+## v1.1.0
 
-v1.1.0
-------
 ### Bug
+
 - **[COOK-3683](https://tickets.chef.io/browse/COOK-3683)** - Fix plugin provider failures finding the current plugin version
 - **[COOK-3667](https://tickets.chef.io/browse/COOK-3667)** - Unbreak Travis-CI integration
 - **[COOK-3623](https://tickets.chef.io/browse/COOK-3623)** - Fix issue where plugins were never updated even if you bump the plugin version in attributes
@@ -252,17 +265,17 @@ v1.1.0
 - **[COOK-3516](https://tickets.chef.io/browse/COOK-3516)** - Fix Jenkins slaves that use JNLP when Jenkins has security enabled
 
 ### New Feature
+
 - **[COOK-3619](https://tickets.chef.io/browse/COOK-3619)** - Support intermediate SSL certificates
 
 ### Improvement
+
 - **[COOK-3587](https://tickets.chef.io/browse/COOK-3587)** - Adding minitest-handler to the runlist for the node suite in Jenkins cookbook
 
-v1.0.0
-------
+## v1.0.0
 
 - Initial Chef Software release
 
-v0.7.0
-------
+## v0.7.0
 
-- Initial import from Heavywater upstream: https://github.com/heavywater/chef-jenkins
+- Initial import from Heavywater upstream: <https://github.com/heavywater/chef-jenkins>
