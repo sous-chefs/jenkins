@@ -26,8 +26,8 @@ module Serverspec
 
       private
 
-      def try(&block)
-        block.call
+      def try(&_block)
+        yield
       rescue NoMethodError
         nil
       end
