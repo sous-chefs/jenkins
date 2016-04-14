@@ -44,4 +44,10 @@ default['jenkins']['executor'].tap do |executor|
   # Please see the +Proxies+ section of the README for more information.
   #
   executor['proxy'] = nil
+
+  #
+  # On Windows systems with 64GB+ RAM, the MaxHeapSize of 256 may not be enough,
+  # this allows you to set a different value for MaxHeapSize on the executor.
+  #
+  executor['mx'] = 256
 end
