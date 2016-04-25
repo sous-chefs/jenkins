@@ -12,6 +12,28 @@ describe 'jenkins::java' do
     end
   end
 
+  context 'on Ubuntu 14.04' do
+    cached(:chef_run) do
+      ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '14.04')
+                            .converge(described_recipe)
+    end
+
+    it 'installs openjdk-7-jdk' do
+      expect(chef_run).to install_package('openjdk-7-jdk')
+    end
+  end
+
+  context 'on Ubuntu 16.04' do
+    cached(:chef_run) do
+      ChefSpec::ServerRunner.new(platform: 'ubuntu', version: '16.04')
+                            .converge(described_recipe)
+    end
+
+    it 'installs openjdk-8-jdk' do
+      expect(chef_run).to install_package('openjdk-8-jdk')
+    end
+  end
+
   context 'on RHEL' do
     cached(:chef_run) do
       ChefSpec::ServerRunner.new(platform: 'centos', version: '7.2.1511')
