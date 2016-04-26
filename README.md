@@ -109,11 +109,13 @@ The following type of credentials are supported:
 
 * __Password__ - Basic username + password credentials.
 * __Private Key__ - Credentials that use a username + private key (optionally protected with a passphrase).
+* __Secret Text__ - Generic secret text. Requires the the `credentials-binding` plugin.
 
 The `jenkins_credentials` resource is actually the base resource for several resources that map directly back to a credentials type:
 
 * `jenkins_password_credentials`
 * `jenkins_private_key_credentials`
+* `jenkins_secret_text_credentials`
 
 This uses the Jenkins Groovy API to create/delete credentials. It also supports whyrun mode.
 
@@ -140,6 +142,13 @@ jenkins_private_key_credentials 'wcoyote' do
   private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
   passphrase  'beepbeep'
 end
+
+# Create secret text credentials
+jenkins_secret_text_credentials 'wcoyote' do
+  id '4ce6acaa-dc43-4780-819a-b454c5e874a8'
+  description 'Wile E Coyote Secret'
+  secret 'Some secret text'
+end
 ```
 
 The `:delete` action idempotently removes a set of Jenkins credentials from the system. You can use the base `jenkins_credentials` resource or any of its children to perform the deletion.
@@ -150,6 +159,10 @@ jenkins_credentials 'wcoyote' do
 end
 
 jenkins_private_key_credentials 'wcoyote' do
+  action :delete
+end
+
+jenkins_secret_text_credentials 'wcoyote' do
   action :delete
 end
 ```
