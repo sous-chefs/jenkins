@@ -161,7 +161,7 @@ class Chef
     # @return [String]
     #
     def credentials_groovy
-      fail NotImplementedError, 'You must implement #credentials_groovy.'
+      raise NotImplementedError, 'You must implement #credentials_groovy.'
     end
 
     #
@@ -173,7 +173,7 @@ class Chef
     # @return [String]
     #
     def fetch_existing_credentials_groovy(_groovy_variable_name)
-      fail NotImplementedError, 'You must implement #fetch_existing_credentials_groovy.'
+      raise NotImplementedError, 'You must implement #fetch_existing_credentials_groovy.'
     end
 
     #
@@ -183,7 +183,7 @@ class Chef
     # @return [String]
     #
     def resource_attributes_groovy(_groovy_variable_name)
-      fail NotImplementedError, 'You must implement #resource_attributes_groovy.'
+      raise NotImplementedError, 'You must implement #resource_attributes_groovy.'
     end
 
     #
@@ -193,7 +193,7 @@ class Chef
     # @return [Boolean]
     #
     def correct_config?
-      fail NotImplementedError, 'You must implement #correct_config?.'
+      raise NotImplementedError, 'You must implement #correct_config?.'
     end
 
     #
