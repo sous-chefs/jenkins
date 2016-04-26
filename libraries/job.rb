@@ -126,14 +126,14 @@ EOH
     #
     action(:build) do
       unless current_resource.exists?
-        fail JobDoesNotExist.new(new_resource.name, :build)
+        raise JobDoesNotExist.new(new_resource.name, :build)
       end
 
       if current_resource.enabled?
         converge_by("Build #{new_resource}") do
           command_args = [
             'build',
-            escape(new_resource.name),
+            escape(new_resource.name)
           ]
 
           if new_resource.wait_for_completion
@@ -229,7 +229,7 @@ EOH
     #
     action(:disable) do
       unless current_resource.exists?
-        fail JobDoesNotExist.new(new_resource.name, :disable)
+        raise JobDoesNotExist.new(new_resource.name, :disable)
       end
 
       if current_resource.enabled?
@@ -249,7 +249,7 @@ EOH
     #
     action(:enable) do
       unless current_resource.exists?
-        fail JobDoesNotExist.new(new_resource.name, :enable)
+        raise JobDoesNotExist.new(new_resource.name, :enable)
       end
 
       if current_resource.enabled?
@@ -285,7 +285,7 @@ EOH
       @current_job = {
         enabled: disabled.nil? ? true : disabled.text == 'false',
         xml:     xml,
-        raw:     response,
+        raw:     response
       }
       @current_job
     end
@@ -320,9 +320,9 @@ EOH
       Chef::Log.debug "Validate #{new_resource} configuration"
 
       if new_resource.config.nil?
-        fail("#{new_resource} must specify a configuration file!")
+        raise("#{new_resource} must specify a configuration file!")
       elsif !::File.exist?(new_resource.config)
-        fail("#{new_resource} config `#{new_resource.config}` does not exist!")
+        raise("#{new_resource} config `#{new_resource.config}` does not exist!")
       else
         begin
           REXML::Document.new(::File.read(new_resource.config))

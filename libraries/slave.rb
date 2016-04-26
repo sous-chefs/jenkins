@@ -386,7 +386,7 @@ class Chef
         usage_mode:   new_resource.usage_mode,
         labels:       new_resource.labels.sort,
         availability: new_resource.availability,
-        environment:  new_resource.environment,
+        environment:  new_resource.environment
       }
 
       if new_resource.availability.to_s == 'demand'
@@ -409,5 +409,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_slave,
-  provider: Chef::Provider::JenkinsSlave,
+  provider: Chef::Provider::JenkinsSlave
 )

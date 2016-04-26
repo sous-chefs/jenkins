@@ -182,5 +182,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_user,
-  provider: Chef::Provider::JenkinsUser,
+  provider: Chef::Provider::JenkinsUser
 )

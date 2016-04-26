@@ -117,7 +117,7 @@ class Chef
         jvm_options: 'slave.launcher.jvmOptions',
         java_path: 'slave.launcher.javaPath',
         command_prefix: 'slave.launcher.prefixStartSlaveCmd',
-        command_suffix: 'slave.launcher.suffixStartSlaveCmd',
+        command_suffix: 'slave.launcher.suffixStartSlaveCmd'
       }
 
       map[:credentials] = if new_resource.parsed_credentials.match(UUID_REGEX)

@@ -16,7 +16,7 @@ end
 jenkins_job 'execute-with-params' do
   parameters(
     'STRING_PARAM' => 'meeseeks',
-    'BOOLEAN_PARAM' => true,
+    'BOOLEAN_PARAM' => true
   )
   action :build
 end
