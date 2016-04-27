@@ -76,7 +76,7 @@ default['jenkins']['master'].tap do |master|
   # The checksum of the war file. This is use to verify that the remote war file
   # has not been tampered with (such as a MITM attack). If you leave this #
   # attribute set to +nil+, no validation will be performed. If this attribute
-  # is set to the wrong MD5 checksum, the Chef Client run will fail.
+  # is set to the wrong SHA-256 checksum, the Chef Client run will fail.
   #
   #   node.set['jenkins']['master']['checksum'] = 'abcd1234...'
   #
