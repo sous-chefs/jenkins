@@ -117,14 +117,14 @@ EOH
             new_resource.source,
             new_resource.name,
             nil,
-            cli_opts: new_resource.options,
+            cli_opts: new_resource.options
           )
         else
           install_plugin_from_update_center(
             new_resource.name,
             new_resource.version,
             cli_opts: new_resource.options,
-            install_deps: new_resource.install_deps,
+            install_deps: new_resource.install_deps
           )
         end
       end
@@ -170,7 +170,7 @@ EOH
     #
     action(:disable) do
       unless current_resource.installed?
-        fail PluginNotInstalled.new(new_resource.name, :disable)
+        raise PluginNotInstalled.new(new_resource.name, :disable)
       end
 
       disabled = "#{plugin_file(new_resource.name)}.disabled"
@@ -194,7 +194,7 @@ EOH
     #
     action(:enable) do
       unless current_resource.installed?
-        fail PluginNotInstalled.new(new_resource.name, :enable)
+        raise PluginNotInstalled.new(new_resource.name, :enable)
       end
 
       disabled = "#{plugin_file(new_resource.name)}.disabled"
@@ -274,9 +274,9 @@ EOH
           if plugin_installation_manifest(dep['name'])
             Chef::Log.debug "A version of dependency #{dep['name']} is already installed - skipping"
             next
-          else
+          elsif dep['optional'] == false
             # only install required dependencies
-            install_plugin_from_update_center(dep['name'], dep['version'], opts) if dep['optional'] == false
+            install_plugin_from_update_center(dep['name'], dep['version'], opts)
           end
         end
       end
@@ -442,5 +442,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_plugin,
-  provider: Chef::Provider::JenkinsPlugin,
+  provider: Chef::Provider::JenkinsPlugin
 )

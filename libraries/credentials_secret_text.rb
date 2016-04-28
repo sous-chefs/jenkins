@@ -111,7 +111,7 @@ class Chef
     def correct_config?
       wanted_credentials = {
         description: new_resource.description,
-        secret: new_resource.secret,
+        secret: new_resource.secret
       }
 
       attribute_to_property_map.keys.each do |key|

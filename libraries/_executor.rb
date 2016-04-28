@@ -52,7 +52,7 @@ module Jenkins
       @options = {
         cli:     '/usr/share/jenkins/cli/java/cli.jar',
         java:    'java',
-        timeout: 60,
+        timeout: 60
       }.merge(options)
     end
 
