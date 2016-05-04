@@ -6,7 +6,6 @@ jenkins_user 'sethvargo'
 # Test user creation with attributes
 jenkins_user 'schisamo' do
   full_name   'Seth Chisamore'
-  email       'schisamo@chef.io'
   public_keys ['ssh-rsa AAAAAAA']
 end
 

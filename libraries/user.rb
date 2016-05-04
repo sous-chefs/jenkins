@@ -41,8 +41,6 @@ class Chef
               name_attribute: true
     attribute :full_name,
               kind_of: String
-    attribute :email,
-              kind_of: String
     attribute :public_keys,
               kind_of: Array,
               default: []
@@ -75,7 +73,6 @@ class Chef
       if current_user
         @current_resource.exists = true
         @current_resource.full_name(current_user[:full_name])
-        @current_resource.email(current_user[:email])
         @current_resource.public_keys(current_user[:public_keys])
       end
 
@@ -92,7 +89,6 @@ class Chef
     action(:create) do
       if current_resource.exists? &&
          current_resource.full_name == new_resource.full_name &&
-         current_resource.email == new_resource.email &&
          current_resource.public_keys == new_resource.public_keys
         Chef::Log.info("#{new_resource} exists - skipping")
       else
@@ -100,9 +96,6 @@ class Chef
           executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
             user = hudson.model.User.get('#{new_resource.id}')
             user.setFullName('#{new_resource.full_name}')
-
-            email = new hudson.tasks.Mailer.UserProperty('#{new_resource.email}')
-            user.addProperty(email)
 
             password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
             user.addProperty(password)
@@ -149,12 +142,6 @@ class Chef
         id = user.getId()
         name = user.getFullName()
 
-        email = null
-        emailProperty = user.getProperty(hudson.tasks.Mailer.UserProperty)
-        if(emailProperty != null) {
-          email = emailProperty.getAddress()
-        }
-
         keys = null
         keysProperty = user.getProperty(org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl)
         if(keysProperty != null) {
@@ -165,7 +152,6 @@ class Chef
         builder {
           id id
           full_name name
-          email email
           public_keys keys
         }
 
