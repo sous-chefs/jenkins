@@ -12,5 +12,5 @@ issues_url 'https://github.com/chef-cookbooks/jenkins/issues' if respond_to?(:is
 recipe 'jenkins::master', 'Installs a Jenkins master'
 
 depends 'apt',   '~> 2.0'
-depends 'runit', '~> 1.5'
+depends 'runit', '~> 1.7'
 depends 'yum',   '~> 3.0'
