@@ -42,7 +42,7 @@ class Chef
     attribute :full_name,
               kind_of: String
     attribute :email,
-              kind_of: [String, nil]
+              kind_of: String
     attribute :public_keys,
               kind_of: Array,
               default: []
