@@ -1,8 +1,7 @@
 AllCops:
   Exclude:
-    - 'files/**/*'
-    - 'vendor/**/*'
-    - 'test/shared/support/**/*'
+    - vendor/**/*
+    - Guardfile
 
 AlignParameters:
   Enabled: false
@@ -22,6 +21,8 @@ Style/SpaceBeforeFirstArg:
   Enabled: false
 LineLength:
   Enabled: false
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
 MethodLength:
   Enabled: false
 Metrics/AbcSize:
@@ -31,4 +32,6 @@ Metrics/ModuleLength:
 PerceivedComplexity:
   Enabled: false
 Style/ClassAndModuleChildren:
+  Enabled: false
+Style/ClassVars:
   Enabled: false

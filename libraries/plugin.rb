@@ -44,7 +44,7 @@ class Chef
               kind_of: [String, Symbol],
               default: :latest
     attribute :source,
-              kind_of: String
+              kind_of: [String, nil]
     attribute :install_deps,
               kind_of: [TrueClass, FalseClass],
               default: true
