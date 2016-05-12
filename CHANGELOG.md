@@ -2,6 +2,28 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## v2.5.0 (2016-05-12)
+
+- Increased the required Runit cookbook to 1.7
+- Added a new :build action to jenkins_job. See the readme for details
+- Updated custom resource format to conform to best practices
+- Added support for secret text credentials. See the readme for details
+- JENKINS_USER and JENKINS_GROUP can now be set via attribute
+- Changed remote directory resource to work with domain users in the windows slave resource
+- Refactored user credentials code to new intermediate class
+- Fixed the path to the jar cache in the jenkins slave .bat file
+- Resolved warnings when using the windows slave resource
+- Fixed bad documentation around remote file checksums
+- Resolved failing Foodcritic warnings
+- Added Chefspec matchers
+- Added source_url and issues_url to the metdata for Supermarket
+- Resolved Rubocop warnings
+- Fixed a label typo in the serverspecs
+- Added our standard contributing and testing docs
+- Added a Rakefile for simplified testing
+- Updated .gitignore and chefignore files to use the standard Chef varieties
+- Added testing in Travis CI with docker
+
 ## v2.4.1 (2015-09-10)
 
 ### Bug
@@ -206,22 +228,39 @@ This file is used to list changes made in each version of the jenkins cookbook.
   - `jenkins.server` attributes have all been removed
 
 - Removed Chef MiniTest handler
+
 - Created a new executor class for running commands through the CLI
+
 - Create `jenkins_command` resource for executing arbitrary commands against the Jenkins CLI
+
 - Create `jenkins_script` resource for executing arbitrary groovy scripts agains the Jenkins CLI
+
 - Create `jenkins_credentials` resource for creating and managing Jenkins credentials
+
 - Refactor `jenkins_job` resource for creating and managing jobs
+
 - Refactor `jenkins_plugin` resource for creating and managing plugins
+
 - Create `jenkins_slave` (and sub-resources) for managing Jenkins slaves (formerly called "nodes")
+
 - Add `jenkins_user` resource for creating and managing users
+
 - Remove dependencies on java, apache2, nginx, and iptables
+
 - Remove `jenkins_cli` resource (it's been replaced by `jenkins_command`)
+
 - Remove `jenkins_execute` resource (it's been replaced by `jenkins_command`)
+
 - Remove the pesky "block_until_operational" Ruby block
+
 - Remove `jenkins_node` resource (it's now a series of `jenkins_slave` resources)
+
 - Don't pin plugins (users should explictly provide a version to ensure pinning)
+
 - Upgrade apt and yum dependencies
+
 - Allow full customization of the war file download URL
+
 - Remove apache2 proxy, nginx proxy, and iptables support; they are outside the scope of this cookbook and add unnecessary complication
 - Default recipe has been removed
 - Iptables recipe has been removed
