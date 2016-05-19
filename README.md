@@ -565,11 +565,13 @@ node.run_state[:jenkins_password]
 
 ### Jenkins 2
 
-Jenkins 2 enables an install wizard by default. To make sure you can manipulate the jenkins instance, you need to disable the wizard and set hudson chunking off. You can do this by overriding an attribute:
+Jenkins 2 enables an install wizard by default. To make sure you can manipulate the jenkins instance, you need to disable the wizard. You can do this by setting an attribute:
 
 ```ruby
-default['jenkins']['master']['jvm_options'] = '-Dhudson.diyChunking=false -Djenkins.install.runSetupWizard=false'
+default['jenkins']['master']['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
 ```
+
+This is done by default, but must be kept when overriding the jvm_options!
 
 ### Proxies
 
