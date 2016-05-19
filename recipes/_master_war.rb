@@ -55,15 +55,16 @@ end
 # Include runit to setup the service
 include_recipe 'runit::default'
 
-Chef::Log.warn('Here we go with the runit service')
-
 # Download the remote WAR file
 remote_file File.join(node['jenkins']['master']['home'], 'jenkins.war') do
   source   node['jenkins']['master']['source']
   checksum node['jenkins']['master']['checksum'] if node['jenkins']['master']['checksum']
   owner    node['jenkins']['master']['user']
   group    node['jenkins']['master']['group']
+  notifies :restart, 'runit_service[jenkins]'
 end
+
+Chef::Log.warn('Here we go with the runit service')
 
 # Create runit service
 runit_service 'jenkins' do

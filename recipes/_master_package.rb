@@ -53,7 +53,6 @@ when 'rhel'
 
   package 'jenkins' do
     version node['jenkins']['master']['version']
-    notifies :restart, 'service[jenkins]', :immediately
   end
 
   # The package install creates the Jenkins user so now is the time to set the home
