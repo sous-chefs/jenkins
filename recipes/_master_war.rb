@@ -79,8 +79,8 @@ ruby_block 'Security off' do
     end
 
     fe = Chef::Util::FileEdit.new("#{node['jenkins']['master']['home']}/config.xml")
-    fe.search_file_replace_line(%r{  <useSecurity>true<\/useSecurity>},
-                                '  <useSecurity>false<\/useSecurity>')
+    fe.search_file_replace_line(%r{  <useSecurity>true</useSecurity>},
+                                '  <useSecurity>false</useSecurity>')
     fe.write_file
   end
   action :nothing
