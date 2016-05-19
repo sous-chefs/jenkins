@@ -46,17 +46,17 @@ when 'debian'
 when 'rhel'
   include_recipe 'yum::default'
 
-  ruby_block "Security off" do
+  ruby_block 'Security off' do
     block do
-      Chef::Log.info "Waiting until Jenkins config.xml file is present"
+      Chef::Log.info 'Waiting until Jenkins config.xml file is present'
       until File.exist?("#{node['jenkins']['master']['home']}/config.xml")
         sleep 1
         Chef::Log.debug('.')
       end
 
       fe = Chef::Util::FileEdit.new("#{node['jenkins']['master']['home']}/config.xml")
-      fe.search_file_replace_line(/  <useSecurity>true<\/useSecurity>/,
-                                  "  <useSecurity>false<\/useSecurity>")
+      fe.search_file_replace_line(%r{  <useSecurity>true<\/useSecurity>},
+                                  '  <useSecurity>false<\/useSecurity>')
       fe.write_file
     end
     action :nothing
