@@ -55,13 +55,31 @@ end
 # Include runit to setup the service
 include_recipe 'runit::default'
 
+ruby_block "Security off" do
+  block do
+    Chef::Log.info "Waiting until Jenkins config.xml file is present"
+    until File.exist?("#{node['jenkins']['master']['home']}/config.xml")
+      sleep 1
+      Chef::Log.debug('.')
+    end
+
+    fe = Chef::Util::FileEdit.new("#{node['jenkins']['master']['home']}/config.xml")
+    fe.search_file_replace_line(/  <useSecurity>true<\/useSecurity>/,
+                                "  <useSecurity>false<\/useSecurity>")
+    fe.write_file
+  end
+  action :nothing
+  notifies :restart, 'runit_service[jenkins]', :immediately
+end
+
 # Download the remote WAR file
 remote_file File.join(node['jenkins']['master']['home'], 'jenkins.war') do
   source   node['jenkins']['master']['source']
   checksum node['jenkins']['master']['checksum'] if node['jenkins']['master']['checksum']
   owner    node['jenkins']['master']['user']
   group    node['jenkins']['master']['group']
-  notifies :restart, 'runit_service[jenkins]'
+  notifies :restart, 'runit_service[jenkins]', :immediately
+  notifies :run, 'ruby_block[Security off]', :immediately
 end
 
 Chef::Log.warn('Here we go with the runit service')
