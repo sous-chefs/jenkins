@@ -69,7 +69,7 @@ class Chef
   class Provider::JenkinsPlugin < Provider::LWRPBase
     include Jenkins::Helper
 
-    provides (:jenkins_plugin) if defined?(provides)
+    provides :jenkins_plugin if defined?(provides)
 
     class PluginNotInstalled < StandardError
       def initialize(plugin, action)

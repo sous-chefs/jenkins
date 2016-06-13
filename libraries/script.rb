@@ -34,7 +34,7 @@ end
 
 class Chef
   class Provider::JenkinsScript < Provider::JenkinsCommand
-    provides (:jenkins_script) if defined?(provides)
+    provides :jenkins_script if defined?(provides)
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsScript.new(new_resource.command)
