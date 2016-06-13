@@ -44,7 +44,7 @@ class Chef
   class Provider::JenkinsCommand < Provider::LWRPBase
     include Jenkins::Helper
 
-    provides :jenkins_command
+    provides (:jenkins_command) if defined?(provides)
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsCommand.new(new_resource.command)

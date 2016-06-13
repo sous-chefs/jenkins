@@ -41,7 +41,7 @@ end
 
 class Chef
   class Provider::JenkinsSecretTextCredentials < Provider::JenkinsCredentials
-    provides :jenkins_secret_text_credentials
+    provides (:jenkins_secret_text_credentials) if defined?(provides)
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsSecretTextCredentials.new(new_resource.name)

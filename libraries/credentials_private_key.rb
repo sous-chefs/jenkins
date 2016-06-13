@@ -62,7 +62,7 @@ end
 
 class Chef
   class Provider::JenkinsPrivateKeyCredentials < Provider::JenkinsUserCredentials
-    provides :jenkins_private_key_credentials
+    provides (:jenkins_private_key_credentials) if defined?(provides)
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsPrivateKeyCredentials.new(new_resource.name)

@@ -39,7 +39,7 @@ end
 
 class Chef
   class Provider::JenkinsPasswordCredentials < Provider::JenkinsUserCredentials
-    provides :jenkins_password_credentials
+    provides (:jenkins_password_credentials) if defined?(provides)
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsPasswordCredentials.new(new_resource.name)

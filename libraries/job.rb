@@ -81,7 +81,7 @@ class Chef
   class Provider::JenkinsJob < Provider::LWRPBase
     include Jenkins::Helper
 
-    provides :jenkins_job
+    provides (:jenkins_job) if defined?(provides)
 
     # After some careful discussions internally, it was decided that
     # raising an exception when the job does not exist is the best

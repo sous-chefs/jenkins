@@ -56,7 +56,7 @@ end
 
 class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJnlpSlave
-    provides :jenkins_windows_slave, platform: %w(windows)
+    provides :jenkins_windows_slave, platform: %w(windows) if defined?(provides)
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsWindowsSlave.new(new_resource.name)
