@@ -2,6 +2,13 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## v2.6.0 (2016-06-14)
+
+- Clarify that this cookbook only supports Chef 12+
+- Add the ability to specify jvm_options for executors
+- Remove the pin of the apt cookbook in the metadata to the 2.X release
+- Switch ruby linting to Cookstyle from Rubocop
+
 ## v2.5.0 (2016-05-12)
 
 - Increased the required Runit cookbook to 1.7
@@ -262,16 +269,27 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Allow full customization of the war file download URL
 
 - Remove apache2 proxy, nginx proxy, and iptables support; they are outside the scope of this cookbook and add unnecessary complication
+
 - Default recipe has been removed
+
 - Iptables recipe has been removed
+
 - Added a _very_ basic Java recipe with caveats
+
 - Added a Jenkins master recipe (formerly called "server")
+
 - Removed "node" recipes - they have all been replaced by HWRPs
+
 - Removed proxy recipes
+
 - Updated Debian and RedHat templates to the latest version
+
 - Added the ability to add authentication
+
 - Added custom ServerSpec matchers
+
 - "node" renamed to "slave"
+
 - "server" renamed to "master"
 
 ## v1.2.2
