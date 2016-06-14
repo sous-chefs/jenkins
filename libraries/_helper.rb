@@ -71,6 +71,7 @@ EOH
         h[:timeout]  = timeout if timeout_given?
         h[:username] = username unless username.nil?
         h[:password] = password unless password.nil?
+        h[:jvm_options] = jvm_options unless jvm_options.nil?
       end
 
       Jenkins::Executor.new(options)
@@ -344,6 +345,15 @@ EOH
     #
     def java
       node['jenkins']['java']
+    end
+
+    #
+    # JVM options to pass into the cli command call
+    #
+    # @return [String]
+    #
+    def jvm_options
+      node['jenkins']['executor']['jvm_options']
     end
 
     #
