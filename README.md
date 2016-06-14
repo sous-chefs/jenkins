@@ -15,7 +15,7 @@ This project is managed by the CHEF Release Engineering team. For more informati
 
 ### Chef
 
-- Chef 11+
+- Chef 12+
 
 ### Cookbooks
 

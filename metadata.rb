@@ -6,8 +6,8 @@ description      'Installs and configures Jenkins CI master & slaves'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '2.5.0'
 
-source_url 'https://github.com/chef-cookbooks/jenkins' if respond_to?(:source_url)
-issues_url 'https://github.com/chef-cookbooks/jenkins/issues' if respond_to?(:issues_url)
+source_url 'https://github.com/chef-cookbooks/jenkins'
+issues_url 'https://github.com/chef-cookbooks/jenkins/issues'
 
 recipe 'jenkins::master', 'Installs a Jenkins master'
 
