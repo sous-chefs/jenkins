@@ -66,7 +66,7 @@ end
 
 class Chef
   class Provider::JenkinsSshSlave < Provider::JenkinsSlave
-    provides :jenkins_ssh_slave
+    provides :jenkins_ssh_slave if defined?(provides)
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsSshSlave.new(new_resource.name)

@@ -43,7 +43,7 @@ end
 
 class Chef
   class Provider::JenkinsJnlpSlave < Provider::JenkinsSlave
-    provides :jenkins_jnlp_slave
+    provides :jenkins_jnlp_slave if defined?(provides)
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsJnlpSlave.new(new_resource.name)
