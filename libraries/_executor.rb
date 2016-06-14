@@ -45,6 +45,8 @@ module Jenkins
     #   +/usr/share/jenkins/cli/java/cli.jar+)
     # @option options [String] :java
     #   the full path to the java executable on the system (default: +java+)
+    # @option options [String] :mx
+    #   the MaxHeapSize for the executor (default: -Xmx256M)
     #
     # @return [Jenkins::Executor]
     #
@@ -70,6 +72,7 @@ module Jenkins
       command_options = pieces.last.is_a?(Hash) ? pieces.pop : {}
       command = []
       command << %("#{options[:java]}")
+      command << %(-Xmx#{options[:mx]}M) if options[:mx]
       command << %(-jar "#{options[:cli]}")
       command << %(-s #{URI.escape(options[:endpoint])}) if options[:endpoint]
       command << %(-i "#{options[:key]}")                if options[:key]

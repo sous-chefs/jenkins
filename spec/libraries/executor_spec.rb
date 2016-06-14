@@ -9,9 +9,10 @@ describe Jenkins::Executor do
     end
 
     it 'overrides with options from the initializer' do
-      options = described_class.new(cli: 'foo', java: 'bar').options
+      options = described_class.new(cli: 'foo', java: 'bar', mx: 512).options
       expect(options[:cli]).to eq('foo')
       expect(options[:java]).to eq('bar')
+      expect(options[:mx]).to eq(512)
     end
   end
 
@@ -62,6 +63,15 @@ describe Jenkins::Executor do
       it 'adds --password option' do
         subject.options[:password] = 'password'
         command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo --password "password")
+        expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
+        subject.execute!('foo')
+      end
+    end
+
+    context 'when a :mx option is given' do
+      it 'adds -xMXxxxM option' do
+        subject.options[:mx] = 512
+        command = %("java" -Xmx512M -jar "/usr/share/jenkins/cli/java/cli.jar" foo)
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
       end

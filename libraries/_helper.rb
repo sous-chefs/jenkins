@@ -69,6 +69,7 @@ EOH
         h[:proxy]    = proxy if proxy_given?
         h[:endpoint] = endpoint
         h[:timeout]  = timeout if timeout_given?
+        h[:mx]       = mx if mx_given?
         h[:username] = username unless username.nil?
         h[:password] = password unless password.nil?
       end
@@ -318,6 +319,24 @@ EOH
     #
     def timeout_given?
       !node['jenkins']['executor']['timeout'].nil?
+    end
+
+    #
+    # The global MaxHeapSize for the executor.
+    #
+    # @return [Fixnum]
+    #
+    def mx
+      node['jenkins']['executor']['mx']
+    end
+
+    #
+    # Boolean method to determine if MaxHeapSize was supplied.
+    #
+    # @return [Boolean]
+    #
+    def mx_given?
+      !node['jenkins']['executor']['mx'].nil?
     end
 
     # Username used when invoking cli
