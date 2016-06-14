@@ -1,3 +1,5 @@
+<!-- This is a generated file. Please do not edit directly -->
+
 # Maintainers
 
 This file lists how the jenkins cookbook project is maintained. When making changes
