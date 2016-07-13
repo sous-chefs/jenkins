@@ -44,4 +44,10 @@ default['jenkins']['executor'].tap do |executor|
   # Please see the +Proxies+ section of the README for more information.
   #
   executor['proxy'] = nil
+
+  #
+  # If you need to specify jvm options for the jenkins cli call, specify them here
+  # You can specify items such as a trust store if you need custom ca certs, for example.
+  #
+  executor['jvm_options'] = nil
 end

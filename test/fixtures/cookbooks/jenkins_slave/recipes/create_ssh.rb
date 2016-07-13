@@ -61,7 +61,7 @@ end
 jenkins_ssh_slave 'ssh-builder' do
   description 'A builder, but over SSH'
   remote_fs   '/tmp/slave-ssh-builder'
-  labels      %w(builer linux)
+  labels      %w(builder linux)
   user        'jenkins-ssh-key'
   java_path   '/usr/bin/java'
   # SSH specific attributes

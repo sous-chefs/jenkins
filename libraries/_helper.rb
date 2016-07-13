@@ -47,7 +47,7 @@ EOH
 
     # Matches Version 4 UUID per RFC 4122
     # Example: 38537014-ec66-49b5-aff2-aed1c19e2989
-    UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/.freeze unless defined?(UUID_REGEX)
+    UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/ unless defined?(UUID_REGEX)
 
     #
     # Helper method for creating an accessing a new {Jenkins::Executor} from
@@ -71,6 +71,7 @@ EOH
         h[:timeout]  = timeout if timeout_given?
         h[:username] = username unless username.nil?
         h[:password] = password unless password.nil?
+        h[:jvm_options] = jvm_options unless jvm_options.nil?
       end
 
       Jenkins::Executor.new(options)
@@ -344,6 +345,15 @@ EOH
     #
     def java
       node['jenkins']['java']
+    end
+
+    #
+    # JVM options to pass into the cli command call
+    #
+    # @return [String]
+    #
+    def jvm_options
+      node['jenkins']['executor']['jvm_options']
     end
 
     #

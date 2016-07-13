@@ -241,7 +241,7 @@ class Chef
         java_bin:    java,
         slave_jar:   slave_jar,
         jnlp_url:    jnlp_url,
-        jnlp_secret: jnlp_secret,
+        jnlp_secret: jnlp_secret
       )
       @service_resource
     end

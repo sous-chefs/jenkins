@@ -1,21 +1,19 @@
 sudo: required
+dist: trusty
 
+# install the pre-release chef-dk.  Use chef-stable-precise to install the stable release
 addons:
   apt:
     sources:
-      - chef-stable-precise
+      - chef-current-precise
     packages:
       - chefdk
 
-# Don't `bundle install`
-install: echo "skip bundle install"
-
 branches:
   only:
-    - master
+  - master
 
-services:
-  - docker
+services: docker
 
 env:
   global:
@@ -25,21 +23,19 @@ env:
     - CHEF_VERSION=12.0.3
     - CHEF_VERSION=latest
 
-matrix:
+
   fast_finish: true
 
-# Ensure we make ChefDK's Ruby the default
 before_script:
+  - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
   - eval "$(/opt/chefdk/bin/chef shell-init bash)"
-  # We have to install chef-sugar for ChefSpec
-  - /opt/chefdk/embedded/bin/chef gem install chef-sugar
-  # Ensure kitchen-docker is available for testing
   - /opt/chefdk/embedded/bin/chef gem install kitchen-docker
+
 script:
   - /opt/chefdk/embedded/bin/chef --version
-  - /opt/chefdk/embedded/bin/rubocop --version
-  - /opt/chefdk/embedded/bin/rubocop
+  - /opt/chefdk/embedded/bin/cookstyle --version
+  - /opt/chefdk/embedded/bin/cookstyle
   - /opt/chefdk/embedded/bin/foodcritic --version
-  - /opt/chefdk/embedded/bin/foodcritic . --exclude spec
-  - /opt/chefdk/embedded/bin/rspec spec
+  - /opt/chefdk/embedded/bin/foodcritic . --exclude spec -f any
+  - /opt/chefdk/embedded/bin/rspec
   - KITCHEN_LOCAL_YAML=.kitchen.docker.yml /opt/chefdk/embedded/bin/kitchen verify smoke-war-stable-ubuntu-docker

@@ -89,13 +89,13 @@ describe Jenkins::Executor do
           @times = 0
           allow(shellout).to receive(:error!) do
             @times += 1
-            fail Mixlib::ShellOut::ShellCommandFailed unless @times > 2
+            raise Mixlib::ShellOut::ShellCommandFailed unless @times > 2
           end
           allow(shellout).to receive(:exitstatus).and_return(255, 1, 0)
           allow(shellout).to receive(:stderr).and_return(
             'Authentication failed. No private key accepted.',
             'Exception in thread "main" java.io.EOFException',
-            '',
+            ''
           )
         end
 
@@ -121,6 +121,15 @@ describe Jenkins::Executor do
       it 'escapes the proxy' do
         subject.options[:proxy] = 'http://proxy.jenkins.ci?foo=this is a text'
         command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -p http://proxy.jenkins.ci?foo=this%20is%20a%20text foo)
+        expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
+        subject.execute!('foo')
+      end
+    end
+
+    context 'when :jvm_options option is given' do
+      it 'builds the correct command' do
+        subject.options[:jvm_options] = '-Djava.arg1=foo -Djava.arg2=bar'
+        command = %("java" -Djava.arg1=foo -Djava.arg2=bar -jar "/usr/share/jenkins/cli/java/cli.jar" foo)
         expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
         subject.execute!('foo')
       end

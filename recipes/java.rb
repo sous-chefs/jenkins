@@ -39,5 +39,5 @@ when 'debian'
 when 'rhel'
   package 'java-1.7.0-openjdk'
 else
-  fail "`#{node['platform_family']}' is not supported!"
+  raise "`#{node['platform_family']}' is not supported!"
 end

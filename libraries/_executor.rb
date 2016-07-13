@@ -52,7 +52,7 @@ module Jenkins
       @options = {
         cli:     '/usr/share/jenkins/cli/java/cli.jar',
         java:    'java',
-        timeout: 60,
+        timeout: 60
       }.merge(options)
     end
 
@@ -70,6 +70,7 @@ module Jenkins
       command_options = pieces.last.is_a?(Hash) ? pieces.pop : {}
       command = []
       command << %("#{options[:java]}")
+      command << options[:jvm_options].to_s if options[:jvm_options]
       command << %(-jar "#{options[:cli]}")
       command << %(-s #{URI.escape(options[:endpoint])}) if options[:endpoint]
       command << %(-i "#{options[:key]}")                if options[:key]

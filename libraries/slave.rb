@@ -159,7 +159,7 @@ class Chef
             availability = #{convert_to_groovy(new_resource.availability)}
             usage_mode = #{convert_to_groovy(new_resource.usage_mode)}
             env_map = #{convert_to_groovy(new_resource.environment)}
-            labels = #{convert_to_groovy(new_resource.labels.sort.join("\s"))}
+            labels = #{convert_to_groovy(new_resource.labels.sort.join(' '))}
 
             // Compute the usage mode
             if (usage_mode == 'normal') {
@@ -386,7 +386,7 @@ class Chef
         usage_mode:   new_resource.usage_mode,
         labels:       new_resource.labels.sort,
         availability: new_resource.availability,
-        environment:  new_resource.environment,
+        environment:  new_resource.environment
       }
 
       if new_resource.availability.to_s == 'demand'
@@ -409,5 +409,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_slave,
-  provider: Chef::Provider::JenkinsSlave,
+  provider: Chef::Provider::JenkinsSlave
 )
