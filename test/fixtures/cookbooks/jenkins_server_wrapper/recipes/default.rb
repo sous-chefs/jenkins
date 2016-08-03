@@ -7,7 +7,7 @@ if docker?
     stop_command    '/usr/bin/sv stop jenkins'
     restart_command '/usr/bin/sv restart jenkins'
     status_command  '/usr/bin/sv status jenkins'
-    action :nothing
+    action :restart
   end
 else
   include_recipe 'jenkins::java'
