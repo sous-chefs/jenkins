@@ -1,6 +1,7 @@
 driver:
   name: docker
   image: phusion/baseimage:latest
+  binary: /usr/local/bin/docker
   provision_command:
     # Enable SSHD
     - rm -f /etc/service/sshd/down
@@ -12,7 +13,7 @@ driver:
     - useradd -d /var/lib/jenkins -m -s /bin/bash jenkins
     - curl -fL http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war -o /usr/share/jenkins/jenkins.war
     - mkdir -p /etc/service/jenkins
-    - echo "#!/bin/sh \n exec /sbin/setuser jenkins env HOME=/var/lib/jenkins JENKINS_HOME=/var/lib/jenkins java -jar /usr/share/jenkins/jenkins.war --httpPort=8080 --httpListenAddress=0.0.0.0" > /etc/service/jenkins/run
+    - echo "#!/bin/sh \n exec /sbin/setuser jenkins env HOME=/var/lib/jenkins JENKINS_HOME=/var/lib/jenkins java -Djenkins.install.runSetupWizard=false -jar /usr/share/jenkins/jenkins.war --httpPort=8080 --httpListenAddress=0.0.0.0" > /etc/service/jenkins/run
     - chmod +x /etc/service/jenkins/run
 
   forward:
