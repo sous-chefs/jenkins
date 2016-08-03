@@ -172,7 +172,11 @@ EOH
         val = val.gsub(/\\/, '\\\\\\\\')
         # Escape single quotes
         val = val.gsub(/'/, "\\\\'")
-        "'#{val}'"
+        if val.include?("\n")
+          "'''#{val}'''"
+        else
+          "'#{val}'"
+        end
       when Array
         list_members = val.map do |v|
           convert_to_groovy(v)
