@@ -1,7 +1,6 @@
 driver:
   name: docker
   image: phusion/baseimage:latest
-  binary: /usr/local/bin/docker
   provision_command:
     # Enable SSHD
     - rm -f /etc/service/sshd/down
