@@ -101,9 +101,6 @@ class Chef
             user = hudson.model.User.get('#{new_resource.id}')
             user.setFullName('#{new_resource.full_name}')
 
-            email = new hudson.tasks.Mailer.UserProperty('#{new_resource.email}')
-            user.addProperty(email)
-
             password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
             user.addProperty(password)
 
