@@ -35,7 +35,7 @@
 
 case node['platform_family']
 when 'debian'
-  if (node['platform'] == 'ubuntu' && Chef::VersionConstraint.new(">= 15.10").include?(node['platform_version']))
+  if node['platform'] == 'ubuntu' && Chef::VersionConstraint.new('>= 15.10').include?(node['platform_version'])
     package 'openjdk-8-jdk'
   else
     package 'openjdk-7-jdk'
