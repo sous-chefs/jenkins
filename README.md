@@ -615,7 +615,7 @@ KITCHEN_LOCAL_YAML=.kitchen.docker.yml kitchen verify smoke-war-stable-ubuntu-do
 
 ## Development
 
-Please see the [Contributing](CONTRIBUTING.md) and [Testing]](TESTING.md) Guidelines.
+Please see the [Contributing](CONTRIBUTING.md) and [Testing](TESTING.md) Guidelines.
 
 ## License & Authors
 
