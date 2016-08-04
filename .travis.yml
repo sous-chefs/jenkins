@@ -20,7 +20,7 @@ env:
     # Ignore warnings when running specs.
     - RUBYOPT="-W0"
   matrix:
-    - CHEF_VERSION=12.0.3
+    - CHEF_VERSION=12.6.0
     - CHEF_VERSION=latest
 
 
