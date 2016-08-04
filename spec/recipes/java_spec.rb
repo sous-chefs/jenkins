@@ -7,8 +7,8 @@ describe 'jenkins::java' do
                             .converge(described_recipe)
     end
 
-    it 'installs openjdk-9-jdk' do
-      expect(chef_run).to install_package('openjdk-9-jdk')
+    it 'installs openjdk-8-jdk' do
+      expect(chef_run).to install_package('openjdk-8-jdk')
     end
   end
 
@@ -18,8 +18,8 @@ describe 'jenkins::java' do
                             .converge(described_recipe)
     end
 
-    it 'installs java-1.9.0-openjdk' do
-      expect(chef_run).to install_package('java-1.9.0-openjdk')
+    it 'installs java-1.8.0-openjdk' do
+      expect(chef_run).to install_package('java-1.8.0-openjdk')
     end
   end
 
