@@ -27,7 +27,7 @@ default['jenkins']['executor'].tap do |executor|
   # Client run until the service endpoint(s) are _actually_ ready to accept
   # requests.
   #
-  executor['timeout'] = 60
+  executor['timeout'] = 120
 
   #
   # Deprecated: please use +node.run_state[:jenkins_private_key]+ instead.

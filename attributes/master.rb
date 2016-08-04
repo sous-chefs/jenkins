@@ -88,7 +88,7 @@ default['jenkins']['master'].tap do |master|
   #
   #   node.set['jenkins']['master']['jvm_options'] = '-Xmx256m'
   #
-  master['jvm_options'] = nil
+  master['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
 
   #
   # The list of Jenkins arguments to pass to the initialize script. This varies

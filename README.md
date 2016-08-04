@@ -42,7 +42,7 @@ The master recipe will create the required directory structure and install jenki
 
 ### java
 
-By default, this cookbook does not install, manage, or manipulate a JDK, as that is outside of the scope of Jenkins. The `package` installation method will automatically pull in a valid Java if one does not exist, by the nature of package installers. However, the `war` installation method will require you to install a valid Java runtime. This very simple recipe installs OpenJDK 7 on the target system. **If you need a more complex Java setup, you should use the community cookbook or write your own.** For more information and warnings, please see the inline documentation in the `jenkins::java` recipe.
+By default, this cookbook does not install, manage, or manipulate a JDK, as that is outside of the scope of Jenkins. The `package` installation method will automatically pull in a valid Java if one does not exist, by the nature of package installers. However, the `war` installation method will require you to install a valid Java runtime. This very simple recipe installs OpenJDK 7 or 8 on the target system depending on the distribution and version. **If you need a more complex Java setup, you should use the community cookbook or write your own.** For more information and warnings, please see the inline documentation in the `jenkins::java` recipe.
 
 This pattern is not unique. [RHEL Jenkins packages do not depend on a Java](https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+RedHat+distributions), since there are so many derivatives to choose from.
 
@@ -109,7 +109,7 @@ end
 
 ### jenkins_credentials
 
-**NOTE** The use of the Jenkins credentials resource requires the Jenkins credentials plugin. This plugin began shipping with Jenkins 1.536\. On older Jenkins installations, you will need to install the credentials plugin at version 1.6 or higher to utilize this resource. On newer versions of Jenkins, this resource should work correctly.
+**NOTE** The use of the Jenkins credentials resource requires the Jenkins credentials plugin. This plugin began shipping with Jenkins 1.536\. On older Jenkins installations, you will need to install the credentials plugin at version 1.6 or higher to utilize this resource. On newer versions of Jenkins, this resource should work correctly. Since jenkins 2.x, this plugin is not shipped by default anymore.
 
 - Each credential can be referenced in job by its unique ID.
 - You can set this ID when creating credential, and set the same ID in job configuration.
@@ -344,6 +344,8 @@ end
 
 ### jenkins_slave
 
+**NOTE** The use of the Jenkins user resource requires the Jenkins SSH credentials plugin. This plugin is not shipped by default in jenkins 2.x.
+
 This resource manages Jenkins slaves, supporting the following actions:
 
 ```
@@ -481,6 +483,8 @@ end
 
 ### jenkins_user
 
+**NOTE** The use of the Jenkins user resource requires the Jenkins mailer plugin. This plugin is not shipped by default in jenkins 2.x.
+
 This resource manages Jenkins users, supporting the following actions:
 
 ```
@@ -562,6 +566,16 @@ If (and **only if**) you have your Jenkins instance configured to use the PAM (U
 node.run_state[:jenkins_username]
 node.run_state[:jenkins_password]
 ```
+
+### Jenkins 2
+
+Jenkins 2 enables an install wizard by default. To make sure you can manipulate the jenkins instance, you need to disable the wizard. You can do this by setting an attribute:
+
+```ruby
+default['jenkins']['master']['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
+```
+
+This is done by default, but must be kept when overriding the jvm_options!
 
 ### Proxies
 
