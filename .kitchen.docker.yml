@@ -6,7 +6,7 @@ driver:
     - rm -f /etc/service/sshd/down
     - /etc/my_init.d/00_regen_ssh_host_keys.sh
     # Install Java
-    - apt-get install -y --no-install-recommends openjdk-7-jdk
+    - apt-get install -y --no-install-recommends openjdk-8-jdk
     # Install Jenkins
     - mkdir -p /usr/share/jenkins/
     - useradd -d /var/lib/jenkins -m -s /bin/bash jenkins
