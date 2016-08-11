@@ -401,7 +401,7 @@ jenkins_jnlp_slave 'integration' do
   labels      ['integration', 'rails', 'ruby']
   environment(
     RAILS_ENV: 'test',
-    GCC:       '1_000_000_000',
+    GCC:       '1_000_000_000'
   )
 end
 
