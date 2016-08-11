@@ -35,9 +35,9 @@
 
 case node['platform_family']
 when 'debian'
-  package 'openjdk-7-jdk'
+  package 'openjdk-8-jdk'
 when 'rhel'
-  package 'java-1.7.0-openjdk'
+  package 'java-1.8.0-openjdk'
 else
   raise "`#{node['platform_family']}' is not supported!"
 end
