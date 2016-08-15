@@ -101,14 +101,14 @@ EOH
     # @param [String] groovy_variable_name
     # @return [String]
     #
-    def credentials_for_username_groovy(username, groovy_variable_name)
+    def credentials_for_id_groovy(id, groovy_variable_name)
       <<-EOH.gsub(/ ^{8}/, '')
         import jenkins.model.*
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.plugins.credentials.common.*
         import com.cloudbees.plugins.credentials.domains.*;
 
-        username_matcher = CredentialsMatchers.withUsername("#{username}")
+        id_matcher = CredentialsMatchers.withId("#{id}")
         available_credentials =
           CredentialsProvider.lookupCredentials(
             StandardUsernameCredentials.class,
@@ -120,7 +120,7 @@ EOH
         #{groovy_variable_name} =
           CredentialsMatchers.firstOrNull(
             available_credentials,
-            username_matcher
+            id_matcher
           )
       EOH
     end

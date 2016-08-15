@@ -44,10 +44,6 @@ class Chef
     attribute :username,
               kind_of: String,
               name_attribute: true
-    attribute :id,
-              kind_of: String,
-              regex: UUID_REGEX, # Private Key credentials must still have a UUID based ID
-              default: lazy { SecureRandom.uuid }
     attribute :private_key,
               kind_of: [String, OpenSSL::PKey::RSA, OpenSSL::PKey::EC],
               required: true

@@ -42,7 +42,7 @@ class Chef
     # Attributes
     attribute :id,
               kind_of: String,
-              default: lazy { SecureRandom.uuid }
+              required: true
 
     attr_writer :exists
 
