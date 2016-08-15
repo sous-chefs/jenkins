@@ -56,7 +56,7 @@ class Chef
     #
     def parsed_credentials
       if credentials.is_a?(Resource::JenkinsCredentials)
-        credentials.send(:username)
+        credentials.send(:id)
       else
         credentials.to_s
       end
@@ -121,11 +121,8 @@ class Chef
         command_suffix: 'slave.launcher.suffixStartSlaveCmd'
       }
 
-      map[:credentials] = if new_resource.parsed_credentials.match(UUID_REGEX)
-                            'slave.launcher.credentialsId'
-                          else
-                            'slave.launcher.credentialsId == null ? null : hudson.plugins.sshslaves.SSHLauncher.lookupSystemCredentials(slave.launcher.credentialsId).username'
-                          end
+      map[:credentials] = 'slave.launcher.credentialsId'
+
       map
     end
 
@@ -140,13 +137,9 @@ class Chef
     # @return [String]
     #
     def credential_lookup_groovy(groovy_variable_name = 'credentials_id')
-      if new_resource.parsed_credentials.match(UUID_REGEX)
-        "#{groovy_variable_name} = hudson.plugins.sshslaves.SSHLauncher.lookupSystemCredentials(#{convert_to_groovy(new_resource.parsed_credentials)})"
-      else
-        <<-EOH.gsub(/ ^{10}/, '')
-          #{credentials_for_username_groovy(new_resource.parsed_credentials, groovy_variable_name)}
-        EOH
-      end
+      <<-EOH.gsub(/ ^{10}/, '')
+        #{credentials_for_id_groovy(new_resource.parsed_credentials, groovy_variable_name)}
+      EOH
     end
   end
 end
