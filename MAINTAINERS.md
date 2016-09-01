@@ -1,24 +1,22 @@
 <!-- This is a generated file. Please do not edit directly -->
 
 # Maintainers
+This file lists how this cookbook project is maintained. When making changes to the system, this
+file tells you who needs to review your patch - you need a simple majority of maintainers
+for the relevant subsystems to provide a :+1: on your pull request. Additionally, you need
+to not receive a veto from a Lieutenant or the Project Lead.
 
-This file lists how the jenkins cookbook project is maintained. When making changes
-to the system, this file tells you who needs to review your patch - you need a
-simple majority of maintainers to provide a :+1: on your pull request. Additionally,
-you need to not receive a veto from a Lieutenant or the Project Lead.
+Check out [How Cookbooks are Maintained](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/CONTRIBUTING.MD)
+for details on the process and how to become a maintainer or the project lead.
 
-Check out
-[How Chef is Maintained](https://github.com/chef/chef-rfc/blob/master/rfc030-maintenance-policy.md#how-the-project-is-maintained)
-for details on the process, how to become a maintainer, lieutenant, or the
-project lead.
-
-## Project Lead
-
+# Project Maintainer
 * [Seth Chisamore](https://github.com/schisamo)
 
-## Maintainers
-
-* [Tyler Fitch](http://github.com/tfitch)
-* [Yvonne Lam](http://github.com/yzl)
+# Maintainers
+* [Jennifer Davis](https://github.com/sigje)
 * [Tim Smith](https://github.com/tas50)
+* [Thom May](https://github.com/thommay)
+* [Seth Chisamore](https://github.com/schisamo)
+* [Tyler Fitch](https://github.com/tfitch)
 * [Mike Tyler](https://github.com/mtyler)
+* [Yvonne Lam](https://github.com/yzl)
