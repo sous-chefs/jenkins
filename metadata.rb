@@ -14,5 +14,5 @@ chef_version '>= 12' if respond_to?(:chef_version)
 recipe 'jenkins::master', 'Installs a Jenkins master'
 
 depends 'apt',   '>= 2.0'
-depends 'runit', '~> 1.7'
+depends 'runit', '>= 1.7'
 depends 'yum',   '~> 3.0'
