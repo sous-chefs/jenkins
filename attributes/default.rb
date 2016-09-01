@@ -38,7 +38,7 @@ default['jenkins'].tap do |jenkins|
   #
   # You can override this attribute by setting the full path manually:
   #
-  #   node.set['jenkins']['java'] = '/my/custom/path/to/java6'
+  #   node.normal['jenkins']['java'] = '/my/custom/path/to/java6'
   #
   # Setting this value to +nil+ will break the Internet.
   #

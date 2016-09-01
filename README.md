@@ -574,7 +574,7 @@ node['jenkins']['executor']['proxy']
 The underlying executor class (which all HWRPs use) intelligently passes proxy information to the Jenkins CLI commands if this attribute is set. It should be set in the form `HOST:PORT`:
 
 ```ruby
-node.set['jenkins']['executor']['proxy'] = '1.2.3.4:5678'
+node.normal['jenkins']['executor']['proxy'] = '1.2.3.4:5678'
 ```
 
 ## Using Test Kitchen with Docker

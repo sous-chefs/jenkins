@@ -39,7 +39,7 @@ default['jenkins']['executor'].tap do |executor|
   # slaves, you will need to set this node attribute. It should be  set in the
   # form `HOST:PORT`:
   #
-  #   node.set['jenkins']['executor']['proxy'] = '1.2.3.4'
+  #   node.normal['jenkins']['executor']['proxy'] = '1.2.3.4'
   #
   # Please see the +Proxies+ section of the README for more information.
   #

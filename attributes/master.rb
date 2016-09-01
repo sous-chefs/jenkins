@@ -30,7 +30,7 @@ default['jenkins']['master'].tap do |master|
   # Apt/Yum repos. On other platforms, the default method is using the war
   # file.
   #
-  #   node.set['jenkins']['master']['install_method'] = 'war'
+  #   node.normal['jenkins']['master']['install_method'] = 'war'
   #
   master['install_method'] = case node['platform_family']
                              when 'debian', 'rhel' then 'package'
@@ -48,7 +48,7 @@ default['jenkins']['master'].tap do |master|
   # The mirror to donload the Jenkins war file. This attribute is only used
   # in the "war" installation method.
   #
-  #   node.set['jenkins']['master']['mirror'] = 'http://cache.example.com'
+  #   node.normal['jenkins']['master']['mirror'] = 'http://cache.example.com'
   #
   # Note: this mirror is combined with some "smart" attributes to build the
   # Jenkins war. If you are not using an actual Jenkins mirror, you might be
@@ -65,7 +65,7 @@ default['jenkins']['master'].tap do |master|
   # war file. If you choose to override this file manually, it is highly
   # recommended that you also set the +checksum+ attribute.
   #
-  #   node.set['jenkins']['master']['source'] = 'http://fs01.example.com/jenkins.war'
+  #   node.normal['jenkins']['master']['source'] = 'http://fs01.example.com/jenkins.war'
   #
   # Warning: Setting this attribute will negate/ignore any values for +mirror+
   # and +version+.
@@ -78,7 +78,7 @@ default['jenkins']['master'].tap do |master|
   # attribute set to +nil+, no validation will be performed. If this attribute
   # is set to the wrong SHA-256 checksum, the Chef Client run will fail.
   #
-  #   node.set['jenkins']['master']['checksum'] = 'abcd1234...'
+  #   node.normal['jenkins']['master']['checksum'] = 'abcd1234...'
   #
   master['checksum'] = nil
 
@@ -86,7 +86,7 @@ default['jenkins']['master'].tap do |master|
   # The list of options to pass to the Java JVM script when using the package
   # installer. For example:
   #
-  #   node.set['jenkins']['master']['jvm_options'] = '-Xmx256m'
+  #   node.normal['jenkins']['master']['jvm_options'] = '-Xmx256m'
   #
   master['jvm_options'] = nil
 
@@ -106,7 +106,7 @@ default['jenkins']['master'].tap do |master|
   # This attribute is _cumulative_, meaning it is appended to the end of the
   # existing environment variable.
   #
-  #   node.set['jenkins']['master']['jenkins_args'] = '--argumentsRealm.roles.$ADMIN_USER=admin'
+  #   node.normal['jenkins']['master']['jenkins_args'] = '--argumentsRealm.roles.$ADMIN_USER=admin'
   #
   master['jenkins_args'] = nil
 
@@ -115,7 +115,7 @@ default['jenkins']['master'].tap do |master|
   # change this to any user on the system. Chef will automatically create the
   # user if it does not exist.
   #
-  #   node.set['jenkins']['master']['user'] = 'root'
+  #   node.normal['jenkins']['master']['user'] = 'root'
   #
   master['user'] = 'jenkins'
 
@@ -130,7 +130,7 @@ default['jenkins']['master'].tap do |master|
   # The default of `true` will ensure that **new** jenkins user accounts are
   # created in the system ID range, exisitng users will not be modified.
   #
-  #   node.set['jenkins']['master']['use_system_accounts'] = false
+  #   node.normal['jenkins']['master']['use_system_accounts'] = false
   #
   master['use_system_accounts'] = true
 
@@ -162,7 +162,7 @@ default['jenkins']['master'].tap do |master|
   # Jenkins on port 80 on a custom domain with a proxy, you will need to set
   # that attribute here:
   #
-  #   node.set['jenkins']['master']['endpoint'] = 'https://custom.domain.com/jenkins'
+  #   node.normal['jenkins']['master']['endpoint'] = 'https://custom.domain.com/jenkins'
   #
   master['endpoint'] = "http://#{node['jenkins']['master']['host']}:#{node['jenkins']['master']['port']}"
 
@@ -180,7 +180,7 @@ default['jenkins']['master'].tap do |master|
   # by the same user and group as the home directory. If you need furthor
   # customization, you should override these values in your wrapper cookbook.
   #
-  #   node.set['jenkins']['master']['log_directory'] = '/var/log/jenkins'
+  #   node.normal['jenkins']['master']['log_directory'] = '/var/log/jenkins'
   #
   master['log_directory'] = '/var/log/jenkins'
 
@@ -188,7 +188,7 @@ default['jenkins']['master'].tap do |master|
   # The timeout passed to the runit cookbook's service resource. Override the
   # default timeout of 7 seconds. This option implies verbose.
   #
-  #   node.set['jenkins']['master']['runit']['sv_timeout'] = 60
+  #   node.normal['jenkins']['master']['runit']['sv_timeout'] = 60
   #
   master['runit']['sv_timeout'] = 7
 
