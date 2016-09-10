@@ -68,6 +68,13 @@ if defined?(ChefSpec)
   end
 
   ChefSpec.define_matcher :jenkins_job
+  def build_jenkins_job(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+      :jenkins_job,
+      :build,
+      resource_name)
+  end
+
   def create_jenkins_job(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
       :jenkins_job,
