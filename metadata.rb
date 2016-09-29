@@ -9,8 +9,11 @@ version          '2.6.0'
 source_url 'https://github.com/chef-cookbooks/jenkins'
 issues_url 'https://github.com/chef-cookbooks/jenkins/issues'
 
+chef_version '>= 12' if respond_to?(:chef_version)
+
 recipe 'jenkins::master', 'Installs a Jenkins master'
 
 depends 'apt',   '>= 2.0'
 depends 'runit', '>= 1.7'
 depends 'yum',   '>= 3.0'
+depends 'yum',   '~> 3.0'
