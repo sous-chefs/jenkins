@@ -13,4 +13,4 @@ recipe 'jenkins::master', 'Installs a Jenkins master'
 
 depends 'apt',   '>= 2.0'
 depends 'runit', '~> 1.7'
-depends 'yum',   '~> 3.0'
+depends 'yum',   '>= 3.0'
