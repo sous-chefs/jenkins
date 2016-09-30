@@ -8,6 +8,10 @@ version          '2.6.0'
 
 recipe 'jenkins::master', 'Installs a Jenkins master'
 
+%w(ubuntu debian redhat centos scientific oracle amazon).each do |os|
+  supports os
+end
+
 depends 'apt',   '>= 2.0'
 depends 'runit', '>= 1.7'
 depends 'yum',   '>= 3.0'
