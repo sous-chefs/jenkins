@@ -193,6 +193,14 @@ default['jenkins']['master'].tap do |master|
   master['runit']['sv_timeout'] = 7
 
   #
+  # The limits for the Java process running the master server.
+  # Example to configure the maximum number of open file descriptors:
+  #
+  #   node.set['jenkins']['master']['ulimits'] = { 'n' => 8192 }
+  #
+  master['ulimits'] = nil
+
+  #
   # Repository URL. Default is latest
   #
   master['repository'] = case node['platform_family']
