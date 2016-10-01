@@ -6,7 +6,7 @@
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright 2013, Youscribe
-# Copyright 2014, Chef Software, Inc.
+# Copyright 2014-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
