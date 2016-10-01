@@ -37,6 +37,17 @@ describe jenkins_user_credentials('jenkins3') do
   it { should have_private_key(File.read("#{fixture_data_base_path}/test_id_rsa")) }
 end
 
+describe jenkins_user_credentials('ecdsa_nopasswd') do
+  it { should be_a_jenkins_credentials }
+  it { should have_private_key(File.read("#{fixture_data_base_path}/test_id_ecdsa")) }
+end
+
+describe jenkins_user_credentials('ecdsa_passwd') do
+  it { should be_a_jenkins_credentials }
+  it { should have_private_key(File.read("#{fixture_data_base_path}/test_id_ecdsa_with_passphrase"), 'secret') }
+  it { should have_passphrase('secret') }
+end
+
 describe jenkins_user_credentials('dollarbills') do
   it { should be_a_jenkins_credentials }
   it { should have_password('$uper$ecret') }
