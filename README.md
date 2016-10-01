@@ -17,8 +17,7 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 
 ### Cookbooks
 
-- apt
-- yum
+- compat_resource
 - runit
 
 #### Java cookbook
