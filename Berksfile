@@ -7,7 +7,7 @@ source 'https://supermarket.chef.io'
 metadata
 
 group :integration do
-  cookbook 'chef-sugar'
+  cookbook 'java'
   fixture 'authentication'
   fixture 'command'
   fixture 'credentials'

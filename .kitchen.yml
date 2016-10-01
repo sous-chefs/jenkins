@@ -23,34 +23,29 @@ provisioner:
 
 platforms:
   - name: ubuntu-14.04
-    run_list:
-      - apt::default
-      - jenkins::java
+  - name: ubuntu-16.04
+  - name: centos-6.8
   - name: centos-7.2
-    run_list:
-      - jenkins::java
 
 suites:
   #
   # Smoke suite
   #
   - name: smoke_package_latest
-    excludes: ubuntu-docker
-    run_list: jenkins_smoke::default
+    run_list: jenkins_server_wrapper::default
     attributes:
       jenkins:
         master:
           install_method: package
   - name: smoke_war_stable
-    run_list: jenkins_smoke::default
+    run_list: jenkins_server_wrapper::default
     attributes:
       jenkins:
         master:
           install_method: war
           source: http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
   - name: smoke_war_latest
-    excludes: ubuntu-docker
-    run_list: jenkins_smoke::default
+    run_list: jenkins_server_wrapper::default
     attributes:
       jenkins:
         master:

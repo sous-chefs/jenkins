@@ -1,23 +1,205 @@
 driver:
-  name: docker
-  image: phusion/baseimage:latest
-  provision_command:
-    # Enable SSHD
-    - rm -f /etc/service/sshd/down
-    - /etc/my_init.d/00_regen_ssh_host_keys.sh
-    # Install Java
-    - apt-get install -y --no-install-recommends openjdk-8-jdk
-    # Install Jenkins
-    - mkdir -p /usr/share/jenkins/
-    - useradd -d /var/lib/jenkins -m -s /bin/bash jenkins
-    - curl -fL http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war -o /usr/share/jenkins/jenkins.war
-    - mkdir -p /etc/service/jenkins
-    - echo "#!/bin/sh \n exec /sbin/setuser jenkins env HOME=/var/lib/jenkins JENKINS_HOME=/var/lib/jenkins java -jar /usr/share/jenkins/jenkins.war --httpPort=8080 --httpListenAddress=0.0.0.0" > /etc/service/jenkins/run
-    - chmod +x /etc/service/jenkins/run
+  name: dokken
+  chef_version: latest
+  privileged: true # because Docker and SystemD/Upstart
 
-  forward:
-    - 8080:8080
-  run_command: /sbin/my_init
+transport:
+  name: dokken
+
+provisioner:
+  name: dokken
+
+verifier:
+  name: inspec
 
 platforms:
-  - name: ubuntu-docker
+- name: debian-7
+  driver:
+    image: debian:7
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+      - RUN /usr/bin/apt-get install lsb-release procps -y
+
+- name: debian-8
+  driver:
+    image: debian:8
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+      - RUN /usr/bin/apt-get install lsb-release -y
+
+- name: centos-5
+  driver:
+    image: centos:5
+    platform: rhel
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - RUN yum install -y which initscripts
+
+- name: centos-6
+  driver:
+    image: centos:6
+    platform: rhel
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - RUN yum -y install which initscripts
+
+- name: centos-7
+  driver:
+    image: centos:7
+    platform: rhel
+    pid_one_command: /usr/lib/systemd/systemd
+    intermediate_instructions:
+      - RUN yum -y install lsof which systemd-sysv initscripts
+
+- name: fedora-latest
+  driver:
+    image: fedora:latest
+    pid_one_command: /usr/lib/systemd/systemd
+    intermediate_instructions:
+      - RUN dnf -y install yum which systemd-sysv initscripts
+
+- name: ubuntu-12.04
+  driver:
+    image: ubuntu-upstart:12.04
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+
+- name: ubuntu-14.04
+  driver:
+    image: ubuntu-upstart:14.04
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+
+- name: ubuntu-16.04
+  driver:
+    image: ubuntu:16.04
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+
+- name: opensuse-13.2
+  driver:
+    image: opensuse:13.2
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - RUN zypper --non-interactive install aaa_base perl-Getopt-Long-Descriptive which net-tools
+
+- name: opensuse-42.1
+  driver:
+    image: opensuse:42.1
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - RUN zypper --non-interactive install aaa_base perl-Getopt-Long-Descriptive which hostname
+
+suites:
+  #
+  # Smoke suite
+  #
+  - name: smoke_package_latest
+    run_list: jenkins_server_wrapper::default
+    attributes:
+      jenkins:
+        master:
+          install_method: package
+  - name: smoke_war_stable
+    run_list: jenkins_server_wrapper::default
+    attributes:
+      jenkins:
+        master:
+          install_method: war
+          source: http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
+  - name: smoke_war_latest
+    run_list: jenkins_server_wrapper::default
+    attributes:
+      jenkins:
+        master:
+          install_method: war
+          source: http://mirrors.jenkins-ci.org/war/latest/jenkins.war
+
+  #
+  # Authentication suites
+  #
+  - name: authentication_private_key
+    run_list: jenkins_authentication::private_key
+  - name: authentication_username_password
+    run_list: jenkins_authentication::username_password
+
+  #
+  # Command suites
+  #
+  - name: jenkins_command_execute
+    run_list: jenkins_command::execute
+
+  #
+  # Credentials suites
+  #
+  - name: jenkins_credentials_create
+    run_list: jenkins_credentials::create
+  - name: jenkins_credentials_delete
+    run_list: jenkins_credentials::delete
+
+  #
+  # Job suites
+  #
+  - name: jenkins_job_create
+    run_list:
+      - jenkins_job::create
+      - jenkins_job::create_folder
+  - name: jenkins_job_delete
+    run_list: jenkins_job::delete
+  - name: jenkins_job_disable
+    run_list: jenkins_job::disable
+  - name: jenkins_job_enable
+    run_list: jenkins_job::enable
+  - name: jenkins_job_build
+    run_list: jenkins_job::build
+
+  #
+  # Script suites
+  #
+  - name: jenkins_script
+    run_list: jenkins_script::execute
+
+  #
+  # Plugin suites
+  #
+  - name: jenkins_plugin_disable
+    run_list: jenkins_plugin::disable
+  - name: jenkins_plugin_enable
+    run_list: jenkins_plugin::enable
+  - name: jenkins_plugin_install
+    run_list: jenkins_plugin::install
+  - name: jenkins_plugin_uninstall
+    run_list: jenkins_plugin::uninstall
+
+  #
+  # Slave suites
+  #
+  - name: jenkins_slave_create
+    run_list:
+      - jenkins_slave::create_jnlp
+      - jenkins_slave::create_ssh
+  - name: jenkins_slave_delete
+    run_list:
+      - jenkins_slave::delete_jnlp
+      - jenkins_slave::delete_ssh
+  - name: jenkins_slave_connect
+    run_list: jenkins_slave::connect
+  - name: jenkins_slave_disconnect
+    run_list: jenkins_slave::disconnect
+  - name: jenkins_slave_online
+    run_list: jenkins_slave::online
+  - name: jenkins_slave_offline
+    run_list: jenkins_slave::offline
+
+  #
+  # User suites
+  #
+  - name: jenkins_user_create
+    run_list: jenkins_user::create
+  - name: jenkins_user_delete
+    run_list: jenkins_user::delete

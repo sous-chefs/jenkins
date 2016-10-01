@@ -4,7 +4,7 @@
 #
 # Author: Seth Vargo <sethvargo@chef.io>
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright 2014-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@
 # it is a minimum viable cookbook for installing Java. If you need a more
 # complex scenario, that is outside the scope of this cookbook.
 #
+
+Chef::Log.warn('The jenkins::java recipe has been deprecated. We recommend adding the Java coobook to the runlist of your jenkins node instead as it provides more tuneables')
 
 case node['platform_family']
 when 'debian'

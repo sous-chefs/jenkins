@@ -6,7 +6,7 @@
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright 2013, Youscribe
-# Copyright 2014, Chef Software, Inc.
+# Copyright 2014-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@
 
 case node['platform_family']
 when 'debian'
-  include_recipe 'apt::default'
-
   apt_repository 'jenkins' do
     uri          node['jenkins']['master']['repository']
     distribution 'binary/'
@@ -44,8 +42,6 @@ when 'debian'
     notifies :restart, 'service[jenkins]', :immediately
   end
 when 'rhel'
-  include_recipe 'yum::default'
-
   yum_repository 'jenkins-ci' do
     baseurl node['jenkins']['master']['repository']
     gpgkey  node['jenkins']['master']['repository_key']

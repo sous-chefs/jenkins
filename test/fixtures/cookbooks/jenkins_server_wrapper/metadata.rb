@@ -1,3 +1,3 @@
 name 'jenkins_server_wrapper'
-depends 'chef-sugar'
+depends 'java'
 depends 'jenkins'
