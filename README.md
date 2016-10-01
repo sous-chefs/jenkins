@@ -21,6 +21,10 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 - yum
 - runit
 
+#### Java cookbook
+
+This cookbook does not install, manage, or manipulate a JDK, as that is outside of the scope of Jenkins. The `package` installation method will automatically pull in a valid Java if one does not exist on Debian. RHEL jenkins packages do not depend on java as there are far too many options for a package to do the right thing. We recommend including the java cookbook on your system which allows for either openJDK or Oracle JDK installations.
+
 ## Attributes
 
 In order to keep the README manageable and in sync with the attributes, this cookbook documents attributes inline. The usage instructions and default values for attributes can be found in the individual attribute files.
@@ -37,12 +41,6 @@ The master recipe will create the required directory structure and install jenki
 
 - `package` - Install Jenkins from the official jenkins-ci.org packages
 - `war` - Download the latest version of the WAR file and configure it with Runit
-
-### java
-
-By default, this cookbook does not install, manage, or manipulate a JDK, as that is outside of the scope of Jenkins. The `package` installation method will automatically pull in a valid Java if one does not exist, by the nature of package installers. However, the `war` installation method will require you to install a valid Java runtime. This very simple recipe installs OpenJDK 8 on the target system. **If you need a more complex Java setup, you should use the community cookbook or write your own.** For more information and warnings, please see the inline documentation in the `jenkins::java` recipe.
-
-This pattern is not unique. [RHEL Jenkins packages do not depend on a Java](https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+RedHat+distributions), since there are so many derivatives to choose from.
 
 ## Resource/Provider
 
