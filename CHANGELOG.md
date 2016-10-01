@@ -2,6 +2,22 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 3.0.0 (2016-10-01)
+
+- apt and yum cookbook dependencies have been replaced with compat_resource
+- Base /etc/yum.conf and apt-get update are no longer provided by this cookbook. Both of these tasks were beyond the scope of this cookbook
+- The Java recipe has been deprecated. Picking the right Java JDK is a complex task that depends not only on technical issues, but licensing requirements. The Java cookbook should be included in your wrapper cookbook so you can decide between openJDK and Oracle JDK
+- The node name has been removed from all configs to make building AMIs or containers easier
+- A new attribute has been added to configure file limits for the Java process. See the attributes file for details
+- Add chef_version metadata
+- Allow using Runit 2.0 cookbook by loosening the dependencies
+- Replace node.set with node.normal to avoid deprecation warnings
+- Remove the FQDN from the jenkins-slave template
+- Add build matcher for jenkins_job
+- Require Chef 12.1 not 12.0
+- Add platform support to the metadata
+- Add basic server testing in Travis CI with kitchen-dokken. More to come!
+
 ## v2.6.0 (2016-06-14)
 
 - Clarify that this cookbook only supports Chef 12+
