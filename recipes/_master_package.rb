@@ -23,8 +23,6 @@
 
 case node['platform_family']
 when 'debian'
-  include_recipe 'apt::default'
-
   apt_repository 'jenkins' do
     uri          node['jenkins']['master']['repository']
     distribution 'binary/'
@@ -44,8 +42,6 @@ when 'debian'
     notifies :restart, 'service[jenkins]', :immediately
   end
 when 'rhel'
-  include_recipe 'yum::default'
-
   yum_repository 'jenkins-ci' do
     baseurl node['jenkins']['master']['repository']
     gpgkey  node['jenkins']['master']['repository_key']
