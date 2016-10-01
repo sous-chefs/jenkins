@@ -23,8 +23,6 @@ provisioner:
 
 platforms:
   - name: ubuntu-14.04
-    run_list:
-      - apt::default
   - name: centos-7.2
 
 suites:
