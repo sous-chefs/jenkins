@@ -43,6 +43,7 @@ end
 
 class Chef
   class Provider::JenkinsJnlpSlave < Provider::JenkinsSlave
+    use_inline_resources
     provides :jenkins_jnlp_slave
 
     def load_current_resource
@@ -50,7 +51,7 @@ class Chef
       super
     end
 
-    def action_create
+    action :create do
       super
 
       parent_remote_fs_dir_resource.run_action(:create)
@@ -71,7 +72,7 @@ class Chef
       service_resource.run_action(:restart) if slave_jar_resource.updated?
     end
 
-    def action_delete
+    action :delete do
       # Stop and remove the service
       service_resource.run_action(:disable)
 

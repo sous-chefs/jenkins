@@ -115,6 +115,8 @@ end
 
 class Chef
   class Provider::JenkinsSlave < Provider::LWRPBase
+    use_inline_resources
+
     include Jenkins::Helper
 
     provides :jenkins_slave
@@ -144,7 +146,7 @@ class Chef
       true
     end
 
-    def action_create
+    action :create do
       if current_resource.exists? && correct_config?
         Chef::Log.info("#{new_resource} exists - skipping")
       else
@@ -216,7 +218,7 @@ class Chef
       end
     end
 
-    def action_delete
+    action :delete do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.execute!('delete-node', escape(new_resource.slave_name))
@@ -226,7 +228,7 @@ class Chef
       end
     end
 
-    def action_connect
+    action :connect do
       if current_resource.exists? && current_resource.connected?
         Chef::Log.debug("#{new_resource} already connected - skipping")
       else
@@ -236,7 +238,7 @@ class Chef
       end
     end
 
-    def action_disconnect
+    action :disconnect do
       if current_resource.connected?
         converge_by("Disconnect #{new_resource}") do
           executor.execute!('disconnect-node', escape(new_resource.slave_name))
@@ -246,7 +248,7 @@ class Chef
       end
     end
 
-    def action_online
+    action :online do
       if current_resource.exists? && current_resource.online?
         Chef::Log.debug("#{new_resource} already online - skipping")
       else
@@ -256,7 +258,7 @@ class Chef
       end
     end
 
-    def action_offline
+    action :offline do
       if current_resource.online?
         converge_by("Offline #{new_resource}") do
           command_pieces = [escape(new_resource.slave_name)]

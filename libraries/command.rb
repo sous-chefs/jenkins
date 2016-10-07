@@ -42,6 +42,7 @@ end
 
 class Chef
   class Provider::JenkinsCommand < Provider::LWRPBase
+    use_inline_resources
     include Jenkins::Helper
 
     provides :jenkins_command
@@ -57,7 +58,7 @@ class Chef
       true
     end
 
-    action(:execute) do
+    action :execute do
       converge_by("Execute #{new_resource}") do
         executor.execute!(new_resource.command)
       end

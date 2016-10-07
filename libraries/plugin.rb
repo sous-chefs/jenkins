@@ -67,6 +67,7 @@ end
 
 class Chef
   class Provider::JenkinsPlugin < Provider::LWRPBase
+    use_inline_resources
     include Jenkins::Helper
 
     provides :jenkins_plugin
@@ -104,7 +105,7 @@ EOH
       true
     end
 
-    action(:install) do
+    action :install do
       # This block stores the actual command to execute, since its the same
       # for upgrades and installs.
       install_block = proc do
@@ -168,7 +169,7 @@ EOH
     # Plugins that are disabled can be re-enabled from the UI (or by removing
     # *.jpi.disabled file from the disk.)
     #
-    action(:disable) do
+    action :disable do
       unless current_resource.installed?
         raise PluginNotInstalled.new(new_resource.name, :disable)
       end
@@ -192,7 +193,7 @@ EOH
     #
     # Plugins may be disabled by re-adding the +.jpi.disabled+ plugin.
     #
-    action(:enable) do
+    action :enable do
       unless current_resource.installed?
         raise PluginNotInstalled.new(new_resource.name, :enable)
       end
@@ -224,7 +225,7 @@ EOH
     # those configurations that it didn't understand, and pretend as if it
     # didn't see such a fragment.
     #
-    action(:uninstall) do
+    action :uninstall do
       if current_resource.installed?
         converge_by("Uninstall #{new_resource}") do
           uninstall_plugin(new_resource.name)

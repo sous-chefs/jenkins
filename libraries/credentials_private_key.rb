@@ -76,6 +76,7 @@ end
 
 class Chef
   class Provider::JenkinsPrivateKeyCredentials < Provider::JenkinsUserCredentials
+    use_inline_resources
     provides :jenkins_private_key_credentials
 
     def load_current_resource
