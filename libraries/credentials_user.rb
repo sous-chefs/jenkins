@@ -29,6 +29,7 @@ end
 
 class Chef
   class Provider::JenkinsUserCredentials < Provider::JenkinsCredentials
+    use_inline_resources
     include Jenkins::Helper
 
     def load_current_resource

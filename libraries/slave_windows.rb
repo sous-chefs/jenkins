@@ -56,6 +56,7 @@ end
 
 class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJnlpSlave
+    use_inline_resources
     provides :jenkins_windows_slave, platform: %w(windows)
 
     def load_current_resource
@@ -66,7 +67,7 @@ class Chef
     #
     # @see Chef::Resource::JenkinsSlave#action_create
     #
-    def action_create
+    action :create do
       super
 
       # The following resources are created in the parent:

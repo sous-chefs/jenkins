@@ -65,6 +65,7 @@ end
 
 class Chef
   class Provider::JenkinsUser < Provider::LWRPBase
+    use_inline_resources
     include Jenkins::Helper
 
     provides :jenkins_user

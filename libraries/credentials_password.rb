@@ -39,6 +39,7 @@ end
 
 class Chef
   class Provider::JenkinsPasswordCredentials < Provider::JenkinsUserCredentials
+    use_inline_resources
     provides :jenkins_password_credentials
 
     def load_current_resource

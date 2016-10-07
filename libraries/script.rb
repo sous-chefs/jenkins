@@ -34,6 +34,7 @@ end
 
 class Chef
   class Provider::JenkinsScript < Provider::JenkinsCommand
+    use_inline_resources
     provides :jenkins_script
 
     def load_current_resource
@@ -48,7 +49,7 @@ class Chef
       true
     end
 
-    action(:execute) do
+    action :execute do
       converge_by("Execute script #{new_resource}") do
         executor.groovy!(new_resource.command)
       end
