@@ -36,7 +36,6 @@ end
 
 class Chef
   class Resource::JenkinsPrivateKeyCredentials < Resource::JenkinsUserCredentials
-    use_inline_resources
     include Jenkins::Helper
 
     resource_name :jenkins_private_key_credentials
