@@ -126,7 +126,7 @@ EOH
     # @raise [JobDoesNotExist]
     #   if the job does not exist
     #
-    action(:build) do
+    action :build do
       unless current_resource.exists?
         raise JobDoesNotExist.new(new_resource.name, :build)
       end
@@ -188,7 +188,7 @@ EOH
     # Requirements:
     #   - `config` parameter
     #
-    action(:create) do
+    action :create do
       validate_config!
 
       if current_resource.exists?
@@ -213,7 +213,7 @@ EOH
     # the job does not exist, no action will be taken. If the job does exist,
     # it will be deleted using the Jenkins CLI.
     #
-    action(:delete) do
+    action :delete do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.execute!('delete-job', escape(new_resource.name))
@@ -229,7 +229,7 @@ EOH
     # @raise [JobDoesNotExist]
     #   if the job does not exist
     #
-    action(:disable) do
+    action :disable do
       unless current_resource.exists?
         raise JobDoesNotExist.new(new_resource.name, :disable)
       end
@@ -249,7 +249,7 @@ EOH
     # @raise [JobDoesNotExist]
     #   if the job does not exist
     #
-    action(:enable) do
+    action :enable do
       unless current_resource.exists?
         raise JobDoesNotExist.new(new_resource.name, :enable)
       end

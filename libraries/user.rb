@@ -90,7 +90,7 @@ class Chef
       true
     end
 
-    action(:create) do
+    action :create do
       if current_resource.exists? &&
          current_resource.full_name == new_resource.full_name &&
          current_resource.email == new_resource.email &&
@@ -120,7 +120,7 @@ class Chef
       end
     end
 
-    action(:delete) do
+    action :delete do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.groovy! <<-EOH.gsub(/^ {12}/, '')

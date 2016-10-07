@@ -85,7 +85,7 @@ class Chef
     #
     # Create the given credentials.
     #
-    action(:create) do
+    action :create do
       if current_resource.exists? && correct_config?
         Chef::Log.info("#{new_resource} exists - skipping")
       else
@@ -123,7 +123,7 @@ class Chef
     #
     # Delete the given credentials.
     #
-    action(:delete) do
+    action :delete do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
