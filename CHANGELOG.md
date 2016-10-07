@@ -2,6 +2,13 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 3.1.0 (2016-10-07)
+
+- Fix conversion of multiline string from Ruby to Groovy
+- Check for the mailer plugin's availability
+- Support ECDSA private keys in addition to RSA keys.
+- add use_inline_resources and use action DSL helper in all providers
+
 ## 3.0.0 (2016-10-01)
 
 - apt and yum cookbook dependencies have been replaced with compat_resource
