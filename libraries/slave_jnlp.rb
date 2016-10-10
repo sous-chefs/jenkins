@@ -161,7 +161,12 @@ class Chef
     #
     def user_resource
       return @user_resource if @user_resource
-      @user_resource = Chef::Resource::User.new(new_resource.user, run_context)
+      user_resource_class = if Chef::Resource.respond_to? :resource_for_node
+                              Chef::Resource.resource_for_node(:user, node)
+                            else
+                              Chef::Resource::User
+                            end
+      @user_resource = user_resource_class.new(new_resource.user, run_context)
       @user_resource.gid(new_resource.group)
       @user_resource.comment('Jenkins slave user - Created by Chef')
       @user_resource.home(new_resource.remote_fs)
