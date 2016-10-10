@@ -229,9 +229,7 @@ class Chef
       return @service_resource if @service_resource
 
       # Ensure runit is installed on the slave.
-      recipe_eval do
-        run_context.include_recipe 'runit'
-      end
+      include_recipe 'runit'
 
       @service_resource = Chef::Resource::RunitService.new(new_resource.service_name, run_context)
       @service_resource.cookbook('jenkins')
