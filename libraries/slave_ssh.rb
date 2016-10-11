@@ -129,8 +129,6 @@ class Chef
       map
     end
 
-    private
-
     #
     # A Groovy snippet that will set the requested local Groovy variable
     # to an instance of the credentials represented by
