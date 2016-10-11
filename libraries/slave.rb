@@ -147,6 +147,10 @@ class Chef
     end
 
     action :create do
+      do_create
+    end
+
+    def do_create
       if current_resource.exists? && correct_config?
         Chef::Log.info("#{new_resource} exists - skipping")
       else
@@ -219,6 +223,10 @@ class Chef
     end
 
     action :delete do
+      do_delete
+    end
+
+    def do_delete
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.execute!('delete-node', escape(new_resource.slave_name))
@@ -272,7 +280,7 @@ class Chef
       end
     end
 
-    protected
+    private
 
     #
     # Returns a Groovy snippet that creates an instance of the slave's
@@ -301,8 +309,6 @@ class Chef
     def attribute_to_property_map
       {}
     end
-
-    private
 
     #
     # Loads the current slave into a Hash.

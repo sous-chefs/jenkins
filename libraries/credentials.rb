@@ -151,7 +151,7 @@ class Chef
       end
     end
 
-    protected
+    private
 
     #
     # Returns a Groovy snippet that creates an instance of the
