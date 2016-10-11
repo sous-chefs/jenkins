@@ -57,7 +57,7 @@ class Chef
       @current_credentials
     end
 
-    protected
+    private
 
     #
     # @see Chef::Resource::JenkinsCredentials#credentials_groovy

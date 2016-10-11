@@ -68,7 +68,7 @@ class Chef
     # @see Chef::Resource::JenkinsSlave#action_create
     #
     action :create do
-      super
+      do_create
 
       # The following resources are created in the parent:
       #
@@ -95,7 +95,7 @@ class Chef
       end
     end
 
-    protected
+    private
 
     # Embedded Resources
 

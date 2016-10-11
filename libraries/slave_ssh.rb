@@ -85,7 +85,7 @@ class Chef
       @current_resource
     end
 
-    protected
+    private
 
     #
     # @see Chef::Resource::JenkinsSlave#launcher_groovy

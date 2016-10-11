@@ -52,7 +52,7 @@ class Chef
     end
 
     action :create do
-      super
+      do_create
 
       parent_remote_fs_dir_resource.run_action(:create)
 
@@ -76,10 +76,10 @@ class Chef
       # Stop and remove the service
       service_resource.run_action(:disable)
 
-      super
+      do_delete
     end
 
-    protected
+    private
 
     #
     # @see Chef::Resource::JenkinsSlave#launcher_groovy
