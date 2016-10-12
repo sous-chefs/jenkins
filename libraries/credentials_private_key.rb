@@ -135,6 +135,7 @@ class Chef
       # Normalize the private key
       if @current_credentials && @current_credentials[:private_key]
         cc = @current_credentials[:private_key]
+        cc = @current_credentials[:private_key].to_pem unless cc.is_a?(String)
         @current_credentials[:private_key] = ecdsa_key?(cc) ? OpenSSL::PKey::EC.new(cc) : OpenSSL::PKey::RSA.new(cc)
       end
 
