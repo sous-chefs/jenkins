@@ -51,7 +51,7 @@ class Chef
     #
     def fetch_existing_credentials_groovy(groovy_variable_name)
       <<-EOH.gsub(/ ^{8}/, '')
-        #{credentials_for_username_groovy(new_resource.username, groovy_variable_name)}
+        #{credentials_for_id_groovy(new_resource.id, groovy_variable_name)}
       EOH
     end
 
