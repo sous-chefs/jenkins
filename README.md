@@ -102,88 +102,111 @@ jenkins_script 'add_authentication' do
 end
 ```
 
-### jenkins_credentials
+### jenkins\_credentials
 
-**NOTE** The use of the Jenkins credentials resource requires the Jenkins credentials plugin. This plugin began shipping with Jenkins 1.536\. On older Jenkins installations, you will need to install the credentials plugin at version 1.6 or higher to utilize this resource. On newer versions of Jenkins, this resource should work correctly.
+**NOTE** The use of the Jenkins credentials resources require the Jenkins credentials plugin.  You will need to install the credentials plugin at version 1.6 or higher to utilize this resource.
 
-- Each credential can be referenced in job by its unique ID.
-- You can set this ID when creating credential, and set the same ID in job configuration.
-- To generate a unique ID, you can use linux command `uuidgen`.
+**UPGRADE NOTE** In version `2.X.Y` of this cookbook the way credentials were handled was changed so that all credentials are referenced by their ID instead of by their name.  If you are upgrading this cookbook from 2.6.0 or earlier and have any credentials that do not have an explicit ID assigned you will need to go into the Jenkins UI, find the auto-generated UUIDs for your credentials, and add them to your cookbook resources.
 
-This resource manages Jenkins credentials, supporting the following actions:
+----
+
+This uses the Jenkins Groovy API to manage credentials and supports the following actions:
 
 ```
 :create, :delete
 ```
 
-The following type of credentials are supported:
+Both actions operate on the credential resources idempotently.  It also supports why-run mode.
 
-- **Password** - Basic username + password credentials.
-- **Private Key** - Credentials that use a username + private key (optionally protected with a passphrase).
-- **Secret Text** - Generic secret text. Requires the the `credentials-binding` plugin.
+`jenkins_credentials` is a base resource that is not used directly.  Instead there are resources for each specific type of credentials supported.
 
-The `jenkins_credentials` resource is actually the base resource for several resources that map directly back to a credentials type:
+### Common attributes
 
-- `jenkins_password_credentials`
-- `jenkins_private_key_credentials`
-- `jenkins_secret_text_credentials`
+For all credential resources you must specify a unique `id` attribute.  The resources use this ID to find the credential for future modifications, and it is an immutable resource once the resource is created within Jenkins.  This ID is also how you reference the credentials in other Groovy scripts (i.e. Pipeline code).
 
-This uses the Jenkins Groovy API to create/delete credentials. It also supports why-run mode.
+The `username` attribute (also the name attribute) corresponds to the username of the credentials on the target node.
 
-The `:create` action idempotently creates a set of Jenkins credentials on the current node. The `username` attribute (also the name attribute) corresponds to the username of the credentials on the target node. You may also specify a `description` which is useful in credential identification.
+You may also specify a `description` which is useful in credential identification.
+
+#### jenkins\_password\_credentials
+
+Basic username + password credentials.
 
 ```ruby
 # Create password credentials
 jenkins_password_credentials 'wcoyote' do
-  id 'f2361e6b-b8e0-4b2b-890b-82e85bc1a59f'
+  id          'wcoyote-password'
   description 'Wile E Coyote'
   password    'beepbeep'
 end
+```
 
+```ruby
+# Delete password credentials
+jenkins_password_credentials 'wcoyote' do
+  id     'wcoyote-password'
+  action :delete
+end
+```
+
+#### jenkins\_private\_key\_credentials
+
+Credentials that use a username + private key (optionally protected with a passphrase).
+
+```ruby
 # Create private key credentials
 jenkins_private_key_credentials 'wcoyote' do
-  id 'fa3aab48-4edc-446d-b1e2-1d89d86f4458'
+  id          'wcoyote-key'
   description 'Wile E Coyote'
   private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
 end
 
 # Private keys with a passphrase will also work
 jenkins_private_key_credentials 'wcoyote' do
+  id          'wcoyote-key'
   description 'Eile E Coyote'
   private_key "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQ..."
   passphrase  'beepbeep'
 end
-
-# Create secret text credentials
-jenkins_secret_text_credentials 'wcoyote' do
-  id '4ce6acaa-dc43-4780-819a-b454c5e874a8'
-  description 'Wile E Coyote Secret'
-  secret 'Some secret text'
-end
 ```
-
-The `:delete` action idempotently removes a set of Jenkins credentials from the system. You can use the base `jenkins_credentials` resource or any of its children to perform the deletion.
 
 ```ruby
-jenkins_credentials 'wcoyote' do
-  action :delete
-end
-
+# Delete private key
 jenkins_private_key_credentials 'wcoyote' do
-  action :delete
-end
-
-jenkins_secret_text_credentials 'wcoyote' do
+  id     'wcoyote-key'
   action :delete
 end
 ```
 
-**NOTE** Credentials in Jenkins can be created with 2 different "scopes" which determines where the credentials can be used:
+### jenkins\_secret\_text\_credentials
+
+Generic secret text. Requires the the `credentials-binding` plugin.
+
+```ruby
+# Create secret text credentials
+jenkins_secret_text_credentials 'wcoyote' do
+  id          'wcoyote-secret'
+  description 'Wile E Coyote Secret'
+  secret      'Some secret text'
+end
+```
+
+```ruby
+# Delete secret text credentials
+jenkins_secret_text_credentials 'wcoyote' do
+  id     'wcoyote-secret'
+  action :delete
+end
+```
+
+#### Scopes
+
+Credentials in Jenkins can be created with 2 different "scopes" which determines where the credentials can be used:
 
 - **GLOBAL** - This credential is available to the object on which the credential is associated and all objects that are children of that object. Typically you would use global-scoped credentials for things that are needed by jobs.
 - **SYSTEM** - This credential is only available to the object on which the credential is associated. Typically you would use system-scoped credentials for things like email auth, slave connection, etc, i.e. where the Jenkins instance itself is using the credential. Unlike the global scope, this significantly restricts where the credential can be used, thereby providing a higher degree of confidentiality to the credential.
 
-The credentials created with the `jenkins_credentials` are assigned a `GLOBAL` scope.
+The credentials created with the `jenkins_credentials` resources are assigned a `GLOBAL` scope.
 
 ### jenkins_job
 
