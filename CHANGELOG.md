@@ -2,6 +2,11 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 3.1.1 (2016-10-17)
+- Fix implicit argument passing of super Issue #524
+- Fix ECDSA check
+- include_recipe instead of using recipe_eval in slave_jnlp library
+
 ## 3.1.0 (2016-10-07)
 
 - Fix conversion of multiline string from Ruby to Groovy
