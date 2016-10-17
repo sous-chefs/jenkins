@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 4.0.0 (2016-10-17)
+- Changes how credentials are created, using the id rather than username to fix Issue #447
+
 ## 3.1.1 (2016-10-17)
 - Fix implicit argument passing of super Issue #524
 - Fix ECDSA check
