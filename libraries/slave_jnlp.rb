@@ -147,7 +147,7 @@ class Chef
     #
     def group_resource
       @group_resource ||= build_resource(:group, new_resource.group) do
-        system(node['jenkins']['master']['use_system_accounts'])
+        system(node['jenkins']['master']['use_system_accounts']) # ~FC048 this is a foodcritic bug
       end
     end
 
@@ -163,7 +163,7 @@ class Chef
         gid(new_resource.group)
         comment('Jenkins slave user - Created by Chef')
         home(new_resource.remote_fs)
-        system(node['jenkins']['master']['use_system_accounts'])
+        system(node['jenkins']['master']['use_system_accounts']) # ~FC048 this is a foodcritic bug
       end
     end
 
