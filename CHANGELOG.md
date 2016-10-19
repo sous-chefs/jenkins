@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 4.0.1 (2016-10-18)
+- Fix NotImplementedError by removing the use of the Chef::Resource::RESOURCENAME
+
 ## 4.0.0 (2016-10-17)
 - Changes how credentials are created, using the id rather than username to fix Issue #447
 
