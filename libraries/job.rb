@@ -22,7 +22,6 @@
 require 'rexml/document'
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsJob < Resource::LWRPBase

@@ -20,7 +20,6 @@
 #
 require_relative 'credentials'
 require_relative 'credentials_user'
-require_relative '_params_validate'
 
 #
 # Determine whether a key is an ECDSA key. As original functionality

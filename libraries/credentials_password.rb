@@ -21,7 +21,6 @@
 
 require_relative 'credentials'
 require_relative 'credentials_user'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsPasswordCredentials < Resource::JenkinsUserCredentials
