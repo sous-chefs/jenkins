@@ -1,4 +1,4 @@
- #
+#
 # Cookbook Name:: jenkins
 # HWRP:: ssh_slave
 #
