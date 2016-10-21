@@ -400,6 +400,9 @@ jenkins_ssh_slave 'executor' do
   host        '172.11.12.53' # or 'slave.example.org'
   user        'jenkins'
   credentials 'wcoyote'
+  launch_timeout   30
+  ssh_retries      5
+  ssh_wait_retries 60
 end
 
 # A slave's executors, usage mode and availability can also be configured

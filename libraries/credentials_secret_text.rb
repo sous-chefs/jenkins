@@ -20,7 +20,6 @@
 #
 
 require_relative 'credentials'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsSecretTextCredentials < Resource::JenkinsCredentials

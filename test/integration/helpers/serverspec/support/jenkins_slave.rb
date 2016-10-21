@@ -95,6 +95,18 @@ module Serverspec
                        end
       end
 
+      def has_launch_timeout?(launch_timeout)
+        launch_timeout == try { xml.elements['//launchTimeoutSeconds'].text.to_i }
+      end
+
+      def has_ssh_retries?(ssh_retries)
+        ssh_retries == try { xml.elements['//maxNumRetries'].text.to_i }
+      end
+
+      def has_ssh_wait_retries?(ssh_wait_retries)
+        ssh_wait_retries == try { xml.elements['//retryWaitTime'].text.to_i }
+      end
+
       ############################################
       # Offline Attributes
       ############################################

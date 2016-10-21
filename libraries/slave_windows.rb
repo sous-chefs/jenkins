@@ -19,7 +19,6 @@
 # limitations under the License.
 #
 
-require_relative '_params_validate'
 require_relative 'slave'
 require_relative 'slave_jnlp'
 
