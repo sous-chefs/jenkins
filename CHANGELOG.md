@@ -2,6 +2,11 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 4.1.0 (2016-10-25)
+
+- Add SSH retry attributes and testing to the slave_ssh resource
+- Fix Issue #205 allow user groups of runit process owner
+
 ## 4.0.1 (2016-10-18)
 - Fix NotImplementedError by removing the use of the Chef::Resource::RESOURCENAME
 
