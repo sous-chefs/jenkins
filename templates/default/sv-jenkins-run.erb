@@ -6,6 +6,7 @@
 #
 
 
+<% groups = ([node['jenkins']['master']['user']] + node['jenkins']['master']['runit']['groups']).join(':') %>
 exec 2>&1
 cd <%= node['jenkins']['master']['home'] %>
 touch jenkins.start
@@ -13,7 +14,7 @@ touch jenkins.start
 <% if limits && !limits.empty? %>
 ulimit <% limits.each { |option, value| %>-<%= option %> <%= value %> <% } %>
 <% end %>
-exec chpst -u <%= node['jenkins']['master']['user'] %> -U <%= node['jenkins']['master']['user'] %> \
+exec chpst -u <%= groups %> -U <%= groups %> \
   env HOME=<%= node['jenkins']['master']['home'] %> \
   JENKINS_HOME=<%= node['jenkins']['master']['home'] %> \
   <%= node['jenkins']['java'] %> <%= node['jenkins']['master']['jvm_options'] %> -jar jenkins.war \

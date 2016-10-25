@@ -185,6 +185,11 @@ default['jenkins']['master'].tap do |master|
   master['log_directory'] = '/var/log/jenkins'
 
   #
+  # The groups of user under which Jenkins is running. Works for runit only.
+  #
+  master['runit']['groups'] = [node['jenkins']['master']['group']]
+
+  #
   # The timeout passed to the runit cookbook's service resource. Override the
   # default timeout of 7 seconds. This option implies verbose.
   #
