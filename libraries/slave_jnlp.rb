@@ -206,13 +206,16 @@ class Chef
     # @return [Chef::Resource::RemoteFile]
     #
     def slave_jar_resource
-      slave_jar_remote_url = slave_jar_url
-      @slave_jar_resource ||= build_resource(:remote_file, slave_jar) do
-        source(slave_jar_remote_url)
-        backup(false)
-        mode('0755')
-        atomic_update(false)
-      end
+      @slave_jar_resource ||=
+        begin
+          build_resource(:remote_file, slave_jar).tap do |r|
+            # We need to use .tap() to access methods in the provider's scope.
+            r.source slave_jar_url
+            r.backup(false)
+            r.mode('0755')
+            r.atomic_update(false)
+          end
+        end
     end
 
     #
@@ -228,11 +231,12 @@ class Chef
           # Ensure runit is installed on the slave.
           include_recipe 'runit'
 
-          build_resource(:runit_service, new_resource.service_name) do
-            cookbook('jenkins')
-            run_template_name('jenkins-slave')
-            log_template_name('jenkins-slave')
-            options(
+          build_resource(:runit_service, new_resource.service_name).tap do |r|
+            # We need to use .tap() to access methods in the provider's scope.
+            r.cookbook('jenkins')
+            r.run_template_name('jenkins-slave')
+            r.log_template_name('jenkins-slave')
+            r.options(
               new_resource: new_resource,
               java_bin:    java,
               slave_jar:   slave_jar,
