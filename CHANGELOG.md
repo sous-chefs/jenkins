@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 4.1.2 (2016-11-03)
+
+- Fix undefined java method
+
 ## 4.1.1 (2016-11-02)
 
 - Fix issue #531
