@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 4.1.1 (2016-11-02)
+
+- Fix issue #531
+
 ## 4.1.0 (2016-10-25)
 
 - Add SSH retry attributes and testing to the slave_ssh resource
