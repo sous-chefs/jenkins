@@ -206,8 +206,9 @@ class Chef
     # @return [Chef::Resource::RemoteFile]
     #
     def slave_jar_resource
+      slave_jar_remote_url = slave_jar_url
       @slave_jar_resource ||= build_resource(:remote_file, slave_jar) do
-        source(slave_jar_url)
+        source(slave_jar_remote_url)
         backup(false)
         mode('0755')
         atomic_update(false)
