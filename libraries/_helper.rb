@@ -60,7 +60,6 @@ EOH
     def executor
       wait_until_ready!
       ensure_cli_present!
-      ensure_update_center_present!
 
       options = {}.tap do |h|
         h[:cli]      = cli
