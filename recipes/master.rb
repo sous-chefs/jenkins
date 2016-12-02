@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # Recipe:: master
 #
 # Author: AJ Christensen <aj@junglist.gen.nz>
@@ -9,9 +9,9 @@
 # Author: Guilhem Lettron <guilhem.lettron@youscribe.com>
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright 2010, VMWare, Inc.
-# Copyright 2013, Youscribe.
-# Copyright 2012-2016, Chef Software, Inc.
+# Copyright:: 2010-2016, VMWare, Inc.
+# Copyright:: 2013-2016, Youscribe.
+# Copyright:: 2012-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
