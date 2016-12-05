@@ -9,7 +9,7 @@ jenkins_user_data = data_bag_item('keys', 'jenkins-ssh')
 #########################################################################
 user 'jenkins-ssh-password' do
   home     '/home/jenkins-ssh-password'
-  supports manage_home: true
+  manage_home true
   password jenkins_user_data['password_md5']
 end
 
@@ -24,7 +24,7 @@ public_key  = "#{key.ssh_type} #{[key.to_blob].pack('m0')}"
 
 user 'jenkins-ssh-key' do
   home     '/home/jenkins-ssh-key'
-  supports manage_home: true
+  manage_home true
 end
 
 # disable password-based access to the account while allowing SSH access
