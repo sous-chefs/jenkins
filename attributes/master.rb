@@ -185,6 +185,14 @@ default['jenkins']['master'].tap do |master|
   master['log_directory'] = '/var/log/jenkins'
 
   #
+  # Set the max open files to a specific value.
+  # Due to http://github.com/jenkinsci/jenkins/commit/2fb288474e980d0e7ff9c4a3b768874835a3e92e
+  # reporting that Ubuntu's PAM configuration doesn't include pam_limits.so, and as a result the # of file
+  # descriptors are forced to 1024 regardless of /etc/security/limits.conf
+  #
+  master['maxopenfiles'] = 8192
+
+  #
   # The groups of user under which Jenkins is running. Works for runit only.
   #
   master['runit']['groups'] = [node['jenkins']['master']['group']]
