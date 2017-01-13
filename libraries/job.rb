@@ -134,7 +134,7 @@ EOH
         converge_by("Build #{new_resource}") do
           command_args = [
             'build',
-            escape(new_resource.name)
+            escape(new_resource.name),
           ]
 
           if new_resource.wait_for_completion
@@ -286,7 +286,7 @@ EOH
       @current_job = {
         enabled: disabled.nil? ? true : disabled.text == 'false',
         xml:     xml,
-        raw:     response
+        raw:     response,
       }
       @current_job
     end
@@ -320,7 +320,7 @@ EOH
     def validate_config!
       Chef::Log.debug "Validate #{new_resource} configuration"
 
-      if new_resource.config.nil?
+      if new_resource.config.nil? # rubocop: disable Style/GuardClause
         raise("#{new_resource} must specify a configuration file!")
       elsif !::File.exist?(new_resource.config)
         raise("#{new_resource} config `#{new_resource.config}` does not exist!")

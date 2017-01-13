@@ -12,7 +12,7 @@ module Serverspec
 
       def initialize(name, number)
         @build_name = name
-        @build_number = (number =~ /\A\d+\Z/) ? number : resolve_build_tag_to_number(number)
+        @build_number = number =~ /\A\d+\Z/ ? number : resolve_build_tag_to_number(number)
         super("#{name} ##{number}")
       end
 

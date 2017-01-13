@@ -8,7 +8,7 @@ jenkins_user_data = data_bag_item('keys', 'jenkins-ssh')
 # USER WITH PASSWORD AUTH
 #########################################################################
 user 'jenkins-ssh-password' do
-  home     '/home/jenkins-ssh-password'
+  home '/home/jenkins-ssh-password'
   manage_home true
   password jenkins_user_data['password_md5']
 end
