@@ -13,7 +13,7 @@ recipe 'jenkins::master', 'Installs a Jenkins master'
 end
 
 depends 'runit', '>= 1.7'
-depends 'compat_resource', '>= 12.14.6'
+depends 'compat_resource', '>= 12.16.3'
 
 source_url 'https://github.com/chef-cookbooks/jenkins'
 issues_url 'https://github.com/chef-cookbooks/jenkins/issues'
