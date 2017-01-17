@@ -2,6 +2,13 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 4.2.0 (2017-01-17)
+
+- updated the jenkins url and keys for redhat in the attributes
+- Remove superfluous call ensure_update_center_present to update center
+- Allow overriding of maxopenfiles with a new attribute
+- Require the latest compat_resource
+
 ## 4.1.2 (2016-11-03)
 
 - Fix undefined java method
