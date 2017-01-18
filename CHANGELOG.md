@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 4.2.1 (2017-01-18)
+
+- Fix the repo URL for RHEL based systems.
+
 ## 4.2.0 (2017-01-17)
 
 - updated the jenkins url and keys for redhat in the attributes
