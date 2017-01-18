@@ -218,7 +218,7 @@ default['jenkins']['master'].tap do |master|
   #
   master['repository'] = case node['platform_family']
                          when 'debian' then 'http://pkg.jenkins-ci.org/debian'
-                         when 'rhel' then 'https://pkg.jenkins.io/redhat/jenkins.repo'
+                         when 'rhel' then 'https://pkg.jenkins.io/redhat'
                          end
 
   #
