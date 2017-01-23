@@ -19,7 +19,7 @@ provisioner:
       master:
         host: localhost
         install_method: war
-        mirror: http://mirrors.jenkins-ci.org
+        mirror: https://updates.jenkins.io
 
 platforms:
   - name: ubuntu-14.04
@@ -43,14 +43,14 @@ suites:
       jenkins:
         master:
           install_method: war
-          source: http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
+          source: https://updates.jenkins.io/stable/latest/jenkins.war
   - name: smoke_war_latest
     run_list: jenkins_server_wrapper::default
     attributes:
       jenkins:
         master:
           install_method: war
-          source: http://mirrors.jenkins-ci.org/war/latest/jenkins.war
+          source: https://updates.jenkins.io/latest/jenkins.war
 
   #
   # Authentication suites

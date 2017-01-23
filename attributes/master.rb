@@ -55,7 +55,7 @@ default['jenkins']['master'].tap do |master|
   # more interested in the +source+ attribute, which accepts the full path
   # to the war file for downloading.
   #
-  master['mirror'] = 'http://mirrors.jenkins-ci.org'
+  master['mirror'] = 'https://updates.jenkins.io'
 
   #
   # The full URL to the Jenkins WAR file on the remote mirror. This attribute is
@@ -70,7 +70,7 @@ default['jenkins']['master'].tap do |master|
   # Warning: Setting this attribute will negate/ignore any values for +mirror+
   # and +version+.
   #
-  master['source'] = "#{node['jenkins']['master']['mirror']}/war/#{node['jenkins']['master']['version'] || 'latest'}/jenkins.war"
+  master['source'] = "#{node['jenkins']['master']['mirror']}/#{node['jenkins']['master']['version'] || 'current'}/latest/jenkins.war"
 
   #
   # The checksum of the war file. This is use to verify that the remote war file
@@ -217,7 +217,7 @@ default['jenkins']['master'].tap do |master|
   # Repository URL. Default is latest
   #
   master['repository'] = case node['platform_family']
-                         when 'debian' then 'http://pkg.jenkins-ci.org/debian'
+                         when 'debian' then 'https://pkg.jenkins.io/debian'
                          when 'rhel' then 'https://pkg.jenkins.io/redhat'
                          end
 
@@ -225,7 +225,7 @@ default['jenkins']['master'].tap do |master|
   # Repository key. Default is latest
   #
   master['repository_key'] = case node['platform_family']
-                             when 'debian' then 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key'
+                             when 'debian' then 'https://pkg.jenkins.io/debian/jenkins.io.key'
                              when 'rhel' then 'https://pkg.jenkins.io/redhat/jenkins.io.key'
                              end
 
