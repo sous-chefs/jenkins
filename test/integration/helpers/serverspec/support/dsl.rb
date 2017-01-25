@@ -29,6 +29,14 @@ module RSpec
       def jenkins_user_credentials(username)
         Serverspec::Type::JenkinsUserCredentials.new(username)
       end
+
+      def jenkins_sauce_ondemand_credentials(username)
+        Serverspec::Type::JenkinsSauceOndemandCredentials.new(username)
+      end
+
+      def jenkins_blazemeter_credentials(name)
+        Serverspec::Type::JenkinsBlazemeterCredentials  .new(name)
+      end
     end
   end
 end

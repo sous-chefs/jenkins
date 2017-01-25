@@ -69,3 +69,27 @@ end
 jenkins_secret_text_credentials 'dollarbills_secret' do
   secret '$uper$ecret'
 end
+
+# Plugin required for Sauce OnDemand credentials
+jenkins_plugin 'sauce-ondemand' do
+  install_deps true
+  notifies :restart, 'service[jenkins]', :immediately
+end
+
+# Test creating Sauce OnDemand credentials
+jenkins_sauce_ondemand_credentials 'Sauce OnDemand test credentials' do
+  id          '855864a9-e1ea-4ee1-b769-e159681cb893'
+  description 'Sauce OnDemand credentials description'
+  api_key     'Sauce OnDemand test credentials'
+end
+
+# Plugin required for BlazeMeter credentials
+jenkins_plugin 'BlazeMeterJenkinsPlugin' do
+  install_deps true
+  notifies :restart, 'service[jenkins]', :immediately
+end
+
+# Test creating BlazeMeter credentials
+jenkins_blazemeter_credentials 'BlazeMeter credentials description' do
+  api_key     'BlazeMeter test credentials'
+end

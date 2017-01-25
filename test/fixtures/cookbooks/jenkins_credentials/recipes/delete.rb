@@ -34,3 +34,11 @@ end
 jenkins_secret_text_credentials 'dollarbills_secret' do
   action :delete
 end
+
+jenkins_sauce_ondemand_credentials 'Sauce OnDemand test credentials' do
+  action :delete
+end
+
+jenkins_blazemeter_credentials 'BlazeMeter credentials description' do
+  action :delete
+end

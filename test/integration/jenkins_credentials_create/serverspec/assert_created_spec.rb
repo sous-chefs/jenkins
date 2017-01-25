@@ -53,7 +53,14 @@ describe jenkins_user_credentials('dollarbills') do
   it { should have_password('$uper$ecret') }
 end
 
-describe jenkins_secret_text_credentials('dollarbills_secret') do
+describe jenkins_sauce_ondemand_credentials('Sauce OnDemand test credentials') do
   it { should be_a_jenkins_credentials }
-  it { should have_secret('$uper$ecret') }
+  it { should have_id('855864a9-e1ea-4ee1-b769-e159681cb893') }
+  it { should have_description('Sauce OnDemand credentials description') }
+  it { should have_secret('Sauce OnDemand test credentials') }
+end
+
+describe jenkins_blazemeter_credentials('BlazeMeter credentials description') do
+  it { should be_a_jenkins_credentials }
+  it { should have_secret('BlazeMeter test credentials') }
 end
