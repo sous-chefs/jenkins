@@ -64,6 +64,7 @@ end
 
 class Chef
   class Provider::JenkinsUser < Provider::LWRPBase
+    provides :jenkins_user
     use_inline_resources
     include Jenkins::Helper
 
@@ -182,8 +183,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_user,
-  provider: Chef::Provider::JenkinsUser
-)

@@ -66,6 +66,7 @@ end
 
 class Chef
   class Provider::JenkinsPlugin < Provider::LWRPBase
+    provides :jenkins_plugin
     use_inline_resources
     include Jenkins::Helper
 
@@ -439,8 +440,3 @@ EOH
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_plugin,
-  provider: Chef::Provider::JenkinsPlugin
-)
