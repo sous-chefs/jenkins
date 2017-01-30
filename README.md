@@ -364,6 +364,8 @@ end
 
 ### jenkins_slave
 
+**NOTE** The use of the Jenkins user resource requires the Jenkins SSH credentials plugin. This plugin is not shipped by default in jenkins 2.x.
+
 This resource manages Jenkins slaves, supporting the following actions:
 
 ```
@@ -504,6 +506,8 @@ end
 
 ### jenkins_user
 
+**NOTE** The use of the Jenkins user resource requires the Jenkins mailer plugin. This plugin is not shipped by default in jenkins 2.x.
+
 This resource manages Jenkins users, supporting the following actions:
 
 ```
@@ -585,6 +589,16 @@ If (and **only if**) you have your Jenkins instance configured to use the PAM (U
 node.run_state[:jenkins_username]
 node.run_state[:jenkins_password]
 ```
+
+### Jenkins 2
+
+Jenkins 2 enables an install wizard by default. To make sure you can manipulate the jenkins instance, you need to disable the wizard. You can do this by setting an attribute:
+
+```ruby
+default['jenkins']['master']['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
+```
+
+This is done by default, but must be kept when overriding the jvm_options!
 
 ### Proxies
 

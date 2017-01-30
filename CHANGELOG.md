@@ -2,6 +2,14 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
+- Add support for 2.x ([daften](https://github.com/daften))
+- Remove tests for (soon to be) EOL and unsupported platforms
+- Use `dpkg_autostart` to prevent service from starting post install
+- Updates/fixes for kitchen configuration
+- Fix update-center.json URL
+
 ## 4.2.1 (2017-01-18)
 
 - Fix the repo URL for RHEL based systems.

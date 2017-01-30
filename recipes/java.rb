@@ -37,7 +37,11 @@ Chef::Log.warn('The jenkins::java recipe has been deprecated. We recommend addin
 
 case node['platform_family']
 when 'debian'
-  package 'openjdk-8-jdk'
+  if node['platform'] == 'ubuntu' && Chef::VersionConstraint.new('>= 15.10').include?(node['platform_version'])
+    package 'openjdk-8-jdk'
+  else
+    package 'openjdk-7-jdk'
+  end
 when 'rhel'
   package 'java-1.8.0-openjdk'
 else
