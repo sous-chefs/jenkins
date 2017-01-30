@@ -23,6 +23,8 @@
 
 case node['platform_family']
 when 'debian'
+  package 'apt-transport-https'
+
   apt_repository 'jenkins' do
     uri          node['jenkins']['master']['repository']
     distribution 'binary/'
@@ -30,6 +32,10 @@ when 'debian'
     unless node['jenkins']['master']['repository_keyserver'].nil?
       keyserver    node['jenkins']['master']['repository_keyserver']
     end
+  end
+
+  dpkg_autostart 'jenkins' do
+    allow false
   end
 
   package 'jenkins' do
