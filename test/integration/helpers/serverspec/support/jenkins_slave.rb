@@ -45,14 +45,14 @@ module Serverspec
       end
 
       def has_usage_mode?(mode)
-        mode.casecmp(try { xml.elements['//mode'].text }.downcase).zero?
+        mode.casecmp(try { xml.elements['//mode'].text }.downcase) == 0
       end
 
       def has_availability?(availability)
         # returns something like `hudson.slaves.RetentionStrategy$Always`
         retention_class = try { xml.elements['//retentionStrategy'].attributes['class'] }
         type = retention_class.split('$').last
-        availability.casecmp(type.downcase).zero?
+        availability.casecmp(type.downcase) == 0
       end
 
       def has_in_demand_delay?(in_demand_delay)
