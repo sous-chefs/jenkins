@@ -24,7 +24,7 @@ namespace :style do
         progress: true,
       }
     end
-  rescue LoadError
+  rescue LoadError => e
     puts ">>> Gem load error: #{e}, omitting style:chef" unless ENV['CI']
   end
 end
@@ -49,7 +49,7 @@ namespace :integration do
 
     desc 'Run kitchen integration tests'
     Kitchen::RakeTasks.new
-  rescue StandardError => e
+  rescue LoadError, StandardError => e
     puts ">>> Kitchen error: #{e}, omitting #{task.name}" unless ENV['CI']
   end
 end
