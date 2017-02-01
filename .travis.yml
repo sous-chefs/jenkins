@@ -41,5 +41,5 @@ matrix:
       - /opt/chefdk/embedded/bin/cookstyle --version
       - /opt/chefdk/embedded/bin/foodcritic --version
     - script:
-      - /opt/chefdk/bin/chef exec rake
+      - NOEXEC_DISABLE=1 /opt/chefdk/bin/chef exec rake
       env: UNIT_AND_LINT=1
