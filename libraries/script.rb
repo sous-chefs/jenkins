@@ -25,6 +25,17 @@ class Chef
   class Resource::JenkinsScript < Resource::JenkinsCommand
     resource_name :jenkins_script
 
+    # Chef attributes
+    identity_attr :name
+
+    attribute :groovy_path,
+      kind_of: String,
+      default: nil
+    attribute :name,
+      kind_of: String,
+      name_attribute: true,
+      required: false
+
     # Actions
     actions :execute
     default_action :execute
@@ -37,7 +48,13 @@ class Chef
     provides :jenkins_script
 
     def load_current_resource
-      @current_resource ||= Resource::JenkinsScript.new(new_resource.command)
+      if new_resource.groovy_path
+        @current_resource ||= Resource::JenkinsScript.new(new_resource.name)
+        @current_resource.name(new_resource.name)
+        @current_resource.groovy_path(new_resource.groovy_path)
+      else
+        @current_resource ||= Resource::JenkinsScript.new(new_resource.command)
+      end
       super
     end
 
@@ -50,7 +67,11 @@ class Chef
 
     action :execute do
       converge_by("Execute script #{new_resource}") do
-        executor.groovy!(new_resource.command)
+        if new_resource.groovy_path
+          executor.groovy_from_file!(new_resource.groovy_path)
+        else
+          executor.groovy!(new_resource.command)
+        end
       end
     end
   end
