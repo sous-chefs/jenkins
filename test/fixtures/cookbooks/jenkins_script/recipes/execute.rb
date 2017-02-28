@@ -18,3 +18,31 @@ jenkins_script 'create user' do
     user.save()
   EOH
 end
+
+users = [
+  {
+    "short_name" => "badger",
+    "full_name" => "Badger Badger",
+    "email" => "badger@chef.io"
+  },
+  {
+    "short_name" => "foo",
+    "full_name" => "Foo Foo",
+    "email" => "foo@chef.io"
+  }
+]
+
+template ::File.join(Chef::Config[:file_cache_path], 'create_jenkins_user' + '.groovy') do
+  source "create_jenkins_user.groovy.erb"
+  mode '0644'
+  owner 'jenkins'
+  group 'jenkins'
+  variables(
+    users: users
+  )
+  notifies :execute, "jenkins_script[create_jenkins_user]", :immediately
+end
+
+jenkins_script 'create_jenkins_user' do
+  groovy_path ::File.join(Chef::Config[:file_cache_path], 'create_jenkins_user' + '.groovy')
+end
