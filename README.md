@@ -102,6 +102,23 @@ jenkins_script 'add_authentication' do
 end
 ```
 
+```ruby
+template ::File.join(Chef::Config[:file_cache_path], 'create_jenkins_user' + '.groovy') do
+  source "create_jenkins_user.groovy.erb"
+  mode '0644'
+  owner 'jenkins'
+  group 'jenkins'
+  variables(
+    users: users
+  )
+  notifies :execute, "jenkins_script[create_jenkins_user]", :immediately
+end
+
+jenkins_script 'create_jenkins_user' do
+  groovy_path ::File.join(Chef::Config[:file_cache_path], 'create_jenkins_user' + '.groovy')
+end
+```
+
 ### jenkins\_credentials
 
 **NOTES** 
