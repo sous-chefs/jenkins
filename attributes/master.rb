@@ -136,7 +136,7 @@ default['jenkins']['master'].tap do |master|
   #
   # Jenkins user/group should be created as `system` accounts for `war` install.
   # The default of `true` will ensure that **new** jenkins user accounts are
-  # created in the system ID range, exisitng users will not be modified.
+  # created in the system ID range, existing users will not be modified.
   #
   #   node.normal['jenkins']['master']['use_system_accounts'] = false
   #
