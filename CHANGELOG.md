@@ -2,13 +2,16 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
-## Unreleased
+## [5.0.0](https://github.com/chef-cookbooks/jenkins/tree/5.0.0) (2017-03-08)
+[Full Changelog](https://github.com/chef-cookbooks/jenkins/compare/v4.2.1...5.0.0)
 
+**Improvements**
 - Add support for 2.x ([daften](https://github.com/daften))
-- Remove tests for (soon to be) EOL and unsupported platforms
+- Change default to stable, adding channel toggle [\#575](https://github.com/chef-cookbooks/jenkins/pull/575) ([cheeseplus](https://github.com/cheeseplus))
 - Use `dpkg_autostart` to prevent service from starting post install
-- Updates/fixes for kitchen configuration
 - Fix update-center.json URL
+- Fix Jenkins home dir creation on Ubuntu for package installs [\#576](https://github.com/chef-cookbooks/jenkins/pull/576) ([cheeseplus](https://github.com/cheeseplus))
+- Lots of testing and CI fixes
 
 ## 4.2.1 (2017-01-18)
 
