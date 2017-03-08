@@ -37,35 +37,32 @@ when 'debian'
   dpkg_autostart 'jenkins' do
     allow false
   end
-
-  package 'jenkins' do
-    version node['jenkins']['master']['version']
+when 'rhel'
+  yum_repository 'jenkins-ci' do
+    baseurl node['jenkins']['master']['repository']
+    gpgkey  node['jenkins']['master']['repository_key']
   end
+end
 
+package 'jenkins' do
+  version node['jenkins']['master']['version']
+end
+
+directory node['jenkins']['master']['home'] do
+  owner     node['jenkins']['master']['user']
+  group     node['jenkins']['master']['group']
+  mode      '0755'
+  recursive true
+end
+
+case node['platform_family']
+when 'debian'
   template '/etc/default/jenkins' do
     source   'jenkins-config-debian.erb'
     mode     '0644'
     notifies :restart, 'service[jenkins]', :immediately
   end
 when 'rhel'
-  yum_repository 'jenkins-ci' do
-    baseurl node['jenkins']['master']['repository']
-    gpgkey  node['jenkins']['master']['repository_key']
-  end
-
-  package 'jenkins' do
-    version node['jenkins']['master']['version']
-  end
-
-  # The package install creates the Jenkins user so now is the time to set the home
-  # directory permissions.
-  directory node['jenkins']['master']['home'] do
-    owner     node['jenkins']['master']['user']
-    group     node['jenkins']['master']['group']
-    mode      '0755'
-    recursive true
-  end
-
   template '/etc/sysconfig/jenkins' do
     source   'jenkins-config-rhel.erb'
     mode     '0644'
