@@ -45,6 +45,12 @@ default['jenkins']['master'].tap do |master|
   master['version'] = nil
 
   #
+  # The "channel" to use, default is stable
+  # Alternatively: "latest"
+  #
+  master['channel'] = 'stable'
+
+  #
   # The mirror to donload the Jenkins war file. This attribute is only used
   # in the "war" installation method.
   #
@@ -70,7 +76,9 @@ default['jenkins']['master'].tap do |master|
   # Warning: Setting this attribute will negate/ignore any values for +mirror+
   # and +version+.
   #
-  master['source'] = "#{node['jenkins']['master']['mirror']}/#{node['jenkins']['master']['version'] || 'current'}/latest/jenkins.war"
+  master['source'] = "#{node['jenkins']['master']['mirror']}/"\
+    "#{node['jenkins']['master']['version'] || node['jenkins']['master']['channel']}/"\
+    'latest/jenkins.war'
 
   #
   # The checksum of the war file. This is use to verify that the remote war file
@@ -214,20 +222,18 @@ default['jenkins']['master'].tap do |master|
   master['ulimits'] = nil
 
   #
-  # Repository URL. Default is latest
+  # Repository URL. Default is stable
   #
   master['repository'] = case node['platform_family']
-                         when 'debian' then 'https://pkg.jenkins.io/debian'
-                         when 'rhel' then 'https://pkg.jenkins.io/redhat'
+                         when 'debian' then 'https://pkg.jenkins.io/debian-stable'
+                         when 'rhel' then 'https://pkg.jenkins.io/redhat-stable'
+                         else ''
                          end
 
   #
-  # Repository key. Default is latest
+  # Repository key. Default is stable
   #
-  master['repository_key'] = case node['platform_family']
-                             when 'debian' then 'https://pkg.jenkins.io/debian/jenkins.io.key'
-                             when 'rhel' then 'https://pkg.jenkins.io/redhat/jenkins.io.key'
-                             end
+  master['repository_key'] = node['jenkins']['master']['repository'] + '/jenkins.io.key'
 
   #
   # Keyserver to use. Disabled by default

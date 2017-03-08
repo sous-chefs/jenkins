@@ -448,7 +448,7 @@ EOH
     #
     def ensure_update_center_present!
       node.run_state[:jenkins_update_center_present] ||= begin # ~FC001
-        source = uri_join(node['jenkins']['master']['mirror'], 'current', 'update-center.json')
+        source = uri_join(node['jenkins']['master']['mirror'], node['jenkins']['master']['channel'], 'update-center.json')
         remote_file = Chef::Resource::RemoteFile.new(update_center_json, run_context)
         remote_file.source(source)
         remote_file.backup(false)
