@@ -227,13 +227,15 @@ default['jenkins']['master'].tap do |master|
   master['repository'] = case node['platform_family']
                          when 'debian' then 'https://pkg.jenkins.io/debian-stable'
                          when 'rhel' then 'https://pkg.jenkins.io/redhat-stable'
-                         else ''
                          end
 
   #
   # Repository key. Default is stable
   #
-  master['repository_key'] = node['jenkins']['master']['repository'] + '/jenkins.io.key'
+  master['repository_key'] = case node['platform_family']
+                             when 'debian' then 'https://pkg.jenkins.io/debian-stable/jenkins.io.key'
+                             when 'rhel' then 'https://pkg.jenkins.io/redhat-stable/jenkins.io.key'
+                             end
 
   #
   # Keyserver to use. Disabled by default
