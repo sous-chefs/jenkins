@@ -2,8 +2,8 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
-## [5.0.0](https://github.com/chef-cookbooks/jenkins/tree/5.0.0) (2017-03-08)
-[Full Changelog](https://github.com/chef-cookbooks/jenkins/compare/v4.2.1...5.0.0)
+## [5.0.0](https://github.com/chef-cookbooks/jenkins/tree/v5.0.0) (2017-03-08)
+[Full Changelog](https://github.com/chef-cookbooks/jenkins/compare/v4.2.1...v5.0.0)
 
 **Improvements**
 - Add support for 2.x ([daften](https://github.com/daften))
