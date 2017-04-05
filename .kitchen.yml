@@ -33,11 +33,18 @@ suites:
   #
   # Smoke suite
   #
-  - name: smoke_package_latest
+  - name: smoke_package_stable
     run_list: jenkins_server_wrapper::default
     attributes:
       jenkins:
         master:
+          install_method: package
+  - name: smoke_package_current
+    run_list: jenkins_server_wrapper::default
+    attributes:
+      jenkins:
+        master:
+          channel: current
           install_method: package
   - name: smoke_war_stable
     run_list: jenkins_server_wrapper::default
