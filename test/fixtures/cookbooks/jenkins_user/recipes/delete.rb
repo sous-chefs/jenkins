@@ -1,11 +1,8 @@
 include_recipe 'jenkins_server_wrapper::default'
 
-# Create a simple user
-jenkins_user 'sethvargo'
-
-# Delete an existing user
+# Create and Delete an existing user
 jenkins_user 'sethvargo' do
-  action :delete
+  action [:create, :delete]
 end
 
 # Delete a non-existent user
