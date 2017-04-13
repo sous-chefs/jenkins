@@ -92,8 +92,8 @@ class Chef
 
     action :create do
       if current_resource.exists? &&
-         current_resource.full_name == new_resource.full_name &&
-         current_resource.email == new_resource.email &&
+         (new_resource.full_name.nil? || current_resource.full_name == new_resource.full_name) &&
+         (new_resource.email.nil? || current_resource.email == new_resource.email) &&
          current_resource.public_keys == new_resource.public_keys
         Chef::Log.info("#{new_resource} exists - skipping")
       else
