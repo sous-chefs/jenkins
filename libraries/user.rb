@@ -99,6 +99,8 @@ class Chef
       else
         converge_by("Create #{new_resource}") do
           executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
+            exists = (hudson.model.User.get('#{new_resource.id}', false) != null)
+
             user = hudson.model.User.get('#{new_resource.id}')
             user.setFullName('#{new_resource.full_name}')
 
@@ -108,8 +110,10 @@ class Chef
               user.addProperty(email)
             }
 
-            password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
-            user.addProperty(password)
+            if (!exists) {
+              password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
+              user.addProperty(password)
+            }
 
             keys = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl('#{new_resource.public_keys.join('\n')}')
             user.addProperty(keys)
