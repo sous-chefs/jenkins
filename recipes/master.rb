@@ -26,6 +26,14 @@
 # limitations under the License.
 #
 
+# Create the home directory
+directory node['jenkins']['master']['home'] do
+  owner     node['jenkins']['master']['user']
+  group     node['jenkins']['master']['group']
+  mode      '0755'
+  recursive true
+end
+
 # Gracefully handle the failure for an invalid installation type
 begin
   include_recipe "jenkins::_master_#{node['jenkins']['master']['install_method']}"
