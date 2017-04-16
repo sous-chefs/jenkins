@@ -62,6 +62,7 @@ remote_file File.join(node['jenkins']['master']['home'], 'jenkins.war') do
   owner    node['jenkins']['master']['user']
   group    node['jenkins']['master']['group']
   notifies :restart, 'runit_service[jenkins]'
+  not_if { ::File.exists?("#{node['jenkins']['master']['home']}/jenkins.war") }
 end
 
 Chef::Log.warn('Here we go with the runit service')
