@@ -392,6 +392,9 @@ jenkins_jnlp_slave 'builder' do
   labels      ['builder', 'linux']
 end
 
+**NOTE** Jenkins slave process will be started using chpst, gid and uid of process will be set to jenkins, all initial jenkins supplementary groups will be removed. To add additional groups, add them as string to node['jenkins']['slave']['runit']['groups'] array, for e.g. in attributes.rb file:
+default['jenkis']['slave']['runit']['groups'] = ['apache', 'docker']
+
 # Create a slave launched via SSH
 jenkins_ssh_slave 'executor' do
   description 'Run test suites'
