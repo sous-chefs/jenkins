@@ -59,5 +59,5 @@ default['jenkins']['executor'].tap do |executor|
   #
   # CLI user to pass for ssh/https protocol
   #
-  #executor['cli_user'] = 'example_chef_user'
+  # executor['cli_user'] = 'example_chef_user'
 end
