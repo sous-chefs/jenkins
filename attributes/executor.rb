@@ -50,4 +50,14 @@ default['jenkins']['executor'].tap do |executor|
   # You can specify items such as a trust store if you need custom ca certs, for example.
   #
   executor['jvm_options'] = nil
+
+  #
+  # CLI protocol [ssh|http|remoting]
+  #
+  executor['protocol'] = 'remoting'
+
+  #
+  # CLI user to pass for ssh/https protocol
+  #
+  # executor['cli_user'] = 'example_chef_user'
 end
