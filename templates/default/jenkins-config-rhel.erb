@@ -141,3 +141,13 @@ JENKINS_HANDLER_IDLE="20"
 <% if node['jenkins']['master']['jenkins_args'] %>
 JENKINS_ARGS="$JENKINS_ARGS <%= node['jenkins']['master']['jenkins_args'] %>"
 <% end %>
+
+## Type:        string
+## Default:     ""
+## ServiceRestart: jenkins
+#
+# Supplement the PATH value for Jenkins
+#
+<% if node['jenkins']['append_path'] %>
+PATH="$PATH:<%= node['jenkins']['append_path'] %>"
+<% end %>
