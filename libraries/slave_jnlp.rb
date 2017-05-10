@@ -85,7 +85,7 @@ class Chef
     # @see http://javadoc.jenkins-ci.org/hudson/slaves/JNLPLauncher.html
     #
     def launcher_groovy
-      'launcher = new hudson.slaves.JNLPLauncher()'
+      "launcher = new hudson.slaves.JNLPLauncher(\"#{new_resource.tunnel}\", \"\")"
     end
 
     #

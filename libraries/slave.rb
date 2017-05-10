@@ -75,6 +75,9 @@ class Chef
               kind_of: String
     attribute :java_path,
               kind_of: String
+    attribute :tunnel,
+              kind_of: String,
+              default: ''
 
     attr_writer :exists
     attr_writer :connected
@@ -134,6 +137,7 @@ class Chef
         @current_resource.remote_fs(current_slave[:remote_fs])
         @current_resource.executors(current_slave[:executors])
         @current_resource.labels(current_slave[:labels])
+        @current_resource.tunnel(current_slave[:tunnel])
       end
 
       @current_resource
@@ -290,7 +294,7 @@ class Chef
     # @return [String]
     #
     def launcher_groovy
-      'launcher = new hudson.slaves.JNLPLauncher()'
+      "launcher = new hudson.slaves.JNLPLauncher(\"#{new_resource.tunnel}\", \"\")"
     end
 
     #
@@ -349,7 +353,8 @@ class Chef
           labels:slave.labelString.split().sort(),
           environment:slave_environment,
           connected:(slave.computer.connectTime > 0),
-          online:slave.computer.online
+          online:slave.computer.online,
+          tunnel:slave.launcher.tunnel
         ]
 
         // Determine retention strategy
@@ -395,6 +400,7 @@ class Chef
         labels:       new_resource.labels.sort,
         availability: new_resource.availability,
         environment:  new_resource.environment,
+        tunnel:       new_resource.tunnel,
       }
 
       if new_resource.availability.to_s == 'demand'
