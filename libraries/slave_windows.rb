@@ -50,6 +50,12 @@ class Chef
     attribute :pre_run_cmds,
               kind_of: Array,
               default: []
+    attribute :bat_template_cookbook,
+              kind_of: String,
+              default: 'jenkins'
+    attribute :bat_template_variables,
+              kind_of: Hash,
+              default: {}
   end
 end
 
@@ -200,16 +206,16 @@ class Chef
       slave_bat = ::File.join(new_resource.remote_fs, 'jenkins-slave.bat')
 
       @slave_bat_resource = Chef::Resource::Template.new(slave_bat, run_context)
-      @slave_bat_resource.cookbook('jenkins')
+      @slave_bat_resource.cookbook(new_resource.bat_template_cookbook)
       @slave_bat_resource.source('jenkins-slave.bat.erb')
-      @slave_bat_resource.variables(
+      @slave_bat_resource.variables({
         pre_run_cmds:  new_resource.pre_run_cmds,
         new_resource:  new_resource,
         java_bin:      java,
         slave_jar:     slave_jar,
         jnlp_url:      jnlp_url,
         jnlp_secret:   jnlp_secret
-      )
+      }.merge(new_resource.bat_template_variables))
       @slave_bat_resource
     end
 
