@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 5.0.1 (2017-05-01)
+
+- Add -remoting option that is required due to [Jenkins issue](https://jenkins.io/blog/2017/04/26/security-advisory/). Attribute `['jenkins']['executor']['protocol']` has been added to allow for using the deprecated remoting option (default) or ssh/http in which attribute `['jenkins']['executor']['cli_user']` needs to be assigned.
+
 ## [5.0.0](https://github.com/chef-cookbooks/jenkins/tree/v5.0.0) (2017-03-08)
 [Full Changelog](https://github.com/chef-cookbooks/jenkins/compare/v4.2.1...v5.0.0)
 
