@@ -20,4 +20,8 @@ exec chpst -u <%= groups %> -U <%= groups %> \
   <%= node['jenkins']['java'] %> <%= node['jenkins']['master']['jvm_options'] %> -jar jenkins.war \
   --httpPort=<%= node['jenkins']['master']['port'] %> \
   --httpListenAddress=<%= node['jenkins']['master']['listen_address'] %> \
+<% if node['jenkins']['master']['https_port'] && node['jenkins']['master']['pem_file'] && node['jenkins']['master']['key_file'] %>
+  --httpsCertificate=<%= node['jenkins']['master']['pem_file'] %> --httpsPrivateKey=<%= node['jenkins']['master']['key_file'] %>  --httpsPort=<%= node['jenkins']['master']['https_port'] %> \
+<% end %>
   <%= node['jenkins']['master']['jenkins_args'] %>
+
