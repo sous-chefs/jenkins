@@ -63,11 +63,8 @@ class Chef
       super
     end
 
-    #
-    # @see Chef::Resource::JenkinsSlave#action_create
-    #
-    action :create do
-      do_create
+    def do_create
+      super
 
       # The following resources are created in the parent:
       #

@@ -50,8 +50,8 @@ class Chef
       super
     end
 
-    action :create do
-      do_create
+    def do_create
+      super
 
       parent_remote_fs_dir_resource.run_action(:create)
 
