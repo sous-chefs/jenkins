@@ -107,5 +107,11 @@ module Serverspec
         @xml = nil
       end
     end
+
+    class JenkinsSauceOndemandCredentials < JenkinsUserCredentials
+    end
+
+    class JenkinsBlazemeterCredentials < JenkinsCredentials
+    end
   end
 end

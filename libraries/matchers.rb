@@ -67,6 +67,36 @@ if defined?(ChefSpec)
       resource_name)
   end
 
+  ChefSpec.define_matcher :jenkins_sauce_ondemand_credentials
+  def create_jenkins_sauce_ondemand_credentials(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+        :jenkins_sauce_ondemand_credentials,
+        :create,
+        resource_name)
+  end
+
+  def delete_jenkins_sauce_ondemand_credentials(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+        :jenkins_sauce_ondemand_credentials,
+        :delete,
+        resource_name)
+  end
+
+  ChefSpec.define_matcher :jenkins_blazemeter_credentials
+  def create_jenkins_blazemeter_credentials(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+        :jenkins_blazemeter_credentials,
+        :create,
+        resource_name)
+  end
+
+  def delete_jenkins_blazemeter_credentials(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(
+        :jenkins_blazemeter_credentials,
+        :delete,
+        resource_name)
+  end
+
   ChefSpec.define_matcher :jenkins_job
   def build_jenkins_job(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(
