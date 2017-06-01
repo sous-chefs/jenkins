@@ -98,7 +98,7 @@ module Jenkins
         # These types of exceptions are commonly thrown the first time a Chef run
         # enables authentication on the Jenkins master. This should also fix some
         # cases of JENKINS-22346.
-        if ((exitstatus == 255) && (stderr =~ /^Authentication failed\. No private key accepted\.$/)) ||
+        if ((exitstatus == 255) && (stderr =~ /.*?Authentication failed\. No private key accepted\.$/)) ||
            ((exitstatus == 255) && (stderr =~ /^java\.io\.EOFException/)) ||
            ((exitstatus == 1) && (stderr =~ /^Exception in thread "main" java\.io\.EOFException/))
           command.reject! { |c| c =~ /-i/ }
