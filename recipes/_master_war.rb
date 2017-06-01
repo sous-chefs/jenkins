@@ -28,12 +28,14 @@
 user node['jenkins']['master']['user'] do
   home node['jenkins']['master']['home']
   system node['jenkins']['master']['use_system_accounts'] # ~FC048
+  if { node['jenkins']['master']['create_user'] }
 end
 
 # Create the Jenkins group
 group node['jenkins']['master']['group'] do
   members node['jenkins']['master']['user']
   system node['jenkins']['master']['use_system_accounts'] # ~FC048
+  if { node['jenkins']['master']['create_user'] }
 end
 
 # Create the home directory
