@@ -18,7 +18,6 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 ### Cookbooks
 
 - compat_resource
-- runit
 
 #### Java cookbook
 
@@ -39,7 +38,7 @@ Documentation and examples are provided inline using YARD. The tests and fixture
 The master recipe will create the required directory structure and install jenkins. There are two installation methods, controlled by the `node['jenkins']['master']['install_method']` attribute:
 
 - `package` - Install Jenkins from the official jenkins-ci.org packages
-- `war` - Download the latest version of the WAR file and configure it with Runit
+- `war` - Download the latest version of the WAR file
 
 ## Resource/Provider
 
@@ -324,7 +323,7 @@ War installation method:
 
 ```ruby
 jenkins_plugin 'a_complicated_plugin' do
-  notifies :restart, 'runit_service[jenkins]', :immediately
+  notifies :restart, 'service[jenkins]', :immediately
 end
 ```
 
