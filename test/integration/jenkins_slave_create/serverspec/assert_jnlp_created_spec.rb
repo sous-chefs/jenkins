@@ -27,7 +27,7 @@ describe 'JNLP Slave', if: !docker? do
   end
 
   describe service('jenkins-slave-builder') do
-    it { should be_running.under('runit') }
+    it { should be_running }
   end
 
   #
@@ -60,7 +60,7 @@ describe 'JNLP Slave', if: !docker? do
   end
 
   describe service('jenkins-slave-smoke') do
-    it { should be_running.under('runit') }
+    it { should be_running }
   end
 
   #
@@ -90,6 +90,6 @@ describe 'JNLP Slave', if: !docker? do
   end
 
   describe service('jenkins-slave-executor') do
-    it { should be_running.under('runit') }
+    it { should be_running }
   end
 end

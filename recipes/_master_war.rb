@@ -7,6 +7,7 @@
 # Author: Fletcher Nichol <fnichol@nichol.ca>
 # Author: Seth Chisamore <schisamo@chef.io>
 # Author: Seth Vargo <sethvargo@gmail.com>
+# Author: Drew Budwin <dbudwin@foxguardsolutions.com>
 #
 # Copyright:: 2010-2016, VMware, Inc.
 # Copyright:: 2012-2016, Chef Software, Inc.
@@ -52,21 +53,46 @@ directory node['jenkins']['master']['log_directory'] do
   recursive true
 end
 
-# Include runit to setup the service
-include_recipe 'runit::default'
-
 # Download the remote WAR file
 remote_file File.join(node['jenkins']['master']['home'], 'jenkins.war') do
   source   node['jenkins']['master']['source']
   checksum node['jenkins']['master']['checksum'] if node['jenkins']['master']['checksum']
   owner    node['jenkins']['master']['user']
   group    node['jenkins']['master']['group']
-  notifies :restart, 'runit_service[jenkins]'
+  notifies :restart, 'service[jenkins]'
 end
 
-Chef::Log.warn('Here we go with the runit service')
+directory "#{node['jenkins']['master']['home']}/tmp" do
+  owner     node['jenkins']['master']['user']
+  group     node['jenkins']['master']['group']
+  mode      '0755'
+  recursive true
+end
 
-# Create runit service
-runit_service 'jenkins' do
-  sv_timeout node['jenkins']['master']['runit']['sv_timeout']
+template '/lib/systemd/system/jenkins.service' do
+  source 'jenkins.service.erb'
+  owner  'root'
+  group  'root'
+  mode   '0644'
+  action :create
+end
+
+case node['platform_family']
+when 'debian'
+  template   '/etc/default/jenkins' do
+    source   'jenkins-config-debian.erb'
+    mode     '0644'
+    notifies :restart, 'service[jenkins]', :immediately
+  end
+when 'rhel'
+  template   '/etc/sysconfig/jenkins' do
+    source   'jenkins-config-rhel.erb'
+    mode     '0644'
+    notifies :restart, 'service[jenkins]', :immediately
+  end
+end
+
+service 'jenkins' do
+  supports status: true, restart: true, reload: true
+  action [:enable, :start]
 end
