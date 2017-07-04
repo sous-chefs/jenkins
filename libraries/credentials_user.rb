@@ -37,7 +37,7 @@ class Chef
     include Jenkins::Helper
 
     def load_current_resource
-      @current_resource ||= Resource::JenkinsCredentialsUser.new(new_resource.name)
+      @current_resource ||= Resource::JenkinsUserCredentials.new(new_resource.name)
 
       super
 
