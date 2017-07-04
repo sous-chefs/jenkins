@@ -2,6 +2,19 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 5.0.3 (2017-07-04)
+
+- Removed mention of Amazon Linux support from the readme. We will support this in the future, but at the moment the cookbook does not actually support Amazon Linux
+- Note that Package installs of Jenkins now require Debian 9+ and Ubuntu 16.04+ due to Jenkins 2.66 now requiring Java 8 packages to be present
+- Fix credentials_private_key to handle passphrase being nil
+- Improve idempotence of user resource in case properties are not defined in the new resource
+- Make sure plugin path has file:// appended
+- Fix some typos in credentials_user that caused failures
+- Remove foodcritic file we no longer need
+- Remove the rakefile since we have delivery local mode now
+- Remove maintainers logic and instead include a maintainers blurb in the readme
+- Speed up specs and resolve deprecations
+
 ## 5.0.2 (2017-06-14)
 
 - Fix regex for falling back to anonymous for failed authentication 
