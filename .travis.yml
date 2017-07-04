@@ -20,7 +20,6 @@ services: docker
 env:
   matrix:
   - INSTANCE=smoke-package-stable-centos-7
-  - INSTANCE=smoke-package-stable-ubuntu-1404
   - INSTANCE=smoke-package-stable-ubuntu-1604
   - INSTANCE=smoke-war-stable-centos-7
   - INSTANCE=smoke-war-stable-ubuntu-1404

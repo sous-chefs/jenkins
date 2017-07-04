@@ -8,8 +8,9 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 
 ### Platforms
 
-- Debian/Ubuntu
-- RHEL/CentOS/Scientific/Amazon/Oracle
+- Debian 7+ (Package installs require 9+ due to dependencies)
+- Ubuntu 14.04+ (Package installs require 16.04+ due to dependencies)
+- RHEL/CentOS/Scientific/Oracle 6+
 
 ### Chef
 

@@ -26,6 +26,7 @@ platforms:
   - name: centos-7.3
   - name: debian-7.11
   - name: debian-8.8
+  - name: debian-9.0
   - name: ubuntu-14.04
   - name: ubuntu-16.04
 
@@ -39,6 +40,9 @@ suites:
       jenkins:
         master:
           install_method: package
+    excludes:
+      - ubuntu-14.04
+      - debian-7.11
   - name: smoke_package_current
     run_list: jenkins_server_wrapper::default
     attributes:
@@ -46,6 +50,9 @@ suites:
         master:
           channel: current
           install_method: package
+    excludes:
+      - ubuntu-14.04
+      - debian-7.11
   - name: smoke_war_stable
     run_list: jenkins_server_wrapper::default
     attributes:
