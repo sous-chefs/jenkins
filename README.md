@@ -618,20 +618,11 @@ node.normal['jenkins']['executor']['proxy'] = '1.2.3.4:5678'
 
 Please see the [Contributing](CONTRIBUTING.md) and [Testing](TESTING.md) Guidelines.
 
-## License & Authors
+## Maintainers
 
-- Author: Seth Vargo [sethvargo@gmail.com](mailto:sethvargo@gmail.com)
-- Author: Seth Chisamore [schisamo@chef.io](mailto:schisamo@chef.io)
-- Original Author: Doug MacEachern [dougm@vmware.com](mailto:dougm@vmware.com)
-- Contributor: AJ Christensen [aj@junglist.gen.nz](mailto:aj@junglist.gen.nz)
-- Contributor: Fletcher Nichol [fnichol@nichol.ca](mailto:fnichol@nichol.ca)
-- Contributor: Roman Kamyk [rkj@go2.pl](mailto:rkj@go2.pl)
-- Contributor: Darko Fabijan [darko@renderedtext.com](mailto:darko@renderedtext.com)
+This cookbook is maintained by Chef's Community Cookbook Engineering team. Our goal is to improve cookbook quality and to aid the community in contributing to cookbooks. To learn more about our team, process, and design goals see our [team documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/COOKBOOK_TEAM.MD). To learn more about contributing to cookbooks like this see our [contributing documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/CONTRIBUTING.MD), or if you have general questions about this cookbook come chat with us in #cookbok-engineering on the [Chef Community Slack](http://community-slack.chef.io/)
 
-```text
-Copyright 2010 VMware, Inc.
-Copyright 2011 Fletcher Nichol
-Copyright 2013-2016 Chef Software, Inc.
+## License
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
