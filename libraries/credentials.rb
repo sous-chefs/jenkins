@@ -154,7 +154,7 @@ class Chef
 
     #
     # Returns a Groovy snippet that creates an instance of the
-    # credentail's implementation. The credentials instance should be
+    # credential's implementation. The credentials instance should be
     # set to a Groovy variable named `credentials`.
     #
     # @abstract
@@ -197,7 +197,7 @@ class Chef
     end
 
     #
-    # Maps a credentails's resource attribute name to the equivalent
+    # Maps a credentials's resource attribute name to the equivalent
     # property in the Groovy representation. This mapping is useful in
     # Ruby/Groovy serialization/deserialization.
     #
