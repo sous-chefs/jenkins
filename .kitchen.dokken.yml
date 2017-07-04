@@ -78,6 +78,7 @@ suites:
       jenkins:
         master:
           channel: current
+          update_center_channel: current
           install_method: package
   - name: smoke_war_stable
     run_list: jenkins_server_wrapper::default

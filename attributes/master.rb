@@ -48,7 +48,8 @@ default['jenkins']['master'].tap do |master|
   # The "channel" to use, default is stable
   # Alternatively: "current" for install method package and "latest" for install method war
   #
-  master['channel'] = 'stable'
+  master['channel']               = 'stable'
+  master['update_center_channel'] = 'stable'
 
   #
   # The mirror to download the Jenkins war file. This attribute is only used
