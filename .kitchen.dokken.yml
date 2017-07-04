@@ -1,7 +1,6 @@
 driver:
   name: dokken
   privileged: true # because Docker and SystemD/Upstart
-  chef_image: chef/chef
   chef_version: current
 
 transport:
@@ -9,11 +8,19 @@ transport:
 
 provisioner:
   name: dokken
+  deprecations_as_errors: true
 
 verifier:
   name: inspec
 
 platforms:
+- name: amazonlinux
+  driver:
+    image: amazonlinux:latest
+    pid_one_command: /sbin/init
+    intermediate_instructions:
+      - RUN yum -y install lsof which initscripts net-tools sudo wget
+
 - name: debian-7
   driver:
     image: debian:7
@@ -36,7 +43,7 @@ platforms:
     platform: rhel
     pid_one_command: /sbin/init
     intermediate_instructions:
-      - RUN yum -y install which initscripts
+      - RUN yum -y install lsof which initscripts net-tools wget net-tools
 
 - name: centos-7
   driver:
@@ -44,7 +51,7 @@ platforms:
     platform: rhel
     pid_one_command: /usr/lib/systemd/systemd
     intermediate_instructions:
-      - RUN yum -y install lsof which systemd-sysv initscripts
+      - RUN yum -y install lsof which systemd-sysv initscripts wget net-tools
 
 - name: ubuntu-14.04
   driver:
@@ -61,119 +68,3 @@ platforms:
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
       - RUN /usr/bin/apt-get install apt-transport-https lsb-release procps net-tools -y
-
-suites:
-  #
-  # Smoke suite
-  #
-  - name: smoke_package_stable
-    run_list: jenkins_server_wrapper::default
-    attributes:
-      jenkins:
-        master:
-          install_method: package
-  - name: smoke_package_current
-    run_list: jenkins_server_wrapper::default
-    attributes:
-      jenkins:
-        master:
-          channel: current
-          install_method: package
-  - name: smoke_war_stable
-    run_list: jenkins_server_wrapper::default
-    attributes:
-      jenkins:
-        master:
-          install_method: war
-          source: https://updates.jenkins.io/stable/latest/jenkins.war
-  - name: smoke_war_latest
-    run_list: jenkins_server_wrapper::default
-    attributes:
-      jenkins:
-        master:
-          install_method: war
-          source: https://updates.jenkins.io/latest/jenkins.war
-
-  #
-  # Authentication suites
-  #
-  - name: authentication_private_key
-    run_list: jenkins_authentication::private_key
-  - name: authentication_username_password
-    run_list: jenkins_authentication::username_password
-
-  #
-  # Command suites
-  #
-  - name: jenkins_command_execute
-    run_list: jenkins_command::execute
-
-  #
-  # Credentials suites
-  #
-  - name: jenkins_credentials_create
-    run_list: jenkins_credentials::create
-  - name: jenkins_credentials_delete
-    run_list: jenkins_credentials::delete
-
-  #
-  # Job suites
-  #
-  - name: jenkins_job_create
-    run_list:
-      - jenkins_job::create
-      - jenkins_job::create_folder
-  - name: jenkins_job_delete
-    run_list: jenkins_job::delete
-  - name: jenkins_job_disable
-    run_list: jenkins_job::disable
-  - name: jenkins_job_enable
-    run_list: jenkins_job::enable
-  - name: jenkins_job_build
-    run_list: jenkins_job::build
-
-  #
-  # Script suites
-  #
-  - name: jenkins_script
-    run_list: jenkins_script::execute
-
-  #
-  # Plugin suites
-  #
-  - name: jenkins_plugin_disable
-    run_list: jenkins_plugin::disable
-  - name: jenkins_plugin_enable
-    run_list: jenkins_plugin::enable
-  - name: jenkins_plugin_install
-    run_list: jenkins_plugin::install
-  - name: jenkins_plugin_uninstall
-    run_list: jenkins_plugin::uninstall
-
-  #
-  # Slave suites
-  #
-  - name: jenkins_slave_create
-    run_list:
-      - jenkins_slave::create_jnlp
-      - jenkins_slave::create_ssh
-  - name: jenkins_slave_delete
-    run_list:
-      - jenkins_slave::delete_jnlp
-      - jenkins_slave::delete_ssh
-  - name: jenkins_slave_connect
-    run_list: jenkins_slave::connect
-  - name: jenkins_slave_disconnect
-    run_list: jenkins_slave::disconnect
-  - name: jenkins_slave_online
-    run_list: jenkins_slave::online
-  - name: jenkins_slave_offline
-    run_list: jenkins_slave::offline
-
-  #
-  # User suites
-  #
-  - name: jenkins_user_create
-    run_list: jenkins_user::create
-  - name: jenkins_user_delete
-    run_list: jenkins_user::delete
