@@ -60,4 +60,11 @@ default['jenkins']['executor'].tap do |executor|
   # CLI user to pass for ssh/https protocol
   #
   # executor['cli_user'] = 'example_chef_user'
+
+  # The limits for the Java process running the slave process.
+  # Example to configure the maximum number of open file descriptors:
+  #
+  #   node.set['jenkins']['executor']['ulimits'] = { 'n' => 8192 }
+  #
+  executor['ulimits'] = nil
 end

@@ -31,8 +31,7 @@ class Chef
               kind_of: String,
               name_attribute: true
     attribute :password,
-              kind_of: String,
-              required: true
+              kind_of: String
   end
 end
 

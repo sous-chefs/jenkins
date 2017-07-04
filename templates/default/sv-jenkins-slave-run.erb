@@ -7,6 +7,10 @@
 
 exec 2>&1
 cd <%= @options[:new_resource].remote_fs %>
+<% limits = node['jenkins']['executor']['ulimits'] %>
+<% if limits && !limits.empty? %>
+ulimit <% limits.each { |option, value| %>-<%= option %> <%= value %> <% } %>
+<% end %>
 exec chpst -u <%= @options[:new_resource].user %> \
   env HOME=<%= @options[:new_resource].remote_fs %> \
   JENKINS_HOME=<%= @options[:new_resource].remote_fs %> \
