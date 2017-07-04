@@ -22,9 +22,10 @@
 require_relative 'credentials'
 
 class Chef
-  class Resource::JenkinsSecretFileCredentials < Resource::JenkinsCredentials
+  class Resource::JenkinsSecretFileCredentials < Resource::JenkinsUserCredentials
     attribute :description,
-              kind_of: String
+              kind_of: String,
+              default: lazy { |new_resource| "Credentials for #{new_resource.filename} - created by Chef" }
     attribute :filename,
               kind_of: String,
               name_attribute: true
@@ -35,9 +36,9 @@ class Chef
 end
 
 class Chef
-  class Provider::JenkinsSecretFileCredentials < Provider::JenkinsCredentials
+  class Provider::JenkinsSecretFileCredentials < Provider::JenkinsUserCredentials
     use_inline_resources
-    include Jenkins::Helper
+    provides :jenkins_secret_file_credentials
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsSecretFileCredentials.new(new_resource.name)
@@ -129,7 +130,7 @@ class Chef
       <<-EOH.gsub(/ ^{8}/, '')
         #{groovy_variable_name} = [
           id:credentials.id,
-          description:credentials.description
+          filename:credentials.filename
         ]
       EOH
     end

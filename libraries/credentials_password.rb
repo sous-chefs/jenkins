@@ -49,7 +49,7 @@ class Chef
         @current_resource.password(current_credentials[:password])
       end
 
-      @current_credentials
+      @current_resource
     end
 
     private
