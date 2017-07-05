@@ -45,6 +45,17 @@ describe 'jenkins::java' do
     end
   end
 
+  context 'on Amazon Linux 2017.03' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new(platform: 'amazon', version: '2017.03')
+                          .converge(described_recipe)
+    end
+
+    it 'installs java-1.8.0-openjdk' do
+      expect(chef_run).to install_package('java-1.8.0-openjdk')
+    end
+  end
+
   context 'on an unsupported platform' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new(platform: 'mac_os_x', version: '10.12')
