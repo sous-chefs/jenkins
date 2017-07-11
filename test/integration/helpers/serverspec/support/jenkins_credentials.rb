@@ -9,10 +9,10 @@ module Serverspec
       require 'rexml/document'
       require 'rexml/xpath'
 
-      attr_reader :username
+      attr_reader :id
 
-      def initialize(username)
-        @username = username
+      def initialize(id)
+        @id = id
         super
       end
 
@@ -22,6 +22,18 @@ module Serverspec
 
       def has_id?(id)
         id == try { xml.elements['id'].text }
+      end
+
+      protected
+
+      def xml
+        return @xml if @xml
+
+        contents = ::File.read('/var/lib/jenkins/credentials.xml')
+        doc = REXML::Document.new(contents)
+        @xml = REXML::XPath.first(doc, "//*[id/text() = '#{id}']/")
+      rescue Errno::ENOENT
+        @xml = nil
       end
 
       private
@@ -34,15 +46,12 @@ module Serverspec
     end
 
     class JenkinsUserCredentials < JenkinsCredentials
-      attr_reader :username
-
-      def initialize(username)
-        @username = username
-        super
-      end
-
       def has_description?(description)
         description == try { xml.elements['description'].text }
+      end
+
+      def has_username?(username)
+        username == try { xml.elements['username'].text }
       end
 
       # TODO: encrypt provided password and compare to Jenkins value
@@ -50,61 +59,24 @@ module Serverspec
         !(try { xml.elements['password'].text }).nil?
       end
 
-      def has_private_key?(private_key, passphrase = nil)
-        pk_in_jenkins = xml.elements['privateKeySource/privateKey'].text
-
-        if pk_in_jenkins
-          if private_key.include?('BEGIN EC PRIVATE KEY')
-            OpenSSL::PKey::EC.new(private_key, passphrase).to_der == OpenSSL::PKey::EC.new(pk_in_jenkins, passphrase).to_der
-          else
-            OpenSSL::PKey::RSA.new(private_key, passphrase).to_der == OpenSSL::PKey::RSA.new(pk_in_jenkins, passphrase).to_der
-          end
-        else
-          false
-        end
+      # http://xn--thibaud-dya.fr/jenkins_credentials.html the private
+      # key is encoded specially by Jenkins. Short of porting the
+      # decryption algorithm in Ruby, we could query Jenkins for the
+      # actual credentials, which would make the tests longer.
+      def has_private_key?(_private_key, passphrase = nil)
+        !(try { xml.elements['privateKeySource/privateKey'].text }).nil?
       end
 
       # TODO: encrypt provided passphrase and compare to Jenkins value
       def has_passphrase?(_passphrase)
         !(try { xml.elements['passphrase'].text }).nil?
       end
-
-      private
-
-      def xml
-        return @xml if @xml
-
-        contents = ::File.read('/var/lib/jenkins/credentials.xml')
-        doc = REXML::Document.new(contents)
-        @xml = REXML::XPath.first(doc, "//*[username/text() = '#{username}']/")
-      rescue Errno::ENOENT
-        @xml = nil
-      end
     end
 
     class JenkinsSecretTextCredentials < JenkinsCredentials
-      attr_reader :description
-
-      def initialize(description)
-        @description = description
-        super
-      end
-
       # TODO: encrypt provided secret and compare to Jenkins value
       def has_secret?(_secret)
         !(try { xml.elements['secret'].text }).nil?
-      end
-
-      private
-
-      def xml
-        return @xml if @xml
-
-        contents = ::File.read('/var/lib/jenkins/credentials.xml')
-        doc = REXML::Document.new(contents)
-        @xml = REXML::XPath.first(doc, "//*[description/text() = '#{description}']/")
-      rescue Errno::ENOENT
-        @xml = nil
       end
     end
   end
