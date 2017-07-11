@@ -63,7 +63,7 @@ module Serverspec
       # key is encoded specially by Jenkins. Short of porting the
       # decryption algorithm in Ruby, we could query Jenkins for the
       # actual credentials, which would make the tests longer.
-      def has_private_key?(_private_key, passphrase = nil)
+      def has_private_key?(_private_key, _passphrase = nil)
         !(try { xml.elements['privateKeySource/privateKey'].text }).nil?
       end
 
