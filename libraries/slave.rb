@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: slave
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@
 require 'json'
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsSlave < Resource::LWRPBase
@@ -115,6 +114,9 @@ end
 
 class Chef
   class Provider::JenkinsSlave < Provider::LWRPBase
+    provides :jenkins_slave
+    use_inline_resources
+
     include Jenkins::Helper
 
     provides :jenkins_slave
@@ -144,7 +146,11 @@ class Chef
       true
     end
 
-    def action_create
+    action :create do
+      do_create
+    end
+
+    def do_create
       if current_resource.exists? && correct_config?
         Chef::Log.info("#{new_resource} exists - skipping")
       else
@@ -159,7 +165,7 @@ class Chef
             availability = #{convert_to_groovy(new_resource.availability)}
             usage_mode = #{convert_to_groovy(new_resource.usage_mode)}
             env_map = #{convert_to_groovy(new_resource.environment)}
-            labels = #{convert_to_groovy(new_resource.labels.sort.join("\s"))}
+            labels = #{convert_to_groovy(new_resource.labels.sort.join(' '))}
 
             // Compute the usage mode
             if (usage_mode == 'normal') {
@@ -216,7 +222,11 @@ class Chef
       end
     end
 
-    def action_delete
+    action :delete do
+      do_delete
+    end
+
+    def do_delete
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.execute!('delete-node', escape(new_resource.slave_name))
@@ -226,7 +236,7 @@ class Chef
       end
     end
 
-    def action_connect
+    action :connect do
       if current_resource.exists? && current_resource.connected?
         Chef::Log.debug("#{new_resource} already connected - skipping")
       else
@@ -236,7 +246,7 @@ class Chef
       end
     end
 
-    def action_disconnect
+    action :disconnect do
       if current_resource.connected?
         converge_by("Disconnect #{new_resource}") do
           executor.execute!('disconnect-node', escape(new_resource.slave_name))
@@ -246,7 +256,7 @@ class Chef
       end
     end
 
-    def action_online
+    action :online do
       if current_resource.exists? && current_resource.online?
         Chef::Log.debug("#{new_resource} already online - skipping")
       else
@@ -256,7 +266,7 @@ class Chef
       end
     end
 
-    def action_offline
+    action :offline do
       if current_resource.online?
         converge_by("Offline #{new_resource}") do
           command_pieces = [escape(new_resource.slave_name)]
@@ -270,7 +280,7 @@ class Chef
       end
     end
 
-    protected
+    private
 
     #
     # Returns a Groovy snippet that creates an instance of the slave's
@@ -299,8 +309,6 @@ class Chef
     def attribute_to_property_map
       {}
     end
-
-    private
 
     #
     # Loads the current slave into a Hash.
@@ -406,8 +414,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_slave,
-  provider: Chef::Provider::JenkinsSlave,
-)

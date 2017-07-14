@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # Library:: executor
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -70,8 +70,11 @@ module Jenkins
       command_options = pieces.last.is_a?(Hash) ? pieces.pop : {}
       command = []
       command << %("#{options[:java]}")
+      command << options[:jvm_options].to_s if options[:jvm_options]
       command << %(-jar "#{options[:cli]}")
       command << %(-s #{URI.escape(options[:endpoint])}) if options[:endpoint]
+      command << %(-"#{options[:protocol]}")             if options[:protocol]
+      command << %(-user "#{options[:cli_user]}")        if options[:cli_user]
       command << %(-i "#{options[:key]}")                if options[:key]
       command << %(-p #{uri_escape(options[:proxy])})    if options[:proxy]
       command.push(pieces)
@@ -95,7 +98,7 @@ module Jenkins
         # These types of exceptions are commonly thrown the first time a Chef run
         # enables authentication on the Jenkins master. This should also fix some
         # cases of JENKINS-22346.
-        if ((exitstatus == 255) && (stderr =~ /^Authentication failed\. No private key accepted\.$/)) ||
+        if ((exitstatus == 255) && (stderr =~ /.*?Authentication failed\. No private key accepted\.$/)) ||
            ((exitstatus == 255) && (stderr =~ /^java\.io\.EOFException/)) ||
            ((exitstatus == 1) && (stderr =~ /^Exception in thread "main" java\.io\.EOFException/))
           command.reject! { |c| c =~ /-i/ }

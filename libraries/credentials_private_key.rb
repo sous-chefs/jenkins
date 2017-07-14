@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: credentials_password
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,18 @@
 #
 require_relative 'credentials'
 require_relative 'credentials_user'
-require_relative '_params_validate'
+
+#
+# Determine whether a key is an ECDSA key. As original functionality
+# assumed that exclusively RSA keys were used, not breaking this assumption
+# despite ECDSA keys being a possibility alleviates some issues with
+# backwards-compatibility.
+#
+# @param [String] key
+# @return [TrueClass, FalseClass]
+def ecdsa_key?(key)
+  key.include?('BEGIN EC PRIVATE KEY')
+end
 
 class Chef
   class Resource::JenkinsPrivateKeyCredentials < Resource::JenkinsUserCredentials
@@ -32,12 +43,8 @@ class Chef
     attribute :username,
               kind_of: String,
               name_attribute: true
-    attribute :id,
-              kind_of: String,
-              regex: UUID_REGEX, # Private Key credentials must still have a UUID based ID
-              default: lazy { SecureRandom.uuid }
     attribute :private_key,
-              kind_of: [String, OpenSSL::PKey::RSA],
+              kind_of: [String, OpenSSL::PKey::RSA, OpenSSL::PKey::EC],
               required: true
     attribute :passphrase,
               kind_of: String
@@ -50,9 +57,11 @@ class Chef
     # @param [String] arg
     # @return [String]
     #
-    def rsa_private_key
-      if private_key.is_a?(OpenSSL::PKey::RSA)
+    def pem_private_key
+      if private_key.is_a?(OpenSSL::PKey::RSA) || private_key.is_a?(OpenSSL::PKey::EC)
         private_key.to_pem
+      elsif ecdsa_key?(private_key)
+        OpenSSL::PKey::EC.new(private_key).to_pem
       else
         OpenSSL::PKey::RSA.new(private_key).to_pem
       end
@@ -62,6 +71,7 @@ end
 
 class Chef
   class Provider::JenkinsPrivateKeyCredentials < Provider::JenkinsUserCredentials
+    use_inline_resources
     provides :jenkins_private_key_credentials
 
     def load_current_resource
@@ -76,7 +86,7 @@ class Chef
       @current_resource
     end
 
-    protected
+    private
 
     #
     # @see Chef::Resource::JenkinsCredentials#credentials_groovy
@@ -87,7 +97,7 @@ class Chef
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
 
-        private_key = """#{new_resource.rsa_private_key}
+        private_key = """#{new_resource.pem_private_key}
         """
 
         credentials = new BasicSSHUserPrivateKey(
@@ -107,7 +117,7 @@ class Chef
     def attribute_to_property_map
       {
         private_key: 'credentials.privateKey',
-        passphrase: 'credentials.passphrase.plainText',
+        passphrase: 'credentials.passphrase && credentials.passphrase.plainText',
       }
     end
 
@@ -119,7 +129,9 @@ class Chef
 
       # Normalize the private key
       if @current_credentials && @current_credentials[:private_key]
-        @current_credentials[:private_key] = OpenSSL::PKey::RSA.new(@current_credentials[:private_key]).to_pem
+        cc = @current_credentials[:private_key]
+        cc = @current_credentials[:private_key].to_pem unless cc.is_a?(String)
+        @current_credentials[:private_key] = ecdsa_key?(cc) ? OpenSSL::PKey::EC.new(cc) : OpenSSL::PKey::RSA.new(cc)
       end
 
       @current_credentials

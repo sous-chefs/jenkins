@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: credentials_secret_text
 #
 # Author:: Miguel Ferreira <mferreira@schubergphilis.com>
 #
-# Copyright 2015, Schuberg Philis
+# Copyright:: 2015-2016, Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 #
 
 require_relative 'credentials'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsSecretTextCredentials < Resource::JenkinsCredentials
@@ -41,6 +40,8 @@ end
 
 class Chef
   class Provider::JenkinsSecretTextCredentials < Provider::JenkinsCredentials
+    use_inline_resources
+
     provides :jenkins_secret_text_credentials
 
     def load_current_resource
@@ -55,7 +56,7 @@ class Chef
       @current_credentials
     end
 
-    protected
+    private
 
     #
     # @see Chef::Resource::JenkinsCredentials#credentials_groovy

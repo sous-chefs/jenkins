@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: credentials_user
 #
 # Author:: Miguel Ferreira <mferreira@schubergphilis.com>
 #
-# Copyright 2015, Schuberg Philis
+# Copyright:: 2015-2016, Schuberg Philis
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,10 @@
 # limitations under the License.
 #
 
+# This is required to appease Travis-CI
+# https://travis-ci.org/chef-cookbooks/jenkins/builds/197337230
+require_relative 'credentials'
+
 class Chef
   class Resource::JenkinsUserCredentials < Resource::JenkinsCredentials
     attribute :description,
@@ -29,10 +33,11 @@ end
 
 class Chef
   class Provider::JenkinsUserCredentials < Provider::JenkinsCredentials
+    use_inline_resources
     include Jenkins::Helper
 
     def load_current_resource
-      @current_resource ||= Resource::JenkinsCredentialsUser.new(new_resource.name)
+      @current_resource ||= Resource::JenkinsUserCredentials.new(new_resource.name)
 
       super
 
@@ -43,14 +48,14 @@ class Chef
       @current_resource
     end
 
-    protected
+    private
 
     #
     # @see Chef::Resource::JenkinsCredentials#save_credentials_groovy
     #
     def fetch_existing_credentials_groovy(groovy_variable_name)
       <<-EOH.gsub(/ ^{8}/, '')
-        #{credentials_for_username_groovy(new_resource.username, groovy_variable_name)}
+        #{credentials_for_id_groovy(new_resource.id, groovy_variable_name)}
       EOH
     end
 

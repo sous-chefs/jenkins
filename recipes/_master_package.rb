@@ -1,12 +1,12 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # Recipe:: _master_package
 #
 # Author: Guilhem Lettron <guilhem.lettron@youscribe.com>
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright 2013, Youscribe
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2013-2016, Youscribe
+# Copyright:: 2014-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 case node['platform_family']
 when 'debian'
-  include_recipe 'apt::default'
+  package 'apt-transport-https'
 
   apt_repository 'jenkins' do
     uri          node['jenkins']['master']['repository']
@@ -34,36 +34,35 @@ when 'debian'
     end
   end
 
-  package 'jenkins' do
-    version node['jenkins']['master']['version']
+  dpkg_autostart 'jenkins' do
+    allow false
   end
+when 'rhel', 'amazon'
+  yum_repository 'jenkins-ci' do
+    baseurl node['jenkins']['master']['repository']
+    gpgkey  node['jenkins']['master']['repository_key']
+  end
+end
 
+package 'jenkins' do
+  version node['jenkins']['master']['version']
+end
+
+directory node['jenkins']['master']['home'] do
+  owner     node['jenkins']['master']['user']
+  group     node['jenkins']['master']['group']
+  mode      '0755'
+  recursive true
+end
+
+case node['platform_family']
+when 'debian'
   template '/etc/default/jenkins' do
     source   'jenkins-config-debian.erb'
     mode     '0644'
     notifies :restart, 'service[jenkins]', :immediately
   end
-when 'rhel'
-  include_recipe 'yum::default'
-
-  yum_repository 'jenkins-ci' do
-    baseurl node['jenkins']['master']['repository']
-    gpgkey  node['jenkins']['master']['repository_key']
-  end
-
-  package 'jenkins' do
-    version node['jenkins']['master']['version']
-  end
-
-  # The package install creates the Jenkins user so now is the time to set the home
-  # directory permissions.
-  directory node['jenkins']['master']['home'] do
-    owner     node['jenkins']['master']['user']
-    group     node['jenkins']['master']['group']
-    mode      '0755'
-    recursive true
-  end
-
+when 'rhel', 'amazon'
   template '/etc/sysconfig/jenkins' do
     source   'jenkins-config-rhel.erb'
     mode     '0644'

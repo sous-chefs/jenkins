@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: credentials
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ require 'openssl'
 require 'securerandom'
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsCredentials < Resource::LWRPBase
@@ -42,7 +41,7 @@ class Chef
     # Attributes
     attribute :id,
               kind_of: String,
-              default: lazy { SecureRandom.uuid }
+              required: true
 
     attr_writer :exists
 
@@ -60,6 +59,7 @@ end
 
 class Chef
   class Provider::JenkinsCredentials < Provider::LWRPBase
+    use_inline_resources
     include Jenkins::Helper
 
     def load_current_resource
@@ -84,7 +84,7 @@ class Chef
     #
     # Create the given credentials.
     #
-    action(:create) do
+    action :create do
       if current_resource.exists? && correct_config?
         Chef::Log.info("#{new_resource} exists - skipping")
       else
@@ -122,7 +122,7 @@ class Chef
     #
     # Delete the given credentials.
     #
-    action(:delete) do
+    action :delete do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
@@ -150,18 +150,18 @@ class Chef
       end
     end
 
-    protected
+    private
 
     #
     # Returns a Groovy snippet that creates an instance of the
-    # credentail's implementation. The credentials instance should be
+    # credential's implementation. The credentials instance should be
     # set to a Groovy variable named `credentials`.
     #
     # @abstract
     # @return [String]
     #
     def credentials_groovy
-      fail NotImplementedError, 'You must implement #credentials_groovy.'
+      raise NotImplementedError, 'You must implement #credentials_groovy.'
     end
 
     #
@@ -173,7 +173,7 @@ class Chef
     # @return [String]
     #
     def fetch_existing_credentials_groovy(_groovy_variable_name)
-      fail NotImplementedError, 'You must implement #fetch_existing_credentials_groovy.'
+      raise NotImplementedError, 'You must implement #fetch_existing_credentials_groovy.'
     end
 
     #
@@ -183,7 +183,7 @@ class Chef
     # @return [String]
     #
     def resource_attributes_groovy(_groovy_variable_name)
-      fail NotImplementedError, 'You must implement #resource_attributes_groovy.'
+      raise NotImplementedError, 'You must implement #resource_attributes_groovy.'
     end
 
     #
@@ -193,11 +193,11 @@ class Chef
     # @return [Boolean]
     #
     def correct_config?
-      fail NotImplementedError, 'You must implement #correct_config?.'
+      raise NotImplementedError, 'You must implement #correct_config?.'
     end
 
     #
-    # Maps a credentails's resource attribute name to the equivalent
+    # Maps a credentials's resource attribute name to the equivalent
     # property in the Groovy representation. This mapping is useful in
     # Ruby/Groovy serialization/deserialization.
     #

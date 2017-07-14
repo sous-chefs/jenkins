@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # Library:: helper
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ EOH
 
     # Matches Version 4 UUID per RFC 4122
     # Example: 38537014-ec66-49b5-aff2-aed1c19e2989
-    UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/.freeze unless defined?(UUID_REGEX)
+    UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/ unless defined?(UUID_REGEX)
 
     #
     # Helper method for creating an accessing a new {Jenkins::Executor} from
@@ -60,7 +60,6 @@ EOH
     def executor
       wait_until_ready!
       ensure_cli_present!
-      ensure_update_center_present!
 
       options = {}.tap do |h|
         h[:cli]      = cli
@@ -71,6 +70,9 @@ EOH
         h[:timeout]  = timeout if timeout_given?
         h[:username] = username unless username.nil?
         h[:password] = password unless password.nil?
+        h[:jvm_options] = jvm_options unless jvm_options.nil?
+        h[:protocol] = protocol unless protocol.nil?
+        h[:cli_user] = cli_user unless cli_user.nil?
       end
 
       Jenkins::Executor.new(options)
@@ -100,14 +102,14 @@ EOH
     # @param [String] groovy_variable_name
     # @return [String]
     #
-    def credentials_for_username_groovy(username, groovy_variable_name)
+    def credentials_for_id_groovy(id, groovy_variable_name)
       <<-EOH.gsub(/ ^{8}/, '')
         import jenkins.model.*
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.plugins.credentials.common.*
         import com.cloudbees.plugins.credentials.domains.*;
 
-        username_matcher = CredentialsMatchers.withUsername("#{username}")
+        id_matcher = CredentialsMatchers.withId("#{id}")
         available_credentials =
           CredentialsProvider.lookupCredentials(
             StandardUsernameCredentials.class,
@@ -119,7 +121,7 @@ EOH
         #{groovy_variable_name} =
           CredentialsMatchers.firstOrNull(
             available_credentials,
-            username_matcher
+            id_matcher
           )
       EOH
     end
@@ -172,7 +174,11 @@ EOH
         val = val.gsub(/\\/, '\\\\\\\\')
         # Escape single quotes
         val = val.gsub(/'/, "\\\\'")
-        "'#{val}'"
+        if val.include?("\n")
+          "'''#{val}'''"
+        else
+          "'#{val}'"
+        end
       when Array
         list_members = val.map do |v|
           convert_to_groovy(v)
@@ -347,6 +353,35 @@ EOH
     end
 
     #
+    # JVM options to pass into the cli command call
+    #
+    # @return [String]
+    #
+    def jvm_options
+      node['jenkins']['executor']['jvm_options']
+    end
+
+    #
+    # protocol to pass to cli
+    # ssh/http/remoting
+    #
+    # @return [String]
+    #
+    def protocol
+      node['jenkins']['executor']['protocol']
+    end
+
+    #
+    # CLI user to pass to cli
+    # ssh protocol or http protocol needs it
+    #
+    # @return [String]
+    #
+    def cli_user
+      node['jenkins']['executor']['cli_user']
+    end
+
+    #
     # The path to the +jenkins-cli.jar+ on disk (which may or may not exist).
     #
     # @return [String]
@@ -435,7 +470,7 @@ EOH
     #
     def ensure_update_center_present!
       node.run_state[:jenkins_update_center_present] ||= begin # ~FC001
-        source = uri_join(node['jenkins']['master']['mirror'], 'updates', 'update-center.json')
+        source = uri_join(node['jenkins']['master']['mirror'], node['jenkins']['master']['channel'], 'update-center.json')
         remote_file = Chef::Resource::RemoteFile.new(update_center_json, run_context)
         remote_file.source(source)
         remote_file.backup(false)

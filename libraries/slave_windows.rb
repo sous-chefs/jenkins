@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: windows_slave
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
 # limitations under the License.
 #
 
-require_relative '_params_validate'
 require_relative 'slave'
 require_relative 'slave_jnlp'
 
@@ -56,6 +55,7 @@ end
 
 class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJnlpSlave
+    use_inline_resources
     provides :jenkins_windows_slave, platform: %w(windows)
 
     def load_current_resource
@@ -66,8 +66,8 @@ class Chef
     #
     # @see Chef::Resource::JenkinsSlave#action_create
     #
-    def action_create
-      super
+    action :create do
+      do_create
 
       # The following resources are created in the parent:
       #
@@ -79,7 +79,7 @@ class Chef
       # However, once it is created Jenkins Master wants to control the version.  So we should only
       # create the file if it is missing.
       slave_exe_resource.run_action(:create_if_missing)
-
+      slave_jar_resource.run_action(:create)
       slave_compat_xml.run_action(:create)
       slave_bat_resource.run_action(:create)
       slave_xml_resource.run_action(:create)
@@ -94,7 +94,7 @@ class Chef
       end
     end
 
-    protected
+    private
 
     # Embedded Resources
 
@@ -182,7 +182,7 @@ class Chef
         user_domain:   user_domain,
         user_account:  user_account,
         user_password: new_resource.password,
-        path:          new_resource.path,
+        path:          new_resource.path
       )
       @slave_xml_resource.notifies(:run, install_service_resource)
       @slave_xml_resource
@@ -208,7 +208,7 @@ class Chef
         java_bin:      java,
         slave_jar:     slave_jar,
         jnlp_url:      jnlp_url,
-        jnlp_secret:   jnlp_secret,
+        jnlp_secret:   jnlp_secret
       )
       @slave_bat_resource
     end

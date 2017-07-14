@@ -1,11 +1,11 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: plugin
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@
 require 'digest'
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsPlugin < Resource::LWRPBase
@@ -67,6 +66,8 @@ end
 
 class Chef
   class Provider::JenkinsPlugin < Provider::LWRPBase
+    provides :jenkins_plugin
+    use_inline_resources
     include Jenkins::Helper
 
     provides :jenkins_plugin
@@ -104,7 +105,7 @@ EOH
       true
     end
 
-    action(:install) do
+    action :install do
       # This block stores the actual command to execute, since its the same
       # for upgrades and installs.
       install_block = proc do
@@ -117,14 +118,14 @@ EOH
             new_resource.source,
             new_resource.name,
             nil,
-            cli_opts: new_resource.options,
+            cli_opts: new_resource.options
           )
         else
           install_plugin_from_update_center(
             new_resource.name,
             new_resource.version,
             cli_opts: new_resource.options,
-            install_deps: new_resource.install_deps,
+            install_deps: new_resource.install_deps
           )
         end
       end
@@ -168,9 +169,9 @@ EOH
     # Plugins that are disabled can be re-enabled from the UI (or by removing
     # *.jpi.disabled file from the disk.)
     #
-    action(:disable) do
+    action :disable do
       unless current_resource.installed?
-        fail PluginNotInstalled.new(new_resource.name, :disable)
+        raise PluginNotInstalled.new(new_resource.name, :disable)
       end
 
       disabled = "#{plugin_file(new_resource.name)}.disabled"
@@ -192,9 +193,9 @@ EOH
     #
     # Plugins may be disabled by re-adding the +.jpi.disabled+ plugin.
     #
-    action(:enable) do
+    action :enable do
       unless current_resource.installed?
-        fail PluginNotInstalled.new(new_resource.name, :enable)
+        raise PluginNotInstalled.new(new_resource.name, :enable)
       end
 
       disabled = "#{plugin_file(new_resource.name)}.disabled"
@@ -224,7 +225,7 @@ EOH
     # those configurations that it didn't understand, and pretend as if it
     # didn't see such a fragment.
     #
-    action(:uninstall) do
+    action :uninstall do
       if current_resource.installed?
         converge_by("Uninstall #{new_resource}") do
           uninstall_plugin(new_resource.name)
@@ -274,9 +275,9 @@ EOH
           if plugin_installation_manifest(dep['name'])
             Chef::Log.debug "A version of dependency #{dep['name']} is already installed - skipping"
             next
-          else
+          elsif dep['optional'] == false
             # only install required dependencies
-            install_plugin_from_update_center(dep['name'], dep['version'], opts) if dep['optional'] == false
+            install_plugin_from_update_center(dep['name'], dep['version'], opts)
           end
         end
       end
@@ -313,7 +314,7 @@ EOH
       # Jenkins that prevents Jenkins from following 302 redirects, so we
       # use Chef to download the plugin and then use Jenkins to install it.
       # It's a bit backwards, but so is Jenkins.
-      executor.execute!('install-plugin', escape(plugin.path), '-name', escape(plugin_name), opts[:cli_opts])
+      executor.execute!('install-plugin', escape('file://' + plugin.path), '-name', escape(plugin_name), opts[:cli_opts])
     end
 
     #
@@ -439,8 +440,3 @@ EOH
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_plugin,
-  provider: Chef::Provider::JenkinsPlugin,
-)

@@ -26,8 +26,8 @@ module Serverspec
 
       private
 
-      def try(&block)
-        block.call
+      def try(&_block)
+        yield
       rescue NoMethodError
         nil
       end
@@ -54,7 +54,11 @@ module Serverspec
         pk_in_jenkins = xml.elements['privateKeySource/privateKey'].text
 
         if pk_in_jenkins
-          OpenSSL::PKey::RSA.new(private_key, passphrase).to_der == OpenSSL::PKey::RSA.new(pk_in_jenkins, passphrase).to_der
+          if private_key.include?('BEGIN EC PRIVATE KEY')
+            OpenSSL::PKey::EC.new(private_key, passphrase).to_der == OpenSSL::PKey::EC.new(pk_in_jenkins, passphrase).to_der
+          else
+            OpenSSL::PKey::RSA.new(private_key, passphrase).to_der == OpenSSL::PKey::RSA.new(pk_in_jenkins, passphrase).to_der
+          end
         else
           false
         end

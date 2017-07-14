@@ -9,14 +9,11 @@ describe 'jenkins::_master_war' do
 
     cached(:chef_run) do
       ChefSpec::ServerRunner.new do |node|
-        node.set['jenkins']['master']['home']           = home
-        node.set['jenkins']['master']['log_directory']  = log_directory
-        node.set['jenkins']['master']['user']           = user
-        node.set['jenkins']['master']['group']          = group
-        node.set['jenkins']['master']['install_method'] = 'war'
-
-        # Workaround until https://github.com/hw-cookbooks/runit/pull/57 is merged.
-        node.set[:runit][:sv_bin] = '/usr/bin/sv'
+        node.normal['jenkins']['master']['home']           = home
+        node.normal['jenkins']['master']['log_directory']  = log_directory
+        node.normal['jenkins']['master']['user']           = user
+        node.normal['jenkins']['master']['group']          = group
+        node.normal['jenkins']['master']['install_method'] = 'war'
       end.converge(described_recipe)
     end
 
@@ -59,15 +56,12 @@ describe 'jenkins::_master_war' do
 
     cached(:chef_run) do
       ChefSpec::ServerRunner.new do |node|
-        node.set['jenkins']['master']['home']           = home
-        node.set['jenkins']['master']['log_directory']  = log_directory
-        node.set['jenkins']['master']['user']           = user
-        node.set['jenkins']['master']['group']          = group
-        node.set['jenkins']['master']['install_method'] = 'war'
-        node.set['jenkins']['master']['use_system_accounts'] = true
-
-        # Workaround until https://github.com/hw-cookbooks/runit/pull/57 is merged.
-        node.set[:runit][:sv_bin] = '/usr/bin/sv'
+        node.normal['jenkins']['master']['home']           = home
+        node.normal['jenkins']['master']['log_directory']  = log_directory
+        node.normal['jenkins']['master']['user']           = user
+        node.normal['jenkins']['master']['group']          = group
+        node.normal['jenkins']['master']['install_method'] = 'war'
+        node.normal['jenkins']['master']['use_system_accounts'] = true
       end.converge(described_recipe)
     end
 

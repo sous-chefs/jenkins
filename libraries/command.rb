@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: command
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 #
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsCommand < Resource::LWRPBase
@@ -42,6 +41,7 @@ end
 
 class Chef
   class Provider::JenkinsCommand < Provider::LWRPBase
+    use_inline_resources
     include Jenkins::Helper
 
     provides :jenkins_command
@@ -57,7 +57,7 @@ class Chef
       true
     end
 
-    action(:execute) do
+    action :execute do
       converge_by("Execute #{new_resource}") do
         executor.execute!(new_resource.command)
       end

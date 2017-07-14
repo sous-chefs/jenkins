@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: user
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@
 require 'json'
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsUser < Resource::LWRPBase
@@ -65,6 +64,8 @@ end
 
 class Chef
   class Provider::JenkinsUser < Provider::LWRPBase
+    provides :jenkins_user
+    use_inline_resources
     include Jenkins::Helper
 
     provides :jenkins_user
@@ -89,10 +90,10 @@ class Chef
       true
     end
 
-    action(:create) do
+    action :create do
       if current_resource.exists? &&
-         current_resource.full_name == new_resource.full_name &&
-         current_resource.email == new_resource.email &&
+         (new_resource.full_name.nil? || current_resource.full_name == new_resource.full_name) &&
+         (new_resource.email.nil? || current_resource.email == new_resource.email) &&
          current_resource.public_keys == new_resource.public_keys
         Chef::Log.info("#{new_resource} exists - skipping")
       else
@@ -101,8 +102,11 @@ class Chef
             user = hudson.model.User.get('#{new_resource.id}')
             user.setFullName('#{new_resource.full_name}')
 
-            email = new hudson.tasks.Mailer.UserProperty('#{new_resource.email}')
-            user.addProperty(email)
+            if (jenkins.model.Jenkins.instance.pluginManager.getPlugin('mailer')) {
+              propertyClass = this.class.classLoader.loadClass('hudson.tasks.Mailer$UserProperty')
+              email = propertyClass.newInstance('#{new_resource.email}')
+              user.addProperty(email)
+            }
 
             password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
             user.addProperty(password)
@@ -116,7 +120,7 @@ class Chef
       end
     end
 
-    action(:delete) do
+    action :delete do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.groovy! <<-EOH.gsub(/^ {12}/, '')
@@ -179,8 +183,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_user,
-  provider: Chef::Provider::JenkinsUser,
-)

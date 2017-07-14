@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: script
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright 2014, Chef Software, Inc.
+# Copyright:: 2014-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 #
 
 require_relative 'command'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsScript < Resource::JenkinsCommand
@@ -34,6 +33,7 @@ end
 
 class Chef
   class Provider::JenkinsScript < Provider::JenkinsCommand
+    use_inline_resources
     provides :jenkins_script
 
     def load_current_resource
@@ -48,7 +48,7 @@ class Chef
       true
     end
 
-    action(:execute) do
+    action :execute do
       converge_by("Execute script #{new_resource}") do
         executor.groovy!(new_resource.command)
       end

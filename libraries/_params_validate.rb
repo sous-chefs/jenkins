@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # Library:: params_validate
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ if Gem::Requirement.new('< 12.0').satisfied_by?(Gem::Version.new(Chef::VERSION))
     module Mixin::ParamsValidate
       def set_or_return(symbol, arg, validation)
         iv_symbol = "@#{symbol}".to_sym
-        if arg.nil? && self.instance_variable_defined?(iv_symbol) == true
+        if arg.nil? && instance_variable_defined?(iv_symbol) == true
           ivar = instance_variable_get(iv_symbol)
           if ivar.is_a?(DelayedEvaluator)
             validate({ symbol => ivar.call }, { symbol => validation })[symbol] # rubocop:disable BracesAroundHashParameters

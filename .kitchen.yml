@@ -12,7 +12,6 @@ driver:
 
 provisioner:
   name: chef_zero
-  require_chef_omnibus: <%= ENV['CHEF_VERSION'] || '12.5.1' %>
   data_path: test/fixtures/keys
   data_bags_path: test/fixtures/data_bags
   attributes:
@@ -20,44 +19,54 @@ provisioner:
       master:
         host: localhost
         install_method: war
-        mirror: http://mirrors.jenkins-ci.org
+        mirror: https://updates.jenkins.io
 
 platforms:
+  - name: centos-6.9
+  - name: centos-7.3
+  - name: debian-7.11
+  - name: debian-8.8
+  - name: debian-9.0
   - name: ubuntu-14.04
-    run_list:
-      - apt::default
-      - jenkins::java
-  - name: centos-7.1
-    run_list:
-      - yum::default
-      - jenkins::java
+  - name: ubuntu-16.04
 
 suites:
   #
   # Smoke suite
   #
-  - name: smoke_package_latest
-    excludes: ubuntu-docker
-    run_list: jenkins_smoke::default
+  - name: smoke_package_stable
+    run_list: jenkins_server_wrapper::default
     attributes:
       jenkins:
         master:
           install_method: package
+    excludes:
+      - ubuntu-14.04
+      - debian-7.11
+  - name: smoke_package_current
+    run_list: jenkins_server_wrapper::default
+    attributes:
+      jenkins:
+        master:
+          channel: current
+          install_method: package
+    excludes:
+      - ubuntu-14.04
+      - debian-7.11
   - name: smoke_war_stable
-    run_list: jenkins_smoke::default
+    run_list: jenkins_server_wrapper::default
     attributes:
       jenkins:
         master:
           install_method: war
-          source: http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
+          source: https://updates.jenkins.io/stable/latest/jenkins.war
   - name: smoke_war_latest
-    excludes: ubuntu-docker
-    run_list: jenkins_smoke::default
+    run_list: jenkins_server_wrapper::default
     attributes:
       jenkins:
         master:
           install_method: war
-          source: http://mirrors.jenkins-ci.org/war/latest/jenkins.war
+          source: https://updates.jenkins.io/latest/jenkins.war
 
   #
   # Authentication suites

@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: credentials_password
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 
 require_relative 'credentials'
 require_relative 'credentials_user'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsPasswordCredentials < Resource::JenkinsUserCredentials
@@ -39,6 +38,7 @@ end
 
 class Chef
   class Provider::JenkinsPasswordCredentials < Provider::JenkinsUserCredentials
+    use_inline_resources
     provides :jenkins_password_credentials
 
     def load_current_resource
@@ -53,7 +53,7 @@ class Chef
       @current_credentials
     end
 
-    protected
+    private
 
     #
     # @see Chef::Resource::JenkinsCredentials#credentials_groovy

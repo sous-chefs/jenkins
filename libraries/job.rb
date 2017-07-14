@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: jenkins
+# Cookbook:: jenkins
 # HWRP:: job
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright 2013-2014, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@
 require 'rexml/document'
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsJob < Resource::LWRPBase
@@ -79,6 +78,8 @@ end
 
 class Chef
   class Provider::JenkinsJob < Provider::LWRPBase
+    use_inline_resources
+
     include Jenkins::Helper
 
     provides :jenkins_job
@@ -124,9 +125,9 @@ EOH
     # @raise [JobDoesNotExist]
     #   if the job does not exist
     #
-    action(:build) do
+    action :build do
       unless current_resource.exists?
-        fail JobDoesNotExist.new(new_resource.name, :build)
+        raise JobDoesNotExist.new(new_resource.name, :build)
       end
 
       if current_resource.enabled?
@@ -186,7 +187,7 @@ EOH
     # Requirements:
     #   - `config` parameter
     #
-    action(:create) do
+    action :create do
       validate_config!
 
       if current_resource.exists?
@@ -211,7 +212,7 @@ EOH
     # the job does not exist, no action will be taken. If the job does exist,
     # it will be deleted using the Jenkins CLI.
     #
-    action(:delete) do
+    action :delete do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.execute!('delete-job', escape(new_resource.name))
@@ -227,9 +228,9 @@ EOH
     # @raise [JobDoesNotExist]
     #   if the job does not exist
     #
-    action(:disable) do
+    action :disable do
       unless current_resource.exists?
-        fail JobDoesNotExist.new(new_resource.name, :disable)
+        raise JobDoesNotExist.new(new_resource.name, :disable)
       end
 
       if current_resource.enabled?
@@ -247,9 +248,9 @@ EOH
     # @raise [JobDoesNotExist]
     #   if the job does not exist
     #
-    action(:enable) do
+    action :enable do
       unless current_resource.exists?
-        fail JobDoesNotExist.new(new_resource.name, :enable)
+        raise JobDoesNotExist.new(new_resource.name, :enable)
       end
 
       if current_resource.enabled?
@@ -319,10 +320,10 @@ EOH
     def validate_config!
       Chef::Log.debug "Validate #{new_resource} configuration"
 
-      if new_resource.config.nil?
-        fail("#{new_resource} must specify a configuration file!")
+      if new_resource.config.nil? # rubocop: disable Style/GuardClause
+        raise("#{new_resource} must specify a configuration file!")
       elsif !::File.exist?(new_resource.config)
-        fail("#{new_resource} config `#{new_resource.config}` does not exist!")
+        raise("#{new_resource} config `#{new_resource.config}` does not exist!")
       else
         begin
           REXML::Document.new(::File.read(new_resource.config))

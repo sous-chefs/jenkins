@@ -1,45 +1,41 @@
 sudo: required
+dist: trusty
 
 addons:
   apt:
     sources:
-      - chef-stable-precise
+      - chef-current-trusty
     packages:
       - chefdk
 
-# Don't `bundle install`
+# Don't `bundle install` which takes about 1.5 mins
 install: echo "skip bundle install"
 
 branches:
   only:
     - master
 
-services:
-  - docker
+services: docker
 
 env:
-  global:
-    # Ignore warnings when running specs.
-    - RUBYOPT="-W0"
   matrix:
-    - CHEF_VERSION=12.0.3
-    - CHEF_VERSION=latest
+  - INSTANCE=smoke-package-stable-centos-7
+  - INSTANCE=smoke-package-stable-ubuntu-1604
+  - INSTANCE=smoke-war-stable-centos-7
+  - INSTANCE=smoke-war-stable-ubuntu-1404
+  - INSTANCE=smoke-war-stable-ubuntu-1604
+
+before_script:
+  - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
+  - eval "$(chef shell-init bash)"
+  - chef --version
+  - cookstyle --version
+  - foodcritic --version
+
+script: KITCHEN_LOCAL_YAML=.kitchen.dokken.yml kitchen verify ${INSTANCE}
 
 matrix:
-  fast_finish: true
-
-# Ensure we make ChefDK's Ruby the default
-before_script:
-  - eval "$(/opt/chefdk/bin/chef shell-init bash)"
-  # We have to install chef-sugar for ChefSpec
-  - /opt/chefdk/embedded/bin/chef gem install chef-sugar
-  # Ensure kitchen-docker is available for testing
-  - /opt/chefdk/embedded/bin/chef gem install kitchen-docker
-script:
-  - /opt/chefdk/embedded/bin/chef --version
-  - /opt/chefdk/embedded/bin/rubocop --version
-  - /opt/chefdk/embedded/bin/rubocop
-  - /opt/chefdk/embedded/bin/foodcritic --version
-  - /opt/chefdk/embedded/bin/foodcritic . --exclude spec
-  - /opt/chefdk/embedded/bin/rspec spec
-  - KITCHEN_LOCAL_YAML=.kitchen.docker.yml /opt/chefdk/embedded/bin/kitchen verify smoke-war-stable-ubuntu-docker
+  include:
+    - script:
+      - chef exec delivery local all
+      env: UNIT_AND_LINT=1
