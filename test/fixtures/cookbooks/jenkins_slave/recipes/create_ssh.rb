@@ -50,6 +50,7 @@ credentials = jenkins_private_key_credentials 'jenkins-ssh-key' do
 end
 
 jenkins_password_credentials 'jenkins-ssh-password' do
+  id 'jenkins-ssh-password'
   password jenkins_user_data['password_clear']
 end
 

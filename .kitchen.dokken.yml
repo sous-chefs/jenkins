@@ -11,7 +11,8 @@ provisioner:
   deprecations_as_errors: true
 
 verifier:
-  name: inspec
+  sudo: false
+  root_path: /opt/verifier
 
 platforms:
 - name: amazonlinux
