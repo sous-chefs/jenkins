@@ -67,7 +67,7 @@ end
 
 # Plugin required for Secret Text credentials
 jenkins_plugin 'plain-credentials' do
-  install_deps true
+  ignore_deps_versions true
   notifies :restart, 'service[jenkins]', :immediately
 end
 
