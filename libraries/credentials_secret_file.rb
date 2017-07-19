@@ -28,7 +28,7 @@ class Chef
               default: lazy { |new_resource| "Credentials for #{new_resource.filename} - created by Chef" }
     attribute :filename,
               kind_of: String,
-              name_attribute: true
+              required: true
     attribute :data,
               kind_of: String,
               required: true
@@ -95,7 +95,7 @@ class Chef
           #{convert_to_groovy(new_resource.description)},
           new VirtualFileItem(),
           null,
-          null
+          (String)null
         )
       EOH
     end
@@ -105,8 +105,8 @@ class Chef
     #
     def fetch_existing_credentials_groovy(groovy_variable_name)
       <<-EOH.gsub(/ ^{8}/, '')
-        import jenkins.model.Jenkins;
-        import hudson.util.Secret;
+        import jenkins.model.Jenkins
+        import hudson.util.Secret
         import com.cloudbees.plugins.credentials.common.IdCredentials
         import com.cloudbees.plugins.credentials.CredentialsProvider
 
@@ -130,7 +130,8 @@ class Chef
       <<-EOH.gsub(/ ^{8}/, '')
         #{groovy_variable_name} = [
           id:credentials.id,
-          filename:credentials.filename
+          filename:credentials.fileName,
+          date:credentials.data
         ]
       EOH
     end

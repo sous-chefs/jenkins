@@ -127,38 +127,6 @@ EOH
     end
 
     #
-    # A Groovy snippet that will set the requested local Groovy variable
-    # to an instance of the credentials represented by `secret`.
-    # Returns the Groovy `null` if no credentials are found.
-    #
-    # @param [String] secret
-    # @param [String] description
-    # @param [String] groovy_variable_name
-    # @return [String]
-    #
-    def credentials_for_secret_groovy(secret, description, groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
-        import jenkins.model.Jenkins;
-        import hudson.util.Secret;
-        import com.cloudbees.plugins.credentials.CredentialsProvider
-        import org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl;
-        import org.jenkinsci.plugins.plaincredentials.StringCredentials;
-
-        available_credentials =
-          CredentialsProvider.lookupCredentials(
-            StringCredentials.class,
-            Jenkins.getInstance(),
-            hudson.security.ACL.SYSTEM
-          ).findAll({
-            it.secret      == new Secret(#{convert_to_groovy(secret)}) &&
-            it.description == #{convert_to_groovy(description)}
-          })
-
-        #{groovy_variable_name} = available_credentials.size() > 0 ? available_credentials[0] : null
-      EOH
-    end
-
-    #
     # Helper method for converting a Ruby value to it's equivalent in
     # Groovy.
     #

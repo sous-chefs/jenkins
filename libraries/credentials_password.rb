@@ -28,8 +28,7 @@ class Chef
 
     # Attributes
     attribute :username,
-              kind_of: String,
-              name_attribute: true
+              kind_of: String
     attribute :password,
               kind_of: String
   end
