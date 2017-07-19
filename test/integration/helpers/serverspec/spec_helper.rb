@@ -12,7 +12,7 @@ RSpec.configure do |config|
 end
 
 def fixture_data_base_path
-  '/tmp/kitchen/data'
+  docker? ? '/opt/kitchen/data' : '/tmp/kitchen/data'
 end
 
 def docker?

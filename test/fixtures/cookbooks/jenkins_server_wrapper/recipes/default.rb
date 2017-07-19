@@ -12,6 +12,7 @@ jenkins_plugins = %w(
 )
 jenkins_plugins.each do |plugin|
   jenkins_plugin plugin do
+    ignore_deps_versions true
     notifies :execute, 'jenkins_command[safe-restart]', :immediately
   end
 end

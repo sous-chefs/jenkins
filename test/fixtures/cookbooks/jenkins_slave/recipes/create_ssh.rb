@@ -1,5 +1,7 @@
 include_recipe 'jenkins_server_wrapper::default'
 
+return if docker? # SSH slave doesn't work in docker
+
 # Load user data from a data bag item. This should be an encrypted data
 # bag item in real deployments.
 jenkins_user_data = data_bag_item('keys', 'jenkins-ssh')
@@ -50,6 +52,7 @@ credentials = jenkins_private_key_credentials 'jenkins-ssh-key' do
 end
 
 jenkins_password_credentials 'jenkins-ssh-password' do
+  id 'jenkins-ssh-password'
   password jenkins_user_data['password_clear']
 end
 

@@ -47,6 +47,9 @@ class Chef
     attribute :install_deps,
               kind_of: [TrueClass, FalseClass],
               default: true
+    attribute :ignore_deps_versions,
+              kind_of: [TrueClass, FalseClass],
+              default: false
     attribute :options,
               kind_of: String
 
@@ -125,7 +128,8 @@ EOH
             new_resource.name,
             new_resource.version,
             cli_opts: new_resource.options,
-            install_deps: new_resource.install_deps
+            install_deps: new_resource.install_deps,
+            ignore_deps_versions: new_resource.ignore_deps_versions
           )
         end
       end
@@ -277,7 +281,8 @@ EOH
             next
           elsif dep['optional'] == false
             # only install required dependencies
-            install_plugin_from_update_center(dep['name'], dep['version'], opts)
+            dep_version = opts[:ignore_deps_versions] ? :latest : dep['version']
+            install_plugin_from_update_center(dep['name'], dep_version, opts)
           end
         end
       end

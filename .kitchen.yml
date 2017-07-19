@@ -12,6 +12,10 @@ driver:
 
 provisioner:
   name: chef_zero
+  # This is to make the smoke suite run.
+  # See this open issue on JNLP slaves:
+  # https://github.com/chef-cookbooks/jenkins/issues/615
+  require_chef_omnibus: 12.18.31
   data_path: test/fixtures/keys
   data_bags_path: test/fixtures/data_bags
   attributes:
@@ -35,7 +39,7 @@ suites:
   # Smoke suite
   #
   - name: smoke_package_stable
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
@@ -44,7 +48,7 @@ suites:
       - ubuntu-14.04
       - debian-7.11
   - name: smoke_package_current
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
@@ -54,14 +58,14 @@ suites:
       - ubuntu-14.04
       - debian-7.11
   - name: smoke_war_stable
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
           install_method: war
           source: https://updates.jenkins.io/stable/latest/jenkins.war
   - name: smoke_war_latest
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:

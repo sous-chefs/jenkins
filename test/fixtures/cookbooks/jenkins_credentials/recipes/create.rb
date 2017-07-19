@@ -2,7 +2,7 @@ require 'openssl'
 
 include_recipe 'jenkins_server_wrapper::default'
 
-fixture_data_base_path = '/tmp/kitchen/data'
+fixture_data_base_path = docker? ? '/opt/kitchen/data' : '/tmp/kitchen/data'
 
 # Test basic password credentials creation
 jenkins_password_credentials 'schisamo' do
@@ -67,7 +67,7 @@ end
 
 # Plugin required for Secret Text credentials
 jenkins_plugin 'plain-credentials' do
-  install_deps true
+  ignore_deps_versions true
   notifies :restart, 'service[jenkins]', :immediately
 end
 
