@@ -7,7 +7,6 @@ fixture_data_base_path = '/tmp/kitchen/data'
 # Test basic password credentials creation
 jenkins_password_credentials 'schisamo' do
   id 'schisamo'
-  username 'schisamo'
   description 'passwords are for suckers'
   password 'superseekret'
 end
@@ -36,7 +35,6 @@ end
 # Test private key credentials with passphrase
 jenkins_private_key_credentials 'jenkins2' do
   id 'jenkins2'
-  username 'jenkins2'
   private_key OpenSSL::PKey::RSA.new(File.read("#{fixture_data_base_path}/test_id_rsa_with_passphrase"), 'secret').to_pem
   passphrase 'secret'
 end
@@ -66,7 +64,6 @@ end
 # Test creating a password with a dollar sign in it
 jenkins_password_credentials 'dollarbills' do
   id 'dollarbills'
-  username 'dollarbills'
   password '$uper$ecret'
 end
 
