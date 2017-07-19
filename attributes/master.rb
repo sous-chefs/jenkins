@@ -222,6 +222,13 @@ default['jenkins']['master'].tap do |master|
   master['ulimits'] = nil
 
   #
+  # Repository URL. Default is latest
+  #
+  #   node.set['jenkins']['master']['ulimits'] = { 'n' => 8192 }
+  #
+  master['ulimits'] = nil
+
+  #
   # Repository URL and key. Default is stable.
   #
   master['repository'], master['repository_key'] =

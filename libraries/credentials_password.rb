@@ -28,11 +28,9 @@ class Chef
 
     # Attributes
     attribute :username,
-              kind_of: String,
-              name_attribute: true
+              kind_of: String
     attribute :password,
-              kind_of: String,
-              required: true
+              kind_of: String
   end
 end
 
@@ -50,7 +48,7 @@ class Chef
         @current_resource.password(current_credentials[:password])
       end
 
-      @current_credentials
+      @current_resource
     end
 
     private

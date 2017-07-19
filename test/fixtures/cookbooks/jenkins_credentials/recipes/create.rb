@@ -8,18 +8,19 @@ fixture_data_base_path = docker? ? '/opt/kitchen/data' : '/tmp/kitchen/data'
 jenkins_password_credentials 'schisamo' do
   id 'schisamo'
   description 'passwords are for suckers'
+  username 'schisamo'
   password 'superseekret'
 end
 
 # Test specifying a UUID-based ID
-jenkins_password_credentials 'schisamo2' do
-  id '63e11302-d446-4ba0-8aa4-f5821f74d36f'
+jenkins_password_credentials '63e11302-d446-4ba0-8aa4-f5821f74d36f' do
+  username 'schisamo2'
   password 'superseekret'
 end
 
 # Test specifying a string-based ID
 jenkins_password_credentials 'schisamo3' do
-  id 'schisamo3'
+  username 'schisamo3'
   password 'superseekret'
 end
 
@@ -75,4 +76,9 @@ end
 jenkins_secret_text_credentials 'dollarbills_secret' do
   id 'dollarbills_secret'
   secret '$uper$ecret'
+end
+
+jenkins_secret_file_credentials 'file1' do
+  filename 'secret_file1'
+  data 'topSecret'
 end
