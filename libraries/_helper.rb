@@ -430,6 +430,7 @@ EOH
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
                Errno::ENETUNREACH,
+               Errno::EADDRNOTAVAIL,
                Timeout::Error,
                OpenURI::HTTPError => e
           # If authentication has been enabled, the server will return an HTTP
