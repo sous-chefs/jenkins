@@ -6,14 +6,16 @@ describe 'jenkins::_master_war' do
     let(:log_directory) { '/opt/bacon/log' }
     let(:user)          { 'bacon' }
     let(:group)         { 'meats' }
+    let(:service_name)  { 'bacon' }
 
     cached(:chef_run) do
       ChefSpec::ServerRunner.new do |node|
-        node.normal['jenkins']['master']['home']           = home
-        node.normal['jenkins']['master']['log_directory']  = log_directory
-        node.normal['jenkins']['master']['user']           = user
-        node.normal['jenkins']['master']['group']          = group
-        node.normal['jenkins']['master']['install_method'] = 'war'
+        node.normal['jenkins']['master']['home']             = home
+        node.normal['jenkins']['master']['log_directory']    = log_directory
+        node.normal['jenkins']['master']['user']             = user
+        node.normal['jenkins']['master']['group']            = group
+        node.normal['jenkins']['master']['install_method']   = 'war'
+        node.normal['jenkins']['master']['runit']['service'] = service_name
       end.converge(described_recipe)
     end
 
@@ -45,6 +47,10 @@ describe 'jenkins::_master_war' do
         .with_group(group)
         .with_mode('0755')
         .with_recursive(true)
+    end
+
+    it 'creates the named service' do
+      expect(chef_run).to enable_runit_service(service_name)
     end
   end
 
