@@ -201,6 +201,11 @@ default['jenkins']['master'].tap do |master|
   master['maxopenfiles'] = 8192
 
   #
+  # The name used for Jenkins runit service
+  #
+  master['runit']['service'] = 'jenkins'
+
+  #
   # The groups of user under which Jenkins is running. Works for runit only.
   #
   master['runit']['groups'] = [node['jenkins']['master']['group']]
