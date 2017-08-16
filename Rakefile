@@ -1,56 +1,58 @@
-#!/usr/bin/env rake
+require 'chef/cookbook/metadata'
+require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
+require 'foodcritic'
+require 'kitchen'
 
-# Style tests. cookstyle (rubocop) and Foodcritic
 namespace :style do
-  begin
-    require 'cookstyle'
-    require 'rubocop/rake_task'
+  desc 'Run Ruby style checks'
+  RuboCop::RakeTask.new(:ruby)
 
-    desc 'Run Ruby style checks'
-    RuboCop::RakeTask.new(:ruby)
-  rescue LoadError => e
-    puts ">>> Gem load error: #{e}, omitting style:ruby" unless ENV['CI']
-  end
-
-  begin
-    require 'foodcritic'
-
-    desc 'Run Chef style checks'
-    FoodCritic::Rake::LintTask.new(:chef) do |t|
-      t.options = {
-        fail_tags: ['any'],
-        progress: true,
-      }
-    end
-  rescue LoadError => e
-    puts ">>> Gem load error: #{e}, omitting style:chef" unless ENV['CI']
+  desc 'Run Chef style checks'
+  FoodCritic::Rake::LintTask.new(:chef) do |t|
+    t.options = {
+      fail_tags: ['any'],
+      tags: ['~FC024']
+    }
   end
 end
 
 desc 'Run all style checks'
-task style: ['style:chef', 'style:ruby']
+task style: ['style:ruby', 'style:chef']
 
-# ChefSpec
-begin
-  require 'rspec/core/rake_task'
-
-  desc 'Run ChefSpec examples'
-  RSpec::Core::RakeTask.new(:spec)
-rescue LoadError => e
-  puts ">>> Gem load error: #{e}, omitting spec" unless ENV['CI']
+desc 'Run ChefSpec'
+RSpec::Core::RakeTask.new(:unit) do |tests|
+  tests.pattern = './**/unit/**/*_spec.rb'
+  tests.rspec_opts = '--format RspecJunitFormatter --out test-results.xml'
 end
 
-# Integration tests. Kitchen.ci
-namespace :integration do
-  begin
-    require 'kitchen/rake_tasks'
+namespace :jenkins do
+  desc 'Setup .chef directory'
+  task :chef_dir do
+    chefdir = '.chef/'
+    mkdir(chefdir) unless Dir.exist?(chefdir)
+    cp(ENV['JENKINSPEM'], chefdir)
+    cp(ENV['FGSSECDEV'], chefdir)
+    cp(ENV['KNIFECONFIG'], chefdir)
+  end
 
-    desc 'Run kitchen integration tests'
-    Kitchen::RakeTasks.new
-  rescue LoadError, StandardError => e
-    puts ">>> Kitchen error: #{e}, omitting #{task.name}" unless ENV['CI']
+  desc 'Cleanup .chef directory'
+  task :cleanup_chef_dir do
+    remove_dir('.chef')
+  end
+
+  desc 'Set version based on tag'
+  task :set_cookbook_version do
+    version = get_tag_name_from_branch_path(ENV['GIT_BRANCH'])
+
+    File.open('VERSION', 'w') { |file| file.write(version) }
   end
 end
 
-# Default
-task default: %w(style spec)
+def get_tag_name_from_branch_path(branch_path)
+  tag_name_index = 2
+  # rubocop:disable Style/RedundantReturn
+  return branch_path.split('/')[tag_name_index]
+end
+
+task default: %w(style unit)
