@@ -6,6 +6,7 @@
 # Author: Fletcher Nichol <fnichol@nichol.ca>
 # Author: Seth Chisamore <schisamo@chef.io>
 # Author: Seth Vargo <sethvargo@gmail.com>
+# Author: Drew Budwin <dbudwin@foxguardsolutions.com>
 #
 # Copyright:: 2010-2016, VMware, Inc.
 # Copyright:: 2012-2017, Chef Software, Inc.
@@ -23,45 +24,13 @@
 # limitations under the License.
 #
 
-default['jenkins']['master'].tap do |master|
-  #
-  # The installation method - +package+ or +war+. On RedHat and Debian
-  # platforms, the installation method is to use the package from the official
-  # Apt/Yum repos. On other platforms, the default method is using the war
-  # file.
-  #
-  #   node.normal['jenkins']['master']['install_method'] = 'war'
-  #
-  master['install_method'] = case node['platform_family']
-                             when 'debian', 'rhel', 'amazon' then 'package'
-                             else 'war'
-                             end
-
-  #
-  # The version of the Jenkins master to install. This can be a specific
-  # package version (from the yum or apt repo), or the version of the war
-  # file to download from the Jenkins mirror.
-  #
-  master['version'] = nil
+default['airgapped_jenkins']['master'].tap do |master|
 
   #
   # The "channel" to use, default is stable
   # Alternatively: "current" for install method package and "latest" for install method war
   #
   master['channel'] = 'stable'
-
-  #
-  # The mirror to download the Jenkins war file. This attribute is only used
-  # in the "war" installation method.
-  #
-  #   node.normal['jenkins']['master']['mirror'] = 'http://cache.example.com'
-  #
-  # Note: this mirror is combined with some "smart" attributes to build the
-  # Jenkins war. If you are not using an actual Jenkins mirror, you might be
-  # more interested in the +source+ attribute, which accepts the full path
-  # to the war file for downloading.
-  #
-  master['mirror'] = 'https://updates.jenkins.io'
 
   #
   # The full URL to the Jenkins WAR file on the remote mirror. This attribute is
@@ -71,14 +40,12 @@ default['jenkins']['master'].tap do |master|
   # war file. If you choose to override this file manually, it is highly
   # recommended that you also set the +checksum+ attribute.
   #
-  #   node.normal['jenkins']['master']['source'] = 'http://fs01.example.com/jenkins.war'
+  #   node.normal['airgapped_jenkins']['master']['source'] = 'http://fs01.example.com/jenkins.war'
   #
   # Warning: Setting this attribute will negate/ignore any values for +mirror+
   # and +version+.
   #
-  master['source'] = "#{node['jenkins']['master']['mirror']}/"\
-    "#{node['jenkins']['master']['version'] || node['jenkins']['master']['channel']}/"\
-    'latest/jenkins.war'
+  master['source'] = nil
 
   #
   # The checksum of the war file. This is use to verify that the remote war file
@@ -86,17 +53,9 @@ default['jenkins']['master'].tap do |master|
   # attribute set to +nil+, no validation will be performed. If this attribute
   # is set to the wrong SHA-256 checksum, the Chef Client run will fail.
   #
-  #   node.normal['jenkins']['master']['checksum'] = 'abcd1234...'
+  #   node.normal['airgapped_jenkins']['master']['checksum'] = 'abcd1234...'
   #
   master['checksum'] = nil
-
-  #
-  # The list of options to pass to the Java JVM script when using the package
-  # installer. For example:
-  #
-  #   node.normal['jenkins']['master']['jvm_options'] = '-Xmx256m'
-  #
-  master['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
 
   #
   # The list of Jenkins arguments to pass to the initialize script. This varies
@@ -114,7 +73,7 @@ default['jenkins']['master'].tap do |master|
   # This attribute is _cumulative_, meaning it is appended to the end of the
   # existing environment variable.
   #
-  #   node.normal['jenkins']['master']['jenkins_args'] = '--argumentsRealm.roles.$ADMIN_USER=admin'
+  #   node.normal['airgapped_jenkins']['master']['jenkins_args'] = '--argumentsRealm.roles.$ADMIN_USER=admin'
   #
   master['jenkins_args'] = nil
 
@@ -123,7 +82,7 @@ default['jenkins']['master'].tap do |master|
   # change this to any user on the system. Chef will automatically create the
   # user if it does not exist.
   #
-  #   node.normal['jenkins']['master']['user'] = 'root'
+  #   node.normal['airgapped_jenkins']['master']['user'] = 'root'
   #
   master['user'] = 'jenkins'
 
@@ -138,7 +97,7 @@ default['jenkins']['master'].tap do |master|
   # The default of `true` will ensure that **new** jenkins user accounts are
   # created in the system ID range, existing users will not be modified.
   #
-  #   node.normal['jenkins']['master']['use_system_accounts'] = false
+  #   node.normal['airgapped_jenkins']['master']['use_system_accounts'] = false
   #
   master['use_system_accounts'] = true
 
@@ -170,9 +129,9 @@ default['jenkins']['master'].tap do |master|
   # Jenkins on port 80 on a custom domain with a proxy, you will need to set
   # that attribute here:
   #
-  #   node.normal['jenkins']['master']['endpoint'] = 'https://custom.domain.com/jenkins'
+  #   node.normal['airgapped_jenkins']['master']['endpoint'] = 'https://custom.domain.com/jenkins'
   #
-  master['endpoint'] = "http://#{node['jenkins']['master']['host']}:#{node['jenkins']['master']['port']}"
+  master['endpoint'] = "http://#{node['airgapped_jenkins']['master']['host']}:#{node['airgapped_jenkins']['master']['port']}"
 
   #
   # The path to the Jenkins home location. This will also become the value of
@@ -183,12 +142,20 @@ default['jenkins']['master'].tap do |master|
   master['home'] = '/var/lib/jenkins'
 
   #
+  # The list of options to pass to the Java JVM script when using the package
+  # installer. For example:
+  #
+  #   node.normal['airgapped_jenkins']['master']['jvm_options'] = '-Xmx256m'
+  #
+  master['jvm_options'] = "-Djenkins.install.runSetupWizard=false -Djava.io.tmpdir=#{node['airgapped_jenkins']['master']['home']}/tmp"
+
+  #
   # The directory where Jenkins should write its logfile(s). **This attribute
   # is only used by the package installer!**. The log directory will be owned
   # by the same user and group as the home directory. If you need furthor
   # customization, you should override these values in your wrapper cookbook.
   #
-  #   node.normal['jenkins']['master']['log_directory'] = '/var/log/jenkins'
+  #   node.normal['airgapped_jenkins']['master']['log_directory'] = '/var/log/jenkins'
   #
   master['log_directory'] = '/var/log/jenkins'
 
@@ -201,43 +168,26 @@ default['jenkins']['master'].tap do |master|
   master['maxopenfiles'] = 8192
 
   #
-  # The groups of user under which Jenkins is running. Works for runit only.
-  #
-  master['runit']['groups'] = [node['jenkins']['master']['group']]
-
-  #
-  # The timeout passed to the runit cookbook's service resource. Override the
-  # default timeout of 7 seconds. This option implies verbose.
-  #
-  #   node.normal['jenkins']['master']['runit']['sv_timeout'] = 60
-  #
-  master['runit']['sv_timeout'] = 7
-
-  #
   # The limits for the Java process running the master server.
   # Example to configure the maximum number of open file descriptors:
   #
-  #   node.set['jenkins']['master']['ulimits'] = { 'n' => 8192 }
+  #   node.set['airgapped_jenkins']['master']['ulimits'] = { 'n' => 8192 }
   #
   master['ulimits'] = nil
-
-  #
-  # Repository URL and key. Default is stable.
-  #
-  master['repository'], master['repository_key'] =
-    case [node['platform_family'], node['jenkins']['master']['channel']]
-    when %w(debian stable)
-      ['https://pkg.jenkins.io/debian-stable', 'https://pkg.jenkins.io/debian-stable/jenkins.io.key']
-    when %w(rhel stable), %w(amazon stable)
-      ['https://pkg.jenkins.io/redhat-stable', 'https://pkg.jenkins.io/redhat-stable/jenkins.io.key']
-    when %w(debian current)
-      ['https://pkg.jenkins.io/debian', 'https://pkg.jenkins.io/debian/jenkins.io.key']
-    when %w(rhel current), %w(amazon current)
-      ['https://pkg.jenkins.io/redhat', 'https://pkg.jenkins.io/redhat/jenkins.io.key']
-    end
 
   #
   # Keyserver to use. Disabled by default
   #
   master['repository_keyserver'] = nil
+
+  #
+  # Path of where the environment file can be located depending on the platform.
+  #
+  master['environment_file_path'] =
+    case node['platform_family']
+    when 'debian'
+      '/etc/default'
+    when 'rhel'
+      '/etc/sysconfig'
+    end
 end

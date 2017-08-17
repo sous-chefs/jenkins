@@ -12,7 +12,7 @@
 # Directory where Jenkins store its configuration and working
 # files (checkouts, build reports, artifacts, ...).
 #
-JENKINS_HOME="<%= node['jenkins']['master']['home'] %>"
+JENKINS_HOME="<%= node['airgapped_jenkins']['master']['home'] %>"
 
 ## Type:        string
 ## Default:     ""
@@ -21,7 +21,7 @@ JENKINS_HOME="<%= node['jenkins']['master']['home'] %>"
 # Java executable to run Jenkins
 # When left empty, we'll try to find the suitable Java.
 #
-JENKINS_JAVA_CMD="<%= node['jenkins']['java'] %>"
+JENKINS_JAVA_CMD="<%= node['airgapped_jenkins']['java'] %>"
 
 ## Type:        string
 ## Default:     "jenkins"
@@ -31,7 +31,7 @@ JENKINS_JAVA_CMD="<%= node['jenkins']['java'] %>"
 # Be careful when you change this, as you need to update
 # permissions of $JENKINS_HOME and /var/log/jenkins.
 #
-JENKINS_USER="<%= node['jenkins']['master']['user'] %>"
+JENKINS_USER="<%= node['airgapped_jenkins']['master']['user'] %>"
 
 ## Type:        string
 ## Default:     "-Djava.awt.headless=true"
@@ -40,8 +40,8 @@ JENKINS_USER="<%= node['jenkins']['master']['user'] %>"
 # Options to pass to java when running Jenkins.
 #
 JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
-<% if node['jenkins']['master']['jvm_options'] %>
-JENKINS_JAVA_OPTIONS="$JENKINS_JAVA_OPTIONS <%= node['jenkins']['master']['jvm_options'] %>"
+<% if node['airgapped_jenkins']['master']['jvm_options'] %>
+JENKINS_JAVA_OPTIONS="$JENKINS_JAVA_OPTIONS <%= node['airgapped_jenkins']['master']['jvm_options'] %>"
 <% end %>
 
 ## Type:        integer(0:65535)
@@ -51,7 +51,7 @@ JENKINS_JAVA_OPTIONS="$JENKINS_JAVA_OPTIONS <%= node['jenkins']['master']['jvm_o
 # Port Jenkins is listening on.
 # Set to -1 to disable
 #
-JENKINS_PORT="<%= node['jenkins']['master']['port'] %>"
+JENKINS_PORT="<%= node['airgapped_jenkins']['master']['port'] %>"
 
 ## Type:        string
 ## Default:     "0.0.0.0"
@@ -60,7 +60,7 @@ JENKINS_PORT="<%= node['jenkins']['master']['port'] %>"
 # IP address Jenkins listens on for HTTP requests.
 # Default is all interfaces (0.0.0.0).
 #
-JENKINS_LISTEN_ADDRESS="<%= node['jenkins']['master']['listen_address'] %>"
+JENKINS_LISTEN_ADDRESS="<%= node['airgapped_jenkins']['master']['listen_address'] %>"
 
 ## Type:        integer(0:65535)
 ## Default:     ""
@@ -138,6 +138,6 @@ JENKINS_HANDLER_IDLE="20"
 # Pass arbitrary arguments to Jenkins.
 # Full option list: java -jar jenkins.war --help
 #
-<% if node['jenkins']['master']['jenkins_args'] %>
-JENKINS_ARGS="$JENKINS_ARGS <%= node['jenkins']['master']['jenkins_args'] %>"
+<% if node['airgapped_jenkins']['master']['jenkins_args'] %>
+JENKINS_ARGS="$JENKINS_ARGS <%= node['airgapped_jenkins']['master']['jenkins_args'] %>"
 <% end %>

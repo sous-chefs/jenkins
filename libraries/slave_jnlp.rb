@@ -2,7 +2,8 @@
 # Cookbook:: jenkins
 # HWRP:: jnlp_slave
 #
-# Author:: Seth Chisamore <schisamo@chef.io>
+# Author: Seth Chisamore <schisamo@chef.io>
+# Author: Drew Budwin <dbudwin@foxguardsolutions.com>
 #
 # Copyright:: 2013-2017, Chef Software, Inc.
 #
@@ -146,7 +147,7 @@ class Chef
     #
     def group_resource
       @group_resource ||= build_resource(:group, new_resource.group) do
-        system(node['jenkins']['master']['use_system_accounts']) # ~FC048 this is a foodcritic bug
+        system(node['airgapped_jenkins']['master']['use_system_accounts']) # ~FC048 this is a foodcritic bug
       end
     end
 
@@ -162,7 +163,7 @@ class Chef
         gid(new_resource.group)
         comment('Jenkins slave user - Created by Chef')
         home(new_resource.remote_fs)
-        system(node['jenkins']['master']['use_system_accounts']) # ~FC048 this is a foodcritic bug
+        system(node['airgapped_jenkins']['master']['use_system_accounts']) # ~FC048 this is a foodcritic bug
       end
     end
 
@@ -223,15 +224,12 @@ class Chef
     # JNLP slave process. The caller will need to call `run_action` on
     # the resource.
     #
-    # @return [Chef::Resource::RunitService]
+    # @return [Chef::Resource::Service]
     #
     def service_resource
       @service_resource ||=
         begin
-          # Ensure runit is installed on the slave.
-          include_recipe 'runit'
-
-          build_resource(:runit_service, new_resource.service_name).tap do |r|
+          build_resource(:service, new_resource.service_name).tap do |r|
             # We need to use .tap() to access methods in the provider's scope.
             r.cookbook('jenkins')
             r.run_template_name('jenkins-slave')

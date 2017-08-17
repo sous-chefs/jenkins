@@ -1,7 +1,7 @@
 apt_update 'update' if platform_family?('debian')
 
 include_recipe 'java::default'
-include_recipe 'jenkins::master'
+include_recipe 'airgapped_jenkins::master'
 
 # Install some plugins needed, but not installed on jenkins2 by default
 jenkins_plugins = %w(

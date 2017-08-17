@@ -18,7 +18,6 @@ provisioner:
     jenkins:
       master:
         host: localhost
-        install_method: war
         mirror: https://updates.jenkins.io
 
 platforms:
@@ -34,38 +33,17 @@ suites:
   #
   # Smoke suite
   #
-  - name: smoke_package_stable
-    run_list: jenkins_server_wrapper::default
-    attributes:
-      jenkins:
-        master:
-          install_method: package
-    excludes:
-      - ubuntu-14.04
-      - debian-7.11
-  - name: smoke_package_current
-    run_list: jenkins_server_wrapper::default
-    attributes:
-      jenkins:
-        master:
-          channel: current
-          install_method: package
-    excludes:
-      - ubuntu-14.04
-      - debian-7.11
   - name: smoke_war_stable
     run_list: jenkins_server_wrapper::default
     attributes:
       jenkins:
         master:
-          install_method: war
           source: https://updates.jenkins.io/stable/latest/jenkins.war
   - name: smoke_war_latest
     run_list: jenkins_server_wrapper::default
     attributes:
       jenkins:
         master:
-          install_method: war
           source: https://updates.jenkins.io/latest/jenkins.war
 
   #

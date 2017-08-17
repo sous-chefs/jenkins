@@ -10,7 +10,7 @@ jenkins = data_bag_item('keys', 'jenkins')
 
 require 'openssl'
 require 'net/ssh'
-key = OpenSSL::PKey::RSA.new(jenkins['private_key'])
+key = OpenSSL::PKey::RSA.new(airgapped_jenkins['private_key'])
 private_key = key.to_pem
 public_key  = "#{key.ssh_type} #{[key.to_blob].pack('m0')}"
 

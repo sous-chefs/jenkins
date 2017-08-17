@@ -248,10 +248,10 @@ EOH
     def private_key_path
       node.run_state[:jenkins_private_key_path] ||= begin # ~FC001
         # @todo remove in 3.0.0
-        if node['jenkins']['executor']['private_key']
-          Chef::Log.warn("Using node['jenkins']['executor']['private_key'] is deprecated!")
+        if node['airgapped_jenkins']['executor']['private_key']
+          Chef::Log.warn("Using node['airgapped_jenkins']['executor']['private_key'] is deprecated!")
           Chef::Log.warn('Persisting sensitive information in node attributes is not recommended.')
-          node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key'] # ~FC001
+          node.run_state[:jenkins_private_key] = node['airgapped_jenkins']['executor']['private_key'] # ~FC001
         end
 
         content = node.run_state[:jenkins_private_key] # ~FC001
@@ -277,7 +277,7 @@ EOH
     #
     def private_key_given?
       # @todo remove in 3.0.0
-      !node['jenkins']['executor']['private_key'].nil? ||
+      !node['airgapped_jenkins']['executor']['private_key'].nil? ||
         !node.run_state[:jenkins_private_key].nil? # ~FC001
     end
 
@@ -287,7 +287,7 @@ EOH
     # @return [String]
     #
     def proxy
-      node['jenkins']['executor']['proxy']
+      node['airgapped_jenkins']['executor']['proxy']
     end
 
     #
@@ -296,7 +296,7 @@ EOH
     # @return [Boolean]
     #
     def proxy_given?
-      !node['jenkins']['executor']['proxy'].nil?
+      !node['airgapped_jenkins']['executor']['proxy'].nil?
     end
 
     #
@@ -305,7 +305,7 @@ EOH
     # @return [String]
     #
     def endpoint
-      node['jenkins']['master']['endpoint']
+      node['airgapped_jenkins']['master']['endpoint']
     end
 
     #
@@ -314,7 +314,7 @@ EOH
     # @return [Fixnum]
     #
     def timeout
-      node['jenkins']['executor']['timeout']
+      node['airgapped_jenkins']['executor']['timeout']
     end
 
     #
@@ -323,7 +323,7 @@ EOH
     # @return [Boolean]
     #
     def timeout_given?
-      !node['jenkins']['executor']['timeout'].nil?
+      !node['airgapped_jenkins']['executor']['timeout'].nil?
     end
 
     # Username used when invoking cli
@@ -349,7 +349,7 @@ EOH
     # @return [String]
     #
     def java
-      node['jenkins']['java']
+      node['airgapped_jenkins']['java']
     end
 
     #
@@ -358,7 +358,7 @@ EOH
     # @return [String]
     #
     def jvm_options
-      node['jenkins']['executor']['jvm_options']
+      node['airgapped_jenkins']['executor']['jvm_options']
     end
 
     #
@@ -368,7 +368,7 @@ EOH
     # @return [String]
     #
     def protocol
-      node['jenkins']['executor']['protocol']
+      node['airgapped_jenkins']['executor']['protocol']
     end
 
     #
@@ -378,7 +378,7 @@ EOH
     # @return [String]
     #
     def cli_user
-      node['jenkins']['executor']['cli_user']
+      node['airgapped_jenkins']['executor']['cli_user']
     end
 
     #
@@ -388,27 +388,6 @@ EOH
     #
     def cli
       File.join(Chef::Config[:file_cache_path], 'jenkins-cli.jar')
-    end
-
-    #
-    # The path to the +update-center.json+ on disk (which may or may not exist).
-    # The file contains all plugins from the jenkins update-center.
-    #
-    # @return [String]
-    #
-    def update_center_json
-      File.join(Chef::Config[:file_cache_path], 'update-center.json')
-    end
-
-    #
-    # The path to the fully-extracted, raw JSON structure contained in Jenkin's
-    # +update-center.json+. This is the universe of Jenkin's plugins is used
-    # by the +jenkins_plugin+ resoure.
-    #
-    # @return [String]
-    #
-    def extracted_update_center_json
-      File.join(Chef::Config[:file_cache_path], 'extracted-update-center.json')
     end
 
     #
@@ -459,64 +438,6 @@ EOH
         remote_file.backup(false)
         remote_file.mode('0755')
         remote_file.run_action(:create)
-
-        true
-      end
-    end
-
-    #
-    # Idempotently download the remote +update-center.json+ file for the Jenkins
-    # server. This is needed to be able to install plugins throught the update-center.
-    #
-    def ensure_update_center_present!
-      node.run_state[:jenkins_update_center_present] ||= begin # ~FC001
-        source = uri_join(node['jenkins']['master']['mirror'], node['jenkins']['master']['channel'], 'update-center.json')
-        remote_file = Chef::Resource::RemoteFile.new(update_center_json, run_context)
-        remote_file.source(source)
-        remote_file.backup(false)
-
-        # Setting sensitive(true) will suppress the long diff output, but this
-        # functionality is not available in older versions of Chef, so we need
-        # check if the resource responds to the method before calling it.
-        remote_file.sensitive(true) if remote_file.respond_to?(:sensitive)
-        remote_file.mode('0644')
-        remote_file.run_action(:create)
-
-        extracted_json = ''
-
-        # The downloaded file is composed of 3 lines. The first and the last line
-        # are containing some javascript, the line in between contains the relevant
-        # JSON data. That is the one that must be extracted.
-        IO.readlines(update_center_json).map do |line|
-          extracted_json = line unless line == 'updateCenter.post(' || line == ');'
-        end
-
-        # Write the extracted JSON to a file so `jenkins_plugin` can read it.
-        extracted_json_file = Chef::Resource::File.new(extracted_update_center_json, run_context)
-        extracted_json_file.content(extracted_json)
-        extracted_json_file.backup(false)
-
-        # Setting sensitive(true) will suppress the long diff output, but this
-        # functionality is not available in older versions of Chef, so we need
-        # check if the resource responds to the method before calling it.
-        if extracted_json_file.respond_to?(:sensitive)
-          extracted_json_file.sensitive(true)
-        end
-
-        extracted_json_file.mode('0644')
-        extracted_json_file.run_action(:create)
-
-        # Ensure Jenkins is alive and kicking
-        wait_until_ready!
-
-        # Uri where update-center JSON's can be posted to. Jenkins is now aware of the
-        # update-center data and can handle the plugin installation through CLI exactly
-        # in the same way as through the user interface.
-        uri = URI(uri_join(endpoint, 'updateCenter', 'byId', 'default', 'postBack'))
-        headers = { 'Accept' => 'application/json' }
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true if uri.scheme == 'https'
-        http.post(uri.path, extracted_json, headers)
 
         true
       end
