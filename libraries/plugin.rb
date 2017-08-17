@@ -111,21 +111,12 @@ EOH
       install_block = proc do
         # Install a plugin from a given hpi (or jpi) if a link was provided.
         # In that case jenkins does not handle plugin dependencies automatically.
-        # Otherwise the plugin is installed through the jenkins update-center
-        # (default behaviour). In that case plugin dependencies are handled by jenkins.
         if new_resource.source
           install_plugin_from_url(
             new_resource.source,
             new_resource.name,
             nil,
             cli_opts: new_resource.options
-          )
-        else
-          install_plugin_from_update_center(
-            new_resource.name,
-            new_resource.version,
-            cli_opts: new_resource.options,
-            install_deps: new_resource.install_deps
           )
         end
       end
@@ -250,46 +241,6 @@ EOH
     end
 
     #
-    # Installs a plugin along with all of it's dependencies using the
-    # update-center.json data.
-    #
-    # @param [String] name of the plugin to be installed
-    # @param [String] version of the plugin to be installed
-    # @param [Hash] opts the options install plugin with
-    # @option opts [Boolean] :cli_opts additional flags to pass the jenkins cli command
-    # @option opts [Boolean] :install_deps indicates a plugins dependencies should be installed
-    #
-    def install_plugin_from_update_center(plugin_name, plugin_version, opts = {})
-      remote_plugin_data = plugin_universe[plugin_name]
-
-      # Compute some versions; Parse them as `Gem::Version` instances for easy
-      # comparisons.
-      latest_version = plugin_version(remote_plugin_data['version'])
-
-      # Brute-force install all dependencies
-      if opts[:install_deps] && remote_plugin_data['dependencies'].any?
-        Chef::Log.debug "Installing plugin dependencies for #{plugin_name}"
-
-        remote_plugin_data['dependencies'].each do |dep|
-          # continue if any version of the dependency is installed
-          if plugin_installation_manifest(dep['name'])
-            Chef::Log.debug "A version of dependency #{dep['name']} is already installed - skipping"
-            next
-          elsif dep['optional'] == false
-            # only install required dependencies
-            install_plugin_from_update_center(dep['name'], dep['version'], opts)
-          end
-        end
-      end
-
-      # Replace the latest version with the desired version in the URL
-      source_url = remote_plugin_data['url']
-      source_url.gsub!(latest_version.to_s, desired_version(plugin_name, plugin_version).to_s)
-
-      install_plugin_from_url(source_url, plugin_name, desired_version(plugin_name, plugin_version), opts)
-    end
-
-    #
     # Install a plugin from a given hpi (or jpi) source url.
     #
     # @param [String] full url of the *.hpi/*.jpi to install
@@ -360,18 +311,6 @@ EOH
     #
     def plugin_data_directory(plugin_name)
       ::File.join(plugins_directory, plugin_name)
-    end
-
-    #
-    # Parsed hash of all known Jenkins plugins
-    #
-    # @return [Hash]
-    #
-    def plugin_universe
-      @plugin_universe ||= begin
-        ensure_update_center_present!
-        JSON.parse(IO.read(extracted_update_center_json).force_encoding('UTF-8'))['plugins']
-      end
     end
 
     #
