@@ -2,7 +2,8 @@
 # Cookbook:: jenkins
 # HWRP:: jnlp_slave
 #
-# Author:: Seth Chisamore <schisamo@chef.io>
+# Author: Seth Chisamore <schisamo@chef.io>
+# Author: Drew Budwin <dbudwin@foxguardsolutions.com>
 #
 # Copyright:: 2013-2017, Chef Software, Inc.
 #
@@ -223,15 +224,12 @@ class Chef
     # JNLP slave process. The caller will need to call `run_action` on
     # the resource.
     #
-    # @return [Chef::Resource::RunitService]
+    # @return [Chef::Resource::Service]
     #
     def service_resource
       @service_resource ||=
         begin
-          # Ensure runit is installed on the slave.
-          include_recipe 'runit'
-
-          build_resource(:runit_service, new_resource.service_name).tap do |r|
+          build_resource(:service, new_resource.service_name).tap do |r|
             # We need to use .tap() to access methods in the provider's scope.
             r.cookbook('jenkins')
             r.run_template_name('jenkins-slave')

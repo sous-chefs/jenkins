@@ -6,6 +6,7 @@
 # Author: Fletcher Nichol <fnichol@nichol.ca>
 # Author: Seth Chisamore <schisamo@chef.io>
 # Author: Seth Vargo <sethvargo@gmail.com>
+# Author: Drew Budwin <dbudwin@foxguardsolutions.com>
 #
 # Copyright:: 2010-2016, VMware, Inc.
 # Copyright:: 2012-2017, Chef Software, Inc.
@@ -89,14 +90,6 @@ default['jenkins']['master'].tap do |master|
   #   node.normal['jenkins']['master']['checksum'] = 'abcd1234...'
   #
   master['checksum'] = nil
-
-  #
-  # The list of options to pass to the Java JVM script when using the package
-  # installer. For example:
-  #
-  #   node.normal['jenkins']['master']['jvm_options'] = '-Xmx256m'
-  #
-  master['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
 
   #
   # The list of Jenkins arguments to pass to the initialize script. This varies
@@ -183,6 +176,14 @@ default['jenkins']['master'].tap do |master|
   master['home'] = '/var/lib/jenkins'
 
   #
+  # The list of options to pass to the Java JVM script when using the package
+  # installer. For example:
+  #
+  #   node.normal['jenkins']['master']['jvm_options'] = '-Xmx256m'
+  #
+  master['jvm_options'] = "-Djenkins.install.runSetupWizard=false -Djava.io.tmpdir=#{node['jenkins']['master']['home']}/tmp"
+
+  #
   # The directory where Jenkins should write its logfile(s). **This attribute
   # is only used by the package installer!**. The log directory will be owned
   # by the same user and group as the home directory. If you need furthor
@@ -199,19 +200,6 @@ default['jenkins']['master'].tap do |master|
   # descriptors are forced to 1024 regardless of /etc/security/limits.conf
   #
   master['maxopenfiles'] = 8192
-
-  #
-  # The groups of user under which Jenkins is running. Works for runit only.
-  #
-  master['runit']['groups'] = [node['jenkins']['master']['group']]
-
-  #
-  # The timeout passed to the runit cookbook's service resource. Override the
-  # default timeout of 7 seconds. This option implies verbose.
-  #
-  #   node.normal['jenkins']['master']['runit']['sv_timeout'] = 60
-  #
-  master['runit']['sv_timeout'] = 7
 
   #
   # The limits for the Java process running the master server.
@@ -240,4 +228,15 @@ default['jenkins']['master'].tap do |master|
   # Keyserver to use. Disabled by default
   #
   master['repository_keyserver'] = nil
+
+  #
+  # Path of where the environment file can be located depending on the platform.
+  #
+  master['environment_file_path'] =
+    case node['platform_family']
+    when 'debian'
+      '/etc/default'
+    when 'rhel'
+      '/etc/sysconfig'
+    end
 end

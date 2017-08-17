@@ -1,0 +1,15 @@
+[Unit]
+Description=Jenkins
+After=network.target
+Requires=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=<%= node['jenkins']['master']['environment_file_path'] %>/jenkins
+ExecStart=/usr/bin/java <%= node['jenkins']['master']['jvm_options'] %> -jar <%= node['jenkins']['master']['home'] %>/jenkins.war --httpPort=<%= node['jenkins']['master']['port'] %> --httpListenAddress=<%= node['jenkins']['master']['listen_address'] %> <%= node['jenkins']['master']['jenkins_args'] %>
+Restart=always
+User=<%= node['jenkins']['master']['user'] %>
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target
