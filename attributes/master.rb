@@ -52,19 +52,6 @@ default['jenkins']['master'].tap do |master|
   master['channel'] = 'stable'
 
   #
-  # The mirror to download the Jenkins war file. This attribute is only used
-  # in the "war" installation method.
-  #
-  #   node.normal['jenkins']['master']['mirror'] = 'http://cache.example.com'
-  #
-  # Note: this mirror is combined with some "smart" attributes to build the
-  # Jenkins war. If you are not using an actual Jenkins mirror, you might be
-  # more interested in the +source+ attribute, which accepts the full path
-  # to the war file for downloading.
-  #
-  master['mirror'] = 'https://updates.jenkins.io'
-
-  #
   # The full URL to the Jenkins WAR file on the remote mirror. This attribute is
   # only used in the "war" installation method. This is a compiled attribute
   # from the +mirror+ and +version+ attributes, but you can override this
@@ -77,9 +64,7 @@ default['jenkins']['master'].tap do |master|
   # Warning: Setting this attribute will negate/ignore any values for +mirror+
   # and +version+.
   #
-  master['source'] = "#{node['jenkins']['master']['mirror']}/"\
-    "#{node['jenkins']['master']['version'] || node['jenkins']['master']['channel']}/"\
-    'latest/jenkins.war'
+  master['source'] = nil
 
   #
   # The checksum of the war file. This is use to verify that the remote war file
