@@ -23,7 +23,7 @@
 # limitations under the License.
 #
 
-default['jenkins'].tap do |jenkins|
+default['airgapped_jenkins'].tap do |airgapped_jenkins|
   #
   # The path to the +java+ bin on disk. This attribute is intelligently
   # calculated by assuming some sane defaults from community Java cookbooks:
@@ -38,11 +38,11 @@ default['jenkins'].tap do |jenkins|
   #
   # You can override this attribute by setting the full path manually:
   #
-  #   node.normal['jenkins']['java'] = '/my/custom/path/to/java6'
+  #   node.normal['airgapped_jenkins']['java'] = '/my/custom/path/to/java6'
   #
   # Setting this value to +nil+ will break the Internet.
   #
-  jenkins['java'] = if node['java'] && node['java']['java_home']
+  airgapped_jenkins['java'] = if node['java'] && node['java']['java_home']
                       File.join(node['java']['java_home'], 'bin', 'java')
                     elsif node['java'] && node['java']['home']
                       File.join(node['java']['home'], 'bin', 'java')

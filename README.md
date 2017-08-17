@@ -36,10 +36,7 @@ Documentation and examples are provided inline using YARD. The tests and fixture
 
 ### master
 
-The master recipe will create the required directory structure and install jenkins. There are two installation methods, controlled by the `node['jenkins']['master']['install_method']` attribute:
-
-- `package` - Install Jenkins from the official jenkins-ci.org packages
-- `war` - Download the latest version of the WAR file
+The master recipe will create the required directory structure and install jenkins.
 
 ## Resource/Provider
 
@@ -553,7 +550,7 @@ The underlying executor class (which all HWRPs use) intelligently adds authentic
 ```ruby
 # Using search
 master = search(:node, 'fqdn:master.ci.example.com').first
-node.run_state[:jenkins_private_key] = master['jenkins']['private_key']
+node.run_state[:jenkins_private_key] = master['airgapped_jenkins']['private_key']
 
 # Using encrypted data bags and chef-sugar
 private_key = encrypted_data_bag_item('jenkins', 'keys')['private_key']
@@ -595,7 +592,7 @@ node.run_state[:jenkins_password]
 Jenkins 2 enables an install wizard by default. To make sure you can manipulate the jenkins instance, you need to disable the wizard. You can do this by setting an attribute:
 
 ```ruby
-default['jenkins']['master']['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
+default['airgapped_jenkins']['master']['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
 ```
 
 This is done by default, but must be kept when overriding the jvm_options!
@@ -605,13 +602,13 @@ This is done by default, but must be kept when overriding the jvm_options!
 If you need to pass through a proxy to communicate between your masters and slaves, you will need to set a special node attribute:
 
 ```ruby
-node['jenkins']['executor']['proxy']
+node['airgapped_jenkins']['executor']['proxy']
 ```
 
 The underlying executor class (which all HWRPs use) intelligently passes proxy information to the Jenkins CLI commands if this attribute is set. It should be set in the form `HOST:PORT`:
 
 ```ruby
-node.normal['jenkins']['executor']['proxy'] = '1.2.3.4:5678'
+node.normal['airgapped_jenkins']['executor']['proxy'] = '1.2.3.4:5678'
 ```
 
 ## Development

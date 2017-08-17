@@ -1,12 +1,12 @@
-name             'jenkins'
-maintainer       'Chef Software, Inc.'
-maintainer_email 'cookbooks@chef.io'
+name             'airgapped_jenkins'
+maintainer       'FoxGuard Solutions'
+maintainer_email 'pumpdev@foxguardsolutions.com'
 license          'Apache-2.0'
-description      'Installs and configures Jenkins CI master & slaves'
+description      'Installs and configures an airgapped Jenkins CI master & slaves'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '5.0.3'
+version          '5.1.0'
 
-recipe 'jenkins::master', 'Installs a Jenkins master'
+recipe 'airgapped_jenkins::master', 'Installs an airgapped Jenkins master'
 
 %w(ubuntu debian redhat centos scientific oracle amazon).each do |os|
   supports os

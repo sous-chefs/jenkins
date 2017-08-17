@@ -248,10 +248,10 @@ EOH
     def private_key_path
       node.run_state[:jenkins_private_key_path] ||= begin # ~FC001
         # @todo remove in 3.0.0
-        if node['jenkins']['executor']['private_key']
-          Chef::Log.warn("Using node['jenkins']['executor']['private_key'] is deprecated!")
+        if node['airgapped_jenkins']['executor']['private_key']
+          Chef::Log.warn("Using node['airgapped_jenkins']['executor']['private_key'] is deprecated!")
           Chef::Log.warn('Persisting sensitive information in node attributes is not recommended.')
-          node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key'] # ~FC001
+          node.run_state[:jenkins_private_key] = node['airgapped_jenkins']['executor']['private_key'] # ~FC001
         end
 
         content = node.run_state[:jenkins_private_key] # ~FC001
@@ -277,7 +277,7 @@ EOH
     #
     def private_key_given?
       # @todo remove in 3.0.0
-      !node['jenkins']['executor']['private_key'].nil? ||
+      !node['airgapped_jenkins']['executor']['private_key'].nil? ||
         !node.run_state[:jenkins_private_key].nil? # ~FC001
     end
 
@@ -287,7 +287,7 @@ EOH
     # @return [String]
     #
     def proxy
-      node['jenkins']['executor']['proxy']
+      node['airgapped_jenkins']['executor']['proxy']
     end
 
     #
@@ -296,7 +296,7 @@ EOH
     # @return [Boolean]
     #
     def proxy_given?
-      !node['jenkins']['executor']['proxy'].nil?
+      !node['airgapped_jenkins']['executor']['proxy'].nil?
     end
 
     #
@@ -305,7 +305,7 @@ EOH
     # @return [String]
     #
     def endpoint
-      node['jenkins']['master']['endpoint']
+      node['airgapped_jenkins']['master']['endpoint']
     end
 
     #
@@ -314,7 +314,7 @@ EOH
     # @return [Fixnum]
     #
     def timeout
-      node['jenkins']['executor']['timeout']
+      node['airgapped_jenkins']['executor']['timeout']
     end
 
     #
@@ -323,7 +323,7 @@ EOH
     # @return [Boolean]
     #
     def timeout_given?
-      !node['jenkins']['executor']['timeout'].nil?
+      !node['airgapped_jenkins']['executor']['timeout'].nil?
     end
 
     # Username used when invoking cli
@@ -349,7 +349,7 @@ EOH
     # @return [String]
     #
     def java
-      node['jenkins']['java']
+      node['airgapped_jenkins']['java']
     end
 
     #
@@ -358,7 +358,7 @@ EOH
     # @return [String]
     #
     def jvm_options
-      node['jenkins']['executor']['jvm_options']
+      node['airgapped_jenkins']['executor']['jvm_options']
     end
 
     #
@@ -368,7 +368,7 @@ EOH
     # @return [String]
     #
     def protocol
-      node['jenkins']['executor']['protocol']
+      node['airgapped_jenkins']['executor']['protocol']
     end
 
     #
@@ -378,7 +378,7 @@ EOH
     # @return [String]
     #
     def cli_user
-      node['jenkins']['executor']['cli_user']
+      node['airgapped_jenkins']['executor']['cli_user']
     end
 
     #

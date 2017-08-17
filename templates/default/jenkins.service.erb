@@ -5,10 +5,10 @@ Requires=network.target
 
 [Service]
 Type=simple
-EnvironmentFile=<%= node['jenkins']['master']['environment_file_path'] %>/jenkins
-ExecStart=/usr/bin/java <%= node['jenkins']['master']['jvm_options'] %> -jar <%= node['jenkins']['master']['home'] %>/jenkins.war --httpPort=<%= node['jenkins']['master']['port'] %> --httpListenAddress=<%= node['jenkins']['master']['listen_address'] %> <%= node['jenkins']['master']['jenkins_args'] %>
+EnvironmentFile=<%= node['airgapped_jenkins']['master']['environment_file_path'] %>/jenkins
+ExecStart=/usr/bin/java <%= node['airgapped_jenkins']['master']['jvm_options'] %> -jar <%= node['airgapped_jenkins']['master']['home'] %>/jenkins.war --httpPort=<%= node['airgapped_jenkins']['master']['port'] %> --httpListenAddress=<%= node['airgapped_jenkins']['master']['listen_address'] %> <%= node['airgapped_jenkins']['master']['jenkins_args'] %>
 Restart=always
-User=<%= node['jenkins']['master']['user'] %>
+User=<%= node['airgapped_jenkins']['master']['user'] %>
 RestartSec=20
 
 [Install]

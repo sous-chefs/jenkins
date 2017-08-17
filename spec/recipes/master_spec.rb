@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'jenkins::_master_war' do
+describe 'airgapped_jenkins::master' do
   context '(default) system account is false' do
     let(:home)          { '/opt/bacon' }
     let(:log_directory) { '/opt/bacon/log' }
@@ -9,11 +9,10 @@ describe 'jenkins::_master_war' do
 
     cached(:chef_run) do
       ChefSpec::ServerRunner.new do |node|
-        node.normal['jenkins']['master']['home']           = home
-        node.normal['jenkins']['master']['log_directory']  = log_directory
-        node.normal['jenkins']['master']['user']           = user
-        node.normal['jenkins']['master']['group']          = group
-        node.normal['jenkins']['master']['install_method'] = 'war'
+        node.normal['airgapped_jenkins']['master']['home']           = home
+        node.normal['airgapped_jenkins']['master']['log_directory']  = log_directory
+        node.normal['airgapped_jenkins']['master']['user']           = user
+        node.normal['airgapped_jenkins']['master']['group']          = group
       end.converge(described_recipe)
     end
 
@@ -56,12 +55,11 @@ describe 'jenkins::_master_war' do
 
     cached(:chef_run) do
       ChefSpec::ServerRunner.new do |node|
-        node.normal['jenkins']['master']['home']           = home
-        node.normal['jenkins']['master']['log_directory']  = log_directory
-        node.normal['jenkins']['master']['user']           = user
-        node.normal['jenkins']['master']['group']          = group
-        node.normal['jenkins']['master']['install_method'] = 'war'
-        node.normal['jenkins']['master']['use_system_accounts'] = true
+        node.normal['airgapped_jenkins']['master']['home']           = home
+        node.normal['airgapped_jenkins']['master']['log_directory']  = log_directory
+        node.normal['airgapped_jenkins']['master']['user']           = user
+        node.normal['airgapped_jenkins']['master']['group']          = group
+        node.normal['airgapped_jenkins']['master']['use_system_accounts'] = true
       end.converge(described_recipe)
     end
 

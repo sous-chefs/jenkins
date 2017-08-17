@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'jenkins::java' do
+describe 'airgapped_jenkins::java' do
   context 'on Debian' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new(platform: 'debian', version: '8.8')

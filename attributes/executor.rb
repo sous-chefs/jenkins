@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-default['jenkins']['executor'].tap do |executor|
+default['airgapped_jenkins']['executor'].tap do |executor|
   #
   # This is the number of seconds to wait for Jenkins to become "ready" after a
   # start, restart, or reload. Since the Jenkins service returns immediately
@@ -39,7 +39,7 @@ default['jenkins']['executor'].tap do |executor|
   # slaves, you will need to set this node attribute. It should be  set in the
   # form `HOST:PORT`:
   #
-  #   node.normal['jenkins']['executor']['proxy'] = '1.2.3.4'
+  #   node.normal['airgapped_jenkins']['executor']['proxy'] = '1.2.3.4'
   #
   # Please see the +Proxies+ section of the README for more information.
   #

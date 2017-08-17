@@ -290,7 +290,7 @@ EOH
     # @return [String]
     #
     def plugins_directory
-      ::File.join(node['jenkins']['master']['home'], 'plugins')
+      ::File.join(node['airgapped_jenkins']['master']['home'], 'plugins')
     end
 
     #
