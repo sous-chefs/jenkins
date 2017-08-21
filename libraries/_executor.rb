@@ -134,12 +134,7 @@ module Jenkins
     #   the standard out from the command
     #
     def groovy!(script)
-      file = Tempfile.new('groovy')
-      file.write script
-      file.flush
-      execute!("groovy #{file.path}")
-    ensure
-      file.close! if file
+      execute!("groovy =", {input: script})
     end
 
     #
@@ -148,12 +143,7 @@ module Jenkins
     # @see groovy!
     #
     def groovy(script)
-      file = Tempfile.new('groovy')
-      file.write script
-      file.flush
-      execute("groovy #{file.path}")
-    ensure
-      file.close! if file
+      execute("groovy =", {input: script})
     end
 
     private
