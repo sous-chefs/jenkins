@@ -134,7 +134,7 @@ module Jenkins
     #   the standard out from the command
     #
     def groovy!(script)
-      execute!("groovy =", {input: script})
+      execute!('groovy =', input: script)
     end
 
     #
@@ -143,7 +143,7 @@ module Jenkins
     # @see groovy!
     #
     def groovy(script)
-      execute("groovy =", {input: script})
+      execute('groovy =', input: script)
     end
 
     private
