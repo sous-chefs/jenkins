@@ -101,7 +101,7 @@ module Jenkins
         if ((exitstatus == 255) && (stderr =~ /.*?Authentication failed\. No private key accepted\.$/)) ||
            ((exitstatus == 255) && (stderr =~ /^java\.io\.EOFException/)) ||
            ((exitstatus == 1) && (stderr =~ /^Exception in thread "main" java\.io\.EOFException/))
-          command.reject! { |c| c =~ /-i/ }
+          command.reject! { |c| c =~ /^-i / }
           retry
         elsif (exitstatus == 255) && (stderr =~ /^"--username" is not a valid option/)
           command.reject! { |c| c =~ /--username|--password/ }
