@@ -2,6 +2,16 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 5.0.4 (2017-08-28)
+
+- Modified case statements to support package installation on Amazon Linux
+- Changes endpoint for 'wait_until_ready' helper
+- Fix permissions for plugin files downloaded from update center
+- Wait for Jenkins in case of EADDRNOTAVAIL
+- Change groovy scripts to use stdin instead of file. Fixes #620
+- And change test to expect new format
+- Ensure that we only reject the '-i key' part and not, for instance, parts that contain '-i' in larger strings.
+
 ## 5.0.3 (2017-07-04)
 
 - Removed mention of Amazon Linux support from the readme. We will support this in the future, but at the moment the cookbook does not actually support Amazon Linux
