@@ -4,7 +4,7 @@
 #
 # Author: Seth Vargo <sethvargo@chef.io>
 #
-# Copyright:: 2014-2016, Chef Software, Inc.
+# Copyright:: 2014-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ when 'debian'
   else
     package 'openjdk-7-jdk'
   end
-when 'rhel'
+when 'rhel', 'amazon'
   package 'java-1.8.0-openjdk'
 else
   raise "`#{node['platform_family']}' is not supported!"

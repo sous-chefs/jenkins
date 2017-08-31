@@ -22,7 +22,7 @@ RSpec.configure do |config|
 
   # Set a default platform (this is overriden as needed)
   config.platform  = 'ubuntu'
-  config.version   = '14.04'
+  config.version   = '16.04'
 
   # Be random!
   config.order = 'random'

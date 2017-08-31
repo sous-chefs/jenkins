@@ -5,7 +5,7 @@
 # Author:: Seth Vargo <sethvargo@gmail.com>
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2016, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -307,6 +307,8 @@ EOH
       path   = ::File.join(Chef::Config[:file_cache_path], "#{plugin_name}-#{version}.plugin")
       plugin = Chef::Resource::RemoteFile.new(path, run_context)
       plugin.source(source_url)
+      plugin.owner('jenkins')
+      plugin.group('jenkins')
       plugin.backup(false)
       plugin.run_action(:create)
 
@@ -314,7 +316,7 @@ EOH
       # Jenkins that prevents Jenkins from following 302 redirects, so we
       # use Chef to download the plugin and then use Jenkins to install it.
       # It's a bit backwards, but so is Jenkins.
-      executor.execute!('install-plugin', escape(plugin.path), '-name', escape(plugin_name), opts[:cli_opts])
+      executor.execute!('install-plugin', escape('file://' + plugin.path), '-name', escape(plugin_name), opts[:cli_opts])
     end
 
     #

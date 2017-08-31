@@ -2,6 +2,37 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 5.0.4 (2017-08-28)
+
+- Modified case statements to support package installation on Amazon Linux
+- Changes endpoint for 'wait_until_ready' helper
+- Fix permissions for plugin files downloaded from update center
+- Wait for Jenkins in case of EADDRNOTAVAIL
+- Change groovy scripts to use stdin instead of file. Fixes #620
+- And change test to expect new format
+- Ensure that we only reject the '-i key' part and not, for instance, parts that contain '-i' in larger strings.
+
+## 5.0.3 (2017-07-04)
+
+- Removed mention of Amazon Linux support from the readme. We will support this in the future, but at the moment the cookbook does not actually support Amazon Linux
+- Note that Package installs of Jenkins now require Debian 9+ and Ubuntu 16.04+ due to Jenkins 2.66 now requiring Java 8 packages to be present
+- Fix credentials_private_key to handle passphrase being nil
+- Improve idempotence of user resource in case properties are not defined in the new resource
+- Make sure plugin path has file:// appended
+- Fix some typos in credentials_user that caused failures
+- Remove foodcritic file we no longer need
+- Remove the rakefile since we have delivery local mode now
+- Remove maintainers logic and instead include a maintainers blurb in the readme
+- Speed up specs and resolve deprecations
+
+## 5.0.2 (2017-06-14)
+
+- Fix regex for falling back to anonymous for failed authentication 
+
+## 5.0.1 (2017-05-01)
+
+- Add -remoting option that is required due to [Jenkins issue](https://jenkins.io/blog/2017/04/26/security-advisory/). Attribute `['jenkins']['executor']['protocol']` has been added to allow for using the deprecated remoting option (default) or ssh/http in which attribute `['jenkins']['executor']['cli_user']` needs to be assigned.
+
 ## [5.0.0](https://github.com/chef-cookbooks/jenkins/tree/v5.0.0) (2017-03-08)
 [Full Changelog](https://github.com/chef-cookbooks/jenkins/compare/v4.2.1...v5.0.0)
 

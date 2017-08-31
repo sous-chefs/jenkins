@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2016, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ class Chef
     def attribute_to_property_map
       {
         private_key: 'credentials.privateKey',
-        passphrase: 'credentials.passphrase.plainText',
+        passphrase: 'credentials.passphrase && credentials.passphrase.plainText',
       }
     end
 

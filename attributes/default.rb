@@ -8,7 +8,7 @@
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright:: 2010-2016, VMware, Inc.
-# Copyright:: 2012-2016, Chef Software, Inc.
+# Copyright:: 2012-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

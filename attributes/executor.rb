@@ -4,7 +4,7 @@
 #
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2016, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,4 +50,14 @@ default['jenkins']['executor'].tap do |executor|
   # You can specify items such as a trust store if you need custom ca certs, for example.
   #
   executor['jvm_options'] = nil
+
+  #
+  # CLI protocol [ssh|http|remoting]
+  #
+  executor['protocol'] = 'remoting'
+
+  #
+  # CLI user to pass for ssh/https protocol
+  #
+  # executor['cli_user'] = 'example_chef_user'
 end

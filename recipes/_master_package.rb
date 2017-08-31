@@ -6,7 +6,7 @@
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright:: 2013-2016, Youscribe
-# Copyright:: 2014-2016, Chef Software, Inc.
+# Copyright:: 2014-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ when 'debian'
   dpkg_autostart 'jenkins' do
     allow false
   end
-when 'rhel'
+when 'rhel', 'amazon'
   yum_repository 'jenkins-ci' do
     baseurl node['jenkins']['master']['repository']
     gpgkey  node['jenkins']['master']['repository_key']
@@ -62,7 +62,7 @@ when 'debian'
     mode     '0644'
     notifies :restart, 'service[jenkins]', :immediately
   end
-when 'rhel'
+when 'rhel', 'amazon'
   template '/etc/sysconfig/jenkins' do
     source   'jenkins-config-rhel.erb'
     mode     '0644'
