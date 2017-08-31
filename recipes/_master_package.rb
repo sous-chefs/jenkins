@@ -55,6 +55,24 @@ directory node['jenkins']['master']['home'] do
   recursive true
 end
 
+# Create the log directory
+directory node['jenkins']['master']['log_directory'] do
+  owner     node['jenkins']['master']['user']
+  group     node['jenkins']['master']['group']
+  mode      '0755'
+  recursive true
+end
+
+# Create/fix permissions on supplemental directories
+%w(cache lib run).each do |folder|
+  directory "/var/#{folder}/jenkins" do
+    owner node['jenkins']['master']['user']
+    group node['jenkins']['master']['group']
+    mode '0755'
+    action :create
+  end
+end
+
 case node['platform_family']
 when 'debian'
   template '/etc/default/jenkins' do
