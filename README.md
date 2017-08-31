@@ -8,8 +8,9 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 
 ### Platforms
 
-- Debian/Ubuntu
-- RHEL/CentOS/Scientific/Amazon/Oracle
+- Debian 7+ (Package installs require 9+ due to dependencies)
+- Ubuntu 14.04+ (Package installs require 16.04+ due to dependencies)
+- RHEL/CentOS/Scientific/Oracle 6+
 
 ### Chef
 
@@ -102,15 +103,15 @@ jenkins_script 'add_authentication' do
 end
 ```
 
-### jenkins\_credentials
+### jenkins_credentials
 
 **NOTES**
 
-* Install version 1.6 or higher of the [credentials plugin](https://wiki.jenkins-ci.org/display/JENKINS/Credentials+Plugin) to use the Jenkins credentials resource.
+- Install version 1.6 or higher of the [credentials plugin](https://wiki.jenkins-ci.org/display/JENKINS/Credentials+Plugin) to use the Jenkins credentials resource.
 
-* In version `4.0.0` of this cookbook this resource was changed so that credentials are referenced by their ID instead of by their name.  If you are upgrading your nodes from an earlier version of this cookbook ( <= 3.1.1 ), use the credentials resource and do not have explicit IDs assigned to credentials, you will need to go into the Jenkins UI, find the auto-generated UUIDs for your credentials, and add them to your cookbook resources.
+- In version `4.0.0` of this cookbook this resource was changed so that credentials are referenced by their ID instead of by their name. If you are upgrading your nodes from an earlier version of this cookbook ( <= 3.1.1 ), use the credentials resource and do not have explicit IDs assigned to credentials, you will need to go into the Jenkins UI, find the auto-generated UUIDs for your credentials, and add them to your cookbook resources.
 
-----
+--------------------------------------------------------------------------------
 
 This resource uses the Jenkins Groovy API to manage credentials and supports the following actions:
 
@@ -118,19 +119,19 @@ This resource uses the Jenkins Groovy API to manage credentials and supports the
 :create, :delete
 ```
 
-Both actions operate on the credential resources idempotently.  It also supports why-run mode.
+Both actions operate on the credential resources idempotently. It also supports why-run mode.
 
-`jenkins_credentials` is a base resource that is not used directly.  Instead there are resources for each specific type of credentials supported.
+`jenkins_credentials` is a base resource that is not used directly. Instead there are resources for each specific type of credentials supported.
 
 ### Common attributes
 
-Use of the credential resource requires a unique `id` attribute.  The resource uses this ID to find the credential for future modifications, and it is an immutable resource once the resource is created within Jenkins.  This ID is also how you reference the credentials in other Groovy scripts (i.e. Pipeline code).
+Use of the credential resource requires a unique `id` attribute. The resource uses this ID to find the credential for future modifications, and it is an immutable resource once the resource is created within Jenkins. This ID is also how you reference the credentials in other Groovy scripts (i.e. Pipeline code).
 
 The `username` attribute (also the name attribute) corresponds to the username of the credentials on the target node.
 
 You may also specify a `description` which is useful in credential identification.
 
-#### jenkins\_password\_credentials
+#### jenkins_password_credentials
 
 Basic username + password credentials.
 
@@ -151,7 +152,7 @@ jenkins_password_credentials 'wcoyote' do
 end
 ```
 
-#### jenkins\_private\_key\_credentials
+#### jenkins_private_key_credentials
 
 Credentials that use a username + private key (optionally protected with a passphrase).
 
@@ -180,7 +181,7 @@ jenkins_private_key_credentials 'wcoyote' do
 end
 ```
 
-### jenkins\_secret\_text\_credentials
+### jenkins_secret_text_credentials
 
 Generic secret text. Requires the the `credentials-binding` plugin.
 
@@ -618,21 +619,13 @@ node.normal['jenkins']['executor']['proxy'] = '1.2.3.4:5678'
 
 Please see the [Contributing](CONTRIBUTING.md) and [Testing](TESTING.md) Guidelines.
 
-## License & Authors
+## Maintainers
 
-- Author: Seth Vargo [sethvargo@gmail.com](mailto:sethvargo@gmail.com)
-- Author: Seth Chisamore [schisamo@chef.io](mailto:schisamo@chef.io)
-- Original Author: Doug MacEachern [dougm@vmware.com](mailto:dougm@vmware.com)
-- Contributor: AJ Christensen [aj@junglist.gen.nz](mailto:aj@junglist.gen.nz)
-- Contributor: Fletcher Nichol [fnichol@nichol.ca](mailto:fnichol@nichol.ca)
-- Contributor: Roman Kamyk [rkj@go2.pl](mailto:rkj@go2.pl)
-- Contributor: Darko Fabijan [darko@renderedtext.com](mailto:darko@renderedtext.com)
+This cookbook is maintained by Chef's Community Cookbook Engineering team. Our goal is to improve cookbook quality and to aid the community in contributing to cookbooks. To learn more about our team, process, and design goals see our [team documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/COOKBOOK_TEAM.MD). To learn more about contributing to cookbooks like this see our [contributing documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/CONTRIBUTING.MD), or if you have general questions about this cookbook come chat with us in #cookbok-engineering on the [Chef Community Slack](http://community-slack.chef.io/)
+
+## License
 
 ```text
-Copyright 2010 VMware, Inc.
-Copyright 2011 Fletcher Nichol
-Copyright 2013-2016 Chef Software, Inc.
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at

@@ -4,7 +4,7 @@
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2016, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -425,11 +425,12 @@ EOH
     def wait_until_ready!
       Timeout.timeout(timeout, JenkinsTimeout) do
         begin
-          open(endpoint)
+          open("#{endpoint}/whoAmI/")
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
                Errno::ENETUNREACH,
+               Errno::EADDRNOTAVAIL,
                Timeout::Error,
                OpenURI::HTTPError => e
           # If authentication has been enabled, the server will return an HTTP

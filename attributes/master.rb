@@ -8,7 +8,7 @@
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright:: 2010-2016, VMware, Inc.
-# Copyright:: 2012-2016, Chef Software, Inc.
+# Copyright:: 2012-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ default['jenkins']['master'].tap do |master|
   #   node.normal['jenkins']['master']['install_method'] = 'war'
   #
   master['install_method'] = case node['platform_family']
-                             when 'debian', 'rhel' then 'package'
+                             when 'debian', 'rhel', 'amazon' then 'package'
                              else 'war'
                              end
 
@@ -228,11 +228,11 @@ default['jenkins']['master'].tap do |master|
     case [node['platform_family'], node['jenkins']['master']['channel']]
     when %w(debian stable)
       ['https://pkg.jenkins.io/debian-stable', 'https://pkg.jenkins.io/debian-stable/jenkins.io.key']
-    when %w(rhel stable)
+    when %w(rhel stable), %w(amazon stable)
       ['https://pkg.jenkins.io/redhat-stable', 'https://pkg.jenkins.io/redhat-stable/jenkins.io.key']
     when %w(debian current)
       ['https://pkg.jenkins.io/debian', 'https://pkg.jenkins.io/debian/jenkins.io.key']
-    when %w(rhel current)
+    when %w(rhel current), %w(amazon current)
       ['https://pkg.jenkins.io/redhat', 'https://pkg.jenkins.io/redhat/jenkins.io.key']
     end
 
