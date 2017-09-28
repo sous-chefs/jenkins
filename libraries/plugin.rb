@@ -280,7 +280,9 @@ EOH
 
       # Replace the latest version with the desired version in the URL
       source_url = remote_plugin_data['url']
-      source_url.gsub!(remote_plugin_data['version'], desired_version(plugin_name, plugin_version).to_s)
+      if plugin_version && plugin_version.to_sym != :latest
+        source_url.gsub!(remote_plugin_data['version'], plugin_version)
+      end
 
       install_plugin_from_url(source_url, plugin_name, desired_version(plugin_name, plugin_version), opts)
     end
