@@ -262,10 +262,6 @@ EOH
     def install_plugin_from_update_center(plugin_name, plugin_version, opts = {})
       remote_plugin_data = plugin_universe[plugin_name]
 
-      # Compute some versions; Parse them as `Gem::Version` instances for easy
-      # comparisons.
-      latest_version = plugin_version(remote_plugin_data['version'])
-
       # Brute-force install all dependencies
       if opts[:install_deps] && remote_plugin_data['dependencies'].any?
         Chef::Log.debug "Installing plugin dependencies for #{plugin_name}"
@@ -284,7 +280,7 @@ EOH
 
       # Replace the latest version with the desired version in the URL
       source_url = remote_plugin_data['url']
-      source_url.gsub!(latest_version.to_s, desired_version(plugin_name, plugin_version).to_s)
+      source_url.gsub!(remote_plugin_data['version'], desired_version(plugin_name, plugin_version).to_s)
 
       install_plugin_from_url(source_url, plugin_name, desired_version(plugin_name, plugin_version), opts)
     end
