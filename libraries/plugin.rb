@@ -307,8 +307,8 @@ EOH
       path   = ::File.join(Chef::Config[:file_cache_path], "#{plugin_name}-#{version}.plugin")
       plugin = Chef::Resource::RemoteFile.new(path, run_context)
       plugin.source(source_url)
-      plugin.owner('jenkins')
-      plugin.group('jenkins')
+      plugin.owner(node['jenkins']['master']['user'])
+      plugin.group(node['jenkins']['master']['group'])
       plugin.backup(false)
       plugin.run_action(:create)
 
