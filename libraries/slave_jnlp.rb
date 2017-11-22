@@ -86,7 +86,7 @@ class Chef
         r.backup(false)
         r.mode('0755')
         r.atomic_update(false)
-      #  r.notifies :restart, "runit_service[#{new_resource.service_name}]" unless Chef::Platform.windows?
+        r.notifies :restart, "runit_service[#{new_resource.service_name}]" unless Chef::Platform.windows?
       end
 
       # The Windows's specific child class manages it's own service
@@ -94,19 +94,22 @@ class Chef
 
       include_recipe 'runit'
 
-      # declare_resource(:runit_service, new_resource.service_name).tap do |r|
-      #   # We need to use .tap() to access methods in the provider's scope.
-      #   r.cookbook('jenkins')
-      #   r.run_template_name('jenkins-slave')
-      #   r.log_template_name('jenkins-slave')
-      #   r.options(
-      #     new_resource: new_resource,
-      #     java_bin:    java,
-      #     slave_jar:   slave_jar,
-      #     jnlp_url:    jnlp_url,
-      #     jnlp_secret: jnlp_secret
-      #   )
-      # end
+      declare_resource(:runit_service, new_resource.service_name).tap do |r|
+        # We need to use .tap() to access methods in the provider's scope.
+        r.cookbook('jenkins')
+        r.run_template_name('jenkins-slave')
+        r.log_template_name('jenkins-slave')
+        r.options(
+          service_name: new_resource.service_name,
+          jvm_options: new_resource.jvm_options,
+          user:        new_resource.user,
+          remote_fs:   new_resource.remote_fs,
+          java_bin:    java,
+          slave_jar:   slave_jar,
+          jnlp_url:    jnlp_url,
+          jnlp_secret: jnlp_secret
+        )
+      end
     end
 
     action :delete do
