@@ -6,13 +6,13 @@
 #
 
 exec 2>&1
-cd <%= @options[:new_resource].remote_fs %>
-exec chpst -u <%= @options[:new_resource].user %> \
-  env HOME=<%= @options[:new_resource].remote_fs %> \
-  JENKINS_HOME=<%= @options[:new_resource].remote_fs %> \
+cd <%= @options[:remote_fs] %>
+exec chpst -u <%= @options[:user] %> \
+  env HOME=<%= @options[:remote_fs] %> \
+  JENKINS_HOME=<%= @options[:remote_fs] %> \
   <%= @options[:java_bin] %> \
-<%- if @options[:new_resource].jvm_options -%>
-  <%= @options[:new_resource].jvm_options %> \
+<%- if @options[:jvm_options] -%>
+  <%= @options[:jvm_options] %> \
 <%- end -%>
   -jar <%= @options[:slave_jar] %> \
 <%- if @options[:jnlp_secret] -%>
