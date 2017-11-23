@@ -144,7 +144,7 @@ EOH
         else
           current_version = plugin_version(current_resource.version)
           unless current_version.to_s.include? 'SNAPSHOT'
-            if plugin_upgrade?(current_version, desired_version)
+            if plugin_upgrade?(current_version, desired_version) # rubocop: disable Metrics/BlockNesting
               converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &install_block)
             else
               converge_by("Downgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &downgrade_block)
