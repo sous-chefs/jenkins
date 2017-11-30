@@ -42,7 +42,7 @@ when 'debian'
   else
     package 'openjdk-7-jdk'
   end
-when 'rhel', 'amazon'
+when 'rhel', 'amazon', 'suse'
   package 'java-1.8.0-openjdk'
 else
   raise "`#{node['platform_family']}' is not supported!"
