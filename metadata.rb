@@ -8,7 +8,7 @@ version          '5.0.5'
 
 recipe 'jenkins::master', 'Installs a Jenkins master'
 
-%w(ubuntu debian redhat centos scientific oracle amazon).each do |os|
+%w(ubuntu debian redhat centos scientific oracle amazon suse).each do |os|
   supports os
 end
 
