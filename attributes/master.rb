@@ -33,16 +33,28 @@ default['jenkins']['master'].tap do |master|
   #   node.normal['jenkins']['master']['install_method'] = 'war'
   #
   master['install_method'] = case node['platform_family']
-                             when 'debian', 'rhel', 'amazon' then 'package'
+                             when 'debian', 'rhel', 'amazon'
+                               'package'
+                             when 'windows'
+                               'msi'
                              else 'war'
                              end
+
+  #
+  # Installation options to pass to MSI installer.
+  #
+  #   node.normal['jenkins']['master']['msi_install_options'] = "JENKINSDIR=\"#{node['jenkins']['master']['home']}\""
+  #
+  master['msi_install_options'] = nil
 
   #
   # The version of the Jenkins master to install. This can be a specific
   # package version (from the yum or apt repo), or the version of the war
   # file to download from the Jenkins mirror.
   #
-  master['version'] = nil
+  master['version'] = case node['os']
+                      when 'windows' then '2.89.2'
+                      end
 
   #
   # The "channel" to use, default is stable
@@ -64,39 +76,62 @@ default['jenkins']['master'].tap do |master|
   master['mirror'] = 'https://updates.jenkins.io'
 
   #
-  # The full URL to the Jenkins WAR file on the remote mirror. This attribute is
-  # only used in the "war" installation method. This is a compiled attribute
-  # from the +mirror+ and +version+ attributes, but you can override this
-  # attribute and specify the full URL path to a remote file for the Jenkins
-  # war file. If you choose to override this file manually, it is highly
-  # recommended that you also set the +checksum+ attribute.
+  # The full URL to the Jenkins WAR/ZIP file on the remote mirror. This
+  # attribute is only used in the "war" & "msi" installation methods. This is a
+  # compiled attribute from the +mirror+ and +version+ attributes, but you can
+  # override this attribute and specify the full URL path to a remote file for
+  # the Jenkins war/zip file. If you choose to override this file manually, it
+  # is highly recommended that you also set the +checksum+ attribute.
   #
   #   node.normal['jenkins']['master']['source'] = 'http://fs01.example.com/jenkins.war'
   #
   # Warning: Setting this attribute will negate/ignore any values for +mirror+
-  # and +version+.
+  # and (for the "war" installation method) +version+.
   #
-  master['source'] = "#{node['jenkins']['master']['mirror']}/"\
-    "#{node['jenkins']['master']['version'] || node['jenkins']['master']['channel']}/"\
-    'latest/jenkins.war'
+  master['source'] =
+    case node['os']
+    when 'windows'
+      "http://mirrors.jenkins-ci.org/windows-#{node['jenkins']['master']['channel']}/"\
+      "jenkins-#{node['jenkins']['master']['version']}.zip"
+    else
+      "#{node['jenkins']['master']['mirror']}/"\
+      "#{node['jenkins']['master']['version'] || node['jenkins']['master']['channel']}/"\
+      'latest/jenkins.war'
+    end
 
   #
-  # The checksum of the war file. This is use to verify that the remote war file
-  # has not been tampered with (such as a MITM attack). If you leave this #
+  # The checksum of the war or zip file. This is use to verify that the remote
+  # file has not been tampered with (such as a MITM attack). If you leave this
   # attribute set to +nil+, no validation will be performed. If this attribute
   # is set to the wrong SHA-256 checksum, the Chef Client run will fail.
   #
   #   node.normal['jenkins']['master']['checksum'] = 'abcd1234...'
   #
-  master['checksum'] = nil
+  master['checksum'] = case node['os']
+                       when 'windows' then 'b0c65a14d554d2b5b588c3ee8ab69af68334aea1bcfeebefb40c84fa7b6d5526'
+                       end
 
   #
-  # The list of options to pass to the Java JVM script when using the package
-  # installer. For example:
+  # When installing Jenkins via a msi on Windows, this attribute can be used
+  # to specify the msi's SHA-256 checksum.
+  #
+  #   node.normal['jenkins']['master']['msi_checksum'] = 'abcd1234...'
+  #
+  master['msi_checksum'] = nil
+
+  #
+  # The list of options to pass to the Java JVM script when using the
+  # package/msi installer. For example:
   #
   #   node.normal['jenkins']['master']['jvm_options'] = '-Xmx256m'
   #
-  master['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
+  master['jvm_options'] =
+    case node['os']
+    when 'windows'
+      '-Xrs -Xmx256m -Djenkins.install.runSetupWizard=false -Dhudson.lifecycle=hudson.lifecycle.WindowsServiceLifecycle -jar "%BASE%\jenkins.war" --httpPort=8080 --webroot="%BASE%\war"'
+    else
+      '-Djenkins.install.runSetupWizard=false'
+    end
 
   #
   # The list of Jenkins arguments to pass to the initialize script. This varies
@@ -125,13 +160,19 @@ default['jenkins']['master'].tap do |master|
   #
   #   node.normal['jenkins']['master']['user'] = 'root'
   #
-  master['user'] = 'jenkins'
+  master['user'] = case node['os']
+                   when 'windows' then 'SYSTEM'
+                   else 'jenkins'
+                   end
 
   #
   # The group under which Jenkins is running. Jenkins doesn't actually use or
   # honor this attribute - it is used for file permission purposes.
   #
-  master['group'] = 'jenkins'
+  master['group'] = case node['os']
+                    when 'windows' then 'Administrators'
+                    else 'jenkins'
+                    end
 
   #
   # Jenkins user/group should be created as `system` accounts for `war` install.
@@ -180,7 +221,10 @@ default['jenkins']['master'].tap do |master|
   # configuration and build artifacts. You should ensure this directory resides
   # on a volume with adequate disk space.
   #
-  master['home'] = '/var/lib/jenkins'
+  master['home'] = case node['os']
+                   when 'windows' then 'C:\Program Files (x86)\Jenkins'
+                   else '/var/lib/jenkins'
+                   end
 
   #
   # The directory where Jenkins should write its logfile(s). **This attribute

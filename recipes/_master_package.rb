@@ -21,6 +21,11 @@
 # limitations under the License.
 #
 
+if Chef::Platform.windows?
+  Chef::Application.fatal! 'Jenkins "package" installation method not '\
+                           'supported on Windows (use "msi" instead)'
+end
+
 case node['platform_family']
 when 'debian'
   package 'apt-transport-https'

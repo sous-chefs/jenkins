@@ -317,7 +317,7 @@ EOH
       # Jenkins that prevents Jenkins from following 302 redirects, so we
       # use Chef to download the plugin and then use Jenkins to install it.
       # It's a bit backwards, but so is Jenkins.
-      executor.execute!('install-plugin', escape('file://' + plugin.path), '-name', escape(plugin_name), opts[:cli_opts])
+      executor.execute!('install-plugin', escape("#{node['os'] == 'windows' ? '' : 'file://'}#{plugin.path}"), '-name', escape(plugin_name), opts[:cli_opts])
     end
 
     #

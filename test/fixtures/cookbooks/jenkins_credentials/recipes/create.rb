@@ -2,7 +2,10 @@ require 'openssl'
 
 include_recipe 'jenkins_server_wrapper::default'
 
-fixture_data_base_path = '/tmp/kitchen/data'
+fixture_data_base_path = case Chef::Platform.windows?
+                         when true then 'c:/Users/Administrator/AppData/Local/Temp/kitchen/data'
+                         else '/tmp/kitchen/data'
+                         end
 
 # Test basic password credentials creation
 jenkins_password_credentials 'schisamo' do

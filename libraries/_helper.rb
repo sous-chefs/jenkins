@@ -220,7 +220,12 @@ EOH
     #   the escaped value
     #
     def escape(value)
-      Shellwords.escape(value)
+      case node['os']
+      when 'windows'
+        "\"#{value}\""
+      else
+        Shellwords.escape(value)
+      end
     end
 
     #

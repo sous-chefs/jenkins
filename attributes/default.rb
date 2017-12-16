@@ -49,6 +49,9 @@ default['jenkins'].tap do |jenkins|
                     elsif ENV['JAVA_HOME']
                       File.join(ENV['JAVA_HOME'], 'bin', 'java')
                     else
-                      'java'
+                      case node['os']
+                      when 'windows' then 'C:\Program Files (x86)\Jenkins\jre\bin\java.exe'
+                      else 'java'
+                      end
                     end
 end

@@ -24,6 +24,11 @@
 # limitations under the License.
 #
 
+if Chef::Platform.windows?
+  Chef::Application.fatal! 'Jenkins "war" installation method not supported '\
+                           'on Windows (use "msi" instead)'
+end
+
 # Create the Jenkins user
 user node['jenkins']['master']['user'] do
   home node['jenkins']['master']['home']

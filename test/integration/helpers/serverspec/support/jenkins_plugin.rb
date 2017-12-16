@@ -26,11 +26,19 @@ module Serverspec
       private
 
       def disabled_plugin
-        "/var/lib/jenkins/plugins/#{name}.jpi.disabled"
+        case RUBY_PLATFORM.include?('mingw')
+        when true then "C:\\Program Files (x86)\\Jenkins\\plugins\\#{name}.jpi.disabled"
+        else "/var/lib/jenkins/plugins/#{name}.jpi.disabled"
+        end
       end
 
       def config
-        manifest = "/var/lib/jenkins/plugins/#{name}/META-INF/MANIFEST.MF"
+        manifest = case RUBY_PLATFORM.include?('mingw')
+                   when true
+                     "C:\\Program Files (x86)\\Jenkins\\plugins\\#{name}\\META-INF\\MANIFEST.MF"
+                   else
+                     "/var/lib/jenkins/plugins/#{name}/META-INF/MANIFEST.MF"
+                   end
 
         @config ||= Hash[*::File.readlines(manifest).map do |line|
           next if line.strip.empty?

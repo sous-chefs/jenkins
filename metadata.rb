@@ -8,10 +8,11 @@ version          '5.0.5'
 
 recipe 'jenkins::master', 'Installs a Jenkins master'
 
-%w(ubuntu debian redhat centos scientific oracle amazon).each do |os|
+%w(ubuntu debian redhat centos scientific oracle amazon windows).each do |os|
   supports os
 end
 
+depends 'ark', '>= 2.2.0'
 depends 'runit', '>= 1.7'
 depends 'compat_resource', '>= 12.16.3'
 depends 'dpkg_autostart'

@@ -74,7 +74,9 @@ module Serverspec
       def xml
         return @xml if @xml
 
-        contents = ::File.read('/var/lib/jenkins/credentials.xml')
+        contents = ::File.read(
+          RUBY_PLATFORM.include?('mingw') ? 'C:\Program Files (x86)\Jenkins\credentials.xml' : '/var/lib/jenkins/credentials.xml'
+        )
         doc = REXML::Document.new(contents)
         @xml = REXML::XPath.first(doc, "//*[username/text() = '#{username}']/")
       rescue Errno::ENOENT

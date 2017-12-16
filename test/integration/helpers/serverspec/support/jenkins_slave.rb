@@ -127,14 +127,26 @@ module Serverspec
                # If authn is enabled fall back to reading main config from disk
                elsif response.is_a?(Net::HTTPForbidden)
                  # attempt to read from dedicated slave xml file first
-                 config_path = "/var/lib/jenkins/nodes/#{name}/config.xml"
+                 config_path = case RUBY_PLATFORM.include?('mingw')
+                               when true
+                                 "C:\\Program Files (x86)\\Jenkins\\nodes\\#{name}\\config.xml"
+                               else
+                                 "/var/lib/jenkins/nodes/#{name}/config.xml"
+                               end
 
                  if ::File.exist?(config_path)
                    contents = ::File.read(config_path)
                    REXML::Document.new(contents)
                  # Fall back to reading from the main config xml
                  else
-                   contents = ::File.read('/var/lib/jenkins/config.xml')
+                   contents = ::File.read(
+                     case RUBY_PLATFORM.include?('mingw')
+                     when true
+                       'C:\Program Files (x86)\Jenkins\config.xml'
+                     else
+                       '/var/lib/jenkins/config.xml'
+                     end
+                   )
                    config_xml = REXML::Document.new(contents)
                    REXML::Document.new(config_xml.elements["//slave[name='#{name}']"].to_s)
                  end
@@ -157,7 +169,14 @@ module Serverspec
       end
 
       def credentials_xml_for_id(credentials_id)
-        contents = ::File.read('/var/lib/jenkins/credentials.xml')
+        contents = ::File.read(
+          case RUBY_PLATFORM.include?('mingw')
+          when true
+            'C:\Program Files (x86)\Jenkins\credentials.xml'
+          else
+            '/var/lib/jenkins/credentials.xml'
+          end
+        )
         doc = REXML::Document.new(contents)
         REXML::XPath.first(doc, "//*[id/text() = '#{credentials_id}']/")
       rescue Errno::ENOENT

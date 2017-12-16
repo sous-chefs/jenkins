@@ -11,6 +11,7 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 - Debian 7+ (Package installs require 9+ due to dependencies)
 - Ubuntu 14.04+ (Package installs require 16.04+ due to dependencies)
 - RHEL/CentOS/Scientific/Oracle 6+
+- Windows 2008R2+
 
 ### Chef
 
@@ -18,6 +19,7 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 
 ### Cookbooks
 
+- ark
 - compat_resource
 - runit
 
@@ -37,10 +39,11 @@ Documentation and examples are provided inline using YARD. The tests and fixture
 
 ### master
 
-The master recipe will create the required directory structure and install jenkins. There are two installation methods, controlled by the `node['jenkins']['master']['install_method']` attribute:
+The master recipe will create the required directory structure and install jenkins. There are  three installation methods, controlled by the `node['jenkins']['master']['install_method']` attribute:
 
 - `package` - Install Jenkins from the official jenkins-ci.org packages
 - `war` - Download the latest version of the WAR file and configure it with Runit
+- `msi` - Install Jenkins on Windows from the official jenkins-ci.org packages
 
 ## Resource/Provider
 

@@ -40,7 +40,9 @@ module Serverspec
       def xml
         return @xml if @xml
 
-        contents = ::File.read("/var/lib/jenkins/jobs/#{name}/config.xml")
+        contents = ::File.read(
+          RUBY_PLATFORM.include?('mingw') ? "C:\\Program Files (x86)\\Jenkins\\jobs\\#{name}\\config.xml" : "/var/lib/jenkins/jobs/#{name}/config.xml"
+        )
         @xml = REXML::Document.new(contents)
       rescue Errno::ENOENT
         @xml = nil

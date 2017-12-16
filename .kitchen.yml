@@ -14,24 +14,50 @@ provisioner:
   name: chef_zero
   data_path: test/fixtures/keys
   data_bags_path: test/fixtures/data_bags
-  attributes:
-    jenkins:
-      master:
-        host: localhost
-        install_method: war
-        mirror: https://updates.jenkins.io
 
 platforms:
   - name: amazonlinux
     driver_config:
       box: mvbcoding/awslinux
+    attributes:
+      jenkins:
+        master:
+          install_method: war
   - name: centos-6
+    attributes:
+      jenkins:
+        master:
+          install_method: war
   - name: centos-7
+    attributes:
+      jenkins:
+        master:
+          install_method: war
   - name: debian-7
+    attributes:
+      jenkins:
+        master:
+          install_method: war
   - name: debian-8
+    attributes:
+      jenkins:
+        master:
+          install_method: war
   - name: debian-9
+    attributes:
+      jenkins:
+        master:
+          install_method: war
   - name: ubuntu-14.04
+    attributes:
+      jenkins:
+        master:
+          install_method: war
   - name: ubuntu-16.04
+    attributes:
+      jenkins:
+        master:
+          install_method: war
   - name: windows-2012r2
     driver:
       box: chef/windows-server-2012r2-standard # private box
@@ -48,8 +74,6 @@ suites:
     excludes:
       - ubuntu-14.04
       - debian-7
-      - windows-2012r2
-      - windows-2016
 
   - name: smoke_package_current
     run_list: jenkins_server_wrapper::default
@@ -69,6 +93,9 @@ suites:
         master:
           install_method: war
           source: https://updates.jenkins.io/stable/latest/jenkins.war
+    excludes:
+      - windows-2012r2
+      - windows-2016
   - name: smoke_war_latest
     run_list: jenkins_server_wrapper::default
     attributes:
@@ -76,6 +103,9 @@ suites:
         master:
           install_method: war
           source: https://updates.jenkins.io/latest/jenkins.war
+    excludes:
+      - windows-2012r2
+      - windows-2016
 
   #
   # Authentication suites
