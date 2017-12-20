@@ -143,11 +143,12 @@ EOH
           Chef::Log.info("#{new_resource} version #{current_resource.version} already installed - skipping")
         else
           current_version = plugin_version(current_resource.version)
-
-          if plugin_upgrade?(current_version, desired_version)
-            converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &install_block)
-          else
-            converge_by("Downgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &downgrade_block)
+          unless current_version.to_s.include? 'SNAPSHOT'
+            if plugin_upgrade?(current_version, desired_version) # rubocop: disable Metrics/BlockNesting
+              converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &install_block)
+            else
+              converge_by("Downgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &downgrade_block)
+            end
           end
         end
       else
@@ -305,8 +306,8 @@ EOH
       path   = ::File.join(Chef::Config[:file_cache_path], "#{plugin_name}-#{version}.plugin")
       plugin = Chef::Resource::RemoteFile.new(path, run_context)
       plugin.source(source_url)
-      plugin.owner('jenkins')
-      plugin.group('jenkins')
+      plugin.owner(node['jenkins']['master']['user'])
+      plugin.group(node['jenkins']['master']['group'])
       plugin.backup(false)
       plugin.run_action(:create)
 

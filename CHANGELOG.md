@@ -2,6 +2,14 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 5.0.5 (2017-11-22)
+
+- If the installed plugin version is a SNAPSHOT let it be instead of checking versions for updates
+- Allow Jenkins to read system environment variables
+- Fix permissions on /var/xxx/jenkins folders for Debian/CentOS
+- Plugins: User & Group should be read from attributes
+- Resolve Chef 13 failures by not passing new_resource into runit_service
+
 ## 5.0.4 (2017-08-28)
 
 - Modified case statements to support package installation on Amazon Linux

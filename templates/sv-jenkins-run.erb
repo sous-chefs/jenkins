@@ -5,6 +5,7 @@
 # Do NOT modify this file by hand.
 #
 
+[ -r /etc/profile ] && . /etc/profile
 
 <% groups = ([node['jenkins']['master']['user']] + node['jenkins']['master']['runit']['groups']).join(':') %>
 exec 2>&1
