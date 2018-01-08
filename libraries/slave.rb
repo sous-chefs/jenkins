@@ -150,7 +150,13 @@ class Chef
       do_create
     end
 
+    def merge_preserved_labels!
+      new_resource.labels |= current_resource.labels.select{ |i| i[/^prsrv_/] }
+    end
+
     def do_create
+      # Preserve some labels...
+      merge_preserved_lables!
       if current_resource.exists? && correct_config?
         Chef::Log.info("#{new_resource} exists - skipping")
       else
