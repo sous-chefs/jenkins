@@ -156,7 +156,7 @@ class Chef
 
     def do_create
       # Preserve some labels...
-      merge_preserved_lables!
+      merge_preserved_labels!
       if current_resource.exists? && correct_config?
         Chef::Log.info("#{new_resource} exists - skipping")
       else
