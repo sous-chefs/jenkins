@@ -5,20 +5,20 @@
 # Do NOT modify this file by hand.
 #
 
-[ -r /etc/profile ] && . /etc/profile
+# Get the groups of the service user:
+SUPL_GRPS=`id -nG <%= @options[:user] %>|sed 's/ /:/g'`
 
-<% groups = ([node['jenkins']['master']['user']] + node['jenkins']['master']['runit']['groups']).join(':') %>
 exec 2>&1
-cd <%= node['jenkins']['master']['home'] %>
-touch jenkins.start
-<% limits = node['jenkins']['master']['ulimits'] %>
-<% if limits && !limits.empty? %>
-ulimit <% limits.each { |option, value| %>-<%= option %> <%= value %> <% } %>
-<% end %>
-exec chpst -u <%= groups %> -U <%= groups %> \
-  env HOME=<%= node['jenkins']['master']['home'] %> \
-  JENKINS_HOME=<%= node['jenkins']['master']['home'] %> \
-  <%= node['jenkins']['java'] %> <%= node['jenkins']['master']['jvm_options'] %> -jar jenkins.war \
-  --httpPort=<%= node['jenkins']['master']['port'] %> \
-  --httpListenAddress=<%= node['jenkins']['master']['listen_address'] %> \
-  <%= node['jenkins']['master']['jenkins_args'] %>
+cd <%= @options[:remote_fs] %>
+exec chpst -u <%= @options[:user] %>:$SUPL_GRPS \
+  env HOME=<%= @options[:remote_fs] %> \
+  JENKINS_HOME=<%= @options[:remote_fs] %> \
+  <%= @options[:java_bin] %> \
+<%- if @options[:jvm_options] -%>
+  <%= @options[:jvm_options] %> \
+<%- end -%>
+  -jar <%= @options[:slave_jar] %> \
+<%- if @options[:jnlp_secret] -%>
+  -secret <%= @options[:jnlp_secret] %> \
+<%- end -%>
+  -jnlpUrl <%= @options[:jnlp_url] %>
