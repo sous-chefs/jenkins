@@ -5,12 +5,9 @@
 # Do NOT modify this file by hand.
 #
 
-# Get the groups of the service user:
-SUPL_GRPS=`id -nG <%= @options[:user] %>|sed 's/ /:/g'`
-
 exec 2>&1
 cd <%= @options[:remote_fs] %>
-exec chpst -u <%= @options[:user] %>:$SUPL_GRPS \
+exec chpst -u <%= @options[:user] %> \
   env HOME=<%= @options[:remote_fs] %> \
   JENKINS_HOME=<%= @options[:remote_fs] %> \
   <%= @options[:java_bin] %> \
