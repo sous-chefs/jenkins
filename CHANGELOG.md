@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 5.0.6 (2018-01-15)
+
+- windows slave fixes
+
 ## 5.0.5 (2017-11-22)
 
 - If the installed plugin version is a SNAPSHOT let it be instead of checking versions for updates
