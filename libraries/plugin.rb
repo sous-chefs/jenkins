@@ -437,7 +437,8 @@ EOH
     # @return [String]
     #
     def plugin_version(version)
-      Gem::Version.new(version)
+      gem_version = Gem::Version.new(version)
+      gem_version.prerelease? ? version : gem_version
     rescue ArgumentError
       version
     end
