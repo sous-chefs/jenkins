@@ -8,6 +8,11 @@ jenkins_plugin 'disk-usage' do
   version '0.23'
 end
 
+# Test installing a specific version with abnormal versioning
+jenkins_plugin 'apache-httpcomponents-client-4-api' do
+  version '4.5.3-2.0'
+end
+
 # Test installing from a URL
 jenkins_plugin 'copy-to-slave' do
   source 'http://mirror.xmission.com/jenkins/plugins/copy-to-slave/1.4.3/copy-to-slave.hpi'

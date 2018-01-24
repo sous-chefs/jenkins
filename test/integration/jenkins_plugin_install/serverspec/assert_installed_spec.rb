@@ -14,6 +14,11 @@ describe jenkins_plugin('copy-to-slave') do
   it { should have_version('1.4.3') }
 end
 
+describe jenkins_plugin('apache-httpcomponents-client-4-api') do
+  it { should be_a_jenkins_plugin }
+  it { should have_version('4.5.3-2.0') }
+end
+
 describe jenkins_plugin('github-oauth') do
   it { should be_a_jenkins_plugin }
 end
