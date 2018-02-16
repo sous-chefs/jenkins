@@ -14,11 +14,10 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 
 ### Chef
 
-- Chef 12.1+
+- Chef 12.14+
 
 ### Cookbooks
 
-- compat_resource
 - runit
 
 #### Java cookbook
