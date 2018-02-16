@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 6.0.0 (2018-02-16)
+
+- Require Chef 12.14+ and remove compat_resource dependency
+
 ## 5.0.6 (2018-01-15)
 
 - windows slave fixes
