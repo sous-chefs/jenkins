@@ -4,7 +4,7 @@
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2016, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -425,11 +425,12 @@ EOH
     def wait_until_ready!
       Timeout.timeout(timeout, JenkinsTimeout) do
         begin
-          open(endpoint)
+          open("#{endpoint}/whoAmI/")
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
                Errno::ENETUNREACH,
+               Errno::EADDRNOTAVAIL,
                Timeout::Error,
                OpenURI::HTTPError => e
           # If authentication has been enabled, the server will return an HTTP
@@ -466,7 +467,7 @@ EOH
 
     #
     # Idempotently download the remote +update-center.json+ file for the Jenkins
-    # server. This is needed to be able to install plugins throught the update-center.
+    # server. This is needed to be able to install plugins through the update-center.
     #
     def ensure_update_center_present!
       node.run_state[:jenkins_update_center_present] ||= begin # ~FC001

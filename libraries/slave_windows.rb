@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2016, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -103,6 +103,18 @@ class Chef
     private
 
     # Embedded Resources
+
+    # Due to a convention change, resources created in the parent need to be
+    # repeated in the convention used here
+    def slave_jar_resource
+      return @slave_jar_resource if @slave_jar_resource
+      @slave_jar_resource = Chef::Resource::RemoteFile.new(slave_jar, run_context)
+      @slave_jar_resource.source(slave_jar_url)
+      @slave_jar_resource.backup(false)
+      @slave_jar_resource.mode('0777')
+      @slave_jar_resource.atomic_update(false)
+      @slave_jar_resource
+    end
 
     # Creates a `directory` resource that represents the directory
     # specified the `remote_fs` attribute. The caller will need to call

@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2016, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -154,7 +154,13 @@ class Chef
       do_create
     end
 
+    def merge_preserved_labels!
+      new_resource.labels |= current_resource.labels.select { |i| i[/^prsrv_/] }
+    end
+
     def do_create
+      # Preserve some labels...
+      merge_preserved_labels!
       if current_resource.exists? && correct_config?
         Chef::Log.info("#{new_resource} exists - skipping")
       else

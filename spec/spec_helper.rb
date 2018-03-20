@@ -20,9 +20,9 @@ RSpec.configure do |config|
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
 
-  # Set a default platform (this is overriden as needed)
+  # Set a default platform (this is overridden as needed)
   config.platform  = 'ubuntu'
-  config.version   = '14.04'
+  config.version   = '16.04'
 
   # Be random!
   config.order = 'random'

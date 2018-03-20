@@ -5,7 +5,7 @@
 # Author:: Seth Vargo <sethvargo@gmail.com>
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2016, Chef Software, Inc.
+# Copyright:: 2013-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -143,11 +143,12 @@ EOH
           Chef::Log.info("#{new_resource} version #{current_resource.version} already installed - skipping")
         else
           current_version = plugin_version(current_resource.version)
-
-          if plugin_upgrade?(current_version, desired_version)
-            converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &install_block)
-          else
-            converge_by("Downgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &downgrade_block)
+          unless current_version.to_s.include? 'SNAPSHOT'
+            if plugin_upgrade?(current_version, desired_version) # rubocop: disable Metrics/BlockNesting
+              converge_by("Upgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &install_block)
+            else
+              converge_by("Downgrade #{new_resource} from #{current_resource.version} to #{desired_version}", &downgrade_block)
+            end
           end
         end
       else
@@ -307,6 +308,8 @@ EOH
       path   = ::File.join(Chef::Config[:file_cache_path], "#{plugin_name}-#{version}.plugin")
       plugin = Chef::Resource::RemoteFile.new(path, run_context)
       plugin.source(source_url)
+      plugin.owner(node['jenkins']['master']['user'])
+      plugin.group(node['jenkins']['master']['group'])
       plugin.backup(false)
       plugin.run_action(:create)
 
@@ -314,7 +317,7 @@ EOH
       # Jenkins that prevents Jenkins from following 302 redirects, so we
       # use Chef to download the plugin and then use Jenkins to install it.
       # It's a bit backwards, but so is Jenkins.
-      executor.execute!('install-plugin', escape(plugin.path), '-name', escape(plugin_name), opts[:cli_opts])
+      executor.execute!('install-plugin', escape('file://' + plugin.path), '-name', escape(plugin_name), opts[:cli_opts])
     end
 
     #
@@ -434,7 +437,8 @@ EOH
     # @return [String]
     #
     def plugin_version(version)
-      Gem::Version.new(version)
+      gem_version = Gem::Version.new(version)
+      gem_version.prerelease? ? version : gem_version
     rescue ArgumentError
       version
     end
