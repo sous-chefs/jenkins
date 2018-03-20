@@ -73,6 +73,7 @@ EOH
         h[:jvm_options] = jvm_options unless jvm_options.nil?
         h[:protocol] = protocol unless protocol.nil?
         h[:cli_user] = cli_user unless cli_user.nil?
+        h[:auth]     = auth unless auth.nil?
       end
 
       Jenkins::Executor.new(options)
@@ -341,6 +342,10 @@ EOH
     #
     def password
       node.run_state[:jenkins_password] # ~FC001
+    end
+
+    def auth
+      node.run_state[:jenkins_auth]
     end
 
     #
