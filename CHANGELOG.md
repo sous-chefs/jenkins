@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 6.0.1 (2018-04-05)
+
+- Log to /var/log/jenkins instead of syslog
+
 ## 6.0.0 (2018-02-16)
 
 - Require Chef 12.14+ and remove compat_resource dependency

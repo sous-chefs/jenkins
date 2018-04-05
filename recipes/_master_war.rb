@@ -69,4 +69,8 @@ Chef::Log.warn('Here we go with the runit service')
 # Create runit service
 runit_service 'jenkins' do
   sv_timeout node['jenkins']['master']['runit']['sv_timeout']
+  options({
+    log_directory: node['jenkins']['master']['log_directory'],
+    user: node['jenkins']['master']['user'],
+  }.merge(params))
 end
