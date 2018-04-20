@@ -69,3 +69,9 @@ end
 jenkins_secret_text_credentials 'dollarbills_secret' do
   secret '$uper$ecret'
 end
+
+# Test creating a file credentials
+jenkins_file_credentials 'myfile' do
+  filename 'myfile'
+  data 'mydata'
+end

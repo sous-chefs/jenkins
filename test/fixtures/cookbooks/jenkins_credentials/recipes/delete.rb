@@ -34,3 +34,7 @@ end
 jenkins_secret_text_credentials 'dollarbills_secret' do
   action :delete
 end
+
+jenkins_file_credentials 'myfile' do
+  action :delete
+end

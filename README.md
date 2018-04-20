@@ -201,6 +201,28 @@ jenkins_secret_text_credentials 'wcoyote' do
 end
 ```
 
+### jenkins_file_credentials
+
+Generic file credentials.
+
+```ruby
+# Create file credentials
+jenkins_file_credentials 'wcoyote' do
+  id          'wcoyote-file'
+  description 'Wile E Coyote File'
+  filename    'file.txt'
+  data        'my file content'
+end
+```
+
+```ruby
+# Delete file credentials
+jenkins_file_credentials 'wcoyote' do
+  id     'wcoyote-file'
+  action :delete
+end
+```
+
 #### Scopes
 
 Credentials in Jenkins can be created with 2 different "scopes" which determines where the credentials can be used:
