@@ -59,7 +59,7 @@ end
 
 class Chef
   class Provider::JenkinsCredentials < Provider::LWRPBase
-    use_inline_resources
+    use_inline_resources # ~FC113
     include Jenkins::Helper
 
     def load_current_resource

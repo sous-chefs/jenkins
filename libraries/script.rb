@@ -33,7 +33,7 @@ end
 
 class Chef
   class Provider::JenkinsScript < Provider::JenkinsCommand
-    use_inline_resources
+    use_inline_resources # ~FC113
     provides :jenkins_script
 
     def load_current_resource

@@ -71,7 +71,7 @@ end
 
 class Chef
   class Provider::JenkinsSshSlave < Provider::JenkinsSlave
-    use_inline_resources
+    use_inline_resources # ~FC113
     provides :jenkins_ssh_slave
 
     def load_current_resource

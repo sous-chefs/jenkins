@@ -40,7 +40,7 @@ end
 
 class Chef
   class Provider::JenkinsSecretTextCredentials < Provider::JenkinsCredentials
-    use_inline_resources
+    use_inline_resources # ~FC113
 
     provides :jenkins_secret_text_credentials
 

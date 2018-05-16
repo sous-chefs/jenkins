@@ -41,7 +41,7 @@ end
 
 class Chef
   class Provider::JenkinsCommand < Provider::LWRPBase
-    use_inline_resources
+    use_inline_resources # ~FC113
     include Jenkins::Helper
 
     provides :jenkins_command

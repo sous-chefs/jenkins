@@ -42,7 +42,7 @@ end
 
 class Chef
   class Provider::JenkinsJnlpSlave < Provider::JenkinsSlave
-    use_inline_resources
+    use_inline_resources # ~FC113
     provides :jenkins_jnlp_slave
 
     def load_current_resource

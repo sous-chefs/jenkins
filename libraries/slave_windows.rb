@@ -55,7 +55,7 @@ end
 
 class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJnlpSlave
-    use_inline_resources
+    use_inline_resources # ~FC113
     provides :jenkins_windows_slave, platform: %w(windows)
 
     def load_current_resource
