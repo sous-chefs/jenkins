@@ -320,7 +320,7 @@ EOH
     def validate_config!
       Chef::Log.debug "Validate #{new_resource} configuration"
 
-      if new_resource.config.nil? # rubocop: disable Style/GuardClause
+      if new_resource.config.nil?
         raise("#{new_resource} must specify a configuration file!")
       elsif !::File.exist?(new_resource.config)
         raise("#{new_resource} config `#{new_resource.config}` does not exist!")
