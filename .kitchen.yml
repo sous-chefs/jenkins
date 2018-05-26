@@ -27,7 +27,6 @@ platforms:
       box: mvbcoding/awslinux
   - name: centos-6
   - name: centos-7
-  - name: debian-7
   - name: debian-8
   - name: debian-9
   - name: ubuntu-14.04
@@ -47,7 +46,6 @@ suites:
     run_list: jenkins_server_wrapper::default
     excludes:
       - ubuntu-14.04
-      - debian-7
       - windows-2012r2
       - windows-2016
 
@@ -59,7 +57,6 @@ suites:
           channel: current
     excludes:
       - ubuntu-14.04
-      - debian-7
       - windows-2012r2
       - windows-2016
   - name: smoke_war_stable
