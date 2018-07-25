@@ -22,13 +22,12 @@ require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsView < Resource::LWRPBase
-    # Chef attributes
-    identity_attr :name
+    resource_name :jenkins_user
     provides :jenkins_view
 
-    # Set the resource name
-    self.resource_name = :jenkins_view
-
+    # Chef attributes
+    identity_attr :name
+    
     # Actions
     actions :create, :delete
     default_action :create
@@ -76,11 +75,11 @@ EOH
       @current_resource.name(new_resource.name)
       @current_resource.jobs(new_resource.jobs)
 
-      if current_view
-        @current_resource.exists = true
-      else
-        @current_resource.exists = false
-      end
+      @current_resource.exists = if current_view
+                                   true
+                                 else
+                                   false
+                                 end
 
       @current_resource
     end
@@ -107,7 +106,7 @@ EOH
 
       if current_resource.exists? &&
          current_view_jobs == new_resource.jobs &&
-         '' == new_resource.code
+         new_resource.code == ''
         Chef::Log.debug("#{new_resource} exists - skipping")
       else
         jobs_to_remove = current_view_jobs - new_resource.jobs
@@ -207,8 +206,3 @@ EOH
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_view,
-  provider: Chef::Provider::JenkinsView,
-)
