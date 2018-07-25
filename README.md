@@ -41,15 +41,19 @@ The master recipe will create the required directory structure and install jenki
 - `package` - Install Jenkins from the official jenkins-ci.org packages
 - `war` - Download the latest version of the WAR file and configure it with Runit
 
-## Resource/Provider
+## Resources
 
 ### jenkins_command
 
-This resource executes arbitrary commands against the [Jenkins CLI](https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI), supporting the following actions:
+This resource executes arbitrary commands against the [Jenkins CLI](https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI)
 
-```
-:execute
-```
+#### Actions
+
+- :execute
+
+#### Examples
+
+To perform a restart
 
 ```ruby
 jenkins_command 'safe-restart'
@@ -72,6 +76,8 @@ jenkins_command 'quiet-down'
 ### jenkins_script
 
 This resource executes arbitrary Java or Groovy commands against the Jenkins master. By the nature of this command, it is **not** idempotent.
+
+#### Examples
 
 ```ruby
 jenkins_script 'println("This is Groovy code!")'
@@ -110,29 +116,28 @@ end
 
 - In version `4.0.0` of this cookbook this resource was changed so that credentials are referenced by their ID instead of by their name. If you are upgrading your nodes from an earlier version of this cookbook ( <= 3.1.1 ), use the credentials resource and do not have explicit IDs assigned to credentials, you will need to go into the Jenkins UI, find the auto-generated UUIDs for your credentials, and add them to your cookbook resources.
 
---------------------------------------------------------------------------------
+#### Actions
 
-This resource uses the Jenkins Groovy API to manage credentials and supports the following actions:
-
-```
-:create, :delete
-```
+- :create
+- :delete
 
 Both actions operate on the credential resources idempotently. It also supports why-run mode.
 
 `jenkins_credentials` is a base resource that is not used directly. Instead there are resources for each specific type of credentials supported.
 
-### Common attributes
+### Properties
 
-Use of the credential resource requires a unique `id` attribute. The resource uses this ID to find the credential for future modifications, and it is an immutable resource once the resource is created within Jenkins. This ID is also how you reference the credentials in other Groovy scripts (i.e. Pipeline code).
+Use of the credential resource requires a unique `id` property. The resource uses this ID to find the credential for future modifications, and it is an immutable resource once the resource is created within Jenkins. This ID is also how you reference the credentials in other Groovy scripts (i.e. Pipeline code).
 
-The `username` attribute (also the name attribute) corresponds to the username of the credentials on the target node.
+The `username` property (also the name property) corresponds to the username of the credentials on the target node.
 
 You may also specify a `description` which is useful in credential identification.
 
 #### jenkins_password_credentials
 
 Basic username + password credentials.
+
+##### Examples
 
 ```ruby
 # Create password credentials
@@ -154,6 +159,8 @@ end
 #### jenkins_private_key_credentials
 
 Credentials that use a username + private key (optionally protected with a passphrase).
+
+##### Examples
 
 ```ruby
 # Create private key credentials
@@ -180,9 +187,11 @@ jenkins_private_key_credentials 'wcoyote' do
 end
 ```
 
-### jenkins_secret_text_credentials
+#### jenkins_secret_text_credentials
 
 Generic secret text. Requires the the `credentials-binding` plugin.
+
+##### Examples
 
 ```ruby
 # Create secret text credentials
@@ -212,11 +221,15 @@ The credentials created with the `jenkins_credentials` resources are assigned a 
 
 ### jenkins_job
 
-This resource manages Jenkins jobs, supporting the following actions:
+This resource manages Jenkins jobs
 
-```
-:create, :delete, :disable, :enable, :build
-```
+#### Actions
+
+- :create
+- :delete
+- :disable
+- :enable
+- :build
 
 The resource is fully idempotent and convergent. It also supports why-run mode.
 
@@ -275,13 +288,66 @@ jenkins_job 'my-parameterized-job' do
 end
 ```
 
+### jenkins_view
+
+This resource manages Jenkins view
+
+#### Actions
+
+- :create
+- :delete
+
+The resource is fully idempotent and convergent as long as you're not using free hand code. It also supports whyrun mode.
+
+The `:create` action requires an array of jobs:
+
+```ruby
+jenkins_view 'ham' do
+  jobs [ "pig", "giraffe" ]
+end
+```
+
+The `:delete` action deleted a configured view:
+
+```ruby
+jenkins_view 'ham' do
+  action :delete
+end
+```
+
+It is possible to pass a snippet of groovy code in order to create more sophisticated views, the idea is to override the `create_view` and `configure_view` groovy closures.
+
+```ruby
+code = <<-GROOVY
+create_view = { name ->
+  // Return a new view
+  return new BuildPipelineView(...)
+}
+
+configure_view = { view ->
+  // Configure view
+  view.setCssUrl("")
+}
+GROOVY
+
+jenkins_view 'pipline_view' do
+  code    code
+  action :create
+end
+```
+
+Please note that if you pass `code`, it will always run the `:create` action as the provider cannot determine when a change has to be made and when not.
+
 ### jenkins_plugin
 
-This resource manages Jenkins plugins, supporting the following actions:
+This resource manages Jenkins plugins.
 
-```
-:install, :uninstall, :enable, :disable
-```
+#### Actions
+
+- :install
+- :uninstall
+- :enable
+- :disable
 
 This uses the Jenkins CLI to install plugins. By default, it does a cold deploy, meaning the plugin is installed while Jenkins is still running. Some plugins may require you restart the Jenkins instance for their changed to take affect.
 
@@ -308,6 +374,8 @@ end
 jenkins_plugin 'github-oauth' do
   install_deps false
 end
+`
+`
 ```
 
 Depending on the plugin, you may need to restart the Jenkins instance for the plugin to take affect:
