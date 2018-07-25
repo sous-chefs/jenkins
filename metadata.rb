@@ -17,4 +17,4 @@ depends 'dpkg_autostart'
 
 source_url 'https://github.com/chef-cookbooks/jenkins'
 issues_url 'https://github.com/chef-cookbooks/jenkins/issues'
-chef_version '>= 12.14' if respond_to?(:chef_version)
+chef_version '>= 12.14'
