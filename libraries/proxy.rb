@@ -27,6 +27,7 @@ require_relative '_params_validate'
 class Chef
   class Resource::JenkinsProxy < Resource::LWRPBase
     resource_name :jenkins_proxy
+    provides :jenkins_proxy
 
     # Chef attributes
     identity_attr :proxy
@@ -177,8 +178,3 @@ class Chef
     end
   end
 end
-
-Chef::Platform.set(
-  resource: :jenkins_proxy,
-  provider: Chef::Provider::JenkinsProxy
-)
