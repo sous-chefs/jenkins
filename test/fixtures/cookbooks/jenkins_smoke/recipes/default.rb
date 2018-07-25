@@ -43,6 +43,11 @@ include_recipe 'jenkins_job::build'
 include_recipe 'jenkins_plugin::install'
 
 #
+# Proxy
+# ------------------------------
+include_recipe 'jenkins_proxy::config'
+
+#
 # Script
 # ------------------------------
 include_recipe 'jenkins_script::execute'

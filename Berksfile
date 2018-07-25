@@ -13,6 +13,7 @@ group :integration do
   fixture 'credentials'
   fixture 'job'
   fixture 'plugin'
+  fixture 'proxy'
   fixture 'script'
   fixture 'server_wrapper'
   fixture 'slave'

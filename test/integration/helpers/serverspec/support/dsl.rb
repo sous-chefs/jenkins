@@ -13,6 +13,10 @@ module RSpec
         Serverspec::Type::JenkinsPlugin.new(name)
       end
 
+      def jenkins_proxy(name)
+        Serverspec::Type::JenkinsProxy.new(name)
+      end
+
       def jenkins_secret_text_credentials(description)
         Serverspec::Type::JenkinsSecretTextCredentials.new(description)
       end

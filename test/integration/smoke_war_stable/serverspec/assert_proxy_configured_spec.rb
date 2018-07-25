@@ -1,0 +1,1 @@
+../../jenkins_proxy_config/serverspec/assert_created_spec.rb
