@@ -1,6 +1,6 @@
 #
 # Cookbook:: jenkins
-# HWRP:: plugin
+# Resource:: plugin
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 # Author:: Seth Chisamore <schisamo@chef.io>

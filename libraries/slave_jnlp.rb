@@ -1,6 +1,6 @@
 #
 # Cookbook:: jenkins
-# HWRP:: jnlp_slave
+# Resource:: jnlp_slave
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #

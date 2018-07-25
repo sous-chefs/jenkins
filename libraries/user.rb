@@ -1,6 +1,6 @@
 #
 # Cookbook:: jenkins
-# HWRP:: user
+# Resource:: user
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #

@@ -1,6 +1,6 @@
 #
 # Cookbook:: jenkins
-# HWRP:: script
+# Resource:: script
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #

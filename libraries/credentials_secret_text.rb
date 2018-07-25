@@ -1,6 +1,6 @@
 #
 # Cookbook:: jenkins
-# HWRP:: credentials_secret_text
+# Resource:: credentials_secret_text
 #
 # Author:: Miguel Ferreira <mferreira@schubergphilis.com>
 #

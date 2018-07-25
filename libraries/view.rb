@@ -1,6 +1,6 @@
 #
-# Cookbook Name:: jenkins
-# HWRP:: view
+# Cookbook:: jenkins
+# Resource:: view
 #
 # Author:: Dan Fruehauf <malkodan@gmail.com>
 #

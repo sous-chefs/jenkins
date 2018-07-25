@@ -1,6 +1,6 @@
 #
-# Cookbook Name:: jenkins
-# HWRP:: proxy
+# Cookbook:: jenkins
+# Resource:: proxy
 #
 # Author:: Stephan Linz <linz@li-pro.net>
 #

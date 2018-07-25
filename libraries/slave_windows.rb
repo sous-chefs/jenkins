@@ -1,6 +1,6 @@
 #
 # Cookbook:: jenkins
-# HWRP:: windows_slave
+# Resource:: windows_slave
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #

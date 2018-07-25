@@ -1,6 +1,6 @@
 #
 # Cookbook:: jenkins
-# HWRP:: ssh_slave
+# Resource:: ssh_slave
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #

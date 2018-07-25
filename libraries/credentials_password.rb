@@ -1,6 +1,6 @@
 #
 # Cookbook:: jenkins
-# HWRP:: credentials_password
+# Resource:: credentials_password
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
