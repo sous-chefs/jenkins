@@ -146,6 +146,10 @@ module Jenkins
       execute('groovy =', input: script)
     end
 
+    def groovy_from_file!(path)
+      execute!("groovy #{path}")
+    end
+
     private
 
     #
