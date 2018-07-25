@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 6.1.0 (2018-07-24)
+
+- Added new jenkins_view resource
+- Added new jenkins_proxy resource
+- Allow jenkins_script to execute a groovy script on disk
+
 ## 6.0.0 (2018-02-16)
 
 - Require Chef 12.14+ and remove compat_resource dependency
