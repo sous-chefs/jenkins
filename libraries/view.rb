@@ -27,7 +27,7 @@ class Chef
 
     # Chef attributes
     identity_attr :name
-    
+
     # Actions
     actions :create, :delete
     default_action :create

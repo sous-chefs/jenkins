@@ -89,7 +89,7 @@ class Chef
         Chef::Log.info("#{new_resource} already configured - skipping")
       else
         name, port = new_resource.proxy.split(':')
-        if name && port && 0 < port.to_i
+        if name && port && port.to_i > 0
           converge_by("Configure #{new_resource}") do
             executor.groovy! <<-EOH.gsub(/^ {14}/, '')
               name = #{convert_to_groovy(name)}
@@ -180,5 +180,5 @@ end
 
 Chef::Platform.set(
   resource: :jenkins_proxy,
-  provider: Chef::Provider::JenkinsProxy,
+  provider: Chef::Provider::JenkinsProxy
 )
