@@ -23,7 +23,6 @@ require_relative '_params_validate'
 class Chef
   class Resource::JenkinsView < Resource::LWRPBase
     resource_name :jenkins_user
-    provides :jenkins_view
 
     # Chef attributes
     identity_attr :name
