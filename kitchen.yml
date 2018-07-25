@@ -131,6 +131,14 @@ suites:
     run_list: jenkins_plugin::uninstall
 
   #
+  # Proxy suites
+  #
+  - name: jenkins_proxy_config
+    run_list: jenkins_proxy::config
+  - name: jenkins_proxy_remove
+    run_list: jenkins_proxy::remove
+
+  #
   # Slave suites
   #
   - name: jenkins_slave_create

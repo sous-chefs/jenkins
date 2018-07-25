@@ -338,6 +338,37 @@ end
 
 Please note that if you pass `code`, it will always run the `:create` action as the provider cannot determine when a change has to be made and when not.
 
+### jenkins_proxy
+
+This resource manages Jenkins HTTP proxy information
+
+#### Actions
+
+- :config
+- :remove
+
+This uses the Jenkins groovy API to configure the HTTP proxy information, that is provided on the _Advanced_ tab of the _Plugin Manager_.
+
+The `:config` action idempotently configure the Jenkins HTTP proxy information on the current node. The proxy attribute corresponds to the proxy server name and port number that have to use on the target node. You may also specify a list of no proxy host names with the noproxy attribute. The default is _localhost_ and _127.0.0.1_.
+
+```ruby
+# Basic proxy configuration
+jenkins_proxy '1.2.3.4:5678'
+
+# Expanded proxy configuration
+jenkins_proxy '5.6.7.8:9012' do
+  noproxy ['localhost', '127.0.0.1', 'nohost', '*.nodomain']
+end
+```
+
+The `:remove` action removes the Jenkins HTTP proxy information from the system.
+
+```ruby
+jenkins_proxy '1.2.3.4:5678' do
+  action :remove
+end
+```
+
 ### jenkins_plugin
 
 This resource manages Jenkins plugins.
