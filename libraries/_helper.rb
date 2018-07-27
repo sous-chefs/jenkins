@@ -489,7 +489,7 @@ EOH
         # are containing some javascript, the line in between contains the relevant
         # JSON data. That is the one that must be extracted.
         IO.readlines(update_center_json).map do |line|
-          extracted_json = line unless line == 'updateCenter.post(' || line == ');'
+          extracted_json << line unless line.include?('updateCenter.post(') || line.include?(');')
         end
 
         # Write the extracted JSON to a file so `jenkins_plugin` can read it.
