@@ -2,6 +2,13 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 6.2.0 (2018-07-30)
+
+- Code improvement for custom plugin update centre
+- Don't fail on deprecations for now
+- Remove respond_to? on chef_version in metadata
+- Fix jenkins_view and jenkins_user resource errors
+
 ## 6.1.0 (2018-07-24)
 
 - Added new jenkins_view resource
