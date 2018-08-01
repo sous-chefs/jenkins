@@ -45,6 +45,7 @@ when 'rhel', 'amazon'
 end
 
 package 'jenkins' do
+  options '-o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"' if platform_family?('debian')
   version node['jenkins']['master']['version']
 end
 
