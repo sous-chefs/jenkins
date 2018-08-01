@@ -2,7 +2,7 @@ require 'openssl'
 
 include_recipe 'jenkins_server_wrapper::default'
 
-fixture_data_base_path = '/tmp/kitchen/data'
+fixture_data_base_path = ::File.join(::File.dirname(Chef::Config[:config_file]), 'data')
 
 # Test basic password credentials creation
 jenkins_password_credentials 'schisamo' do
@@ -25,12 +25,12 @@ end
 # Test basic private key credentials creation
 jenkins_private_key_credentials 'jenkins' do
   description 'this is more like it'
-  private_key File.read("#{fixture_data_base_path}/test_id_rsa")
+  private_key lazy { File.read("#{fixture_data_base_path}/test_id_rsa") }
 end
 
 # Test private key credentials with passphrase
 jenkins_private_key_credentials 'jenkins2' do
-  private_key OpenSSL::PKey::RSA.new(File.read("#{fixture_data_base_path}/test_id_rsa_with_passphrase"), 'secret').to_pem
+  private_key lazy { OpenSSL::PKey::RSA.new(File.read("#{fixture_data_base_path}/test_id_rsa_with_passphrase"), 'secret').to_pem }
   passphrase 'secret'
 end
 
@@ -38,19 +38,19 @@ end
 jenkins_private_key_credentials 'jenkins3' do
   description 'I specified an ID'
   id '766952b8-e1ea-4ee1-b769-e159681cb893'
-  private_key File.read("#{fixture_data_base_path}/test_id_rsa")
+  private_key lazy { File.read("#{fixture_data_base_path}/test_id_rsa") }
 end
 
 # Test an ECDSA key without a passphrase
 jenkins_private_key_credentials 'ecdsa_nopasswd' do
   description 'ECDSA key passed in as string'
-  private_key File.read("#{fixture_data_base_path}/test_id_ecdsa")
+  private_key lazy { File.read("#{fixture_data_base_path}/test_id_ecdsa") }
 end
 
 # Test an ECDSA key with a passphrase
 jenkins_private_key_credentials 'ecdsa_passwd' do
   description 'ECDSA key passed in as an object'
-  private_key OpenSSL::PKey::EC.new(File.read("#{fixture_data_base_path}/test_id_ecdsa_with_passphrase"), 'secret').to_pem
+  private_key lazy { OpenSSL::PKey::EC.new(File.read("#{fixture_data_base_path}/test_id_ecdsa_with_passphrase"), 'secret').to_pem }
   passphrase 'secret'
 end
 
