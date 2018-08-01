@@ -43,14 +43,14 @@ suites:
   # Smoke suite
   #
   - name: smoke_package_stable
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     excludes:
       - ubuntu-14.04
       - windows-2012r2
       - windows-2016
 
   - name: smoke_package_current
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
@@ -60,14 +60,14 @@ suites:
       - windows-2012r2
       - windows-2016
   - name: smoke_war_stable
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
           install_method: war
           source: https://updates.jenkins.io/stable/latest/jenkins.war
   - name: smoke_war_latest
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
