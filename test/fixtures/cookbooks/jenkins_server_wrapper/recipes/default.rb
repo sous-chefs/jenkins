@@ -4,11 +4,13 @@ include_recipe 'java::default'
 include_recipe 'jenkins::master'
 
 # Install some plugins needed, but not installed on jenkins2 by default
+# jdk-tool is required by Jenkins version 2.112
 jenkins_plugins = %w(
   mailer
   credentials
   ssh-credentials
   ssh-slaves
+  jdk-tool
 )
 jenkins_plugins.each do |plugin|
   jenkins_plugin plugin do
