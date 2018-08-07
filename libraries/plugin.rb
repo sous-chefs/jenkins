@@ -244,6 +244,9 @@ EOH
 
       if version.to_sym == :latest
         remote_plugin_data = plugin_universe[name]
+
+        return :latest unless remote_plugin_data
+
         plugin_version(remote_plugin_data['version'])
       else
         plugin_version(version)
