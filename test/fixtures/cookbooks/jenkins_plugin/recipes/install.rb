@@ -18,6 +18,18 @@ jenkins_plugin 'copy-to-slave' do
   source 'http://mirror.xmission.com/jenkins/plugins/copy-to-slave/1.4.3/copy-to-slave.hpi'
 end
 
+# Test installing from a URL with checksum
+jenkins_plugin 'ansicolor' do
+  source 'http://mirror.xmission.com/jenkins/plugins/ansicolor/0.5.2/ansicolor.hpi'
+  checksum '726c651a3ac8d080ff4aa5b962dd8b264801b8a3fde027da07fa1be30c709b31'
+end
+
+# Test installing from a URL with invalid checksum fails
+jenkins_plugin 'timestamper' do
+  source 'http://mirror.xmission.com/jenkins/plugins/timestamper/1.8.10/timestamper.hpi'
+  checksum 'invalid'
+end
+
 # Install a plugin with many deps
 jenkins_plugin 'github-oauth' do
   install_deps true

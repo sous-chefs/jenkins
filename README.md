@@ -444,6 +444,9 @@ end
 # Install a plugin from a given hpi (or jpi)
 jenkins_plugin 'greenballs' do
   source 'http://updates.jenkins-ci.org/download/plugins/greenballs/1.10/greenballs.hpi'
+  # Optional: The SHA-256 checksum of the pointed hpi (or jpi)
+  # See https://docs.chef.io/resource_remote_file.html#checksum
+  checksum '2a7395269bd736d3baa685b7d205a0ceef3a99bab98e5363ae785dbe30729ac2'
 end
 
 # Don't install a plugins dependencies
