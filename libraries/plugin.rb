@@ -47,6 +47,8 @@ class Chef
     attribute :install_deps,
               kind_of: [TrueClass, FalseClass],
               default: true
+    attribute :checksum,
+              kind_of: String
     attribute :ignore_deps_versions,
               kind_of: [TrueClass, FalseClass],
               default: false
@@ -121,7 +123,8 @@ EOH
             new_resource.source,
             new_resource.name,
             nil,
-            cli_opts: new_resource.options
+            cli_opts: new_resource.options,
+            checksum: new_resource.checksum
           )
         else
           install_plugin_from_update_center(
@@ -129,7 +132,8 @@ EOH
             new_resource.version,
             cli_opts: new_resource.options,
             install_deps: new_resource.install_deps,
-            ignore_deps_versions: new_resource.ignore_deps_versions
+            ignore_deps_versions: new_resource.ignore_deps_versions,
+            checksum: new_resource.checksum
           )
         end
       end
@@ -262,6 +266,7 @@ EOH
     # @param [Hash] opts the options install plugin with
     # @option opts [Boolean] :cli_opts additional flags to pass the jenkins cli command
     # @option opts [Boolean] :install_deps indicates a plugins dependencies should be installed
+    # @option opts [String] :checksum indicates the checksum of the *.hpi/*.jpi to install
     #
     def install_plugin_from_update_center(plugin_name, plugin_version, opts = {})
       remote_plugin_data = plugin_universe[plugin_name]
@@ -303,6 +308,7 @@ EOH
     # @param [Hash] opts the options install plugin with
     # @option opts [Boolean] :cli_opts additional flags to pass the jenkins cli command
     # @option opts [Boolean] :install_deps indicates a plugins dependencies should be installed
+    # @option opts [String] :checksum indicates the checksum of the *.hpi/*.jpi to install
     #
     def install_plugin_from_url(source_url, plugin_name, plugin_version = nil, opts = {})
       version = plugin_version || Digest::MD5.hexdigest(source_url)
@@ -313,6 +319,7 @@ EOH
       plugin = Chef::Resource::RemoteFile.new(path, run_context)
       plugin.source(source_url)
       plugin.backup(false)
+      plugin.checksum(opts[:checksum]) if opts[:checksum]
       plugin.run_action(:create)
 
       # Install the plugin from our local cache on disk. There is a bug in
