@@ -127,6 +127,15 @@ class Chef
     end
 
     #
+    # The checksum of the +slave.jar+.
+    #
+    # @return [String]
+    #
+    def slave_jar_checksum
+      @slave_jar_checksum ||= new_resource.checksum
+    end
+
+    #
     # The path to the +slave.jar+ on disk (which may or may not exist).
     #
     # @return [String]
@@ -211,6 +220,7 @@ class Chef
           build_resource(:remote_file, slave_jar).tap do |r|
             # We need to use .tap() to access methods in the provider's scope.
             r.source slave_jar_url
+            r.checksum slave_jar_checksum
             r.backup(false)
             r.mode('0755')
             r.atomic_update(false)
