@@ -75,6 +75,8 @@ class Chef
               kind_of: String
     attribute :java_path,
               kind_of: String
+    attribute :checksum,
+              kind_of: String
 
     attr_writer :exists
     attr_writer :connected
