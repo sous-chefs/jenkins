@@ -20,6 +20,8 @@ provisioner:
         host: localhost
         install_method: war
         mirror: https://updates.jenkins.io
+        runit:
+          sv_timeout: 30
 
 platforms:
   - name: amazonlinux
