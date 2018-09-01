@@ -1,5 +1,15 @@
 include_recipe 'jenkins_server_wrapper::default'
 
+package 'openssh-server' do
+  action :install
+  not_if { platform?('windows') }
+end
+
+service 'sshd' do
+  action [:enable, :start]
+  not_if { platform?('windows') }
+end
+
 # Load user data from a data bag item. This should be an encrypted data
 # bag item in real deployments.
 jenkins_user_data = data_bag_item('keys', 'jenkins-ssh')
