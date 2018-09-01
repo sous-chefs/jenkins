@@ -5,7 +5,7 @@ package 'openssh-server' do
   not_if { platform?('windows') }
 end
 
-service 'sshd' do
+service node['sshd_service'] do
   action [:enable, :start]
   not_if { platform?('windows') }
 end
