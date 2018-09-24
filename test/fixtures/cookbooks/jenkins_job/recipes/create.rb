@@ -1,5 +1,3 @@
-include_recipe 'jenkins_server_wrapper::default'
-
 %w(
   simple-execute
   execute-with-params
