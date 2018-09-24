@@ -1,5 +1,3 @@
-include_recipe 'jenkins_server_wrapper::default'
-
 package 'openssh-server' do
   action :install
   not_if { platform?('windows') }
