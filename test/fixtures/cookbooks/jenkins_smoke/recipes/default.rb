@@ -29,18 +29,17 @@ include_recipe 'jenkins_command::execute'
 #
 # Credentials
 # ------------------------------
-include_recipe 'jenkins_credentials::create'
+include_recipe 'jenkins_credentials::default'
 
 #
 # Jobs
 # ------------------------------
-include_recipe 'jenkins_job::create'
-include_recipe 'jenkins_job::build'
+include_recipe 'jenkins_job::default'
 
 #
 # Plugins
 # ------------------------------
-include_recipe 'jenkins_plugin::install'
+include_recipe 'jenkins_plugin::default'
 
 #
 # Proxy
@@ -55,10 +54,10 @@ include_recipe 'jenkins_script::execute'
 #
 # Slaves
 # ------------------------------
-include_recipe 'jenkins_slave::create_jnlp'
-include_recipe 'jenkins_slave::create_ssh'
+include_recipe 'jenkins_slave::default'
 
 #
 # Users
 # ------------------------------
-include_recipe 'jenkins_user::create'
+include_recipe 'jenkins_user::default'
+
