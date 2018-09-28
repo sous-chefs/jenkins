@@ -40,6 +40,9 @@ platforms:
     driver:
       box: chef/windows-server-2016-standard # private box
 
+verifier:
+  name: inspec
+
 suites:
   #
   # Smoke suite
@@ -61,6 +64,7 @@ suites:
       - ubuntu-14.04
       - windows-2012r2
       - windows-2016
+
   - name: smoke_war_stable
     run_list: jenkins_smoke::default
     attributes:
@@ -68,6 +72,7 @@ suites:
         master:
           install_method: war
           source: https://updates.jenkins.io/stable/latest/jenkins.war
+
   - name: smoke_war_latest
     run_list: jenkins_smoke::default
     attributes:
@@ -79,91 +84,65 @@ suites:
   #
   # Authentication suites
   #
-  - name: authentication_private_key
+  - name: authentication_private_key # Tested in smoke suite
     run_list: jenkins_authentication::private_key
+
   - name: authentication_username_password
     run_list: jenkins_authentication::username_password
+    excludes:
+      - windows-2012r2
+      - windows-2016
 
-  #
-  # Command suites
-  #
-  - name: jenkins_command_execute
-    run_list: jenkins_command::execute
+  # #
+  # # Command suites # Tested in smoke suite
+  # #
+  # - name: jenkins_command_execute
+  #   run_list: jenkins_command::execute
 
-  #
-  # Credentials suites
-  #
-  - name: jenkins_credentials_create
-    run_list: jenkins_credentials::create
-  - name: jenkins_credentials_delete
-    run_list: jenkins_credentials::delete
+  # #
+  # # Credentials suites # Tested in smoke suite
+  # #
+  # - name: jenkins_credentials
+  #   run_list: jenkins_credentials::default
 
-  #
-  # Job suites
-  #
-  - name: jenkins_job_create
-    run_list:
-      - jenkins_job::create
-      - jenkins_job::create_folder
-  - name: jenkins_job_delete
-    run_list: jenkins_job::delete
-  - name: jenkins_job_disable
-    run_list: jenkins_job::disable
-  - name: jenkins_job_enable
-    run_list: jenkins_job::enable
-  - name: jenkins_job_build
-    run_list: jenkins_job::build
+  # #
+  # # Job suites # Tested in smoke suite
+  # #
+  # - name: jenkins_job
+  #   run_list:
+  #     - jenkins_job::default
 
-  #
-  # Script suites
-  #
-  - name: jenkins_script
-    run_list: jenkins_script::execute
+  # #
+  # # Script suites # Tested in smoke suite
+  # #
+  # - name: jenkins_script
+  #   run_list: jenkins_script::execute
 
-  #
-  # Plugin suites
-  #
-  - name: jenkins_plugin_disable
-    run_list: jenkins_plugin::disable
-  - name: jenkins_plugin_enable
-    run_list: jenkins_plugin::enable
-  - name: jenkins_plugin_install
-    run_list: jenkins_plugin::install
-  - name: jenkins_plugin_uninstall
-    run_list: jenkins_plugin::uninstall
+  # #
+  # # Plugin suites # Tested in smoke suite
+  # #
+  # - name: jenkins_plugin
+  #   run_list: jenkins_plugin::default
 
   #
   # Proxy suites
+  # Cannot be tested together
+  # As the proxy settings are global
   #
-  - name: jenkins_proxy_config
+  - name: jenkins_proxy_config # Tested in smoke suite
     run_list: jenkins_proxy::config
   - name: jenkins_proxy_remove
     run_list: jenkins_proxy::remove
 
-  #
-  # Slave suites
-  #
-  - name: jenkins_slave_create
-    run_list:
-      - jenkins_slave::create_jnlp
-      - jenkins_slave::create_ssh
-  - name: jenkins_slave_delete
-    run_list:
-      - jenkins_slave::delete_jnlp
-      - jenkins_slave::delete_ssh
-  - name: jenkins_slave_connect
-    run_list: jenkins_slave::connect
-  - name: jenkins_slave_disconnect
-    run_list: jenkins_slave::disconnect
-  - name: jenkins_slave_online
-    run_list: jenkins_slave::online
-  - name: jenkins_slave_offline
-    run_list: jenkins_slave::offline
+  # #
+  # # Slave suites # Tested in smoke suite
+  # #
+  # - name: jenkins_slave
+  #   run_list:
+  #     - jenkins_slave::default
 
-  #
-  # User suites
-  #
-  - name: jenkins_user_create
-    run_list: jenkins_user::create
-  - name: jenkins_user_delete
-    run_list: jenkins_user::delete
+  # #
+  # # User suites # Tested in smoke suite
+  # #
+  # - name: jenkins_user
+  #   run_list: jenkins_user::default
