@@ -121,7 +121,8 @@ class JenkinsSlave < Inspec.resource(1)
   # Offline Attributes
   ############################################
   def offline_reason
-    json && json[:offlineCauseReason]
+    # offlineCauseReason has escaped spaces
+    json && json[:offlineCauseReason].gsub('\\ ', ' ')
   end
 
   def to_s

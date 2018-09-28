@@ -13,10 +13,14 @@ jenkins_ssh_slave 'ssh-to-offline' do
 end
 
 jenkins_slave 'ssh-to-offline' do
+  offline_reason 'Autobots ran out of energy'
+
   action :offline
 end
 
 jenkins_slave 'offline ssh slave again' do
   slave_name 'ssh-to-offline'
+  offline_reason 'Autobots ran out of energy'
+
   action :offline
 end
