@@ -1,1 +1,0 @@
-../../jenkins_script/serverspec/assert_executed_spec.rb
