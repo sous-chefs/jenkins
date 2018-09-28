@@ -94,22 +94,7 @@ class Chef
 
       include_recipe 'runit'
 
-      declare_resource(:runit_service, new_resource.service_name).tap do |r|
-        # We need to use .tap() to access methods in the provider's scope.
-        r.cookbook('jenkins')
-        r.run_template_name('jenkins-slave')
-        r.log_template_name('jenkins-slave')
-        r.options(
-          service_name: new_resource.service_name,
-          jvm_options: new_resource.jvm_options,
-          user:        new_resource.user,
-          remote_fs:   new_resource.remote_fs,
-          java_bin:    java,
-          slave_jar:   slave_jar,
-          jnlp_url:    jnlp_url,
-          jnlp_secret: jnlp_secret
-        )
-      end
+      service_resource
     end
 
     action :delete do
@@ -165,6 +150,25 @@ class Chef
     #
     def slave_jar_url
       @slave_jar_url ||= uri_join(endpoint, 'jnlpJars', 'slave.jar')
+    end
+
+    def service_resource
+      declare_resource(:runit_service, new_resource.service_name).tap do |r|
+        # We need to use .tap() to access methods in the provider's scope.
+        r.cookbook('jenkins')
+        r.run_template_name('jenkins-slave')
+        r.log_template_name('jenkins-slave')
+        r.options(
+          service_name: new_resource.service_name,
+          jvm_options: new_resource.jvm_options,
+          user:        new_resource.user,
+          remote_fs:   new_resource.remote_fs,
+          java_bin:    java,
+          slave_jar:   slave_jar,
+          jnlp_url:    jnlp_url,
+          jnlp_secret: jnlp_secret
+        )
+      end
     end
 
     #
