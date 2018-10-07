@@ -158,6 +158,16 @@ default['jenkins']['master'].tap do |master|
   master['listen_address'] = '0.0.0.0'
 
   #
+  # Ajp13 Port Jenkins is listening on. Set to -1 to disable
+  #
+  master['ajp_port'] = case node['platform_family']
+                       when 'debian'
+                         -1
+                       when 'rhel', 'amazon'
+                         8009
+                       end
+
+  #
   # The port which the Jenkins process will listen on.
   #
   master['port'] = 8080

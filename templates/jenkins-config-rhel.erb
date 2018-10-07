@@ -87,7 +87,7 @@ JENKINS_HTTPS_LISTEN_ADDRESS=""
 # Ajp13 Port Jenkins is listening on.
 # Set to -1 to disable
 #
-JENKINS_AJP_PORT="8009"
+JENKINS_AJP_PORT="<%= node['jenkins']['master']['ajp_port'] %>"
 
 ## Type:        string
 ## Default:     ""

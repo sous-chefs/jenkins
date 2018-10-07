@@ -49,7 +49,7 @@ HTTP_LISTEN_ADDRESS="<%= node['jenkins']['master']['listen_address'] %>"
 HTTP_PORT=<%= node['jenkins']['master']['port'] %>
 
 # port for AJP connector (disabled by default)
-AJP_PORT=-1
+AJP_PORT=<%= node['jenkins']['master']['ajp_port'] %>
 
 # servlet context, important if you want to use apache proxying
 PREFIX=/jenkins
