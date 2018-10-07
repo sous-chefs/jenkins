@@ -265,4 +265,9 @@ default['jenkins']['master'].tap do |master|
   # Keyserver to use. Disabled by default
   #
   master['repository_keyserver'] = nil
+
+  #
+  # Set extra variables
+  #
+  master['extra_variables'] = {}
 end
