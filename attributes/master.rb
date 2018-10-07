@@ -173,6 +173,11 @@ default['jenkins']['master'].tap do |master|
   master['debug_level'] = 5
 
   #
+  # Maximum number of HTTP worker threads.
+  #
+  master['handler_max'] = 100
+
+  #
   # The port which the Jenkins process will listen on.
   #
   master['port'] = 8080

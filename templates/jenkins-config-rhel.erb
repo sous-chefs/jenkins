@@ -121,7 +121,7 @@ JENKINS_ENABLE_ACCESS_LOG="no"
 #
 # Maximum number of HTTP worker threads.
 #
-JENKINS_HANDLER_MAX="100"
+JENKINS_HANDLER_MAX="<%= node['jenkins']['master']['handler_max'] %>"
 
 ## Type:        integer
 ## Default:     20
