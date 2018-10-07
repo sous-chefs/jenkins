@@ -178,6 +178,11 @@ default['jenkins']['master'].tap do |master|
   master['handler_max'] = 100
 
   #
+  # Maximum number of idle HTTP worker threads.
+  #
+  master['handler_idle'] = 20
+
+  #
   # The port which the Jenkins process will listen on.
   #
   master['port'] = 8080
