@@ -168,6 +168,11 @@ default['jenkins']['master'].tap do |master|
                        end
 
   #
+  # Debug level for logs. The higher the value, the more verbose. 5 is INFO.
+  #
+  master['debug_level'] = 5
+
+  #
   # The port which the Jenkins process will listen on.
   #
   master['port'] = 8080

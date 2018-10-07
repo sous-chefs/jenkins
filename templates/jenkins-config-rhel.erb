@@ -105,7 +105,7 @@ JENKINS_AJP_LISTEN_ADDRESS=""
 # Debug level for logs -- the higher the value, the more verbose.
 # 5 is INFO.
 #
-JENKINS_DEBUG_LEVEL="5"
+JENKINS_DEBUG_LEVEL="<%= node['jenkins']['master']['debug_level'] %>"
 
 ## Type:        yesno
 ## Default:     no
