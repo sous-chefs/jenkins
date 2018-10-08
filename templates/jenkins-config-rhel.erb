@@ -146,5 +146,5 @@ JENKINS_ARGS="$JENKINS_ARGS <%= node['jenkins']['master']['jenkins_args'] %>"
 ## Extra variables
 ##
 <% node['jenkins']['master']['extra_variables'].each do |name, value| -%>
-<%= name %>="<%= value %>"
+export <%= name %>="<%= value %>"
 <% end -%>
