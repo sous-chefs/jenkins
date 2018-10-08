@@ -22,6 +22,10 @@ provisioner:
         mirror: https://updates.jenkins.io
         runit:
           sv_timeout: 30
+        # Set httpKeepAliveTimeout to 5 minutes so that connections are not closed too early.
+        # This can happen when there is slow performance
+        # https://issues.jenkins-ci.org/browse/JENKINS-38623
+        jenkins_args: '--httpKeepAliveTimeout=300000'
 
 platforms:
   - name: amazonlinux

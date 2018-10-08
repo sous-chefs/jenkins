@@ -77,12 +77,22 @@ end
 
 ruby_block 'wait for jenkins to start' do
   block do
-    response = Chef::HTTP.new(node['jenkins']['master']['endpoint']).get('/')
+    begin
+      response = Chef::HTTP.new(node['jenkins']['master']['endpoint']).get('/')
 
-    raise 'Jenkins is starting up' if response.include?('Starting Jenkins')
+      raise 'Jenkins is starting up' if response.include?('Starting Jenkins')
+    rescue StandardError
+      # re-raise exceptions so that the ruby_block triggers a retry
+      raise
+    end
+
+    # let the agents connect to Jenkins
+    sleep 60
   end
+
   retries 6
-  retry_delay 5
+  retry_delay 30
+
   action :nothing
 
   notifies :disconnect, 'jenkins_slave[disconnect ssh slave at the very end]', :delayed
