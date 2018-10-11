@@ -1,4 +1,3 @@
-
 jenkins_ssh_slave 'ssh-to-delete' do
   action :create
 end

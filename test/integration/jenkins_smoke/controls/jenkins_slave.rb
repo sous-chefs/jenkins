@@ -136,7 +136,7 @@ control 'jenkins_slave-2.0' do
     its('credentials_id') { should eq '38537014-ec66-49b5-aff2-aed1c19e2989' }
     its('credentials_username') { should eq 'jenkins-ssh-key' }
     its('java_path') { should eq '/usr/bin/java' }
-    its('launch_timeout') { should eq 30 }
+    its('launch_timeout') { should eq 120 }
     its('ssh_retries') { should eq 5 }
     its('ssh_wait_retries') { should eq 60 }
     it { should be_connected }
@@ -155,7 +155,7 @@ control 'jenkins_slave-2.0' do
     its('port') { should eq 22 }
     its('credentials_id') { should eq '38537014-ec66-49b5-aff2-aed1c19e2989' }
     its('credentials_username') { should eq 'jenkins-ssh-key' }
-    its('launch_timeout') { should eq 30 }
+    its('launch_timeout') { should eq 120 }
     its('ssh_retries') { should eq 5 }
     its('ssh_wait_retries') { should eq 60 }
     it { should be_connected }
@@ -174,7 +174,7 @@ control 'jenkins_slave-2.0' do
     its('port') { should eq 22 }
     its('credentials_id') { should eq 'jenkins-ssh-password' }
     its('credentials_username') { should eq 'jenkins-ssh-password' }
-    its('launch_timeout') { should eq 30 }
+    its('launch_timeout') { should eq 120 }
     its('ssh_retries') { should eq 5 }
     its('ssh_wait_retries') { should eq 60 }
     it { should be_connected }

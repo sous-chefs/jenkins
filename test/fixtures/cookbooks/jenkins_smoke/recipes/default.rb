@@ -81,19 +81,32 @@ ruby_block 'wait for jenkins to start' do
       response = Chef::HTTP.new(node['jenkins']['master']['endpoint']).get('/')
 
       raise 'Jenkins is starting up' if response.include?('Starting Jenkins')
+
+      # after Jenkins has started the slaves will connect, but this can take some time
+      # So we check all the slaves are online before running inspec
+      [
+        'jnlp-builder',
+        'jnlp-executor',
+        'ssh-builder',
+        'ssh-executor',
+        'ssh-smoke',
+        'ssh-to-online',
+        'ssh-to-connect',
+      ].each do |slave|
+        body = Chef::HTTP.new(node['jenkins']['master']['endpoint']).get("/computer/#{slave}/api/json?pretty=true")
+        json_body = JSON.parse(body, symbolize_names: true)
+
+        raise "cannot find slave: #{slave}" unless json_body
+        raise "slave: #{slave} isn't online" if json_body[:offline]
+      end
     rescue StandardError
       # re-raise exceptions so that the ruby_block triggers a retry
       raise
     end
-
-    # let the agents connect to Jenkins
-    sleep 60
   end
 
-  retries 6
+  retries 10
   retry_delay 30
-
-  action :nothing
 
   notifies :disconnect, 'jenkins_slave[disconnect ssh slave at the very end]', :delayed
 end
