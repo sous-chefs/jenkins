@@ -98,12 +98,6 @@ suites:
       - windows-2016
 
   # #
-  # # Credentials suites # Tested in smoke suite
-  # #
-  # - name: jenkins_credentials
-  #   run_list: jenkins_credentials::default
-
-  # #
   # # Job suites # Tested in smoke suite
   # #
   # - name: jenkins_job
