@@ -98,12 +98,6 @@ suites:
       - windows-2016
 
   # #
-  # # Command suites # Tested in smoke suite
-  # #
-  # - name: jenkins_command_execute
-  #   run_list: jenkins_command::execute
-
-  # #
   # # Credentials suites # Tested in smoke suite
   # #
   # - name: jenkins_credentials
