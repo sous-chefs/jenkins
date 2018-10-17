@@ -98,12 +98,6 @@ suites:
       - windows-2016
 
   # #
-  # # Script suites # Tested in smoke suite
-  # #
-  # - name: jenkins_script
-  #   run_list: jenkins_script::execute
-
-  # #
   # # Plugin suites # Tested in smoke suite
   # #
   # - name: jenkins_plugin
