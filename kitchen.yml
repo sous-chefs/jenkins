@@ -108,13 +108,6 @@ suites:
     run_list: jenkins_proxy::remove
 
   # #
-  # # Slave suites # Tested in smoke suite
-  # #
-  # - name: jenkins_slave
-  #   run_list:
-  #     - jenkins_slave::default
-
-  # #
   # # User suites # Tested in smoke suite
   # #
   # - name: jenkins_user
