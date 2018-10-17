@@ -98,13 +98,6 @@ suites:
       - windows-2016
 
   # #
-  # # Job suites # Tested in smoke suite
-  # #
-  # - name: jenkins_job
-  #   run_list:
-  #     - jenkins_job::default
-
-  # #
   # # Script suites # Tested in smoke suite
   # #
   # - name: jenkins_script
