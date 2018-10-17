@@ -97,12 +97,6 @@ suites:
       - windows-2012r2
       - windows-2016
 
-  # #
-  # # Plugin suites # Tested in smoke suite
-  # #
-  # - name: jenkins_plugin
-  #   run_list: jenkins_plugin::default
-
   #
   # Proxy suites
   # Cannot be tested together
