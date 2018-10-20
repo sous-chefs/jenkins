@@ -106,9 +106,3 @@ suites:
     run_list: jenkins_proxy::config
   - name: jenkins_proxy_remove
     run_list: jenkins_proxy::remove
-
-  # #
-  # # User suites # Tested in smoke suite
-  # #
-  # - name: jenkins_user
-  #   run_list: jenkins_user::default
