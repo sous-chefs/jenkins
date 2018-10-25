@@ -1,6 +1,6 @@
 <% @users.each do |user| %>
 user = hudson.model.User.get("<%= user['short_name'] %>")
-user.setFullName("<%= user['long_name'] %>")
+user.setFullName("<%= user['full_name'] %>")
 email = new hudson.tasks.Mailer.UserProperty("<%= user['email'] %>")
 user.addProperty(email)
 user.save()
