@@ -76,7 +76,7 @@ jenkins_ssh_slave 'ssh-builder' do
   # SSH specific attributes
   host        'localhost'
   credentials credentials
-  launch_timeout   120
+  launch_timeout   node['jenkins_slave']['launch_timeout']
   ssh_retries      5
   ssh_wait_retries 60
 end
@@ -90,7 +90,7 @@ jenkins_ssh_slave 'ssh-executor' do
   # SSH specific attributes
   host        'localhost'
   credentials '38537014-ec66-49b5-aff2-aed1c19e2989'
-  launch_timeout   120
+  launch_timeout   node['jenkins_slave']['launch_timeout']
   ssh_retries      5
   ssh_wait_retries 60
 end
@@ -104,7 +104,7 @@ jenkins_ssh_slave 'ssh-smoke' do
   # SSH specific attributes
   host        'localhost'
   credentials 'jenkins-ssh-password'
-  launch_timeout   120
+  launch_timeout   node['jenkins_slave']['launch_timeout']
   ssh_retries      5
   ssh_wait_retries 60
 end

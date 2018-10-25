@@ -22,8 +22,9 @@ provisioner:
         mirror: https://updates.jenkins.io
         runit:
           sv_timeout: 30
-        # Set httpKeepAliveTimeout to 5 minutes so that connections are not closed too early.
-        # This can happen when there is slow performance
+        # This is to help slaves to connect to the master
+        # Sometimes with slow performance the connection is dropped/cut too early
+        # 30 seconds was too low, so I bumped it to 5 minutes
         # https://issues.jenkins-ci.org/browse/JENKINS-38623
         jenkins_args: '--httpKeepAliveTimeout=300000'
 

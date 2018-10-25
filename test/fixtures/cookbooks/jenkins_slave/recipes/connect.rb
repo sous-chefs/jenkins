@@ -6,7 +6,7 @@ jenkins_ssh_slave 'ssh-to-connect' do
   # SSH specific attributes
   host        'localhost'
   credentials 'jenkins-ssh-password'
-  launch_timeout   120
+  launch_timeout   node['jenkins_slave']['launch_timeout']
   ssh_retries      5
   ssh_wait_retries 60
 end

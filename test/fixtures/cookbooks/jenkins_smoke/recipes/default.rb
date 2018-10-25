@@ -82,8 +82,9 @@ ruby_block 'wait for jenkins to start' do
 
       raise 'Jenkins is starting up' if response.include?('Starting Jenkins')
 
-      # after Jenkins has started the slaves will connect, but this can take some time
-      # So we check all the slaves are online before running inspec
+      # After Jenkins has started the slaves will connect, but this can take some time
+      # So we check that the expected slaves are online before running Inspec
+
       [
         'jnlp-builder',
         'jnlp-executor',
@@ -99,6 +100,10 @@ ruby_block 'wait for jenkins to start' do
         raise "cannot find slave: #{slave}" unless json_body
         raise "slave: #{slave} isn't online" if json_body[:offline]
       end
+
+      # Note:
+      # Testing that slaves are connected and/or online is prone to failure
+      # due to slow performance, different virtualization, etc
     rescue StandardError
       # re-raise exceptions so that the ruby_block triggers a retry
       raise

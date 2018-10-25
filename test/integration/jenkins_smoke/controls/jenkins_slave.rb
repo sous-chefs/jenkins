@@ -2,6 +2,11 @@
 # copyright: 2018, The Authors
 
 title 'Jenkins Slaves'
+
+# Note:
+# Testing that slaves are connected and/or online is prone to failure
+# due to slow performance, different virtualization, etc
+
 control 'jenkins_slave-1.0' do
   impact 0.7
   title 'Jenkins JNLP Slaves are created and configured'
