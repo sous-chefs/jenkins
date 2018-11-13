@@ -184,6 +184,7 @@ class Chef
       @slave_xml_resource = Chef::Resource::Template.new(slave_xml, run_context)
       @slave_xml_resource.cookbook('jenkins')
       @slave_xml_resource.source('jenkins-slave.xml.erb')
+      @slave_xml_resource.sensitive = true if new_resource.password
       @slave_xml_resource.variables(
         new_resource:  new_resource,
         endpoint:      endpoint,
