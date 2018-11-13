@@ -271,8 +271,6 @@ class Chef
       @user_domain ||= begin
         if (parts = new_resource.user.match(/(?<domain>.*)\\(?<account>.*)/))
           parts[:domain]
-        else
-          '.'
         end
       end
     end
