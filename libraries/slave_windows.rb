@@ -264,7 +264,7 @@ class Chef
     end
 
     #
-    # Windows domain for the user or `.` if a domain is not set.
+    # Windows domain for the user or nil if a domain is not set.
     #
     # @return [String]
     #
