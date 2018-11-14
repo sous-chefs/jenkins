@@ -8,7 +8,7 @@ transport:
 
 provisioner:
   name: dokken
-  deprecations_as_errors: false
+  deprecations_as_errors: true
 
 verifier:
   name: inspec
@@ -64,5 +64,5 @@ platforms:
 
 - name: opensuse-leap
   driver:
-    image: dokken/opensuse-leap
+    image: dokken/opensuse-leap-42
     pid_one_command: /bin/systemd
