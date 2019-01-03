@@ -1,5 +1,3 @@
-include_recipe 'jenkins_server_wrapper::default'
-
 # Test basic user creation
 jenkins_user 'sethvargo'
 

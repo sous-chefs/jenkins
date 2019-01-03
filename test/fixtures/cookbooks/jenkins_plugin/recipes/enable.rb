@@ -1,9 +1,9 @@
-include_recipe 'jenkins_server_wrapper::default'
 
-# Include the disable recipe so we have something to enable
-include_recipe 'jenkins_plugin::disable'
+jenkins_plugin 'jira-trigger' do
+  action :disable
+end
 
-# Test basic job deletion
-jenkins_plugin 'greenballs' do
+# Test enable plugin
+jenkins_plugin 'jira-trigger' do
   action :enable
 end

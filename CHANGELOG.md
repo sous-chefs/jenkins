@@ -2,6 +2,17 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 6.2.1 (2018-11-14)
+
+- @josh-barker entirely rewrote our test suites. Suites have been consolidated, everything now passes, and all validation is performed with all new InSpec tests. Thanks Josh for this massive improvement.
+- Fix bug when remote plugin is not found in plugin universe 
+- Fix broken delete action for jnlp slave
+- Fix cloning resources attributes for/var/lib/jenkins
+- Set httpKeepAliveTimeout to 5 minutes so that connections are not closed too early
+- Increase slave launch timeout to 2 minutes for slow systems
+- Add documentation about slave failure due to slow performance
+- Mark windows template sensitive if setting password, remove default '.' for windows users domain
+
 ## 6.2.0 (2018-07-30)
 
 - Code improvement for custom plugin update centre

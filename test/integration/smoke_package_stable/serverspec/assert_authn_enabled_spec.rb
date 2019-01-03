@@ -1,1 +1,0 @@
-../../authentication_private_key/serverspec/assert_authn_enabled_spec.rb

@@ -1,14 +1,8 @@
-include_recipe 'jenkins_server_wrapper::default'
-
-# Include the install recipe so we have something to uninstall
-include_recipe 'jenkins_plugin::install'
-
-# Grr...
-jenkins_command 'restart'
 
 # Test basic job deletion
-jenkins_plugin 'greenballs' do
+jenkins_plugin 'confluence-publisher' do
   action :uninstall
+  notifies :restart, 'service[jenkins]', :immediately
 end
 
 # Make sure it ignores non-existent jobs
