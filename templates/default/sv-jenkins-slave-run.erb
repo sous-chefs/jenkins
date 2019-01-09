@@ -11,7 +11,7 @@ cd <%= @options[:new_resource].remote_fs %>
 <% if limits && !limits.empty? %>
 ulimit <% limits.each { |option, value| %>-<%= option %> <%= value %> <% } %>
 <% end %>
-exec chpst -u <%= @options[:new_resource].user %> \
+exec chpst -u <%= ([@options[:user]] + @options[:groups]).join(':') %> \
   env HOME=<%= @options[:new_resource].remote_fs %> \
   JENKINS_HOME=<%= @options[:new_resource].remote_fs %> \
   <%= @options[:java_bin] %> \
