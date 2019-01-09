@@ -37,6 +37,9 @@ class Chef
     attribute :service_name,
               kind_of: String,
               default: 'jenkins-slave'
+    attribute :supplementary_groups,
+              kind_of: Array,
+              default: []
   end
 end
 
@@ -248,10 +251,12 @@ class Chef
             r.log_template_name('jenkins-slave')
             r.options(
               new_resource: new_resource,
-              java_bin:    java,
-              slave_jar:   slave_jar,
-              jnlp_url:    jnlp_url,
-              jnlp_secret: jnlp_secret
+              java_bin:     java,
+              slave_jar:    slave_jar,
+              jnlp_url:     jnlp_url,
+              jnlp_secret:  jnlp_secret,
+              user:         new_resource.user,
+              groups:       new_resource.supplementary_groups.empty? ? [] : [new_resource.group] + new_resource.supplementary_groups
             )
           end
         end

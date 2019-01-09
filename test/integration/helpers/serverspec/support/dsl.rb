@@ -1,6 +1,5 @@
 module RSpec
   module Core
-    #
     module DSL
       def jenkins_build(name, number)
         Serverspec::Type::JenkinsBuild.new(name, number)
