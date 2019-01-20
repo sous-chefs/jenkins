@@ -161,11 +161,11 @@ class Chef
         r.options(
           service_name: new_resource.service_name,
           jvm_options: new_resource.jvm_options,
-          user:        new_resource.user,
-          remote_fs:   new_resource.remote_fs,
-          java_bin:    java,
-          slave_jar:   slave_jar,
-          jnlp_url:    jnlp_url,
+          user: new_resource.user,
+          remote_fs: new_resource.remote_fs,
+          java_bin: java,
+          slave_jar: slave_jar,
+          jnlp_url: jnlp_url,
           jnlp_secret: jnlp_secret
         )
       end

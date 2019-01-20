@@ -63,7 +63,7 @@ class Chef
         super <<-EOH
 The Jenkins view `#{view}' does not exist. In order to #{action} `#{view}', that
 view must first exist on the Jenkins master!
-EOH
+        EOH
       end
     end
 

@@ -41,13 +41,13 @@ Jenkins can fail to start if:
   - a plugin's dependencies are not installed
 
 If this problem persists, check your Jenkins log files.
-EOH
+        EOH
       end
     end
 
     # Matches Version 4 UUID per RFC 4122
     # Example: 38537014-ec66-49b5-aff2-aed1c19e2989
-    UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/ unless defined?(UUID_REGEX)
+    UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/.freeze unless defined?(UUID_REGEX)
 
     #
     # Helper method for creating an accessing a new {Jenkins::Executor} from
@@ -500,9 +500,7 @@ EOH
         # Setting sensitive(true) will suppress the long diff output, but this
         # functionality is not available in older versions of Chef, so we need
         # check if the resource responds to the method before calling it.
-        if extracted_json_file.respond_to?(:sensitive)
-          extracted_json_file.sensitive(true)
-        end
+        extracted_json_file.sensitive(true) if extracted_json_file.respond_to?(:sensitive)
 
         extracted_json_file.mode('0644')
         extracted_json_file.run_action(:create)

@@ -1,4 +1,3 @@
-
 # Create a simple user
 jenkins_user 'delete-user'
 

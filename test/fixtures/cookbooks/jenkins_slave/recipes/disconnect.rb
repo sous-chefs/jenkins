@@ -1,4 +1,3 @@
-
 jenkins_ssh_slave 'ssh-to-disconnect' do
   remote_fs   '/tmp/ssh-to-disconnect'
   user        'jenkins-ssh-password'

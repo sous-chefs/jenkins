@@ -1,4 +1,3 @@
-
 fixture_data_base_path = ::File.join(::File.dirname(Chef::Config[:config_file]), 'data')
 
 # test deletion with base resource

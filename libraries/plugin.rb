@@ -77,7 +77,7 @@ class Chef
         super <<-EOH
 The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
 `#{plugin}', that plugin must first be installed on the Jenkins master!
-EOH
+        EOH
       end
     end
 
@@ -171,9 +171,7 @@ EOH
     # *.jpi.disabled file from the disk.)
     #
     action :disable do
-      unless current_resource.installed?
-        raise PluginNotInstalled.new(new_resource.name, :disable)
-      end
+      raise PluginNotInstalled.new(new_resource.name, :disable) unless current_resource.installed?
 
       disabled = "#{plugin_file(new_resource.name)}.disabled"
 
@@ -195,9 +193,7 @@ EOH
     # Plugins may be disabled by re-adding the +.jpi.disabled+ plugin.
     #
     action :enable do
-      unless current_resource.installed?
-        raise PluginNotInstalled.new(new_resource.name, :enable)
-      end
+      raise PluginNotInstalled.new(new_resource.name, :enable) unless current_resource.installed?
 
       disabled = "#{plugin_file(new_resource.name)}.disabled"
 

@@ -92,7 +92,7 @@ class Chef
         super <<-EOH
 The Jenkins job `#{job}' does not exist. In order to :#{action} `#{job}', that
 job must first exist on the Jenkins master!
-EOH
+        EOH
       end
     end
 
@@ -126,9 +126,7 @@ EOH
     #   if the job does not exist
     #
     action :build do
-      unless current_resource.exists?
-        raise JobDoesNotExist.new(new_resource.name, :build)
-      end
+      raise JobDoesNotExist.new(new_resource.name, :build) unless current_resource.exists?
 
       if current_resource.enabled?
         converge_by("Build #{new_resource}") do
@@ -229,9 +227,7 @@ EOH
     #   if the job does not exist
     #
     action :disable do
-      unless current_resource.exists?
-        raise JobDoesNotExist.new(new_resource.name, :disable)
-      end
+      raise JobDoesNotExist.new(new_resource.name, :disable) unless current_resource.exists?
 
       if current_resource.enabled?
         converge_by("Disable #{new_resource}") do
@@ -249,9 +245,7 @@ EOH
     #   if the job does not exist
     #
     action :enable do
-      unless current_resource.exists?
-        raise JobDoesNotExist.new(new_resource.name, :enable)
-      end
+      raise JobDoesNotExist.new(new_resource.name, :enable) unless current_resource.exists?
 
       if current_resource.enabled?
         Chef::Log.info("#{new_resource} enabled - skipping")
@@ -285,8 +279,8 @@ EOH
 
       @current_job = {
         enabled: disabled.nil? ? true : disabled.text == 'false',
-        xml:     xml,
-        raw:     response,
+        xml: xml,
+        raw: response,
       }
       @current_job
     end

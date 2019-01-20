@@ -186,16 +186,16 @@ class Chef
       @slave_xml_resource.source('jenkins-slave.xml.erb')
       @slave_xml_resource.sensitive = true if new_resource.password
       @slave_xml_resource.variables(
-        new_resource:  new_resource,
-        endpoint:      endpoint,
-        java_bin:      java,
-        slave_jar:     slave_jar,
-        jnlp_url:      jnlp_url,
-        jnlp_secret:   jnlp_secret,
-        user_domain:   user_domain,
-        user_account:  user_account,
+        new_resource: new_resource,
+        endpoint: endpoint,
+        java_bin: java,
+        slave_jar: slave_jar,
+        jnlp_url: jnlp_url,
+        jnlp_secret: jnlp_secret,
+        user_domain: user_domain,
+        user_account: user_account,
         user_password: new_resource.password,
-        path:          new_resource.path
+        path: new_resource.path
       )
       @slave_xml_resource.notifies(:run, install_service_resource)
       @slave_xml_resource
@@ -216,12 +216,12 @@ class Chef
       @slave_bat_resource.cookbook('jenkins')
       @slave_bat_resource.source('jenkins-slave.bat.erb')
       @slave_bat_resource.variables(
-        pre_run_cmds:  new_resource.pre_run_cmds,
-        new_resource:  new_resource,
-        java_bin:      java,
-        slave_jar:     slave_jar,
-        jnlp_url:      jnlp_url,
-        jnlp_secret:   jnlp_secret
+        pre_run_cmds: new_resource.pre_run_cmds,
+        new_resource: new_resource,
+        java_bin: java,
+        slave_jar: slave_jar,
+        jnlp_url: jnlp_url,
+        jnlp_secret: jnlp_secret
       )
       @slave_bat_resource
     end

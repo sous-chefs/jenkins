@@ -276,9 +276,7 @@ class Chef
       if current_resource.online?
         converge_by("Offline #{new_resource}") do
           command_pieces = [escape(new_resource.slave_name)]
-          if new_resource.offline_reason
-            command_pieces << "-m '#{escape(new_resource.offline_reason)}'"
-          end
+          command_pieces << "-m '#{escape(new_resource.offline_reason)}'" if new_resource.offline_reason
           executor.execute!('offline-node', command_pieces)
         end
       else
@@ -393,14 +391,14 @@ class Chef
     #
     def correct_config?
       wanted_slave = {
-        name:         new_resource.slave_name,
-        description:  new_resource.description,
-        remote_fs:    new_resource.remote_fs,
-        executors:    new_resource.executors,
-        usage_mode:   new_resource.usage_mode,
-        labels:       new_resource.labels.sort,
+        name: new_resource.slave_name,
+        description: new_resource.description,
+        remote_fs: new_resource.remote_fs,
+        executors: new_resource.executors,
+        usage_mode: new_resource.usage_mode,
+        labels: new_resource.labels.sort,
         availability: new_resource.availability,
-        environment:  new_resource.environment,
+        environment: new_resource.environment,
       }
 
       if new_resource.availability.to_s == 'demand'

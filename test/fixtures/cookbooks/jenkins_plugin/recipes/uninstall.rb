@@ -1,4 +1,3 @@
-
 # Test basic job deletion
 jenkins_plugin 'confluence-publisher' do
   action :uninstall

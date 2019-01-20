@@ -1,4 +1,3 @@
-
 jenkins_plugin 'jira-trigger' do
   action :disable
 end
