@@ -26,7 +26,6 @@ env:
   - INSTANCE=smoke-war-stable-centos-7
   - INSTANCE=smoke-war-stable-debian-8
   - INSTANCE=smoke-war-stable-debian-9
-  - INSTANCE=smoke-war-stable-ubuntu-1404
   - INSTANCE=smoke-war-stable-ubuntu-1604
 
 before_script:
