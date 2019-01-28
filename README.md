@@ -14,7 +14,7 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 
 ### Chef
 
-- Chef 12.14+
+- Chef 13.0+
 
 ### Cookbooks
 
