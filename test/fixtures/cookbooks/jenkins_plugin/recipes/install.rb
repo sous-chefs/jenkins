@@ -20,12 +20,7 @@ end
 
 # Install a plugin with many deps
 jenkins_plugin 'github-oauth' do
-  install_deps true
-end
-
-# Skip this plugins deps
-jenkins_plugin 'jquery-ui' do
-  install_deps false
+  install_deps true # TODO: remove with next major version release
 end
 
 # plugin to disable
@@ -46,7 +41,6 @@ end
 # Install with a wacky version number
 jenkins_plugin 'build-monitor-plugin' do
   version '1.6+build.135'
-  install_deps true
 
   action :install
   notifies :restart, 'service[jenkins]', :immediately

@@ -5,7 +5,7 @@
 # Author:: Seth Vargo <sethvargo@gmail.com>
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,6 +44,9 @@ class Chef
               default: :latest
     attribute :source,
               kind_of: String
+    # TODO: Remove in next major version release
+    attribute :install_deps,
+              kind_of: [TrueClass, FalseClass]
     attribute :options,
               kind_of: String
 
@@ -64,7 +67,7 @@ end
 class Chef
   class Provider::JenkinsPlugin < Provider::LWRPBase
     provides :jenkins_plugin
-    use_inline_resources # ~FC113
+
     include Jenkins::Helper
 
     provides :jenkins_plugin
@@ -95,14 +98,13 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
       @current_resource
     end
 
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
-    end
-
     action :install do
+      # TODO: remove in next major version release
+      # Check for dependency property and give deprecation if used
+      if new_resource.install_deps
+        Chef::Log.warn('The install_deps property on the plugin provider is deprecated and not used. See Readme on how to install plugins with or without dependencies.')
+      end
+
       # This block stores the actual command to execute, since its the same
       # for upgrades and installs.
       install_block = proc do
