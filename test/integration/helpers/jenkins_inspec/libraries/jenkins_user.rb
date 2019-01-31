@@ -38,8 +38,28 @@ class JenkinsUser < Inspec.resource(1)
   def xml
     return @xml if @xml
 
-    contents = inspec.backend.file("/var/lib/jenkins/users/#{id}/config.xml").content
-    @xml = REXML::Document.new(contents) if contents
+    user_file = inspec.backend.file("/var/lib/jenkins/users/#{id}/config.xml")
+
+    if user_file.file?
+      @xml = REXML::Document.new(user_file.contents)
+    else
+      # Jenkins has a new way to store user config files
+      # We need to read the mapping file to find the directory for the user config
+      user_mapping_raw = inspec.backend.file('/var/lib/jenkins/users/users.xml').content
+      return unless user_mapping_raw
+
+      user_mapping = REXML::Document.new(user_mapping_raw)
+      # its in a key pair configuration, user id => folder name
+      folder = user_mapping.elements["//*[string/text() = '#{id}']/string[2]/text()"].to_s
+
+      return unless folder
+
+      file_path = "/var/lib/jenkins/users/#{folder}/config.xml"
+      contents = inspec.backend.file(file_path).content
+
+      return unless contents
+      @xml = REXML::Document.new(contents)
+    end
   rescue Errno::ENOENT
     @xml = nil
   end
