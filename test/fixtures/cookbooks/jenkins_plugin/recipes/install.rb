@@ -9,8 +9,8 @@ jenkins_plugin 'disk-usage' do
 end
 
 # Test installing a specific version with abnormal versioning
-jenkins_plugin 'apache-httpcomponents-client-4-api' do
-  version '4.5.3-2.0'
+jenkins_plugin 'nexus-jenkins-plugin' do
+  version '3.4.20190116-104331.e820fec'
 end
 
 # Test installing from a URL
