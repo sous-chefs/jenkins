@@ -3,7 +3,7 @@ sudo: required
 addons:
   apt:
     sources:
-      - chef-current-xenial
+      - chef-current-trusty
     packages:
       - chefdk
 
