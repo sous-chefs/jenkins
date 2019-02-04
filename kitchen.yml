@@ -63,7 +63,7 @@ suites:
     excludes:
       - windows-2012r2
       - windows-2016
-      - widnows-2019
+      - windows-2019
 
   - name: smoke_package_current
     run_list: jenkins_smoke::default
