@@ -10,6 +10,7 @@ jenkins_plugins = %w(
   ssh-slaves
   jdk-tool
   display-url-api
+  credentials
 )
 
 jenkins_plugins.each do |plugin|
