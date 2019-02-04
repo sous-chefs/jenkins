@@ -3,7 +3,7 @@ sudo: required
 addons:
   apt:
     sources:
-      - chef-current-bionic
+      - chef-current-xenial
     packages:
       - chefdk
 
