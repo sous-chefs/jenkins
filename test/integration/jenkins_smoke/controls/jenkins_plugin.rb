@@ -21,9 +21,9 @@ control 'jenkins_plugin-1.0' do
     its('version') { should eq '1.4.3' }
   end
 
-  describe jenkins_plugin('apache-httpcomponents-client-4-api') do
+  describe jenkins_plugin('nexus-jenkins-plugin') do
     it { should exist }
-    its('version') { should eq '4.5.3-2.0' }
+    its('version') { should eq '3.4.20190116-104331.e820fec' }
   end
 
   describe jenkins_plugin('github-oauth') do
