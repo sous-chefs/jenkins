@@ -37,6 +37,9 @@ class Chef
     attribute :service_name,
               kind_of: String,
               default: 'jenkins-slave'
+    attribute :runit_groups,
+              kind_of: Array,
+              default: ['jenkins']
   end
 end
 
@@ -162,6 +165,7 @@ class Chef
           service_name: new_resource.service_name,
           jvm_options: new_resource.jvm_options,
           user: new_resource.user,
+          runit_groups: new_resource.runit_groups,
           remote_fs: new_resource.remote_fs,
           java_bin: java,
           slave_jar: slave_jar,
