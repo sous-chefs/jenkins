@@ -58,7 +58,6 @@ control 'jenkins_slave-1.0' do
     its('in_demand_delay') { should eq 1 }
     its('idle_delay') { should eq 3 }
     its('labels') { should eq %w(fast runner) }
-    its('runit_groups') { should eq %w(jenkins-smoke) }
 
     # it might be connected, depending on disconnection timing
     # it { should be_connected }

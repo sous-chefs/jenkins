@@ -28,7 +28,7 @@ jenkins_jnlp_slave 'jnlp-smoke' do
   labels          %w(runner fast)
   user           'jenkins-smoke'
   group          'jenkins-smoke'
-  runit_groups   %w(jenkins-smoke)
+  runit_groups    %w(jenkins-smoke)
 
   action :create
 end
