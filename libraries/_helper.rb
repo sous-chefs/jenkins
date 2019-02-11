@@ -41,7 +41,7 @@ Jenkins can fail to start if:
   - a plugin's dependencies are not installed
 
 If this problem persists, check your Jenkins log files.
-EOH
+        EOH
       end
     end
 
@@ -500,9 +500,7 @@ EOH
         # Setting sensitive(true) will suppress the long diff output, but this
         # functionality is not available in older versions of Chef, so we need
         # check if the resource responds to the method before calling it.
-        if extracted_json_file.respond_to?(:sensitive)
-          extracted_json_file.sensitive(true)
-        end
+        extracted_json_file.sensitive(true) if extracted_json_file.respond_to?(:sensitive)
 
         extracted_json_file.mode('0644')
         extracted_json_file.run_action(:create)

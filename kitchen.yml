@@ -32,18 +32,24 @@ platforms:
   - name: amazonlinux
     driver_config:
       box: mvbcoding/awslinux
+  - name: amazonlinux-2
+    driver_config:
+      box: gbailey/amzn2
   - name: centos-6
   - name: centos-7
   - name: debian-8
   - name: debian-9
-  - name: ubuntu-14.04
   - name: ubuntu-16.04
+  - name: ubuntu-18.04
   - name: windows-2012r2
     driver:
-      box: chef/windows-server-2012r2-standard # private box
+      box: tas50/windows_2012r2
   - name: windows-2016
     driver:
-      box: chef/windows-server-2016-standard # private box
+      box: tas50/windows_2016
+  - name: windows-2019
+    driver:
+      box: tas50/windows_2019
 
 verifier:
   name: inspec
@@ -55,9 +61,9 @@ suites:
   - name: smoke_package_stable
     run_list: jenkins_smoke::default
     excludes:
-      - ubuntu-14.04
       - windows-2012r2
       - windows-2016
+      - windows-2019
 
   - name: smoke_package_current
     run_list: jenkins_smoke::default
@@ -66,9 +72,9 @@ suites:
         master:
           channel: current
     excludes:
-      - ubuntu-14.04
       - windows-2012r2
       - windows-2016
+      - windows-2019
 
   - name: smoke_war_stable
     run_list: jenkins_smoke::default
@@ -97,6 +103,7 @@ suites:
     excludes:
       - windows-2012r2
       - windows-2016
+      - windows-2019
 
   #
   # Proxy suites

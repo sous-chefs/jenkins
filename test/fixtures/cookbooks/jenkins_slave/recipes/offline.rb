@@ -1,4 +1,3 @@
-
 jenkins_ssh_slave 'ssh-to-offline' do
   remote_fs   '/tmp/ssh-to-offline'
   user        'jenkins-ssh-password'

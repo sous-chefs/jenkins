@@ -49,9 +49,7 @@ class Chef
 
       super
 
-      if current_credentials
-        @current_resource.secret(current_credentials[:secret])
-      end
+      @current_resource.secret(current_credentials[:secret]) if current_credentials
 
       @current_credentials
     end

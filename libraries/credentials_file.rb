@@ -51,9 +51,7 @@ class Chef
 
       super
 
-      if current_credentials
-        @current_resource.filename(current_credentials[:filename])
-      end
+      @current_resource.filename(current_credentials[:filename]) if current_credentials
 
       @current_resource
     end

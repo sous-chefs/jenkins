@@ -29,9 +29,7 @@ when 'debian'
     uri          node['jenkins']['master']['repository']
     distribution 'binary/'
     key          node['jenkins']['master']['repository_key']
-    unless node['jenkins']['master']['repository_keyserver'].nil?
-      keyserver    node['jenkins']['master']['repository_keyserver']
-    end
+    keyserver    node['jenkins']['master']['repository_keyserver'] unless node['jenkins']['master']['repository_keyserver'].nil?
   end
 
   dpkg_autostart 'jenkins' do

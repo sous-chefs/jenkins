@@ -1,4 +1,3 @@
-
 jenkins_jnlp_slave 'jnlp-to-delete' do
   remote_fs    '/tmp/jenkins/slaves/jnlp-to-delete'
   service_name 'jnlp-to-delete'

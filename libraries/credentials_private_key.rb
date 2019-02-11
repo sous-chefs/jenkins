@@ -79,9 +79,7 @@ class Chef
 
       super
 
-      if current_credentials
-        @current_resource.private_key(current_credentials[:private_key])
-      end
+      @current_resource.private_key(current_credentials[:private_key]) if current_credentials
 
       @current_resource
     end

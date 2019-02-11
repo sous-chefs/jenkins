@@ -1,4 +1,3 @@
-
 jenkins_ssh_slave 'ssh-to-connect' do
   remote_fs   '/tmp/ssh-to-connect'
 
