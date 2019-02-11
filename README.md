@@ -553,6 +553,9 @@ jenkins_jnlp_slave 'smoke' do
   in_demand_delay 1
   idle_delay      3
   labels          ['runner', 'fast']
+
+  # User's groups to be configured with the runit service.
+  runit_groups    ['jenkins', 'docker']
 end
 
 # Create a slave with a full environment
