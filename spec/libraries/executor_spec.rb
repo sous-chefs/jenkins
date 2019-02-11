@@ -50,20 +50,14 @@ describe Jenkins::Executor do
     end
 
     context 'when a :cli_username option is given' do
-      it 'adds --username option' do
-        subject.options[:username] = 'user'
-        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo --username "user")
-        expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
-        subject.execute!('foo')
-      end
-    end
-
-    context 'when a :cli_password option is given' do
-      it 'adds --password option' do
-        subject.options[:password] = 'password'
-        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo --password "password")
-        expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
-        subject.execute!('foo')
+      context 'when a :cli_password option is given' do
+        it 'adds -auth option' do
+          subject.options[:username] = 'user'
+          subject.options[:password] = 'password'
+          command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -auth "user":"password" foo)
+          expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
+          subject.execute!('foo')
+        end
       end
     end
 
