@@ -145,6 +145,7 @@ job must first exist on the Jenkins master!
               command_args << "-p #{key}=#{value}"
             else 
               command_args << "-p #{key}='#{value}'"
+            end
           end
 
           if new_resource.stream_job_output && new_resource.wait_for_completion && stdout_stream
