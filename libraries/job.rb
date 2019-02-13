@@ -140,7 +140,11 @@ job must first exist on the Jenkins master!
           end
 
           new_resource.parameters.each_pair do |key, value|
-            command_args << "-p #{key}='#{value}'"
+            case value
+            when TrueClass, FalseClass
+              command_args << "-p #{key}=#{value}"
+            else
+              command_args << "-p #{key}='#{value}'"
           end
 
           if new_resource.stream_job_output && new_resource.wait_for_completion && stdout_stream
