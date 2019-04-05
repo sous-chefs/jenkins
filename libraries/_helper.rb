@@ -73,6 +73,8 @@ If this problem persists, check your Jenkins log files.
         h[:jvm_options] = jvm_options unless jvm_options.nil?
         h[:protocol] = protocol unless protocol.nil?
         h[:cli_user] = cli_user unless cli_user.nil?
+        h[:cli_username] = cli_username unless cli_username.nil?
+        h[:cli_password] = cli_password unless cli_password.nil?
       end
 
       Jenkins::Executor.new(options)
@@ -379,6 +381,24 @@ If this problem persists, check your Jenkins log files.
     #
     def cli_user
       node['jenkins']['executor']['cli_user']
+    end
+
+    #
+    # cli_username to pass to cli
+    #
+    # @return [String]
+    #
+    def cli_username
+      node['jenkins']['executor']['cli_username']
+    end
+
+    #
+    # password to pass to cli
+    #
+    # @return [String]
+    #
+    def cli_password
+      node['jenkins']['executor']['cli_password']
     end
 
     #

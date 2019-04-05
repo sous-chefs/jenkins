@@ -73,11 +73,11 @@ module Jenkins
       command << options[:jvm_options].to_s if options[:jvm_options]
       command << %(-jar "#{options[:cli]}")
       command << %(-s #{URI.escape(options[:endpoint])}) if options[:endpoint]
-      command << %(-"#{options[:protocol]}")             if options[:protocol]
+      command << %(-#{options[:protocol]})               if options[:protocol]
       command << %(-user "#{options[:cli_user]}")        if options[:cli_user]
       command << %(-i "#{options[:key]}")                if options[:key]
       command << %(-p #{uri_escape(options[:proxy])})    if options[:proxy]
-      command << %(-auth "#{options[:username]}":"#{options[:password]}") if options[:username] && options[:password]
+      command << %(-auth #{options[:cli_username]}:#{options[:cli_password]}) if options[:cli_username] && options[:cli_password]
       command.push(pieces)
 
       begin
