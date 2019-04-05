@@ -134,7 +134,7 @@ class Chef
     #
     def jnlp_secret
       return @jnlp_secret if @jnlp_secret
-      json = executor.groovy! <<-EOH.gsub(/ ^{8}/, '')
+      json = executor.groovy! <<-EOH.gsub(/^ {8}/, '')
         output = [
           secret:jenkins.slaves.JnlpSlaveAgentProtocol.SLAVE_SECRET.mac('#{new_resource.slave_name}')
         ]
