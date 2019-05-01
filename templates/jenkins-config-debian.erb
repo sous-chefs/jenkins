@@ -27,13 +27,17 @@ JENKINS_WAR=/usr/share/jenkins/jenkins.war
 # jenkins home location
 JENKINS_HOME=<%= node['jenkins']['master']['home'] %>
 
-# set this to false if you don't want Hudson to run by itself
+# set this to false if you don't want Jenkins to run by itself
 # in this set up, you are expected to provide a servlet container
 # to host jenkins.
 RUN_STANDALONE=true
 
 # log location.  this may be a syslog facility.priority
 JENKINS_LOG=<%= node['jenkins']['master']['log_directory'] %>/$NAME.log
+
+# Whether to enable web access logging or not.
+# Set to "yes" to enable logging to /var/log/$NAME/access_log
+JENKINS_ENABLE_ACCESS_LOG="<%= node['jenkins']['master']['access_log'] %>"
 
 # OS LIMITS SETUP
 #   comment this out to observe /etc/security/limits.conf
