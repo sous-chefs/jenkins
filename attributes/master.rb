@@ -192,6 +192,10 @@ default['jenkins']['master'].tap do |master|
   #
   master['log_directory'] = '/var/log/jenkins'
 
+  # Whether to enable web access logging or not.
+  # Set to "yes" to enable logging to /var/log/$NAME/access_log
+  master['access_log'] = 'no'
+
   #
   # Set the max open files to a specific value.
   # Due to http://github.com/jenkinsci/jenkins/commit/2fb288474e980d0e7ff9c4a3b768874835a3e92e
