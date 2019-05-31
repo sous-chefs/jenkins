@@ -33,7 +33,7 @@
 # complex scenario, that is outside the scope of this cookbook.
 #
 
-Chef::Log.warn('The jenkins::java recipe has been deprecated. We recommend adding the Java coobook to the runlist of your jenkins node instead as it provides more tuneables')
+Chef::Log.warn('The jenkins::java recipe has been deprecated. We recommend adding the Java cookbook to the runlist of your jenkins node instead as it provides more tuneables')
 
 case node['platform_family']
 when 'debian'
