@@ -52,9 +52,9 @@ default['jenkins']['executor'].tap do |executor|
   executor['jvm_options'] = nil
 
   #
-  # CLI protocol [ssh|http|remoting]
+  # CLI protocol [ssh|http]
   #
-  executor['protocol'] = 'remoting'
+  executor['protocol'] = 'http'
 
   #
   # CLI user to pass for ssh/https protocol
