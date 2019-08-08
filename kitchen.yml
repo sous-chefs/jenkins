@@ -14,6 +14,7 @@ provisioner:
   name: chef_zero
   data_path: test/fixtures/keys
   data_bags_path: test/fixtures/data_bags
+  chef_license: accept
   attributes:
     jenkins:
       master:
