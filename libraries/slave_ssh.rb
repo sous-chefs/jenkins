@@ -102,6 +102,8 @@ class Chef
     #
     def launcher_groovy
       <<-EOH.gsub(/ ^{8}/, '')
+	    import hudson.plugins.sshslaves.verifiers.*
+
         #{credential_lookup_groovy('credentials')}
         launcher =
           new hudson.plugins.sshslaves.SSHLauncher(
@@ -110,11 +112,13 @@ class Chef
             credentials,
             #{convert_to_groovy(new_resource.jvm_options)},
             #{convert_to_groovy(new_resource.java_path)},
+            null, // jdkInstaller
             #{convert_to_groovy(new_resource.command_prefix)},
             #{convert_to_groovy(new_resource.command_suffix)},
             #{convert_to_groovy(new_resource.launch_timeout)},
             #{convert_to_groovy(new_resource.ssh_retries)},
-            #{convert_to_groovy(new_resource.ssh_wait_retries)}
+            #{convert_to_groovy(new_resource.ssh_wait_retries)},
+	          new KnownHostsFileKeyVerificationStrategy()
           )
       EOH
     end
