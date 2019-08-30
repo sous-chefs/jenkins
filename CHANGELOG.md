@@ -2,10 +2,21 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 7.0.0 (2019-04-30)
+
+- Require Chef 13 or later - [@Stromweld](https://github.com/Stromweld)
+- Do not quote boolean parameters in the job resource - [@mbaitelman](https://github.com/mbaitelman)
+- Resolve ProviderNotFound error in jenkins_view resource - [@eitoball](https://github.com/eitoball)
+- Support installation on Debian 9 - [@mattray](https://github.com/mattray)
+- Wire up JENKINS_ENABLE_ACCESS_LOG to attributes in the config - [@mattray](https://github.com/mattray)
+- Fix the executor to -auth instead of --username, --password on the Jenkins CLI - Jakob Pfeiffer
+- JNLP slave is configured to not use all the groups of the jenkins user - [@jonathanan](https://github.com/jonathanan)
+- Update plugin resource to work with newer versions of Jenkins which handles dependencies and removes need for additional plugin method. This deprecated the install_deps property previously required  - [@Stromweld](https://github.com/Stromweld)
+
 ## 6.2.1 (2018-11-14)
 
 - @josh-barker entirely rewrote our test suites. Suites have been consolidated, everything now passes, and all validation is performed with all new InSpec tests. Thanks Josh for this massive improvement.
-- Fix bug when remote plugin is not found in plugin universe 
+- Fix bug when remote plugin is not found in plugin universe
 - Fix broken delete action for jnlp slave
 - Fix cloning resources attributes for/var/lib/jenkins
 - Set httpKeepAliveTimeout to 5 minutes so that connections are not closed too early
@@ -67,7 +78,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## 5.0.2 (2017-06-14)
 
-- Fix regex for falling back to anonymous for failed authentication 
+- Fix regex for falling back to anonymous for failed authentication
 
 ## 5.0.1 (2017-05-01)
 
