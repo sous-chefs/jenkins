@@ -45,7 +45,7 @@ class JenkinsCredentials < Inspec.resource(1)
   end
 end
 
-# rubocop:disable PredicateName
+# rubocop:disable Naming/PredicateName
 class JenkinsUserCredentials < JenkinsCredentials
   attr_reader :username
 

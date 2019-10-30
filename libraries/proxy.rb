@@ -4,7 +4,7 @@
 #
 # Author:: Stephan Linz <linz@li-pro.net>
 #
-# Copyright 2014, Li-Pro.Net
+# Copyright:: 2014-2019, Li-Pro.Net
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ class Chef
     identity_attr :proxy
 
     # Actions
-    actions :config, :remove
     default_action :config
 
     # Attributes
@@ -73,13 +72,6 @@ class Chef
       end
 
       @current_resource
-    end
-
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
     end
 
     action(:config) do

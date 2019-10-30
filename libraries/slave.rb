@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ class Chef
     identity_attr :slave_name
 
     # Actions
-    actions :create, :delete, :connect, :disconnect, :online, :offline
     default_action :create
 
     # Attributes
@@ -115,7 +114,6 @@ end
 class Chef
   class Provider::JenkinsSlave < Provider::LWRPBase
     provides :jenkins_slave
-    use_inline_resources # ~FC113
 
     include Jenkins::Helper
 
@@ -137,13 +135,6 @@ class Chef
       end
 
       @current_resource
-    end
-
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
     end
 
     action :create do

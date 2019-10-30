@@ -32,7 +32,6 @@ class Chef
     identity_attr :name
 
     # Actions
-    actions :install, :uninstall, :enable, :disable
     default_action :install
 
     # Attributes

@@ -4,7 +4,7 @@
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2014-2017, Chef Software, Inc.
+# Copyright:: 2014-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,14 +37,12 @@ class Chef
       required: false
 
     # Actions
-    actions :execute
     default_action :execute
   end
 end
 
 class Chef
   class Provider::JenkinsScript < Provider::JenkinsCommand
-    use_inline_resources # ~FC113
     provides :jenkins_script
 
     def load_current_resource
@@ -56,13 +54,6 @@ class Chef
         @current_resource ||= Resource::JenkinsScript.new(new_resource.command)
       end
       super
-    end
-
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
     end
 
     action :execute do
