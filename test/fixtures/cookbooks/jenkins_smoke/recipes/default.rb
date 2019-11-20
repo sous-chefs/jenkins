@@ -85,15 +85,15 @@ ruby_block 'wait for jenkins to start' do
       # After Jenkins has started the slaves will connect, but this can take some time
       # So we check that the expected slaves are online before running Inspec
 
-      [
-        'jnlp-builder',
-        'jnlp-executor',
-        'ssh-builder',
-        'ssh-executor',
-        'ssh-smoke',
-        'ssh-to-online',
-        'ssh-to-connect',
-      ].each do |slave|
+      %w(
+        jnlp-builder
+        jnlp-executor
+        ssh-builder
+        ssh-executor
+        ssh-smoke
+        ssh-to-online
+        ssh-to-connect
+      ).each do |slave|
         body = Chef::HTTP.new(node['jenkins']['master']['endpoint']).get("/computer/#{slave}/api/json?pretty=true")
         json_body = JSON.parse(body, symbolize_names: true)
 

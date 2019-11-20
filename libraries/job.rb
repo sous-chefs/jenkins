@@ -4,7 +4,7 @@
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ class Chef
     identity_attr :name
 
     # Actions
-    actions :build, :create, :delete, :disable, :enable
     default_action :create
 
     # Attributes
@@ -78,8 +77,6 @@ end
 
 class Chef
   class Provider::JenkinsJob < Provider::LWRPBase
-    use_inline_resources # ~FC113
-
     include Jenkins::Helper
 
     provides :jenkins_job
@@ -110,13 +107,6 @@ job must first exist on the Jenkins master!
       end
 
       @current_resource
-    end
-
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
     end
 
     #

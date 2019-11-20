@@ -28,7 +28,6 @@ class Chef
     identity_attr :name
 
     # Actions
-    actions :create, :delete
     default_action :create
 
     # Attributes
@@ -83,13 +82,6 @@ view must first exist on the Jenkins master!
                                  end
 
       @current_resource
-    end
-
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
     end
 
     #

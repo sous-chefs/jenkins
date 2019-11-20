@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ class Chef
     resource_name :jenkins_jnlp_slave
 
     # Actions
-    actions :create, :delete, :connect, :disconnect, :online, :offline
     default_action :create
 
     # Attributes
@@ -45,7 +44,6 @@ end
 
 class Chef
   class Provider::JenkinsJnlpSlave < Provider::JenkinsSlave
-    use_inline_resources # ~FC113
     provides :jenkins_jnlp_slave
 
     def load_current_resource

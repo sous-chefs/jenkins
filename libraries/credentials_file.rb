@@ -42,7 +42,6 @@ end
 
 class Chef
   class Provider::JenkinsFileCredentials < Provider::JenkinsCredentials
-    use_inline_resources
     include Jenkins::Helper
     provides :jenkins_file_credentials
 
