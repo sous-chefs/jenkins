@@ -156,7 +156,7 @@ class Chef
         keys = null
         keysProperty = user.getProperty(org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl)
         if(keysProperty != null) {
-          keys = keysProperty.authorizedKeys.split('\\\\\\\\s+') - "" // Remove empty strings
+          keys = keysProperty.authorizedKeys.split('\\n') - "" // Remove empty strings
         }
 
         builder = new groovy.json.JsonBuilder()
