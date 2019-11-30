@@ -2,6 +2,18 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 7.1.0 (2019-11-29)
+
+- Ajp13 Port from attributes - [@rnt](https://github.com/rnt)
+- Debug level for logs from attributes - [@rnt](https://github.com/rnt)
+- Maximum number of HTTP worker threads from attributes - [@rnt](https://github.com/rnt)
+- Maximum number of idle HTTP worker threads from attributes - [@rnt](https://github.com/rnt)
+- Fix typo in java.rb recipe. - [@jugatsu](https://github.com/jugatsu)
+- Auto accept Chef licenses when running tests - [@rjbaker](https://github.com/rjbaker)
+- Switch to openjdk in testing since Oracle jdk artifacts have been removed - [@rjbaker](https://github.com/rjbaker)
+- Cookstyle 5.10 fixes - [@tas50](https://github.com/tas50)
+- Additional cookstyle fixes - [@tas50](https://github.com/tas50)
+
 ## 7.0.0 (2019-04-30)
 
 - Require Chef 13 or later - [@Stromweld](https://github.com/Stromweld)
