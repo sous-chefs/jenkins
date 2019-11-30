@@ -158,6 +158,31 @@ default['jenkins']['master'].tap do |master|
   master['listen_address'] = '0.0.0.0'
 
   #
+  # Ajp13 Port Jenkins is listening on. Set to -1 to disable
+  #
+  master['ajp_port'] = case node['platform_family']
+                       when 'debian'
+                         -1
+                       when 'rhel', 'amazon'
+                         8009
+                       end
+
+  #
+  # Debug level for logs. The higher the value, the more verbose. 5 is INFO.
+  #
+  master['debug_level'] = 5
+
+  #
+  # Maximum number of HTTP worker threads.
+  #
+  master['handler_max'] = 100
+
+  #
+  # Maximum number of idle HTTP worker threads.
+  #
+  master['handler_idle'] = 20
+
+  #
   # The port which the Jenkins process will listen on.
   #
   master['port'] = 8080
@@ -244,4 +269,9 @@ default['jenkins']['master'].tap do |master|
   # Keyserver to use. Disabled by default
   #
   master['repository_keyserver'] = nil
+
+  #
+  # Set extra variables
+  #
+  master['extra_variables'] = {}
 end
