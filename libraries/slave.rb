@@ -32,6 +32,7 @@ class Chef
 
     # Actions
     default_action :create
+    actions :create, :delete, :connect, :disconnect, :online, :offline
 
     # Attributes
     attribute :slave_name,
