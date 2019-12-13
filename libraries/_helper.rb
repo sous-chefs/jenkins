@@ -246,15 +246,15 @@ If this problem persists, check your Jenkins log files.
     #   the path to the private key on disk
     #
     def private_key_path
-      node.run_state[:jenkins_private_key_path] ||= begin # ~FC001
+      node.run_state[:jenkins_private_key_path] ||= begin 
         # @todo remove in 3.0.0
         if node['jenkins']['executor']['private_key']
           Chef::Log.warn("Using node['jenkins']['executor']['private_key'] is deprecated!")
           Chef::Log.warn('Persisting sensitive information in node attributes is not recommended.')
-          node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key'] # ~FC001
+          node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key'] 
         end
 
-        content = node.run_state[:jenkins_private_key] # ~FC001
+        content = node.run_state[:jenkins_private_key] 
         destination = File.join(Chef::Config[:file_cache_path], 'jenkins-key')
 
         file = Chef::Resource::File.new(destination, run_context)
@@ -278,7 +278,7 @@ If this problem persists, check your Jenkins log files.
     def private_key_given?
       # @todo remove in 3.0.0
       !node['jenkins']['executor']['private_key'].nil? ||
-        !node.run_state[:jenkins_private_key].nil? # ~FC001
+        !node.run_state[:jenkins_private_key].nil? 
     end
 
     #
@@ -331,7 +331,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def username
-      node.run_state[:jenkins_username] # ~FC001
+      node.run_state[:jenkins_username] 
     end
 
     #
@@ -340,7 +340,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def password
-      node.run_state[:jenkins_password] # ~FC001
+      node.run_state[:jenkins_password] 
     end
 
     #
@@ -453,7 +453,7 @@ If this problem persists, check your Jenkins log files.
     # unavailable or is not accepting requests.
     #
     def ensure_cli_present!
-      node.run_state[:jenkins_cli_present] ||= begin # ~FC001
+      node.run_state[:jenkins_cli_present] ||= begin 
         source = uri_join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
         remote_file = Chef::Resource::RemoteFile.new(cli, run_context)
         remote_file.source(source)
@@ -470,7 +470,7 @@ If this problem persists, check your Jenkins log files.
     # server. This is needed to be able to install plugins through the update-center.
     #
     def ensure_update_center_present!
-      node.run_state[:jenkins_update_center_present] ||= begin # ~FC001
+      node.run_state[:jenkins_update_center_present] ||= begin 
         source = uri_join(node['jenkins']['master']['mirror'], node['jenkins']['master']['channel'], 'update-center.json')
         remote_file = Chef::Resource::RemoteFile.new(update_center_json, run_context)
         remote_file.source(source)
