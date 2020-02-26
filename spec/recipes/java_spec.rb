@@ -48,7 +48,7 @@ describe 'jenkins::java' do
 
     it 'raises an exception' do
       expect { chef_run }
-        .to raise_error(RuntimeError, "`mac_os_x' is not supported!")
+        .to raise_error(RuntimeError, "'mac_os_x' is not supported!")
     end
   end
 end
