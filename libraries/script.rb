@@ -26,19 +26,10 @@ class Chef
     resource_name :jenkins_script # Still needed for Chef 15 and below
     provides :jenkins_script
 
-    # Chef Infra attributes
-    identity_attr :name
-
-    attribute :groovy_path,
-      kind_of: String,
-      default: nil
-    attribute :name,
-      kind_of: String,
-      name_attribute: true,
-      required: false
+    property :groovy_path, String
 
     # Actions
-    actions :execute
+    allowed_actions :execute
     default_action :execute
   end
 end

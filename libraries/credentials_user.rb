@@ -25,9 +25,7 @@ require_relative 'credentials'
 
 class Chef
   class Resource::JenkinsUserCredentials < Resource::JenkinsCredentials
-    attribute :description,
-              kind_of: String,
-              default: lazy { |new_resource| "Credentials for #{new_resource.username} - created by Chef" }
+    property :description, String, default: lazy { |new_resource| "Credentials for #{new_resource.username} - created by Chef" }
   end
 end
 

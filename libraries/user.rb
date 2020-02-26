@@ -24,30 +24,19 @@ require 'json'
 require_relative '_helper'
 
 class Chef
-  class Resource::JenkinsUser < Resource::LWRPBase
+  class Resource::JenkinsUser < Chef::Resource
     resource_name :jenkins_user # Still needed for Chef 15 and below
     provides :jenkins_user
 
-    # Chef Infra attributes
-    identity_attr :id
-
     # Actions
-    actions :create, :delete
+    allowed_actions :create, :delete
     default_action :create
 
-    # Attributes
-    attribute :id,
-              kind_of: String,
-              name_attribute: true
-    attribute :full_name,
-              kind_of: String
-    attribute :email,
-              kind_of: String
-    attribute :public_keys,
-              kind_of: Array,
-              default: []
-    attribute :password,
-              kind_of: String
+    property :id, String, name_property: true, identity: true
+    property :full_name, String
+    property :email, String
+    property :public_keys, Array, default: []
+    property :password, String
 
     attr_writer :exists
 

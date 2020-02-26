@@ -25,24 +25,16 @@ require_relative '_helper'
 require_relative '_params_validate'
 
 class Chef
-  class Resource::JenkinsProxy < Resource::LWRPBase
+  class Resource::JenkinsProxy < Chef::Resource
     resource_name :jenkins_proxy # Still needed for Chef 15 and below
     provides :jenkins_proxy
 
-    # Chef Infra attributes
-    identity_attr :proxy
-
     # Actions
-    actions :config, :remove
+    allowed_actions :config, :remove
     default_action :config
 
-    # Attributes
-    attribute :proxy,
-              kind_of: String,
-              name_attribute: true
-    attribute :noproxy,
-              kind_of: Array,
-              default: []
+    property :proxy, String, name_property: true, identity: true
+    property :noproxy, Array, default: []
 
     attr_writer :configured
 

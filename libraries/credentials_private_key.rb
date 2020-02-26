@@ -40,15 +40,9 @@ class Chef
     resource_name :jenkins_private_key_credentials # Still needed for Chef 15 and below
     provides :jenkins_private_key_credentials
 
-    # Attributes
-    attribute :username,
-              kind_of: String,
-              name_attribute: true
-    attribute :private_key,
-              kind_of: [String, OpenSSL::PKey::RSA, OpenSSL::PKey::EC],
-              required: true
-    attribute :passphrase,
-              kind_of: String
+    property :username, String, name_property: true, identity: true
+    property :private_key, [String, OpenSSL::PKey::RSA, OpenSSL::PKey::EC], required: true
+    property :passphrase, String
 
     #
     # Private key of the credentials . This should be the actual key

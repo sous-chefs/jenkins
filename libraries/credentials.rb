@@ -26,7 +26,7 @@ require 'securerandom'
 require_relative '_helper'
 
 class Chef
-  class Resource::JenkinsCredentials < Resource::LWRPBase
+  class Resource::JenkinsCredentials < Chef::Resource
     # Default all crendentials resources to sensitive so secret data
     # is not printed out in the Chef logs.
     def initialize(name, run_context = nil)
@@ -35,13 +35,10 @@ class Chef
     end
 
     # Actions
-    actions :create, :delete
+    allowed_actions :create, :delete
     default_action :create
 
-    # Attributes
-    attribute :id,
-              kind_of: String,
-              required: true
+    property :id, String, required: true
 
     attr_writer :exists
 

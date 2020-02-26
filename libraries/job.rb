@@ -24,31 +24,20 @@ require 'rexml/document'
 require_relative '_helper'
 
 class Chef
-  class Resource::JenkinsJob < Resource::LWRPBase
+  class Resource::JenkinsJob < Chef::Resource
     resource_name :jenkins_job # Still needed for Chef 15 and below
     provides :jenkins_job
 
-    # Chef Infra attributes
-    identity_attr :name
-
     # Actions
-    actions :build, :create, :delete, :disable, :enable
+    allowed_actions :build, :create, :delete, :disable, :enable
     default_action :create
 
-    # Attributes
-    attribute :config,
-              kind_of: String
+    property :config, String
 
-    # Execute specific attributes
-    attribute :parameters,
-              kind_of: Hash,
-              default: {}
-    attribute :stream_job_output,
-              kind_of: [TrueClass, FalseClass],
-              default: true
-    attribute :wait_for_completion,
-              kind_of: [TrueClass, FalseClass],
-              default: true
+    # Execute specific properties
+    property :parameters, Hash, default: {}
+    property :stream_job_output, [true, false], default: true
+    property :wait_for_completion, [true, false], default: true
 
     attr_writer :enabled, :exists
 

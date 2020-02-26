@@ -27,20 +27,12 @@ class Chef
     provides :jenkins_jnlp_slave
 
     # Actions
-    actions :create, :delete, :connect, :disconnect, :online, :offline
+    allowed_actions :create, :delete, :connect, :disconnect, :online, :offline
     default_action :create
 
-    # Attributes
-    attribute :group,
-              kind_of: String,
-              default: 'jenkins',
-              regex: Config[:group_valid_regex]
-    attribute :service_name,
-              kind_of: String,
-              default: 'jenkins-slave'
-    attribute :runit_groups,
-              kind_of: Array,
-              default: ['jenkins']
+    property :group, String, default: 'jenkins', regex: Config[:group_valid_regex]
+    property :service_name, String, default: 'jenkins-slave'
+    property :runit_groups, Array, default: ['jenkins']
   end
 end
 

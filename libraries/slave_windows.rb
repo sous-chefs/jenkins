@@ -28,29 +28,16 @@ class Chef
     provides :jenkins_windows_slave
 
     # Actions
-    actions :create, :delete, :connect, :disconnect, :online, :offline
+    allowed_actions :create, :delete, :connect, :disconnect, :online, :offline
     default_action :create
 
-    # Attributes
-    attribute :password,
-              kind_of: String
-    attribute :user,
-              kind_of: String,
-              default: 'LocalSystem'
-    attribute :remote_fs,
-              kind_of: String,
-              default: 'C:\jenkins'
-    attribute :winsw_url,
-              kind_of: String,
-              default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.17/winsw-1.17-bin.exe'
-    attribute :winsw_checksum,
-              kind_of: String,
-              default: '5859b114d96800a2b98ef9d19eaa573a786a422dad324547ef25be181389df01'
-    attribute :path,
-              kind_of: String
-    attribute :pre_run_cmds,
-              kind_of: Array,
-              default: []
+    property :password, String
+    property :user, String, default: 'LocalSystem'
+    property :remote_fs, String, default: 'C:\jenkins'
+    property :winsw_url, String, default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.17/winsw-1.17-bin.exe'
+    property :winsw_checksum, String, default: '5859b114d96800a2b98ef9d19eaa573a786a422dad324547ef25be181389df01'
+    property :path, String
+    property :pre_run_cmds, Array, default: []
   end
 end
 

@@ -30,17 +30,9 @@ class Chef
     resource_name :jenkins_file_credentials # Still needed for Chef 15 and below
     provides :jenkins_file_credentials
 
-    attribute :description,
-              kind_of: String,
-              default: lazy { |new_resource| "Credentials for #{new_resource.filename} - created by Chef" }
-
-    # Attributes
-    attribute :filename,
-              kind_of: String,
-              name_attribute: true
-    attribute :data,
-              kind_of: String,
-              required: true
+    property :description, String, default: lazy { |new_resource| "Credentials for #{new_resource.filename} - created by Chef" }
+    property :filename, String, name_property: true, identity: true
+    property :data, String, required: true
   end
 end
 

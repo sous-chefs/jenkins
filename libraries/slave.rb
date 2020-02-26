@@ -24,58 +24,28 @@ require 'json'
 require_relative '_helper'
 
 class Chef
-  class Resource::JenkinsSlave < Resource::LWRPBase
+  class Resource::JenkinsSlave < Chef::Resource
     resource_name :jenkins_slave # Still needed for Chef 15 and below
     provides :jenkins_slave
 
-    # Chef Infra attributes
-    identity_attr :slave_name
-
     # Actions
-    actions :create, :delete, :connect, :disconnect, :online, :offline
+    allowed_actions :create, :delete, :connect, :disconnect, :online, :offline
     default_action :create
 
-    # Attributes
-    attribute :slave_name,
-              kind_of: String,
-              name_attribute: true
-    attribute :description,
-              kind_of: String,
-              default: lazy { |new_resource| "Jenkins slave #{new_resource.slave_name}" }
-    attribute :remote_fs,
-              kind_of: String,
-              default: '/home/jenkins'
-    attribute :executors,
-              kind_of: Integer,
-              default: 1
-    attribute :usage_mode,
-              kind_of: String,
-              equal_to: %w(exclusive normal),
-              default: 'normal'
-    attribute :labels,
-              kind_of: Array,
-              default: []
-    attribute :availability,
-              kind_of: String,
-              equal_to: %w(always demand)
-    attribute :in_demand_delay,
-              kind_of: Integer,
-              default: 0
-    attribute :idle_delay,
-              kind_of: Integer,
-              default: 1
-    attribute :environment,
-              kind_of: Hash
-    attribute :offline_reason,
-              kind_of: String
-    attribute :user,
-              kind_of: String,
-              regex: Config[:user_valid_regex],
-              default: 'jenkins'
-    attribute :jvm_options,
-              kind_of: String
-    attribute :java_path,
-              kind_of: String
+    property :slave_name, String, name_property: true, identity: true
+    property :description, String, default: lazy { |new_resource| "Jenkins slave #{new_resource.slave_name}" }
+    property :remote_fs, String, default: '/home/jenkins'
+    property :executors, Integer, default: 1
+    property :usage_mode, String, equal_to: %w(exclusive normal), default: 'normal'
+    property :labels, Array, default: []
+    property :availability, String, equal_to: %w(always demand)
+    property :in_demand_delay, Integer, default: 0
+    property :idle_delay, Integer, default: 1
+    property :environment, Hash
+    property :offline_reason, String
+    property :user, String, regex: Config[:user_valid_regex], default: 'jenkins'
+    property :jvm_options, String
+    property :java_path, String
 
     attr_writer :exists
     attr_writer :connected

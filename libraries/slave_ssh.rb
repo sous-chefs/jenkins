@@ -28,27 +28,17 @@ class Chef
     provides :jenkins_ssh_slave
 
     # Actions
-    actions :create, :delete, :connect, :disconnect, :online, :offline
+    allowed_actions :create, :delete, :connect, :disconnect, :online, :offline
     default_action :create
 
-    # Attributes
-    attribute :host,
-              kind_of: String
-    attribute :port,
-              kind_of: Integer,
-              default: 22
-    attribute :credentials,
-              kind_of: String
-    attribute :command_prefix,
-              kind_of: String
-    attribute :command_suffix,
-              kind_of: String
-    attribute :launch_timeout,
-              kind_of: Integer
-    attribute :ssh_retries,
-              kind_of: Integer
-    attribute :ssh_wait_retries,
-              kind_of: Integer
+    property :host, String
+    property :port, Integer, default: 22
+    property :credentials, String
+    property :command_prefix, String
+    property :command_suffix, String
+    property :launch_timeout, Integer
+    property :ssh_retries, Integer
+    property :ssh_wait_retries, Integer
 
     #
     # The credentials to SSH into the slave with. Credentials can be any
