@@ -18,7 +18,6 @@
 #
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsView < Chef::Resource
@@ -84,7 +83,7 @@ view must first exist on the Jenkins master!
     # If `code` is passed then the view is not necessarily created idempotently
     # as we cannot guarantee what the user has in mind
     #
-    action(:create) do
+    action :create do
       current_view_jobs = current_view[:jobs]
       current_view_jobs ||= []
 
@@ -135,7 +134,7 @@ view must first exist on the Jenkins master!
     # the view does not exist, no action will be taken. If the view does exist,
     # it will be deleted using the Jenkins CLI.
     #
-    action(:delete) do
+    action :delete do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
           executor.execute!('delete-view', escape(new_resource.name))

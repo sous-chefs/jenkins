@@ -22,7 +22,6 @@
 require 'json'
 
 require_relative '_helper'
-require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsProxy < Chef::Resource
@@ -68,7 +67,7 @@ class Chef
       @current_resource
     end
 
-    action(:config) do
+    action :config do
       if current_resource.configured? &&
          current_resource.proxy == new_resource.proxy &&
          current_resource.noproxy == new_resource.noproxy
@@ -97,7 +96,7 @@ class Chef
       end
     end
 
-    action(:remove) do
+    action :remove do
       if current_resource.configured?
         converge_by("Remove #{new_resource}") do
           executor.groovy! <<-EOH.gsub(/^ {12}/, '')
