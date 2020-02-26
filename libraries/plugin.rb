@@ -29,7 +29,7 @@ class Chef
     resource_name :jenkins_plugin # Still needed for Chef 15 and below
     provides :jenkins_plugin
 
-    # Chef attributes
+    # Chef Infra attributes
     identity_attr :name
 
     # Actions

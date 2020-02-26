@@ -25,7 +25,7 @@ class Chef
     resource_name :jenkins_view # Still needed for Chef 15 and below
     provides :jenkins_view
 
-    # Chef attributes
+    # Chef Infra attributes
     identity_attr :name
 
     # Actions

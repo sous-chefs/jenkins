@@ -26,7 +26,7 @@ class Chef
     resource_name :jenkins_script # Still needed for Chef 15 and below
     provides :jenkins_script
 
-    # Chef attributes
+    # Chef Infra attributes
     identity_attr :name
 
     attribute :groovy_path,

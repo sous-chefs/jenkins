@@ -29,7 +29,7 @@ class Chef
     resource_name :jenkins_proxy # Still needed for Chef 15 and below
     provides :jenkins_proxy
 
-    # Chef attributes
+    # Chef Infra attributes
     identity_attr :proxy
 
     # Actions

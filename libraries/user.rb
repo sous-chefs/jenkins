@@ -28,7 +28,7 @@ class Chef
     resource_name :jenkins_user # Still needed for Chef 15 and below
     provides :jenkins_user
 
-    # Chef attributes
+    # Chef Infra attributes
     identity_attr :id
 
     # Actions
