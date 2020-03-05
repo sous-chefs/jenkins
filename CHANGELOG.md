@@ -2,6 +2,13 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 7.1.1 (2020-03-05)
+
+- Simplify platform check logic - [@tas50](https://github.com/tas50)
+- Remove unnecessary foodcritic comments - [@tas50](https://github.com/tas50)
+- Cookstyle fixes - [@tas50](https://github.com/tas50)
+- Switch to install_adoptopenjdk resource in java cookbook 7.0 for testing - [@tas50](https://github.com/tas50)
+
 ## 7.1.0 (2019-11-29)
 
 - Ajp13 Port from attributes - [@rnt](https://github.com/rnt)
