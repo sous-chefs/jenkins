@@ -1,6 +1,7 @@
 apt_update 'update' if platform_family?('debian')
 
-include_recipe 'java::default'
+adoptopenjdk_install '8'
+
 include_recipe 'jenkins::master'
 
 # Install some plugins needed, but not installed on jenkins2 by default

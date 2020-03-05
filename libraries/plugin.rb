@@ -45,7 +45,7 @@ class Chef
               kind_of: String
     # TODO: Remove in next major version release
     attribute :install_deps,
-              kind_of: [true, false]
+              kind_of: [TrueClass, FalseClass]
     attribute :options,
               kind_of: String
 
