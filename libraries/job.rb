@@ -35,9 +35,7 @@ class Chef
     default_action :create
 
     # Attributes
-    attribute :name,
-              kind_of: String,
-              name_attribute: true
+
     attribute :config,
               kind_of: String
 
