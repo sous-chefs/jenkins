@@ -29,6 +29,7 @@ class Chef
     identity_attr :command
 
     # Actions
+    actions :execute
     default_action :execute
 
     # Attributes

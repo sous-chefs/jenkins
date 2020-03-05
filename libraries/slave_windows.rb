@@ -27,6 +27,7 @@ class Chef
     resource_name :jenkins_windows_slave
 
     # Actions
+    actions :create, :delete, :connect, :disconnect, :online, :offline
     default_action :create
 
     # Attributes

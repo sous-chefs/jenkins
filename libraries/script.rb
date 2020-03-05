@@ -37,6 +37,7 @@ class Chef
       required: false
 
     # Actions
+    actions :execute
     default_action :execute
   end
 end

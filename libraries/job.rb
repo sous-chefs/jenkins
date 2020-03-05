@@ -31,6 +31,7 @@ class Chef
     identity_attr :name
 
     # Actions
+    actions :build, :create, :delete, :disable, :enable
     default_action :create
 
     # Attributes
