@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## 7.1.2 (2020-03-05)
+
+- Add the actions back to the resources - [@tas50](https://github.com/tas50)
+- Add redundant name attributes - [@tas50](https://github.com/tas50)
+- Avoid chefspec deprecation warnings - [@tas50](https://github.com/tas50)
+
 ## 7.1.1 (2020-03-05)
 
 - Simplify platform check logic - [@tas50](https://github.com/tas50)
