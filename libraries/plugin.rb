@@ -36,7 +36,6 @@ class Chef
     default_action :install
 
     # Attributes
-
     attribute :version,
               kind_of: [String, Symbol],
               default: :latest

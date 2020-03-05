@@ -32,7 +32,6 @@ class Chef
     default_action :create
 
     # Attributes
-
     attribute :jobs,
               kind_of: Array,
               default: []
