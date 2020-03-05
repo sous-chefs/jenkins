@@ -36,7 +36,7 @@ describe 'jenkins::java' do
 
   context 'on CentOS 7' do
     cached(:chef_run) do
-      ChefSpec::SoloRunner.new(platform: 'centos', version: '7.3.1611')
+      ChefSpec::SoloRunner.new(platform: 'centos', version: '7')
                           .converge(described_recipe)
     end
 

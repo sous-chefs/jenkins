@@ -32,6 +32,7 @@ class Chef
     identity_attr :proxy
 
     # Actions
+    actions :config, :remove
     default_action :config
 
     # Attributes

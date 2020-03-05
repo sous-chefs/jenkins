@@ -28,11 +28,10 @@ class Chef
     identity_attr :name
 
     # Actions
+    actions :create, :delete
     default_action :create
 
     # Attributes
-    attribute :name,
-              kind_of: String
     attribute :jobs,
               kind_of: Array,
               default: []

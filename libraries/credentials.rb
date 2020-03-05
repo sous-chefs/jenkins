@@ -35,6 +35,7 @@ class Chef
     end
 
     # Actions
+    actions :create, :delete
     default_action :create
 
     # Attributes

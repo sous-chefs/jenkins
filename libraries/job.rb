@@ -31,12 +31,10 @@ class Chef
     identity_attr :name
 
     # Actions
+    actions :build, :create, :delete, :disable, :enable
     default_action :create
 
     # Attributes
-    attribute :name,
-              kind_of: String,
-              name_attribute: true
     attribute :config,
               kind_of: String
 
