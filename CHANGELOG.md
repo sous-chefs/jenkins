@@ -2,6 +2,16 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
+- resolved cookstyle error: libraries/credentials_file.rb:91:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/credentials_secret_text.rb:114:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/credentials_user.rb:81:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/slave.rb:401:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/slave_jnlp.rb:64:14 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
+- resolved cookstyle error: libraries/slave_jnlp.rb:91:83 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
+- resolved cookstyle error: libraries/slave_jnlp.rb:95:17 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
+
 ## 7.1.2 (2020-03-05)
 
 - Add the actions back to the resources - [@tas50](https://github.com/tas50)
