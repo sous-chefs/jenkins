@@ -398,7 +398,7 @@ class Chef
         wanted_slave[:idle_delay] = new_resource.idle_delay
       end
 
-      attribute_to_property_map.keys.each do |key|
+      attribute_to_property_map.each_key do |key|
         wanted_slave[key] = new_resource.send(key)
       end
 

@@ -111,7 +111,7 @@ class Chef
         secret: new_resource.secret,
       }
 
-      attribute_to_property_map.keys.each do |key|
+      attribute_to_property_map.each_key do |key|
         wanted_credentials[key] = new_resource.send(key)
       end
 
