@@ -4,6 +4,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- resolved cookstyle error: spec/recipes/java_spec.rb:6:7 warning: `ChefDeprecations/DeprecatedChefSpecPlatform`
 - resolved cookstyle error: libraries/credentials_file.rb:91:33 convention: `Style/HashEachMethods`
 - resolved cookstyle error: libraries/credentials_secret_text.rb:114:33 convention: `Style/HashEachMethods`
 - resolved cookstyle error: libraries/credentials_user.rb:81:33 convention: `Style/HashEachMethods`

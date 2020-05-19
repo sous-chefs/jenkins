@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'jenkins::java' do
   context 'on Debian' do
     cached(:chef_run) do
-      ChefSpec::SoloRunner.new(platform: 'debian', version: '8.9')
+      ChefSpec::SoloRunner.new(platform: 'debian', version: '8')
                           .converge(described_recipe)
     end
 
