@@ -40,7 +40,7 @@ end
 directory node['jenkins']['master']['home'] do
   owner     node['jenkins']['master']['user']
   group     node['jenkins']['master']['group']
-  mode      '0755'
+  mode      node['jenkins']['master']['mode']
   recursive true
 end
 

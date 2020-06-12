@@ -131,6 +131,11 @@ default['jenkins']['master'].tap do |master|
   master['group'] = 'jenkins'
 
   #
+  # Directory mode for Jenkins directories.
+  #
+  master['mode'] = '0755'
+
+  #
   # Jenkins user/group should be created as `system` accounts for `war` install.
   # The default of `true` will ensure that **new** jenkins user accounts are
   # created in the system ID range, existing users will not be modified.
