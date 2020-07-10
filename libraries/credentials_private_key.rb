@@ -37,7 +37,8 @@ class Chef
   class Resource::JenkinsPrivateKeyCredentials < Resource::JenkinsUserCredentials
     include Jenkins::Helper
 
-    resource_name :jenkins_private_key_credentials
+    resource_name :jenkins_private_key_credentials # Still needed for Chef 15 and below
+    provides :jenkins_private_key_credentials
 
     # Attributes
     attribute :username,

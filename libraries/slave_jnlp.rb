@@ -23,7 +23,8 @@ require_relative 'slave'
 
 class Chef
   class Resource::JenkinsJnlpSlave < Resource::JenkinsSlave
-    resource_name :jenkins_jnlp_slave
+    resource_name :jenkins_jnlp_slave # Still needed for Chef 15 and below
+    provides :jenkins_jnlp_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline

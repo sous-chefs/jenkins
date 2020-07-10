@@ -23,7 +23,8 @@ require_relative 'command'
 
 class Chef
   class Resource::JenkinsScript < Resource::JenkinsCommand
-    resource_name :jenkins_script
+    resource_name :jenkins_script # Still needed for Chef 15 and below
+    provides :jenkins_script
 
     # Chef attributes
     identity_attr :name

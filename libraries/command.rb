@@ -23,7 +23,8 @@ require_relative '_helper'
 
 class Chef
   class Resource::JenkinsCommand < Resource::LWRPBase
-    resource_name :jenkins_command
+    resource_name :jenkins_command # Still needed for Chef 15 and below
+    provides :jenkins_command
 
     # Chef attributes
     identity_attr :command
