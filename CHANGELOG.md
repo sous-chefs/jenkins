@@ -2,8 +2,15 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
-## Unreleased
+## 8.0.0 (2020-07-14)
 
+- Fixed groovy indentation errors in the generated code
+- Set default CLI protocol attribute to http now that remoting is deprecated in newer Jenkins releases - [@rjbaker](https://github.com/rjbaker)
+- Adding support for SSH Slaves/SSH Build Agents plugin version >= 1.30 - [@joemillerr](https://github.com/joemillerr)
+- Added attribute value for directory mode for jenkins directories
+- Update resources so they can be found by chef 16 - [@codayblue](https://github.com/codayblue)
+- Remove support for EOL Ubuntu < 16.04 in the java recipe - [@tas50](https://github.com/tas50)
+- Update java recipe to install openjdk-1.8.0 on Debian - [@tas50](https://github.com/tas50)
 - resolved cookstyle error: spec/recipes/java_spec.rb:6:7 warning: `ChefDeprecations/DeprecatedChefSpecPlatform`
 - resolved cookstyle error: libraries/credentials_file.rb:91:33 convention: `Style/HashEachMethods`
 - resolved cookstyle error: libraries/credentials_secret_text.rb:114:33 convention: `Style/HashEachMethods`
@@ -12,7 +19,6 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - resolved cookstyle error: libraries/slave_jnlp.rb:64:14 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
 - resolved cookstyle error: libraries/slave_jnlp.rb:91:83 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
 - resolved cookstyle error: libraries/slave_jnlp.rb:95:17 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
-- resolved issue with resources not being found by chef 16
 
 ## 7.1.2 (2020-03-05)
 
