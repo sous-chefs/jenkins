@@ -34,8 +34,6 @@ platforms:
     driver_config:
       box: mvbcoding/awslinux
   - name: amazonlinux-2
-    driver_config:
-      box: gbailey/amzn2
   - name: centos-6
   - name: centos-7
   - name: debian-9
