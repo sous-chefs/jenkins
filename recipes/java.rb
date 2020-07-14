@@ -41,5 +41,5 @@ when 'debian'
 when 'rhel', 'amazon', 'fedora'
   package 'java-1.8.0-openjdk'
 else
-  raise "`#{node['platform_family']}' is not supported!"
+  raise "'#{node['platform_family']}' is not supported!"
 end
