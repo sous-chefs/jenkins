@@ -81,7 +81,7 @@ class Chef
         Chef::Log.info("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
-          executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
+          executor.groovy! <<-EOH.gsub(/^ {12}/, '')
             import jenkins.model.*
             import com.cloudbees.plugins.credentials.*
             import com.cloudbees.plugins.credentials.domains.*
@@ -117,7 +117,7 @@ class Chef
     action :delete do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
-          executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
+          executor.groovy! <<-EOH.gsub(/^ {12}/, '')
             import jenkins.model.*
             import com.cloudbees.plugins.credentials.*;
 
@@ -216,7 +216,7 @@ class Chef
           "current_credentials['#{resource_attribute}'] = #{groovy_property}"
       end
 
-      json = executor.groovy! <<-EOH.gsub(/ ^{8}/, '')
+      json = executor.groovy! <<-EOH.gsub(/^ {8}/, '')
         import com.cloudbees.plugins.credentials.impl.*;
         import com.cloudbees.jenkins.plugins.sshcredentials.impl.*;
 

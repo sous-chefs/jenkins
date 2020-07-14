@@ -98,12 +98,12 @@ If this problem persists, check your Jenkins log files.
     # to an instance of the credentials represented by `username`.
     # Returns the Groovy `null` if no credentials are found.
     #
-    # @param [String] username
+    # @param [String] id
     # @param [String] groovy_variable_name
     # @return [String]
     #
     def credentials_for_id_groovy(id, groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import jenkins.model.*
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.plugins.credentials.common.*
@@ -137,7 +137,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def credentials_for_secret_groovy(secret, description, groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import jenkins.model.Jenkins;
         import hudson.util.Secret;
         import com.cloudbees.plugins.credentials.CredentialsProvider

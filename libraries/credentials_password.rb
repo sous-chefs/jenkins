@@ -58,7 +58,7 @@ class Chef
     # @see https://github.com/jenkinsci/credentials-plugin/blob/master/src/main/java/com/cloudbees/plugins/credentials/impl/UsernamePasswordCredentialsImpl.java
     #
     def credentials_groovy
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.plugins.credentials.impl.*
 

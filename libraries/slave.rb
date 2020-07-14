@@ -154,7 +154,7 @@ class Chef
         Chef::Log.info("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
-          executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
+          executor.groovy! <<-EOH.gsub(/^ {12}/, '')
             import hudson.model.*
             import hudson.slaves.*
             import jenkins.model.*
@@ -320,7 +320,7 @@ class Chef
         launcher_attributes << "current_slave['#{resource_attribute}'] = #{groovy_property}"
       end
 
-      json = executor.groovy! <<-EOH.gsub(/ ^{8}/, '')
+      json = executor.groovy! <<-EOH.gsub(/^ {8}/, '')
         import hudson.model.*
         import hudson.slaves.*
         import jenkins.model.*

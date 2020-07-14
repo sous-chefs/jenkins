@@ -65,7 +65,7 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#save_credentials_groovy
     #
     def fetch_existing_credentials_groovy(groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         #{credentials_for_id_groovy(new_resource.id, groovy_variable_name)}
       EOH
     end
@@ -74,7 +74,7 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#resource_attributes_groovy
     #
     def resource_attributes_groovy(groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         #{groovy_variable_name} = [
           id:credentials.id,
           description:credentials.description,
@@ -105,7 +105,7 @@ class Chef
     # @see https://github.com/jenkinsci/ssh-credentials-plugin/blob/master/src/main/java/com/cloudbees/jenkins/plugins/sshcredentials/impl/BasicSSHUserPrivateKey.java
     #
     def credentials_groovy
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import com.cloudbees.plugins.credentials.*
         import org.jenkinsci.plugins.plaincredentials.impl.*
 

@@ -56,7 +56,7 @@ class Chef
     #
     # * username which maps to a valid Jenkins credentials instance.
     # * UUID of a Jenkins credentials instance.
-    # * A `Chef::Resource::JenkinsCredentials` instnace.
+    # * A `Chef::Resource::JenkinsCredentials` instance.
     #
     # @return [String]
     #
@@ -101,9 +101,9 @@ class Chef
     # @see https://github.com/jenkinsci/ssh-slaves-plugin/blob/master/src/main/java/hudson/plugins/sshslaves/SSHLauncher.java
     #
     def launcher_groovy
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import hudson.plugins.sshslaves.verifiers.*
-
+        
         #{credential_lookup_groovy('credentials')}
         launcher =
           new hudson.plugins.sshslaves.SSHLauncher(
@@ -152,7 +152,7 @@ class Chef
     # @return [String]
     #
     def credential_lookup_groovy(groovy_variable_name = 'credentials_id')
-      <<-EOH.gsub(/ ^{10}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         #{credentials_for_id_groovy(new_resource.parsed_credentials, groovy_variable_name)}
       EOH
     end

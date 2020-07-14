@@ -60,7 +60,7 @@ class Chef
     # @see https://github.com/jenkinsci/plain-credentials-plugin/blob/master/src/main/java/org/jenkinsci/plugins/plaincredentials/impl/StringCredentialsImpl.java
     #
     def credentials_groovy
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import hudson.util.Secret;
         import com.cloudbees.plugins.credentials.CredentialsScope;
         import org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl;
@@ -78,7 +78,7 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#fetch_credentials_groovy
     #
     def fetch_existing_credentials_groovy(groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         #{credentials_for_secret_groovy(new_resource.secret, new_resource.description, groovy_variable_name)}
       EOH
     end
@@ -87,7 +87,7 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#resource_attributes_groovy
     #
     def resource_attributes_groovy(groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         #{groovy_variable_name} = [
           id:credentials.id,
           description:credentials.description,
