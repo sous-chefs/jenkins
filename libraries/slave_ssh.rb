@@ -1,4 +1,4 @@
-#
+-#
 # Cookbook:: jenkins
 # Resource:: ssh_slave
 #
@@ -38,7 +38,7 @@ class Chef
               kind_of: Integer,
               default: 22
     attribute :credentials,
-              kind_of: [Resource::JenkinsCredentials, String]
+              kind_of: String
     attribute :command_prefix,
               kind_of: String
     attribute :command_suffix,
@@ -102,19 +102,22 @@ class Chef
     #
     def launcher_groovy
       <<-EOH.gsub(/ ^{8}/, '')
+        import hudson.plugins.sshslaves.verifiers.*
+
         #{credential_lookup_groovy('credentials')}
         launcher =
           new hudson.plugins.sshslaves.SSHLauncher(
             #{convert_to_groovy(new_resource.host)},
             #{convert_to_groovy(new_resource.port)},
-            credentials,
+            #{convert_to_groovy(new_resource.credentials)},
             #{convert_to_groovy(new_resource.jvm_options)},
             #{convert_to_groovy(new_resource.java_path)},
             #{convert_to_groovy(new_resource.command_prefix)},
             #{convert_to_groovy(new_resource.command_suffix)},
             #{convert_to_groovy(new_resource.launch_timeout)},
             #{convert_to_groovy(new_resource.ssh_retries)},
-            #{convert_to_groovy(new_resource.ssh_wait_retries)}
+            #{convert_to_groovy(new_resource.ssh_wait_retries)},
+            new ManuallyTrustedKeyVerificationStrategy(false)
           )
       EOH
     end
