@@ -1,4 +1,4 @@
--#
+#
 # Cookbook:: jenkins
 # Resource:: ssh_slave
 #
