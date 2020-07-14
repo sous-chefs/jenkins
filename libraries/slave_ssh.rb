@@ -103,7 +103,6 @@ class Chef
     def launcher_groovy
       <<-EOH.gsub(/^ {8}/, '')
         import hudson.plugins.sshslaves.verifiers.*
-        
         #{credential_lookup_groovy('credentials')}
         launcher =
           new hudson.plugins.sshslaves.SSHLauncher(
