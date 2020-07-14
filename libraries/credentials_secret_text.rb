@@ -23,7 +23,8 @@ require_relative 'credentials'
 
 class Chef
   class Resource::JenkinsSecretTextCredentials < Resource::JenkinsCredentials
-    resource_name :jenkins_secret_text_credentials
+    resource_name :jenkins_secret_text_credentials # Still needed for Chef 15 and below
+    provides :jenkins_secret_text_credentials
 
     # Chef attributes
     identity_attr :description
@@ -40,8 +41,6 @@ end
 
 class Chef
   class Provider::JenkinsSecretTextCredentials < Provider::JenkinsCredentials
-    use_inline_resources # ~FC113
-
     provides :jenkins_secret_text_credentials
 
     def load_current_resource
@@ -113,7 +112,7 @@ class Chef
         secret: new_resource.secret,
       }
 
-      attribute_to_property_map.keys.each do |key|
+      attribute_to_property_map.each_key do |key|
         wanted_credentials[key] = new_resource.send(key)
       end
 

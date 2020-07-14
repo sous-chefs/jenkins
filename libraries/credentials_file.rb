@@ -26,6 +26,10 @@ require_relative 'credentials'
 class Chef
   class Resource::JenkinsFileCredentials < Resource::JenkinsCredentials
     include Jenkins::Helper
+
+    resource_name :jenkins_file_credentials # Still needed for Chef 15 and below
+    provides :jenkins_file_credentials
+
     attribute :description,
               kind_of: String,
               default: lazy { |new_resource| "Credentials for #{new_resource.filename} - created by Chef" }
@@ -42,7 +46,6 @@ end
 
 class Chef
   class Provider::JenkinsFileCredentials < Provider::JenkinsCredentials
-    use_inline_resources
     include Jenkins::Helper
     provides :jenkins_file_credentials
 
@@ -89,7 +92,7 @@ class Chef
         filename: new_resource.filename,
       }
 
-      attribute_to_property_map.keys.each do |key|
+      attribute_to_property_map.each_key do |key|
         wanted_credentials[key] = new_resource.send(key)
       end
 

@@ -4,7 +4,7 @@
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ require_relative '_helper'
 
 class Chef
   class Resource::JenkinsJob < Resource::LWRPBase
-    resource_name :jenkins_job
+    resource_name :jenkins_job # Still needed for Chef 15 and below
+    provides :jenkins_job
 
     # Chef attributes
     identity_attr :name
@@ -35,9 +36,6 @@ class Chef
     default_action :create
 
     # Attributes
-    attribute :name,
-              kind_of: String,
-              name_attribute: true
     attribute :config,
               kind_of: String
 
@@ -78,8 +76,6 @@ end
 
 class Chef
   class Provider::JenkinsJob < Provider::LWRPBase
-    use_inline_resources # ~FC113
-
     include Jenkins::Helper
 
     provides :jenkins_job
@@ -113,13 +109,6 @@ job must first exist on the Jenkins master!
     end
 
     #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
-    end
-
-    #
     # Executes a Jenkins job.
     #
     # @raise [JobDoesNotExist]
@@ -140,7 +129,12 @@ job must first exist on the Jenkins master!
           end
 
           new_resource.parameters.each_pair do |key, value|
-            command_args << "-p #{key}='#{value}'"
+            case value
+            when TrueClass, FalseClass
+              command_args << "-p #{key}=#{value}"
+            else
+              command_args << "-p #{key}='#{value}'"
+            end
           end
 
           if new_resource.stream_job_output && new_resource.wait_for_completion && stdout_stream

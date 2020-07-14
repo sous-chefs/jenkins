@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ require_relative 'credentials_user'
 
 class Chef
   class Resource::JenkinsPasswordCredentials < Resource::JenkinsUserCredentials
-    resource_name :jenkins_password_credentials
+    resource_name :jenkins_password_credentials # Still needed for Chef 15 and below
+    provides :jenkins_password_credentials
 
     # Attributes
     attribute :username,
@@ -38,7 +39,6 @@ end
 
 class Chef
   class Provider::JenkinsPasswordCredentials < Provider::JenkinsUserCredentials
-    use_inline_resources # ~FC113
     provides :jenkins_password_credentials
 
     def load_current_resource

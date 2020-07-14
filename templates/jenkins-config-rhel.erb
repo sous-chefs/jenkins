@@ -87,7 +87,7 @@ JENKINS_HTTPS_LISTEN_ADDRESS=""
 # Ajp13 Port Jenkins is listening on.
 # Set to -1 to disable
 #
-JENKINS_AJP_PORT="8009"
+JENKINS_AJP_PORT="<%= node['jenkins']['master']['ajp_port'] %>"
 
 ## Type:        string
 ## Default:     ""
@@ -105,7 +105,7 @@ JENKINS_AJP_LISTEN_ADDRESS=""
 # Debug level for logs -- the higher the value, the more verbose.
 # 5 is INFO.
 #
-JENKINS_DEBUG_LEVEL="5"
+JENKINS_DEBUG_LEVEL="<%= node['jenkins']['master']['debug_level'] %>"
 
 ## Type:        yesno
 ## Default:     no
@@ -121,7 +121,7 @@ JENKINS_ENABLE_ACCESS_LOG="no"
 #
 # Maximum number of HTTP worker threads.
 #
-JENKINS_HANDLER_MAX="100"
+JENKINS_HANDLER_MAX="<%= node['jenkins']['master']['handler_max'] %>"
 
 ## Type:        integer
 ## Default:     20
@@ -129,7 +129,7 @@ JENKINS_HANDLER_MAX="100"
 #
 # Maximum number of idle HTTP worker threads.
 #
-JENKINS_HANDLER_IDLE="20"
+JENKINS_HANDLER_IDLE="<%= node['jenkins']['master']['handler_idle'] %>"
 
 ## Type:        string
 ## Default:     ""
@@ -141,3 +141,10 @@ JENKINS_HANDLER_IDLE="20"
 <% if node['jenkins']['master']['jenkins_args'] %>
 JENKINS_ARGS="$JENKINS_ARGS <%= node['jenkins']['master']['jenkins_args'] %>"
 <% end %>
+
+##
+## Extra variables
+##
+<% node['jenkins']['master']['extra_variables'].each do |name, value| -%>
+export <%= name %>="<%= value %>"
+<% end -%>

@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ require_relative '_helper'
 
 class Chef
   class Resource::JenkinsSlave < Resource::LWRPBase
-    resource_name :jenkins_slave
+    resource_name :jenkins_slave # Still needed for Chef 15 and below
+    provides :jenkins_slave
 
     # Chef attributes
     identity_attr :slave_name
@@ -115,7 +116,6 @@ end
 class Chef
   class Provider::JenkinsSlave < Provider::LWRPBase
     provides :jenkins_slave
-    use_inline_resources # ~FC113
 
     include Jenkins::Helper
 
@@ -137,13 +137,6 @@ class Chef
       end
 
       @current_resource
-    end
-
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
     end
 
     action :create do
@@ -406,7 +399,7 @@ class Chef
         wanted_slave[:idle_delay] = new_resource.idle_delay
       end
 
-      attribute_to_property_map.keys.each do |key|
+      attribute_to_property_map.each_key do |key|
         wanted_slave[key] = new_resource.send(key)
       end
 

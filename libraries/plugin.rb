@@ -26,7 +26,8 @@ require_relative '_helper'
 
 class Chef
   class Resource::JenkinsPlugin < Resource::LWRPBase
-    resource_name :jenkins_plugin
+    resource_name :jenkins_plugin # Still needed for Chef 15 and below
+    provides :jenkins_plugin
 
     # Chef attributes
     identity_attr :name
@@ -36,9 +37,6 @@ class Chef
     default_action :install
 
     # Attributes
-    attribute :name,
-              kind_of: String,
-              name_attribute: true
     attribute :version,
               kind_of: [String, Symbol],
               default: :latest

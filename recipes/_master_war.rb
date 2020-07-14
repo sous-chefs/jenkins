@@ -9,7 +9,7 @@
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright:: 2010-2016, VMware, Inc.
-# Copyright:: 2012-2017, Chef Software, Inc.
+# Copyright:: 2012-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,20 +27,20 @@
 # Create the Jenkins user
 user node['jenkins']['master']['user'] do
   home node['jenkins']['master']['home']
-  system node['jenkins']['master']['use_system_accounts'] # ~FC048
+  system node['jenkins']['master']['use_system_accounts']
 end
 
 # Create the Jenkins group
 group node['jenkins']['master']['group'] do
   members node['jenkins']['master']['user']
-  system node['jenkins']['master']['use_system_accounts'] # ~FC048
+  system node['jenkins']['master']['use_system_accounts']
 end
 
 # Create the home directory
 directory node['jenkins']['master']['home'] do
   owner     node['jenkins']['master']['user']
   group     node['jenkins']['master']['group']
-  mode      '0755'
+  mode      node['jenkins']['master']['mode']
   recursive true
 end
 

@@ -4,7 +4,7 @@
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ if Gem::Requirement.new('< 12.0').satisfied_by?(Gem::Version.new(Chef::VERSION))
         if arg.nil? && instance_variable_defined?(iv_symbol) == true
           ivar = instance_variable_get(iv_symbol)
           if ivar.is_a?(DelayedEvaluator)
-            validate({ symbol => ivar.call }, { symbol => validation })[symbol] # rubocop:disable BracesAroundHashParameters
+            validate({ symbol => ivar.call }, { symbol => validation })[symbol] # rubocop:disable Style/BracesAroundHashParameters
           else
             ivar
           end
@@ -41,10 +41,10 @@ if Gem::Requirement.new('< 12.0').satisfied_by?(Gem::Version.new(Chef::VERSION))
           if arg.is_a?(DelayedEvaluator)
             val = arg
           else
-            val = validate({ symbol => arg }, { symbol => validation })[symbol] # rubocop:disable BracesAroundHashParameters
+            val = validate({ symbol => arg }, { symbol => validation })[symbol] # rubocop:disable Style/BracesAroundHashParameters
 
             # Handle the case where the "default" was a DelayedEvaluator
-            val = val.call(self) if val.is_a?(DelayedEvaluator) # rubocop:disable BlockNesting
+            val = val.call(self) if val.is_a?(DelayedEvaluator) # rubocop:disable Metrics/BlockNesting
           end
           instance_variable_set(iv_symbol, val)
         end

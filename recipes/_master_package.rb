@@ -6,7 +6,7 @@
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright:: 2013-2016, Youscribe
-# Copyright:: 2014-2017, Chef Software, Inc.
+# Copyright:: 2014-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 case node['platform_family']
 when 'debian'
-  package 'apt-transport-https'
+  package %w( apt-transport-https fontconfig )
 
   apt_repository 'jenkins' do
     uri          node['jenkins']['master']['repository']
@@ -49,7 +49,7 @@ end
 directory node['jenkins']['master']['home'] do
   owner     node['jenkins']['master']['user']
   group     node['jenkins']['master']['group']
-  mode      '0755'
+  mode      node['jenkins']['master']['mode']
   recursive true
 end
 
@@ -67,7 +67,7 @@ end
     path "/var/#{folder}/jenkins"
     owner node['jenkins']['master']['user']
     group node['jenkins']['master']['group']
-    mode '0755'
+    mode node['jenkins']['master']['mode']
     action :create
   end
 end

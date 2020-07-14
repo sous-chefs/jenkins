@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ require_relative 'slave_jnlp'
 
 class Chef
   class Resource::JenkinsWindowsSlave < Resource::JenkinsJnlpSlave
-    resource_name :jenkins_windows_slave
+    resource_name :jenkins_windows_slave # Still needed for Chef 15 and below
+    provides :jenkins_windows_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline
@@ -55,7 +56,6 @@ end
 
 class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJnlpSlave
-    use_inline_resources # ~FC113
     provides :jenkins_windows_slave, platform: %w(windows)
 
     def load_current_resource
@@ -76,7 +76,7 @@ class Chef
       #
 
       # The jenkins-slave.exe is needed to get the slave up and running under a windows service.
-      # However, once it is created Jenkins Master wants to control the version.  So we should only
+      # However, once it is created Jenkins Master wants to control the version. So we should only
       # create the file if it is missing.
       slave_exe_resource.run_action(:create_if_missing)
       slave_jar_resource.run_action(:create)

@@ -2,10 +2,58 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
+- resolved cookstyle error: spec/recipes/java_spec.rb:6:7 warning: `ChefDeprecations/DeprecatedChefSpecPlatform`
+- resolved cookstyle error: libraries/credentials_file.rb:91:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/credentials_secret_text.rb:114:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/credentials_user.rb:81:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/slave.rb:401:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/slave_jnlp.rb:64:14 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
+- resolved cookstyle error: libraries/slave_jnlp.rb:91:83 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
+- resolved cookstyle error: libraries/slave_jnlp.rb:95:17 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
+- resolved issue with resources not being found by chef 16
+
+## 7.1.2 (2020-03-05)
+
+- Add the actions back to the resources - [@tas50](https://github.com/tas50)
+- Add redundant name attributes - [@tas50](https://github.com/tas50)
+- Avoid chefspec deprecation warnings - [@tas50](https://github.com/tas50)
+
+## 7.1.1 (2020-03-05)
+
+- Simplify platform check logic - [@tas50](https://github.com/tas50)
+- Remove unnecessary foodcritic comments - [@tas50](https://github.com/tas50)
+- Cookstyle fixes - [@tas50](https://github.com/tas50)
+- Switch to install_adoptopenjdk resource in java cookbook 7.0 for testing - [@tas50](https://github.com/tas50)
+
+## 7.1.0 (2019-11-29)
+
+- Ajp13 Port from attributes - [@rnt](https://github.com/rnt)
+- Debug level for logs from attributes - [@rnt](https://github.com/rnt)
+- Maximum number of HTTP worker threads from attributes - [@rnt](https://github.com/rnt)
+- Maximum number of idle HTTP worker threads from attributes - [@rnt](https://github.com/rnt)
+- Fix typo in java.rb recipe. - [@jugatsu](https://github.com/jugatsu)
+- Auto accept Chef licenses when running tests - [@rjbaker](https://github.com/rjbaker)
+- Switch to openjdk in testing since Oracle jdk artifacts have been removed - [@rjbaker](https://github.com/rjbaker)
+- Cookstyle 5.10 fixes - [@tas50](https://github.com/tas50)
+- Additional cookstyle fixes - [@tas50](https://github.com/tas50)
+
+## 7.0.0 (2019-04-30)
+
+- Require Chef 13 or later - [@Stromweld](https://github.com/Stromweld)
+- Do not quote boolean parameters in the job resource - [@mbaitelman](https://github.com/mbaitelman)
+- Resolve ProviderNotFound error in jenkins_view resource - [@eitoball](https://github.com/eitoball)
+- Support installation on Debian 9 - [@mattray](https://github.com/mattray)
+- Wire up JENKINS_ENABLE_ACCESS_LOG to attributes in the config - [@mattray](https://github.com/mattray)
+- Fix the executor to -auth instead of --username, --password on the Jenkins CLI - Jakob Pfeiffer
+- JNLP slave is configured to not use all the groups of the jenkins user - [@jonathanan](https://github.com/jonathanan)
+- Update plugin resource to work with newer versions of Jenkins which handles dependencies and removes need for additional plugin method. This deprecated the install_deps property previously required  - [@Stromweld](https://github.com/Stromweld)
+
 ## 6.2.1 (2018-11-14)
 
 - @josh-barker entirely rewrote our test suites. Suites have been consolidated, everything now passes, and all validation is performed with all new InSpec tests. Thanks Josh for this massive improvement.
-- Fix bug when remote plugin is not found in plugin universe 
+- Fix bug when remote plugin is not found in plugin universe
 - Fix broken delete action for jnlp slave
 - Fix cloning resources attributes for/var/lib/jenkins
 - Set httpKeepAliveTimeout to 5 minutes so that connections are not closed too early
@@ -67,7 +115,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## 5.0.2 (2017-06-14)
 
-- Fix regex for falling back to anonymous for failed authentication 
+- Fix regex for falling back to anonymous for failed authentication
 
 ## 5.0.1 (2017-05-01)
 

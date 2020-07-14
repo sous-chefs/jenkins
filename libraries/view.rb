@@ -22,7 +22,8 @@ require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsView < Resource::LWRPBase
-    resource_name :jenkins_view
+    resource_name :jenkins_view # Still needed for Chef 15 and below
+    provides :jenkins_view
 
     # Chef attributes
     identity_attr :name
@@ -32,8 +33,6 @@ class Chef
     default_action :create
 
     # Attributes
-    attribute :name,
-              kind_of: String
     attribute :jobs,
               kind_of: Array,
               default: []
@@ -69,6 +68,8 @@ view must first exist on the Jenkins master!
 
     include Jenkins::Helper
 
+    provides :jenkins_view
+
     def load_current_resource
       @current_resource ||= Resource::JenkinsView.new(new_resource.name)
       @current_resource.name(new_resource.name)
@@ -81,13 +82,6 @@ view must first exist on the Jenkins master!
                                  end
 
       @current_resource
-    end
-
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
     end
 
     #

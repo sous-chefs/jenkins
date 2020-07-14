@@ -8,7 +8,7 @@
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright:: 2010-2016, VMware, Inc.
-# Copyright:: 2012-2017, Chef Software, Inc.
+# Copyright:: 2012-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,10 +32,7 @@ default['jenkins']['master'].tap do |master|
   #
   #   node.normal['jenkins']['master']['install_method'] = 'war'
   #
-  master['install_method'] = case node['platform_family']
-                             when 'debian', 'rhel', 'amazon' then 'package'
-                             else 'war'
-                             end
+  master['install_method'] = platform_family?('debian', 'rhel', 'amazon') ? 'package' : 'war'
 
   #
   # The version of the Jenkins master to install. This can be a specific
@@ -134,6 +131,11 @@ default['jenkins']['master'].tap do |master|
   master['group'] = 'jenkins'
 
   #
+  # Directory mode for Jenkins directories.
+  #
+  master['mode'] = '0755'
+
+  #
   # Jenkins user/group should be created as `system` accounts for `war` install.
   # The default of `true` will ensure that **new** jenkins user accounts are
   # created in the system ID range, existing users will not be modified.
@@ -156,6 +158,31 @@ default['jenkins']['master'].tap do |master|
   # The address bound to the Jenkins process. The default value binds to all interfaces.
   #
   master['listen_address'] = '0.0.0.0'
+
+  #
+  # Ajp13 Port Jenkins is listening on. Set to -1 to disable
+  #
+  master['ajp_port'] = case node['platform_family']
+                       when 'debian'
+                         -1
+                       when 'rhel', 'amazon'
+                         8009
+                       end
+
+  #
+  # Debug level for logs. The higher the value, the more verbose. 5 is INFO.
+  #
+  master['debug_level'] = 5
+
+  #
+  # Maximum number of HTTP worker threads.
+  #
+  master['handler_max'] = 100
+
+  #
+  # Maximum number of idle HTTP worker threads.
+  #
+  master['handler_idle'] = 20
 
   #
   # The port which the Jenkins process will listen on.
@@ -191,6 +218,10 @@ default['jenkins']['master'].tap do |master|
   #   node.normal['jenkins']['master']['log_directory'] = '/var/log/jenkins'
   #
   master['log_directory'] = '/var/log/jenkins'
+
+  # Whether to enable web access logging or not.
+  # Set to "yes" to enable logging to /var/log/$NAME/access_log
+  master['access_log'] = 'no'
 
   #
   # Set the max open files to a specific value.
@@ -240,4 +271,9 @@ default['jenkins']['master'].tap do |master|
   # Keyserver to use. Disabled by default
   #
   master['repository_keyserver'] = nil
+
+  #
+  # Set extra variables
+  #
+  master['extra_variables'] = {}
 end

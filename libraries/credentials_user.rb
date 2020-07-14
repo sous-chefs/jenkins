@@ -33,7 +33,6 @@ end
 
 class Chef
   class Provider::JenkinsUserCredentials < Provider::JenkinsCredentials
-    use_inline_resources # ~FC113
     include Jenkins::Helper
 
     def load_current_resource
@@ -79,7 +78,7 @@ class Chef
         username: new_resource.username,
       }
 
-      attribute_to_property_map.keys.each do |key|
+      attribute_to_property_map.each_key do |key|
         wanted_credentials[key] = new_resource.send(key)
       end
 
