@@ -12,6 +12,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - resolved cookstyle error: libraries/slave_jnlp.rb:64:14 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
 - resolved cookstyle error: libraries/slave_jnlp.rb:91:83 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
 - resolved cookstyle error: libraries/slave_jnlp.rb:95:17 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
+- resolved issue with resources not being found by chef 16
 
 ## 7.1.2 (2020-03-05)
 

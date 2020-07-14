@@ -25,7 +25,8 @@ require_relative '_helper'
 
 class Chef
   class Resource::JenkinsJob < Resource::LWRPBase
-    resource_name :jenkins_job
+    resource_name :jenkins_job # Still needed for Chef 15 and below
+    provides :jenkins_job
 
     # Chef attributes
     identity_attr :name

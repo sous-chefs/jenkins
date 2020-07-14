@@ -24,7 +24,8 @@ require_relative 'credentials_user'
 
 class Chef
   class Resource::JenkinsPasswordCredentials < Resource::JenkinsUserCredentials
-    resource_name :jenkins_password_credentials
+    resource_name :jenkins_password_credentials # Still needed for Chef 15 and below
+    provides :jenkins_password_credentials
 
     # Attributes
     attribute :username,

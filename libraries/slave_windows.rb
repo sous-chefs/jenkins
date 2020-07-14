@@ -24,7 +24,8 @@ require_relative 'slave_jnlp'
 
 class Chef
   class Resource::JenkinsWindowsSlave < Resource::JenkinsJnlpSlave
-    resource_name :jenkins_windows_slave
+    resource_name :jenkins_windows_slave # Still needed for Chef 15 and below
+    provides :jenkins_windows_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline

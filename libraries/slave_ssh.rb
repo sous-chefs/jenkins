@@ -24,7 +24,8 @@ require_relative 'credentials'
 
 class Chef
   class Resource::JenkinsSshSlave < Resource::JenkinsSlave
-    resource_name :jenkins_ssh_slave
+    resource_name :jenkins_ssh_slave # Still needed for Chef 15 and below
+    provides :jenkins_ssh_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline

@@ -23,7 +23,8 @@ require_relative 'credentials'
 
 class Chef
   class Resource::JenkinsSecretTextCredentials < Resource::JenkinsCredentials
-    resource_name :jenkins_secret_text_credentials
+    resource_name :jenkins_secret_text_credentials # Still needed for Chef 15 and below
+    provides :jenkins_secret_text_credentials
 
     # Chef attributes
     identity_attr :description
