@@ -132,8 +132,10 @@ job must first exist on the Jenkins master!
             case value
             when TrueClass, FalseClass
               command_args << "-p #{key}=#{value}"
-            else
+            when value.include?(' ')
               command_args << "-p #{key}='#{value}'"
+            else
+              command_args << "-p #{key}=#{value}"
             end
           end
 
