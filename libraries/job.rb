@@ -269,7 +269,7 @@ job must first exist on the Jenkins master!
       Chef::Log.debug "Load #{new_resource} job information"
 
       response = executor.execute('get-job', escape(new_resource.name))
-      return nil if response.nil? || response =~ /No such job/
+      return if response.nil? || response =~ /No such job/
 
       Chef::Log.debug "Parse #{new_resource} as XML"
       xml = REXML::Document.new(response)
