@@ -329,7 +329,7 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
       manifest = ::File.join(plugins_directory, plugin_name, 'META-INF', 'MANIFEST.MF')
       Chef::Log.debug "Load #{plugin_name} plugin information from #{manifest}"
 
-      return nil unless ::File.exist?(manifest)
+      return unless ::File.exist?(manifest)
 
       plugin_manifest = {}
 
