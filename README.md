@@ -133,7 +133,7 @@ end
 
 ### jenkins_credentials
 
-**NOTES**
+#### NOTES
 
 - Install version 1.6 or higher of the [credentials plugin](https://wiki.jenkins-ci.org/display/JENKINS/Credentials+Plugin) to use the Jenkins credentials resource.
 

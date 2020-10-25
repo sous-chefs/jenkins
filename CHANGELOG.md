@@ -13,6 +13,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 ### Fixed
 
 - Yamllint fixes
+- MDL fixes
 
 ## 8.1.0 - *2020-12-01*
 
@@ -160,9 +161,11 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Add -remoting option that is required due to [Jenkins issue](https://jenkins.io/blog/2017/04/26/security-advisory/). Attribute `['jenkins']['executor']['protocol']` has been added to allow for using the deprecated remoting option (default) or ssh/http in which attribute `['jenkins']['executor']['cli_user']` needs to be assigned.
 
 ## [5.0.0](https://github.com/chef-cookbooks/jenkins/tree/v5.0.0) (2017-03-08)
+
 [Full Changelog](https://github.com/chef-cookbooks/jenkins/compare/v4.2.1...v5.0.0)
 
-**Improvements**
+### Improvements
+
 - Add support for 2.x ([daften](https://github.com/daften))
 - Change default to stable, adding channel toggle [\#575](https://github.com/chef-cookbooks/jenkins/pull/575) ([cheeseplus](https://github.com/cheeseplus))
 - Use `dpkg_autostart` to prevent service from starting post install
@@ -195,12 +198,15 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Fix Issue #205 allow user groups of runit process owner
 
 ## 4.0.1 (2016-10-18)
+
 - Fix NotImplementedError by removing the use of the Chef::Resource::RESOURCENAME
 
 ## 4.0.0 (2016-10-17)
+
 - Changes how credentials are created, using the id rather than username to fix Issue #447
 
 ## 3.1.1 (2016-10-17)
+
 - Fix implicit argument passing of super Issue #524
 - Fix ECDSA check
 - include_recipe instead of using recipe_eval in slave_jnlp library
