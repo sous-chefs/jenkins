@@ -11,6 +11,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Update to use Sous Chefs GH workflow
 - Update README to sous-chefs
 - Update metadata.rb to Sous Chefs
+- Update test-kitchen to Sous Chefs
 
 ### Fixed
 

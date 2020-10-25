@@ -14,7 +14,9 @@ provisioner:
   name: chef_zero
   data_path: test/fixtures/keys
   data_bags_path: test/fixtures/data_bags
-  chef_license: accept
+  enforce_idempotency: true
+  multiple_converge: 2
+  deprecations_as_errors: true
   attributes:
     jenkins:
       master:
