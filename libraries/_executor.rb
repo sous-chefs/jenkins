@@ -22,7 +22,7 @@
 require 'mixlib/shellout'
 require 'shellwords'
 require 'tempfile'
-require 'uri'
+require 'addressable/uri'
 
 module Jenkins
   class Executor
@@ -72,7 +72,7 @@ module Jenkins
       command << %("#{options[:java]}")
       command << options[:jvm_options].to_s if options[:jvm_options]
       command << %(-jar "#{options[:cli]}")
-      command << %(-s #{URI.escape(options[:endpoint])}) if options[:endpoint]
+      command << %(-s #{Addressable::URI.escape(options[:endpoint])}) if options[:endpoint]
       command << %(-#{options[:protocol]})               if options[:protocol]
       command << %(-user "#{options[:cli_user]}")        if options[:cli_user]
       command << %(-i "#{options[:key]}")                if options[:key]
@@ -173,7 +173,7 @@ module Jenkins
     # @return [String]
     #
     def uri_escape(string)
-      URI.escape(string)
+      Addressable::URI.escape(string)
     end
   end
 end

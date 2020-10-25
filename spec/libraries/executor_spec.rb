@@ -141,7 +141,7 @@ describe Jenkins::Executor do
     context 'when the command fails' do
       it 'raises an error' do
         allow(shellout).to receive(:error!).and_raise(RuntimeError)
-        expect { subject.execute!('bad') }.to raise_error
+        expect { subject.execute!('bad') }.to raise_error(RuntimeError)
       end
     end
   end

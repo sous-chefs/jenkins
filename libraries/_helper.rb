@@ -23,6 +23,7 @@ require 'net/http'
 require 'open-uri'
 require 'timeout'
 require 'uri'
+require 'addressable/uri'
 
 module Jenkins
   module Helper
@@ -91,7 +92,7 @@ If this problem persists, check your Jenkins log files.
     #   the list of parts to join
     #
     def uri_join(*parts)
-      parts = parts.compact.map(&URI.method(:escape))
+      parts = parts.compact.map(&Addressable::URI.method(:escape))
       URI.parse(parts.join('/')).normalize.to_s
     end
 
@@ -445,7 +446,7 @@ If this problem persists, check your Jenkins log files.
     def wait_until_ready!
       Timeout.timeout(timeout, JenkinsTimeout) do
         begin
-          open("#{endpoint}/whoAmI/")
+          URI.open("#{endpoint}/whoAmI/")
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
