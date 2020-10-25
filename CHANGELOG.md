@@ -8,6 +8,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 - Sous Chefs Adoption
 - Update Changelog to Sous Chefs
+- Update to use Sous Chefs GH workflow
 
 ## 8.1.0 - *2020-12-01*
 
