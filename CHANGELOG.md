@@ -9,6 +9,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Sous Chefs Adoption
 - Update Changelog to Sous Chefs
 - Update to use Sous Chefs GH workflow
+- Update README to sous-chefs
 
 ### Fixed
 
