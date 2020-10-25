@@ -94,7 +94,7 @@ suites:
   #
   # Authentication suites
   #
-  - name: authentication_private_key # Tested in smoke suite
+  - name: authentication_private_key  # Tested in smoke suite
     run_list: jenkins_authentication::private_key
 
   - name: authentication_username_password
@@ -109,7 +109,7 @@ suites:
   # Cannot be tested together
   # As the proxy settings are global
   #
-  - name: jenkins_proxy_config # Tested in smoke suite
+  - name: jenkins_proxy_config  # Tested in smoke suite
     run_list: jenkins_proxy::config
   - name: jenkins_proxy_remove
     run_list: jenkins_proxy::remove

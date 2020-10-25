@@ -10,6 +10,10 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Update Changelog to Sous Chefs
 - Update to use Sous Chefs GH workflow
 
+### Fixed
+
+- Yamllint fixes
+
 ## 8.1.0 - *2020-12-01*
 
 - Fix the implementation of the cli user/password authentication method - [@ddegoede](https://github.com/ddegoede)
