@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -59,7 +59,6 @@ end
 
 class Chef
   class Provider::JenkinsCredentials < Provider::LWRPBase
-    use_inline_resources # ~FC113
     include Jenkins::Helper
 
     def load_current_resource
@@ -75,13 +74,6 @@ class Chef
     end
 
     #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
-    end
-
-    #
     # Create the given credentials.
     #
     action :create do
@@ -89,7 +81,7 @@ class Chef
         Chef::Log.info("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
-          executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
+          executor.groovy! <<-EOH.gsub(/^ {12}/, '')
             import jenkins.model.*
             import com.cloudbees.plugins.credentials.*
             import com.cloudbees.plugins.credentials.domains.*
@@ -125,7 +117,7 @@ class Chef
     action :delete do
       if current_resource.exists?
         converge_by("Delete #{new_resource}") do
-          executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
+          executor.groovy! <<-EOH.gsub(/^ {12}/, '')
             import jenkins.model.*
             import com.cloudbees.plugins.credentials.*;
 
@@ -224,7 +216,7 @@ class Chef
           "current_credentials['#{resource_attribute}'] = #{groovy_property}"
       end
 
-      json = executor.groovy! <<-EOH.gsub(/ ^{8}/, '')
+      json = executor.groovy! <<-EOH.gsub(/^ {8}/, '')
         import com.cloudbees.plugins.credentials.impl.*;
         import com.cloudbees.jenkins.plugins.sshcredentials.impl.*;
 
@@ -242,7 +234,7 @@ class Chef
         println(builder)
       EOH
 
-      return nil if json.nil? || json.empty?
+      return if json.nil? || json.empty?
 
       @current_credentials = JSON.parse(json, symbolize_names: true)
 

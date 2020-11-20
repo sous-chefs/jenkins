@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,7 +37,8 @@ class Chef
   class Resource::JenkinsPrivateKeyCredentials < Resource::JenkinsUserCredentials
     include Jenkins::Helper
 
-    resource_name :jenkins_private_key_credentials
+    resource_name :jenkins_private_key_credentials # Still needed for Chef 15 and below
+    provides :jenkins_private_key_credentials
 
     # Attributes
     attribute :username,
@@ -71,7 +72,6 @@ end
 
 class Chef
   class Provider::JenkinsPrivateKeyCredentials < Provider::JenkinsUserCredentials
-    use_inline_resources # ~FC113
     provides :jenkins_private_key_credentials
 
     def load_current_resource
@@ -79,9 +79,7 @@ class Chef
 
       super
 
-      if current_credentials
-        @current_resource.private_key(current_credentials[:private_key])
-      end
+      @current_resource.private_key(current_credentials[:private_key]) if current_credentials
 
       @current_resource
     end
@@ -93,7 +91,7 @@ class Chef
     # @see https://github.com/jenkinsci/ssh-credentials-plugin/blob/master/src/main/java/com/cloudbees/jenkins/plugins/sshcredentials/impl/BasicSSHUserPrivateKey.java
     #
     def credentials_groovy
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
 

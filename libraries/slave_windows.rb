@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ require_relative 'slave_jnlp'
 
 class Chef
   class Resource::JenkinsWindowsSlave < Resource::JenkinsJnlpSlave
-    resource_name :jenkins_windows_slave
+    resource_name :jenkins_windows_slave # Still needed for Chef 15 and below
+    provides :jenkins_windows_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline
@@ -55,7 +56,6 @@ end
 
 class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJnlpSlave
-    use_inline_resources # ~FC113
     provides :jenkins_windows_slave, platform: %w(windows)
 
     def load_current_resource
@@ -76,7 +76,7 @@ class Chef
       #
 
       # The jenkins-slave.exe is needed to get the slave up and running under a windows service.
-      # However, once it is created Jenkins Master wants to control the version.  So we should only
+      # However, once it is created Jenkins Master wants to control the version. So we should only
       # create the file if it is missing.
       slave_exe_resource.run_action(:create_if_missing)
       slave_jar_resource.run_action(:create)
@@ -157,10 +157,9 @@ class Chef
       slave_compat_xml = ::File.join(new_resource.remote_fs, "#{new_resource.service_name}.exe.config")
       @slave_compat_xml = Chef::Resource::File.new(slave_compat_xml, run_context)
       @slave_compat_xml.content(
-        <<-EOH.gsub(/ ^{8}/, '')
+        <<-EOH.gsub(/^ {8}/, '')
         <configuration>
           <startup>
-            <supportedRuntime version="v2.0.50727" />
             <supportedRuntime version="v4.0" />
           </startup>
         </configuration>
@@ -184,17 +183,18 @@ class Chef
       @slave_xml_resource = Chef::Resource::Template.new(slave_xml, run_context)
       @slave_xml_resource.cookbook('jenkins')
       @slave_xml_resource.source('jenkins-slave.xml.erb')
+      @slave_xml_resource.sensitive = true if new_resource.password
       @slave_xml_resource.variables(
-        new_resource:  new_resource,
-        endpoint:      endpoint,
-        java_bin:      java,
-        slave_jar:     slave_jar,
-        jnlp_url:      jnlp_url,
-        jnlp_secret:   jnlp_secret,
-        user_domain:   user_domain,
-        user_account:  user_account,
+        new_resource: new_resource,
+        endpoint: endpoint,
+        java_bin: java,
+        slave_jar: slave_jar,
+        jnlp_url: jnlp_url,
+        jnlp_secret: jnlp_secret,
+        user_domain: user_domain,
+        user_account: user_account,
         user_password: new_resource.password,
-        path:          new_resource.path
+        path: new_resource.path
       )
       @slave_xml_resource.notifies(:run, install_service_resource)
       @slave_xml_resource
@@ -215,12 +215,12 @@ class Chef
       @slave_bat_resource.cookbook('jenkins')
       @slave_bat_resource.source('jenkins-slave.bat.erb')
       @slave_bat_resource.variables(
-        pre_run_cmds:  new_resource.pre_run_cmds,
-        new_resource:  new_resource,
-        java_bin:      java,
-        slave_jar:     slave_jar,
-        jnlp_url:      jnlp_url,
-        jnlp_secret:   jnlp_secret
+        pre_run_cmds: new_resource.pre_run_cmds,
+        new_resource: new_resource,
+        java_bin: java,
+        slave_jar: slave_jar,
+        jnlp_url: jnlp_url,
+        jnlp_secret: jnlp_secret
       )
       @slave_bat_resource
     end
@@ -235,7 +235,7 @@ class Chef
     def install_service_resource
       return @install_service_resource if @install_service_resource
 
-      code = <<-EOH.gsub(/ ^{8}/, '')
+      code = <<-EOH.gsub(/^ {8}/, '')
         IF "#{wmi_property_from_query(:name, "select * from Win32_Service where name = '#{new_resource.service_name}'")}" == "#{new_resource.service_name}" (
           #{new_resource.service_name}.exe stop
           #{new_resource.service_name}.exe uninstall
@@ -263,7 +263,7 @@ class Chef
     end
 
     #
-    # Windows domain for the user or `.` if a domain is not set.
+    # Windows domain for the user or nil if there is no domain.
     #
     # @return [String]
     #
@@ -271,8 +271,6 @@ class Chef
       @user_domain ||= begin
         if (parts = new_resource.user.match(/(?<domain>.*)\\(?<account>.*)/))
           parts[:domain]
-        else
-          '.'
         end
       end
     end

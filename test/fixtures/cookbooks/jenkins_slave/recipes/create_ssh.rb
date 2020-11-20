@@ -1,4 +1,12 @@
-include_recipe 'jenkins_server_wrapper::default'
+package 'openssh-server' do
+  action :install
+  not_if { platform?('windows') }
+end
+
+service node['sshd_service'] do
+  action [:enable, :start]
+  not_if { platform?('windows') }
+end
 
 # Load user data from a data bag item. This should be an encrypted data
 # bag item in real deployments.
@@ -50,6 +58,7 @@ credentials = jenkins_private_key_credentials 'jenkins-ssh-key' do
 end
 
 jenkins_password_credentials 'jenkins-ssh-password' do
+  id 'jenkins-ssh-password'
   password jenkins_user_data['password_clear']
 end
 
@@ -67,7 +76,7 @@ jenkins_ssh_slave 'ssh-builder' do
   # SSH specific attributes
   host        'localhost'
   credentials credentials
-  launch_timeout   30
+  launch_timeout   node['jenkins_slave']['launch_timeout']
   ssh_retries      5
   ssh_wait_retries 60
 end
@@ -81,7 +90,7 @@ jenkins_ssh_slave 'ssh-executor' do
   # SSH specific attributes
   host        'localhost'
   credentials '38537014-ec66-49b5-aff2-aed1c19e2989'
-  launch_timeout   30
+  launch_timeout   node['jenkins_slave']['launch_timeout']
   ssh_retries      5
   ssh_wait_retries 60
 end
@@ -95,7 +104,7 @@ jenkins_ssh_slave 'ssh-smoke' do
   # SSH specific attributes
   host        'localhost'
   credentials 'jenkins-ssh-password'
-  launch_timeout   30
+  launch_timeout   node['jenkins_slave']['launch_timeout']
   ssh_retries      5
   ssh_wait_retries 60
 end

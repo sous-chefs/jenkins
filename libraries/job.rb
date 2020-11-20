@@ -4,7 +4,7 @@
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ require_relative '_helper'
 
 class Chef
   class Resource::JenkinsJob < Resource::LWRPBase
-    resource_name :jenkins_job
+    resource_name :jenkins_job # Still needed for Chef 15 and below
+    provides :jenkins_job
 
     # Chef attributes
     identity_attr :name
@@ -35,9 +36,6 @@ class Chef
     default_action :create
 
     # Attributes
-    attribute :name,
-              kind_of: String,
-              name_attribute: true
     attribute :config,
               kind_of: String
 
@@ -78,8 +76,6 @@ end
 
 class Chef
   class Provider::JenkinsJob < Provider::LWRPBase
-    use_inline_resources # ~FC113
-
     include Jenkins::Helper
 
     provides :jenkins_job
@@ -92,7 +88,7 @@ class Chef
         super <<-EOH
 The Jenkins job `#{job}' does not exist. In order to :#{action} `#{job}', that
 job must first exist on the Jenkins master!
-EOH
+        EOH
       end
     end
 
@@ -113,22 +109,13 @@ EOH
     end
 
     #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
-    end
-
-    #
     # Executes a Jenkins job.
     #
     # @raise [JobDoesNotExist]
     #   if the job does not exist
     #
     action :build do
-      unless current_resource.exists?
-        raise JobDoesNotExist.new(new_resource.name, :build)
-      end
+      raise JobDoesNotExist.new(new_resource.name, :build) unless current_resource.exists?
 
       if current_resource.enabled?
         converge_by("Build #{new_resource}") do
@@ -142,7 +129,16 @@ EOH
           end
 
           new_resource.parameters.each_pair do |key, value|
-            command_args << "-p #{key}='#{value}'"
+            case value
+            when TrueClass, FalseClass
+              command_args << "-p #{key}=#{value}"
+            else
+              command_args << if value.include?(' ')
+                                "-p #{key}='#{value}'"
+                              else
+                                "-p #{key}=#{value}"
+                              end
+            end
           end
 
           if new_resource.stream_job_output && new_resource.wait_for_completion && stdout_stream
@@ -229,9 +225,7 @@ EOH
     #   if the job does not exist
     #
     action :disable do
-      unless current_resource.exists?
-        raise JobDoesNotExist.new(new_resource.name, :disable)
-      end
+      raise JobDoesNotExist.new(new_resource.name, :disable) unless current_resource.exists?
 
       if current_resource.enabled?
         converge_by("Disable #{new_resource}") do
@@ -249,9 +243,7 @@ EOH
     #   if the job does not exist
     #
     action :enable do
-      unless current_resource.exists?
-        raise JobDoesNotExist.new(new_resource.name, :enable)
-      end
+      raise JobDoesNotExist.new(new_resource.name, :enable) unless current_resource.exists?
 
       if current_resource.enabled?
         Chef::Log.info("#{new_resource} enabled - skipping")
@@ -277,7 +269,7 @@ EOH
       Chef::Log.debug "Load #{new_resource} job information"
 
       response = executor.execute('get-job', escape(new_resource.name))
-      return nil if response.nil? || response =~ /No such job/
+      return if response.nil? || response =~ /No such job/
 
       Chef::Log.debug "Parse #{new_resource} as XML"
       xml = REXML::Document.new(response)
@@ -285,8 +277,8 @@ EOH
 
       @current_job = {
         enabled: disabled.nil? ? true : disabled.text == 'false',
-        xml:     xml,
-        raw:     response,
+        xml: xml,
+        raw: response,
       }
       @current_job
     end
@@ -320,16 +312,14 @@ EOH
     def validate_config!
       Chef::Log.debug "Validate #{new_resource} configuration"
 
-      if new_resource.config.nil?
-        raise("#{new_resource} must specify a configuration file!")
-      elsif !::File.exist?(new_resource.config)
-        raise("#{new_resource} config `#{new_resource.config}` does not exist!")
-      else
-        begin
-          REXML::Document.new(::File.read(new_resource.config))
-        rescue REXML::ParseException
-          raise("#{new_resource} config `#{new_resource.config}` is not valid XML!")
-        end
+      raise("#{new_resource} must specify a configuration file!") if new_resource.config.nil?
+
+      raise("#{new_resource} config `#{new_resource.config}` does not exist!") unless ::File.exist?(new_resource.config)
+
+      begin
+        REXML::Document.new(::File.read(new_resource.config))
+      rescue REXML::ParseException
+        raise("#{new_resource} config `#{new_resource.config}` is not valid XML!")
       end
     end
 

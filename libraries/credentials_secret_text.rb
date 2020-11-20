@@ -23,7 +23,8 @@ require_relative 'credentials'
 
 class Chef
   class Resource::JenkinsSecretTextCredentials < Resource::JenkinsCredentials
-    resource_name :jenkins_secret_text_credentials
+    resource_name :jenkins_secret_text_credentials # Still needed for Chef 15 and below
+    provides :jenkins_secret_text_credentials
 
     # Chef attributes
     identity_attr :description
@@ -40,8 +41,6 @@ end
 
 class Chef
   class Provider::JenkinsSecretTextCredentials < Provider::JenkinsCredentials
-    use_inline_resources # ~FC113
-
     provides :jenkins_secret_text_credentials
 
     def load_current_resource
@@ -49,9 +48,7 @@ class Chef
 
       super
 
-      if current_credentials
-        @current_resource.secret(current_credentials[:secret])
-      end
+      @current_resource.secret(current_credentials[:secret]) if current_credentials
 
       @current_credentials
     end
@@ -63,7 +60,7 @@ class Chef
     # @see https://github.com/jenkinsci/plain-credentials-plugin/blob/master/src/main/java/org/jenkinsci/plugins/plaincredentials/impl/StringCredentialsImpl.java
     #
     def credentials_groovy
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import hudson.util.Secret;
         import com.cloudbees.plugins.credentials.CredentialsScope;
         import org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl;
@@ -81,7 +78,7 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#fetch_credentials_groovy
     #
     def fetch_existing_credentials_groovy(groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         #{credentials_for_secret_groovy(new_resource.secret, new_resource.description, groovy_variable_name)}
       EOH
     end
@@ -90,7 +87,7 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#resource_attributes_groovy
     #
     def resource_attributes_groovy(groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         #{groovy_variable_name} = [
           id:credentials.id,
           description:credentials.description,
@@ -115,7 +112,7 @@ class Chef
         secret: new_resource.secret,
       }
 
-      attribute_to_property_map.keys.each do |key|
+      attribute_to_property_map.each_key do |key|
         wanted_credentials[key] = new_resource.send(key)
       end
 

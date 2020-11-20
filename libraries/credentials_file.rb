@@ -26,6 +26,10 @@ require_relative 'credentials'
 class Chef
   class Resource::JenkinsFileCredentials < Resource::JenkinsCredentials
     include Jenkins::Helper
+
+    resource_name :jenkins_file_credentials # Still needed for Chef 15 and below
+    provides :jenkins_file_credentials
+
     attribute :description,
               kind_of: String,
               default: lazy { |new_resource| "Credentials for #{new_resource.filename} - created by Chef" }
@@ -42,7 +46,6 @@ end
 
 class Chef
   class Provider::JenkinsFileCredentials < Provider::JenkinsCredentials
-    use_inline_resources
     include Jenkins::Helper
     provides :jenkins_file_credentials
 
@@ -51,9 +54,7 @@ class Chef
 
       super
 
-      if current_credentials
-        @current_resource.filename(current_credentials[:filename])
-      end
+      @current_resource.filename(current_credentials[:filename]) if current_credentials
 
       @current_resource
     end
@@ -64,7 +65,7 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#save_credentials_groovy
     #
     def fetch_existing_credentials_groovy(groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         #{credentials_for_id_groovy(new_resource.id, groovy_variable_name)}
       EOH
     end
@@ -73,7 +74,7 @@ class Chef
     # @see Chef::Resource::JenkinsCredentials#resource_attributes_groovy
     #
     def resource_attributes_groovy(groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         #{groovy_variable_name} = [
           id:credentials.id,
           description:credentials.description,
@@ -91,7 +92,7 @@ class Chef
         filename: new_resource.filename,
       }
 
-      attribute_to_property_map.keys.each do |key|
+      attribute_to_property_map.each_key do |key|
         wanted_credentials[key] = new_resource.send(key)
       end
 
@@ -104,7 +105,7 @@ class Chef
     # @see https://github.com/jenkinsci/ssh-credentials-plugin/blob/master/src/main/java/com/cloudbees/jenkins/plugins/sshcredentials/impl/BasicSSHUserPrivateKey.java
     #
     def credentials_groovy
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import com.cloudbees.plugins.credentials.*
         import org.jenkinsci.plugins.plaincredentials.impl.*
 

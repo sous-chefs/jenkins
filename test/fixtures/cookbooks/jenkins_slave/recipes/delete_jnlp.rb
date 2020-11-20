@@ -1,10 +1,16 @@
-include_recipe 'jenkins_server_wrapper::default'
+jenkins_jnlp_slave 'jnlp-to-delete' do
+  remote_fs    '/tmp/jenkins/slaves/jnlp-to-delete'
+  service_name 'jnlp-to-delete'
+  user         'jnlp-to-delete'
+  group        'jnlp-to-delete'
 
-# Include the create recipe so we have something to delete
-include_recipe 'jenkins_slave::create_jnlp'
+  action :create
+end
 
-%w(builder executor smoke).each do |name|
-  jenkins_jnlp_slave name do
-    action :delete
-  end
+jenkins_jnlp_slave 'jnlp-to-delete' do
+  action :delete
+end
+
+jenkins_jnlp_slave 'jnlp-missing' do
+  action :delete
 end

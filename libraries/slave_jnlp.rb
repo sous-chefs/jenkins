@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,8 @@ require_relative 'slave'
 
 class Chef
   class Resource::JenkinsJnlpSlave < Resource::JenkinsSlave
-    resource_name :jenkins_jnlp_slave
+    resource_name :jenkins_jnlp_slave # Still needed for Chef 15 and below
+    provides :jenkins_jnlp_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline
@@ -37,12 +38,14 @@ class Chef
     attribute :service_name,
               kind_of: String,
               default: 'jenkins-slave'
+    attribute :runit_groups,
+              kind_of: Array,
+              default: ['jenkins']
   end
 end
 
 class Chef
   class Provider::JenkinsJnlpSlave < Provider::JenkinsSlave
-    use_inline_resources # ~FC113
     provides :jenkins_jnlp_slave
 
     def load_current_resource
@@ -59,7 +62,7 @@ class Chef
         action :create
       end
 
-      unless Chef::Platform.windows?
+      unless platform?('windows')
         declare_resource(:group, new_resource.group) do
           system(node['jenkins']['master']['use_system_accounts'])
         end
@@ -86,30 +89,15 @@ class Chef
         r.backup(false)
         r.mode('0755')
         r.atomic_update(false)
-        r.notifies :restart, "runit_service[#{new_resource.service_name}]" unless Chef::Platform.windows?
+        r.notifies :restart, "runit_service[#{new_resource.service_name}]" unless platform?('windows')
       end
 
       # The Windows's specific child class manages it's own service
-      return if Chef::Platform.windows?
+      return if platform?('windows')
 
       include_recipe 'runit'
 
-      declare_resource(:runit_service, new_resource.service_name).tap do |r|
-        # We need to use .tap() to access methods in the provider's scope.
-        r.cookbook('jenkins')
-        r.run_template_name('jenkins-slave')
-        r.log_template_name('jenkins-slave')
-        r.options(
-          service_name: new_resource.service_name,
-          jvm_options: new_resource.jvm_options,
-          user:        new_resource.user,
-          remote_fs:   new_resource.remote_fs,
-          java_bin:    java,
-          slave_jar:   slave_jar,
-          jnlp_url:    jnlp_url,
-          jnlp_secret: jnlp_secret
-        )
-      end
+      service_resource
     end
 
     action :delete do
@@ -146,7 +134,7 @@ class Chef
     #
     def jnlp_secret
       return @jnlp_secret if @jnlp_secret
-      json = executor.groovy! <<-EOH.gsub(/ ^{8}/, '')
+      json = executor.groovy! <<-EOH.gsub(/^ {8}/, '')
         output = [
           secret:jenkins.slaves.JnlpSlaveAgentProtocol.SLAVE_SECRET.mac('#{new_resource.slave_name}')
         ]
@@ -165,6 +153,26 @@ class Chef
     #
     def slave_jar_url
       @slave_jar_url ||= uri_join(endpoint, 'jnlpJars', 'slave.jar')
+    end
+
+    def service_resource
+      declare_resource(:runit_service, new_resource.service_name).tap do |r|
+        # We need to use .tap() to access methods in the provider's scope.
+        r.cookbook('jenkins')
+        r.run_template_name('jenkins-slave')
+        r.log_template_name('jenkins-slave')
+        r.options(
+          service_name: new_resource.service_name,
+          jvm_options: new_resource.jvm_options,
+          user: new_resource.user,
+          runit_groups: new_resource.runit_groups,
+          remote_fs: new_resource.remote_fs,
+          java_bin: java,
+          slave_jar: slave_jar,
+          jnlp_url: jnlp_url,
+          jnlp_secret: jnlp_secret
+        )
+      end
     end
 
     #

@@ -4,7 +4,7 @@
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ require_relative '_helper'
 
 class Chef
   class Resource::JenkinsSlave < Resource::LWRPBase
-    resource_name :jenkins_slave
+    resource_name :jenkins_slave # Still needed for Chef 15 and below
+    provides :jenkins_slave
 
     # Chef attributes
     identity_attr :slave_name
@@ -115,7 +116,6 @@ end
 class Chef
   class Provider::JenkinsSlave < Provider::LWRPBase
     provides :jenkins_slave
-    use_inline_resources # ~FC113
 
     include Jenkins::Helper
 
@@ -139,13 +139,6 @@ class Chef
       @current_resource
     end
 
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
-    end
-
     action :create do
       do_create
     end
@@ -161,7 +154,7 @@ class Chef
         Chef::Log.info("#{new_resource} exists - skipping")
       else
         converge_by("Create #{new_resource}") do
-          executor.groovy! <<-EOH.gsub(/ ^{12}/, '')
+          executor.groovy! <<-EOH.gsub(/^ {12}/, '')
             import hudson.model.*
             import hudson.slaves.*
             import jenkins.model.*
@@ -276,9 +269,7 @@ class Chef
       if current_resource.online?
         converge_by("Offline #{new_resource}") do
           command_pieces = [escape(new_resource.slave_name)]
-          if new_resource.offline_reason
-            command_pieces << "-m '#{escape(new_resource.offline_reason)}'"
-          end
+          command_pieces << "-m '#{escape(new_resource.offline_reason)}'" if new_resource.offline_reason
           executor.execute!('offline-node', command_pieces)
         end
       else
@@ -329,7 +320,7 @@ class Chef
         launcher_attributes << "current_slave['#{resource_attribute}'] = #{groovy_property}"
       end
 
-      json = executor.groovy! <<-EOH.gsub(/ ^{8}/, '')
+      json = executor.groovy! <<-EOH.gsub(/^ {8}/, '')
         import hudson.model.*
         import hudson.slaves.*
         import jenkins.model.*
@@ -376,7 +367,7 @@ class Chef
         println(builder)
       EOH
 
-      return nil if json.nil? || json.empty?
+      return if json.nil? || json.empty?
 
       @current_slave = JSON.parse(json, symbolize_names: true)
 
@@ -393,14 +384,14 @@ class Chef
     #
     def correct_config?
       wanted_slave = {
-        name:         new_resource.slave_name,
-        description:  new_resource.description,
-        remote_fs:    new_resource.remote_fs,
-        executors:    new_resource.executors,
-        usage_mode:   new_resource.usage_mode,
-        labels:       new_resource.labels.sort,
+        name: new_resource.slave_name,
+        description: new_resource.description,
+        remote_fs: new_resource.remote_fs,
+        executors: new_resource.executors,
+        usage_mode: new_resource.usage_mode,
+        labels: new_resource.labels.sort,
         availability: new_resource.availability,
-        environment:  new_resource.environment,
+        environment: new_resource.environment,
       }
 
       if new_resource.availability.to_s == 'demand'
@@ -408,7 +399,7 @@ class Chef
         wanted_slave[:idle_delay] = new_resource.idle_delay
       end
 
-      attribute_to_property_map.keys.each do |key|
+      attribute_to_property_map.each_key do |key|
         wanted_slave[key] = new_resource.send(key)
       end
 

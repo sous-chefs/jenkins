@@ -14,60 +14,77 @@ provisioner:
   name: chef_zero
   data_path: test/fixtures/keys
   data_bags_path: test/fixtures/data_bags
+  chef_license: accept
   attributes:
     jenkins:
       master:
         host: localhost
         install_method: war
         mirror: https://updates.jenkins.io
+        runit:
+          sv_timeout: 30
+        # This is to help slaves to connect to the master
+        # Sometimes with slow performance the connection is dropped/cut too early
+        # 30 seconds was too low, so I bumped it to 5 minutes
+        # https://issues.jenkins-ci.org/browse/JENKINS-38623
+        jenkins_args: '--httpKeepAliveTimeout=300000'
 
 platforms:
   - name: amazonlinux
     driver_config:
       box: mvbcoding/awslinux
+  - name: amazonlinux-2
   - name: centos-6
   - name: centos-7
-  - name: debian-8
   - name: debian-9
-  - name: ubuntu-14.04
+  - name: debian-10
   - name: ubuntu-16.04
+  - name: ubuntu-18.04
   - name: windows-2012r2
     driver:
-      box: chef/windows-server-2012r2-standard # private box
+      box: tas50/windows_2012r2
   - name: windows-2016
     driver:
-      box: chef/windows-server-2016-standard # private box
+      box: tas50/windows_2016
+  - name: windows-2019
+    driver:
+      box: tas50/windows_2019
+
+verifier:
+  name: inspec
 
 suites:
   #
   # Smoke suite
   #
   - name: smoke_package_stable
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     excludes:
-      - ubuntu-14.04
       - windows-2012r2
       - windows-2016
+      - windows-2019
 
   - name: smoke_package_current
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
           channel: current
     excludes:
-      - ubuntu-14.04
       - windows-2012r2
       - windows-2016
+      - windows-2019
+
   - name: smoke_war_stable
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
           install_method: war
           source: https://updates.jenkins.io/stable/latest/jenkins.war
+
   - name: smoke_war_latest
-    run_list: jenkins_server_wrapper::default
+    run_list: jenkins_smoke::default
     attributes:
       jenkins:
         master:
@@ -77,91 +94,22 @@ suites:
   #
   # Authentication suites
   #
-  - name: authentication_private_key
+  - name: authentication_private_key # Tested in smoke suite
     run_list: jenkins_authentication::private_key
+
   - name: authentication_username_password
     run_list: jenkins_authentication::username_password
-
-  #
-  # Command suites
-  #
-  - name: jenkins_command_execute
-    run_list: jenkins_command::execute
-
-  #
-  # Credentials suites
-  #
-  - name: jenkins_credentials_create
-    run_list: jenkins_credentials::create
-  - name: jenkins_credentials_delete
-    run_list: jenkins_credentials::delete
-
-  #
-  # Job suites
-  #
-  - name: jenkins_job_create
-    run_list:
-      - jenkins_job::create
-      - jenkins_job::create_folder
-  - name: jenkins_job_delete
-    run_list: jenkins_job::delete
-  - name: jenkins_job_disable
-    run_list: jenkins_job::disable
-  - name: jenkins_job_enable
-    run_list: jenkins_job::enable
-  - name: jenkins_job_build
-    run_list: jenkins_job::build
-
-  #
-  # Script suites
-  #
-  - name: jenkins_script
-    run_list: jenkins_script::execute
-
-  #
-  # Plugin suites
-  #
-  - name: jenkins_plugin_disable
-    run_list: jenkins_plugin::disable
-  - name: jenkins_plugin_enable
-    run_list: jenkins_plugin::enable
-  - name: jenkins_plugin_install
-    run_list: jenkins_plugin::install
-  - name: jenkins_plugin_uninstall
-    run_list: jenkins_plugin::uninstall
+    excludes:
+      - windows-2012r2
+      - windows-2016
+      - windows-2019
 
   #
   # Proxy suites
+  # Cannot be tested together
+  # As the proxy settings are global
   #
-  - name: jenkins_proxy_config
+  - name: jenkins_proxy_config # Tested in smoke suite
     run_list: jenkins_proxy::config
   - name: jenkins_proxy_remove
     run_list: jenkins_proxy::remove
-
-  #
-  # Slave suites
-  #
-  - name: jenkins_slave_create
-    run_list:
-      - jenkins_slave::create_jnlp
-      - jenkins_slave::create_ssh
-  - name: jenkins_slave_delete
-    run_list:
-      - jenkins_slave::delete_jnlp
-      - jenkins_slave::delete_ssh
-  - name: jenkins_slave_connect
-    run_list: jenkins_slave::connect
-  - name: jenkins_slave_disconnect
-    run_list: jenkins_slave::disconnect
-  - name: jenkins_slave_online
-    run_list: jenkins_slave::online
-  - name: jenkins_slave_offline
-    run_list: jenkins_slave::offline
-
-  #
-  # User suites
-  #
-  - name: jenkins_user_create
-    run_list: jenkins_user::create
-  - name: jenkins_user_delete
-    run_list: jenkins_user::delete

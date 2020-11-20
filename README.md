@@ -14,7 +14,7 @@ Installs and configures Jenkins CI master & node slaves. Resource providers to s
 
 ### Chef
 
-- Chef 12.14+
+- Chef 13.0+
 
 ### Cookbooks
 
@@ -427,31 +427,23 @@ This resource manages Jenkins plugins.
 
 This uses the Jenkins CLI to install plugins. By default, it does a cold deploy, meaning the plugin is installed while Jenkins is still running. Some plugins may require you restart the Jenkins instance for their changed to take affect.
 
-- **A plugin's dependencies are also installed by default, this behavior can be disabled by setting the `install_deps` attribute to `false`.**
-- **This resource does not install plugin dependencies from a a given hpi/jpi URL - you must specify all plugin dependencies or Jenkins may not startup correctly!**
+- **This resource does not install plugin dependencies from a a given hpi/jpi URL or a specific version - you must specify all plugin dependencies or Jenkins may not startup correctly!**
 
 The `:install` action idempotently installs a Jenkins plugin on the current node. The name attribute corresponds to the name of the plugin on the Jenkins Update Center. You can also specify a particular version of the plugin to install. Finally, you can specify a full source URL or local path (on the node) to a plugin.
 
 ```ruby
-# Install the latest version of the greenballs plugin
+# Install the latest version of the greenballs plugin and all dependencies
 jenkins_plugin 'greenballs'
 
-# Install version 1.3 of the greenballs plugin
+# Install version 1.3 of the greenballs plugin and no dependencies
 jenkins_plugin 'greenballs' do
   version '1.3'
 end
 
-# Install a plugin from a given hpi (or jpi)
+# Install a plugin from a given hpi (or jpi) and no dependencies
 jenkins_plugin 'greenballs' do
   source 'http://updates.jenkins-ci.org/download/plugins/greenballs/1.10/greenballs.hpi'
 end
-
-# Don't install a plugins dependencies
-jenkins_plugin 'github-oauth' do
-  install_deps false
-end
-`
-`
 ```
 
 Depending on the plugin, you may need to restart the Jenkins instance for the plugin to take affect:
@@ -561,6 +553,9 @@ jenkins_jnlp_slave 'smoke' do
   in_demand_delay 1
   idle_delay      3
   labels          ['runner', 'fast']
+
+  # User's groups to be configured with the runit service.
+  runit_groups    ['jenkins', 'docker']
 end
 
 # Create a slave with a full environment

@@ -9,8 +9,8 @@ jenkins_plugin 'disk-usage' do
 end
 
 # Test installing a specific version with abnormal versioning
-jenkins_plugin 'apache-httpcomponents-client-4-api' do
-  version '4.5.3-2.0'
+jenkins_plugin 'nexus-jenkins-plugin' do
+  version '3.4.20190116-104331.e820fec'
 end
 
 # Test installing from a URL
@@ -20,17 +20,28 @@ end
 
 # Install a plugin with many deps
 jenkins_plugin 'github-oauth' do
-  install_deps true
+  install_deps true # TODO: remove with next major version release
 end
 
-# Skip this plugins deps
-jenkins_plugin 'jquery-ui' do
-  install_deps false
+# plugin to disable
+jenkins_plugin 'ansicolor' do
+  action :install
+end
+
+# plugin to enable
+jenkins_plugin 'jira-trigger' do
+  action :install
+end
+
+# plugin to uninstall
+jenkins_plugin 'confluence-publisher' do
+  action :install
 end
 
 # Install with a wacky version number
 jenkins_plugin 'build-monitor-plugin' do
   version '1.6+build.135'
-  install_deps true
+
+  action :install
   notifies :restart, 'service[jenkins]', :immediately
 end

@@ -4,7 +4,7 @@
 #
 # Author:: Stephan Linz <linz@li-pro.net>
 #
-# Copyright 2014, Li-Pro.Net
+# Copyright:: 2014-2019, Li-Pro.Net
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,7 +26,8 @@ require_relative '_params_validate'
 
 class Chef
   class Resource::JenkinsProxy < Resource::LWRPBase
-    resource_name :jenkins_proxy
+    resource_name :jenkins_proxy # Still needed for Chef 15 and below
+    provides :jenkins_proxy
 
     # Chef attributes
     identity_attr :proxy
@@ -73,13 +74,6 @@ class Chef
       end
 
       @current_resource
-    end
-
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
     end
 
     action(:config) do
@@ -170,7 +164,7 @@ class Chef
         println(builder)
       EOH
 
-      return nil if json.nil? || json.empty?
+      return if json.nil? || json.empty?
 
       @current_proxy = JSON.parse(json, symbolize_names: true)
       @current_proxy

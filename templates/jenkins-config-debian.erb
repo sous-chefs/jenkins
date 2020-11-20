@@ -27,13 +27,17 @@ JENKINS_WAR=/usr/share/jenkins/jenkins.war
 # jenkins home location
 JENKINS_HOME=<%= node['jenkins']['master']['home'] %>
 
-# set this to false if you don't want Hudson to run by itself
+# set this to false if you don't want Jenkins to run by itself
 # in this set up, you are expected to provide a servlet container
 # to host jenkins.
 RUN_STANDALONE=true
 
 # log location.  this may be a syslog facility.priority
 JENKINS_LOG=<%= node['jenkins']['master']['log_directory'] %>/$NAME.log
+
+# Whether to enable web access logging or not.
+# Set to "yes" to enable logging to /var/log/$NAME/access_log
+JENKINS_ENABLE_ACCESS_LOG="<%= node['jenkins']['master']['access_log'] %>"
 
 # OS LIMITS SETUP
 #   comment this out to observe /etc/security/limits.conf
@@ -49,7 +53,7 @@ HTTP_LISTEN_ADDRESS="<%= node['jenkins']['master']['listen_address'] %>"
 HTTP_PORT=<%= node['jenkins']['master']['port'] %>
 
 # port for AJP connector (disabled by default)
-AJP_PORT=-1
+AJP_PORT=<%= node['jenkins']['master']['ajp_port'] %>
 
 # servlet context, important if you want to use apache proxying
 PREFIX=/jenkins
@@ -68,3 +72,10 @@ JENKINS_ARGS="--webroot=/var/cache/jenkins/war --httpListenAddress=$HTTP_LISTEN_
 <% if node['jenkins']['master']['jenkins_args'] %>
 JENKINS_ARGS="$JENKINS_ARGS <%= node['jenkins']['master']['jenkins_args'] %>"
 <% end %>
+
+##
+## Extra variables
+##
+<% node['jenkins']['master']['extra_variables'].each do |name, value| -%>
+export <%= name %>="<%= value %>"
+<% end -%>

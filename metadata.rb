@@ -3,10 +3,8 @@ maintainer       'Chef Software, Inc.'
 maintainer_email 'cookbooks@chef.io'
 license          'Apache-2.0'
 description      'Installs and configures Jenkins CI master & slaves'
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '6.2.0'
 
-recipe 'jenkins::master', 'Installs a Jenkins master'
+version          '8.0.2'
 
 %w(ubuntu debian redhat centos scientific oracle amazon).each do |os|
   supports os
@@ -17,4 +15,5 @@ depends 'dpkg_autostart'
 
 source_url 'https://github.com/chef-cookbooks/jenkins'
 issues_url 'https://github.com/chef-cookbooks/jenkins/issues'
-chef_version '>= 12.14'
+
+chef_version '>= 13.0'

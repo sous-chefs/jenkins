@@ -4,7 +4,7 @@
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -41,13 +41,13 @@ Jenkins can fail to start if:
   - a plugin's dependencies are not installed
 
 If this problem persists, check your Jenkins log files.
-EOH
+        EOH
       end
     end
 
     # Matches Version 4 UUID per RFC 4122
     # Example: 38537014-ec66-49b5-aff2-aed1c19e2989
-    UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/ unless defined?(UUID_REGEX)
+    UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/.freeze unless defined?(UUID_REGEX)
 
     #
     # Helper method for creating an accessing a new {Jenkins::Executor} from
@@ -98,12 +98,12 @@ EOH
     # to an instance of the credentials represented by `username`.
     # Returns the Groovy `null` if no credentials are found.
     #
-    # @param [String] username
+    # @param [String] id
     # @param [String] groovy_variable_name
     # @return [String]
     #
     def credentials_for_id_groovy(id, groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import jenkins.model.*
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.plugins.credentials.common.*
@@ -137,7 +137,7 @@ EOH
     # @return [String]
     #
     def credentials_for_secret_groovy(secret, description, groovy_variable_name)
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         import jenkins.model.Jenkins;
         import hudson.util.Secret;
         import com.cloudbees.plugins.credentials.CredentialsProvider
@@ -232,7 +232,7 @@ EOH
       require 'win32ole'
       wmi = ::WIN32OLE.connect('winmgmts://')
       result = wmi.ExecQuery(wmi_query)
-      return nil unless result.each.count > 0
+      return unless result.each.count > 0
       result.each.next.send(wmi_property)
     end
 
@@ -246,15 +246,15 @@ EOH
     #   the path to the private key on disk
     #
     def private_key_path
-      node.run_state[:jenkins_private_key_path] ||= begin # ~FC001
+      node.run_state[:jenkins_private_key_path] ||= begin
         # @todo remove in 3.0.0
         if node['jenkins']['executor']['private_key']
           Chef::Log.warn("Using node['jenkins']['executor']['private_key'] is deprecated!")
           Chef::Log.warn('Persisting sensitive information in node attributes is not recommended.')
-          node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key'] # ~FC001
+          node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key']
         end
 
-        content = node.run_state[:jenkins_private_key] # ~FC001
+        content = node.run_state[:jenkins_private_key]
         destination = File.join(Chef::Config[:file_cache_path], 'jenkins-key')
 
         file = Chef::Resource::File.new(destination, run_context)
@@ -278,7 +278,7 @@ EOH
     def private_key_given?
       # @todo remove in 3.0.0
       !node['jenkins']['executor']['private_key'].nil? ||
-        !node.run_state[:jenkins_private_key].nil? # ~FC001
+        !node.run_state[:jenkins_private_key].nil?
     end
 
     #
@@ -331,7 +331,7 @@ EOH
     # @return [String]
     #
     def username
-      node.run_state[:jenkins_username] # ~FC001
+      node.run_state[:jenkins_username]
     end
 
     #
@@ -340,7 +340,7 @@ EOH
     # @return [String]
     #
     def password
-      node.run_state[:jenkins_password] # ~FC001
+      node.run_state[:jenkins_password]
     end
 
     #
@@ -453,7 +453,7 @@ EOH
     # unavailable or is not accepting requests.
     #
     def ensure_cli_present!
-      node.run_state[:jenkins_cli_present] ||= begin # ~FC001
+      node.run_state[:jenkins_cli_present] ||= begin
         source = uri_join(endpoint, 'jnlpJars', 'jenkins-cli.jar')
         remote_file = Chef::Resource::RemoteFile.new(cli, run_context)
         remote_file.source(source)
@@ -470,7 +470,7 @@ EOH
     # server. This is needed to be able to install plugins through the update-center.
     #
     def ensure_update_center_present!
-      node.run_state[:jenkins_update_center_present] ||= begin # ~FC001
+      node.run_state[:jenkins_update_center_present] ||= begin
         source = uri_join(node['jenkins']['master']['mirror'], node['jenkins']['master']['channel'], 'update-center.json')
         remote_file = Chef::Resource::RemoteFile.new(update_center_json, run_context)
         remote_file.source(source)
@@ -500,9 +500,7 @@ EOH
         # Setting sensitive(true) will suppress the long diff output, but this
         # functionality is not available in older versions of Chef, so we need
         # check if the resource responds to the method before calling it.
-        if extracted_json_file.respond_to?(:sensitive)
-          extracted_json_file.sensitive(true)
-        end
+        extracted_json_file.sensitive(true) if extracted_json_file.respond_to?(:sensitive)
 
         extracted_json_file.mode('0644')
         extracted_json_file.run_action(:create)
