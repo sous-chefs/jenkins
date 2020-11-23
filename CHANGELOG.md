@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
-## Unreleased
+## 8.0.3 - *2020-11-23*
 
 - Remove touch command run as root from .war-based service definition - [@davidsainty](https://github.com/davidsainty)
 
