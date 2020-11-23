@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- Remove touch command run as root from .war-based service definition - [@davidsainty](https://github.com/davidsainty)
+
 ## 8.0.2 (2020-09-14)
 
 - jenkins_job: Dont quote param unnecessarily - [@mbaitelman](https://github.com/mbaitelman)
