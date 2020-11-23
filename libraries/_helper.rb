@@ -232,7 +232,7 @@ If this problem persists, check your Jenkins log files.
       require 'win32ole'
       wmi = ::WIN32OLE.connect('winmgmts://')
       result = wmi.ExecQuery(wmi_query)
-      return nil unless result.each.count > 0
+      return unless result.each.count > 0
       result.each.next.send(wmi_property)
     end
 

@@ -191,7 +191,7 @@ view must first exist on the Jenkins master!
         GROOVY
 
       response = executor.groovy!(get_view_as_json)
-      return nil if response.nil?
+      return if response.nil?
 
       Chef::Log.debug "Parse #{new_resource} as JSON"
       @current_view = JSON.parse(response, object_class: Mash)

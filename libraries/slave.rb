@@ -367,7 +367,7 @@ class Chef
         println(builder)
       EOH
 
-      return nil if json.nil? || json.empty?
+      return if json.nil? || json.empty?
 
       @current_slave = JSON.parse(json, symbolize_names: true)
 

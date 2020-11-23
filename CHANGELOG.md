@@ -2,6 +2,16 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
+## 8.0.2 (2020-09-14)
+
+- jenkins_job: Dont quote param unnecessarily - [@mbaitelman](https://github.com/mbaitelman)
+
+## 8.0.1 (2020-08-27)
+
+- Remove .NET 2.0 from the Windows nodes as this is no longer supported by Jenkins- [@mbaitelman](https://github.com/mbaitelman)
+
 ## 8.0.0 (2020-07-14)
 
 - Fixed groovy indentation errors in the generated code
