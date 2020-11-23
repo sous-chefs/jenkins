@@ -2,6 +2,8 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
 ## 8.0.2 (2020-09-14)
 
 - jenkins_job: Dont quote param unnecessarily - [@mbaitelman](https://github.com/mbaitelman)
