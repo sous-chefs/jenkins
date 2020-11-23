@@ -10,7 +10,6 @@
 <% groups = ([node['jenkins']['master']['user']] + node['jenkins']['master']['runit']['groups']).join(':') %>
 exec 2>&1
 cd <%= node['jenkins']['master']['home'] %>
-touch jenkins.start
 <% limits = node['jenkins']['master']['ulimits'] %>
 <% if limits && !limits.empty? %>
 ulimit <% limits.each { |option, value| %>-<%= option %> <%= value %> <% } %>
