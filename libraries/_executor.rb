@@ -104,6 +104,8 @@ module Jenkins
           retry
         elsif (exitstatus == 255) && (stderr =~ /^"--username" is not a valid option/)
           command.reject! { |c| c =~ /--username|--password/ }
+        elsif (exitstatus == 255) && (stderr =~ /java.io.IOException: Server returned HTTP response code: 401/)
+          command.reject! { |c| c =~ /-auth/ }
           retry
         end
         raise

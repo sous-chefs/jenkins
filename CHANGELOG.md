@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- Retry jenkins CLI command without authenticating after receiving an HTTP 401. - [@nuclearsandwich](https://github.com/nuclearsandwich)
+
 ## 8.0.3 - *2020-11-23*
 
 - Remove touch command run as root from .war-based service definition - [@davidsainty](https://github.com/davidsainty)
