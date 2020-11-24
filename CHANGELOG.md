@@ -2,6 +2,8 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
 ## 8.0.4 - *2020-11-24*
 
 - Retry jenkins CLI command without authenticating after receiving an HTTP 401. - [@nuclearsandwich](https://github.com/nuclearsandwich)
