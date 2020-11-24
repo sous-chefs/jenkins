@@ -4,7 +4,7 @@ maintainer_email 'cookbooks@chef.io'
 license          'Apache-2.0'
 description      'Installs and configures Jenkins CI master & slaves'
 
-version          '8.0.3'
+version          '8.0.4'
 
 %w(ubuntu debian redhat centos scientific oracle amazon).each do |os|
   supports os
