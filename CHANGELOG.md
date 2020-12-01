@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- Fix the implementation of the cli user/password authentication method - [@ddegoede](https://github.com/ddegoede)
+
 ## 8.0.4 - *2020-11-24*
 
 - Retry jenkins CLI command without authenticating after receiving an HTTP 401. - [@nuclearsandwich](https://github.com/nuclearsandwich)
@@ -22,7 +24,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## 8.0.0 (2020-07-14)
 
-- Fixed groovy indentation errors in the generated code
+- Fixed groovy indentation errors in the generated code - [@ddegoede](https://github.com/ddegoede)
 - Set default CLI protocol attribute to http now that remoting is deprecated in newer Jenkins releases - [@rjbaker](https://github.com/rjbaker)
 - Adding support for SSH Slaves/SSH Build Agents plugin version >= 1.30 - [@joemillerr](https://github.com/joemillerr)
 - Added attribute value for directory mode for jenkins directories
