@@ -52,9 +52,9 @@ describe Jenkins::Executor do
     context 'when a :cli_username option is given' do
       context 'when a :cli_password option is given' do
         it 'adds -auth option' do
-          subject.options[:username] = 'user'
-          subject.options[:password] = 'password'
-          command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -auth "user":"password" foo)
+          subject.options[:cli_username] = 'user'
+          subject.options[:cli_password] = 'password'
+          command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -auth user:password foo)
           expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
           subject.execute!('foo')
         end
