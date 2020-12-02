@@ -4,6 +4,8 @@ module Jenkins
       def jenkins_font_packages
         if platform_family?('rhel', 'amazon')
           %w(dejavu-sans-fonts fontconfig)
+        elsif platform_family?('debian')
+          %w(fonts-dejavu-core fontconfig)
         end
       end
     end
