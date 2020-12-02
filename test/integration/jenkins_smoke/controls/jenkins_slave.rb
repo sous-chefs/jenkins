@@ -2,9 +2,8 @@
 
 title 'Jenkins Slaves'
 
-# Note:
-# Testing that slaves are connected and/or online is prone to failure
-# due to slow performance, different virtualization, etc
+# NOTE: Testing that slaves are connected and/or online is prone to failure due
+# to slow performance, different virtualization, etc
 
 control 'jenkins_slave-1.0' do
   impact 0.7
