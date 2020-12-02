@@ -59,6 +59,10 @@ suites:
   #
   - name: smoke_package_stable
     run_list: jenkins_smoke::default
+    attributes:
+      jenkins:
+        master:
+          install_method: package
     excludes:
       - windows-2012r2
       - windows-2016
@@ -70,6 +74,7 @@ suites:
       jenkins:
         master:
           channel: current
+          install_method: package
     excludes:
       - windows-2012r2
       - windows-2016
