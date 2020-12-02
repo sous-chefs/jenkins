@@ -19,6 +19,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - MDL fixes
 - Fix deprecation warnings
 - Cookstyle fixes
+- Install missing font packages
 
 ### Removed
 

@@ -42,6 +42,8 @@ when 'rhel', 'amazon'
   end
 end
 
+package jenkins_font_packages
+
 package 'jenkins' do
   version node['jenkins']['master']['version']
 end
