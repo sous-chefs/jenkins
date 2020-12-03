@@ -77,7 +77,8 @@ module Jenkins
       command << %(-user "#{options[:cli_user]}")        if options[:cli_user]
       command << %(-i "#{options[:key]}")                if options[:key]
       command << %(-p #{uri_escape(options[:proxy])})    if options[:proxy]
-      command << %(-auth #{options[:cli_username]}:#{options[:cli_password]}) if options[:cli_username] && options[:cli_password]
+      command << %(-auth #{options[:cli_username]}:#{options[:cli_apitoken]}) if options[:cli_username] && options[:cli_apitoken]
+      command << %(-auth @#{options[:cli_credential_file]}) if options[:cli_credential_file]
       command.push(pieces)
 
       begin
