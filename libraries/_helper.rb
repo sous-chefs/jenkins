@@ -75,7 +75,8 @@ If this problem persists, check your Jenkins log files.
         h[:protocol] = protocol unless protocol.nil?
         h[:cli_user] = cli_user unless cli_user.nil?
         h[:cli_username] = cli_username unless cli_username.nil?
-        h[:cli_password] = cli_password unless cli_password.nil?
+        h[:cli_apitoken] = cli_apitoken unless cli_apitoken.nil?
+        h[:cli_credential_file] = cli_credential_file unless cli_credential_file.nil?
       end
 
       Jenkins::Executor.new(options)
@@ -376,7 +377,7 @@ If this problem persists, check your Jenkins log files.
 
     #
     # CLI user to pass to cli
-    # ssh protocol or http protocol needs it
+    # used with the ssh protocol
     #
     # @return [String]
     #
@@ -386,6 +387,9 @@ If this problem persists, check your Jenkins log files.
 
     #
     # cli_username to pass to cli
+    # used with the http protocol
+    # is used together with the cli_apitoken
+    # cannot be used in combination with the cli_credential_file
     #
     # @return [String]
     #
@@ -394,12 +398,26 @@ If this problem persists, check your Jenkins log files.
     end
 
     #
-    # password to pass to cli
+    # cli_apitoken to pass to cli
+    # used with the http protocol
+    # is used together with the cli_username
+    # cannot be used in combination with the cli_credential_file
     #
     # @return [String]
     #
-    def cli_password
-      node['jenkins']['executor']['cli_password']
+    def cli_apitoken
+      node['jenkins']['executor']['cli_apitoken']
+    end
+
+    #
+    # cli_credential_file to pass to cli
+    # used with the http protocol
+    # is used as an alternative for the cli_username and cli_apitoken combination
+    #
+    # @return [String]
+    #
+    def cli_credential_file
+      node['jenkins']['executor']['cli_credential_file']
     end
 
     #

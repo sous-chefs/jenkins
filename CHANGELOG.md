@@ -4,6 +4,9 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- Changed the cli_password option to cli_apitoken option as it is not a password - [@ddegoede](https://github.com/ddegoede)
+- Added option for authentication through a cli_credential_file - [@ddegoede](https://github.com/ddegoede)
+
 ## 9.0.0 - *2021-07-19*
 
 - Remove runit dependency

@@ -27,7 +27,8 @@ end
 
 # Set the username/password on the executor. You should pull these from
 # a secret store or encrypted data bag item.
-node.run_state[:jenkins_username] = 'vagrant'
+node.run_state[:jenkins_protocol] = 'ssh'
+node.run_state[:jenkins_cli_username] = 'vagrant'
 node.run_state[:jenkins_password] = 'vagrant'
 
 jenkins_plugin 'pam-auth' do

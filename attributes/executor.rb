@@ -57,7 +57,16 @@ default['jenkins']['executor'].tap do |executor|
   executor['protocol'] = 'http'
 
   #
-  # CLI user to pass for ssh/https protocol
+  # When using the ssh protocol the CLI user is required
   #
   # executor['cli_user'] = 'example_chef_user'
+
+  #
+  # When using the http protocol there are two authentication
+  # CLI username and apitoken combination is required
+  # or a CLI credential file is required
+  #
+  # executor['cli_username'] = 'example_chef_user'
+  # executor['cli_apitoken'] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+  # executor['cli_credential_file'] = '/path/to/credential_file'
 end
