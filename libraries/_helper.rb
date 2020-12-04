@@ -538,6 +538,10 @@ If this problem persists, check your Jenkins log files.
         http.use_ssl = true if uri.scheme == 'https'
         http.post(uri.path, extracted_json, headers)
 
+        # Allow updates to quiesce in Jenkins so that we don't run into issues
+        # with plugin installations which may happen directly after this.
+        sleep 5
+
         true
       end
     end
