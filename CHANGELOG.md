@@ -3,28 +3,20 @@
 This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
-
-### Changed
-
 - Sous Chefs Adoption
 - Update Changelog to Sous Chefs
 - Update to use Sous Chefs GH workflow
 - Update README to sous-chefs
 - Update metadata.rb to Sous Chefs
 - Update test-kitchen to Sous Chefs
-
-### Fixed
-
 - Yamllint fixes
 - MDL fixes
 - Fix deprecation warnings
 - Cookstyle fixes
 - Install missing font packages
-
-### Removed
-
 - Remove Amazon Linux 1 testing
 - Remove EL 6 testing
+- Allow anonymous admin access during testing
 
 ## 8.1.0 - *2020-12-01*
 

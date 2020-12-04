@@ -12,6 +12,7 @@ jenkins_plugins = %w(
   jdk-tool
   display-url-api
   credentials
+  matrix-auth
 )
 
 jenkins_plugins.each do |plugin|
