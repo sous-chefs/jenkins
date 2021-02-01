@@ -18,6 +18,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Remove Amazon Linux 1 testing
 - Remove EL 6 testing
 - Allow anonymous admin access during testing
+- Add MAXOPENFILES to RHEL systems
 
 ## 8.1.0 - *2020-12-01*
 
