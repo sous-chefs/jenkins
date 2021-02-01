@@ -18,4 +18,3 @@ supports 'ubuntu'
 
 depends 'runit', '>= 1.7'
 depends 'dpkg_autostart'
-
