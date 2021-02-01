@@ -87,6 +87,9 @@ suites:
         master:
           install_method: war
           source: https://updates.jenkins.io/stable/latest/jenkins.war
+    verifier:
+      inputs:
+        service_type: 'runit'
 
   - name: smoke_war_latest
     run_list: jenkins_smoke::default
@@ -95,6 +98,9 @@ suites:
         master:
           install_method: war
           source: https://updates.jenkins.io/latest/jenkins.war
+    verifier:
+      inputs:
+        service_type: 'runit'
 
   #
   # Authentication suites

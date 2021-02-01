@@ -5,6 +5,7 @@
 class JenkinsBuild < Inspec.resource(1)
   require 'json'
   require 'net/http'
+  require 'inspec/resources/http'
 
   name 'jenkins_build'
 
