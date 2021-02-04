@@ -78,7 +78,8 @@ module Jenkins
       command << %(-i "#{options[:key]}")                if options[:key]
       command << %(-p #{uri_escape(options[:proxy])})    if options[:proxy]
       command << %(-auth #{options[:cli_username]}:#{options[:cli_password]}) if options[:cli_username] && options[:cli_password]
-      command.push(pieces)
+      command << %(-auth "#{options[:username]}":"#{options[:password]}") if options[:username] && options[:password]
+      command.push(*pieces)
 
       begin
         cmd = Mixlib::ShellOut.new(command.join(' '), command_options.merge(timeout: options[:timeout]))
