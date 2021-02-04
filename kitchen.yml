@@ -19,7 +19,7 @@ provisioner:
     jenkins:
       master:
         host: localhost
-        install_method: war
+        install_method: package
         mirror: https://updates.jenkins.io
         runit:
           sv_timeout: 30
