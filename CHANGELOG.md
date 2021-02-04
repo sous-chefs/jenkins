@@ -5,18 +5,10 @@ This file is used to list changes made in each version of the jenkins cookbook.
 ## Unreleased
 
 - Sous Chefs Adoption
-- Update Changelog to Sous Chefs
-- Update to use Sous Chefs GH workflow
-- Update README to sous-chefs
-- Update metadata.rb to Sous Chefs
-- Update test-kitchen to Sous Chefs
-- Yamllint fixes
-- MDL fixes
 - Fix deprecation warnings
 - Cookstyle fixes
 - Install missing font packages
-- Remove Amazon Linux 1 testing
-- Remove EL 6 testing
+- Remove Amazon Linux 1 and EL 6 testing
 - Allow anonymous admin access during testing
 - Add MAXOPENFILES to RHEL systems
 
