@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
-## Unreleased
+## 8.2.0 - *2021-02-08*
 
 - Sous Chefs Adoption
 - Fix deprecation warnings
