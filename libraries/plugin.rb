@@ -260,6 +260,7 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
                 remote_plugin_data['url'].gsub!(latest_version.to_s, desired_version(plugin_name, plugin_version).to_s)
               end
       end
+      ensure_update_center_present!
       executor.execute!('install-plugin', escape(test ? url : plugin_name), opts[:cli_opts])
     end
 

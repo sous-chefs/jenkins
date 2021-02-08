@@ -101,9 +101,8 @@ ruby_block 'wait for jenkins to start' do
         raise "slave: #{slave} isn't online" if json_body[:offline]
       end
 
-      # Note:
-      # Testing that slaves are connected and/or online is prone to failure
-      # due to slow performance, different virtualization, etc
+      # NOTE: Testing that slaves are connected and/or online is prone to
+      # failure due to slow performance, different virtualization, etc
     rescue StandardError
       # re-raise exceptions so that the ruby_block triggers a retry
       raise

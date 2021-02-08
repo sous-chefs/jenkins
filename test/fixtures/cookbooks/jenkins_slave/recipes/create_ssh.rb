@@ -28,7 +28,7 @@ require 'openssl'
 require 'net/ssh'
 key = OpenSSL::PKey::RSA.new(jenkins_user_data['private_key'])
 private_key = key.to_pem
-public_key  = "#{key.ssh_type} #{[key.to_blob].pack('m0')}"
+public_key = "#{key.ssh_type} #{[key.to_blob].pack('m0')}"
 
 user 'jenkins-ssh-key' do
   home     '/home/jenkins-ssh-key'
@@ -52,7 +52,7 @@ end
 #########################################################################
 # CREDENTIALS
 #########################################################################
-credentials = jenkins_private_key_credentials 'jenkins-ssh-key' do
+jenkins_private_key_credentials 'jenkins-ssh-key' do
   id '38537014-ec66-49b5-aff2-aed1c19e2989'
   private_key private_key
 end
@@ -75,7 +75,7 @@ jenkins_ssh_slave 'ssh-builder' do
   java_path   '/usr/bin/java'
   # SSH specific attributes
   host        'localhost'
-  credentials credentials
+  credentials '38537014-ec66-49b5-aff2-aed1c19e2989'
   launch_timeout   node['jenkins_slave']['launch_timeout']
   ssh_retries      5
   ssh_wait_retries 60

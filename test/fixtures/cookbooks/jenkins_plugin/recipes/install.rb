@@ -34,7 +34,7 @@ jenkins_plugin 'jira-trigger' do
 end
 
 # plugin to uninstall
-jenkins_plugin 'confluence-publisher' do
+jenkins_plugin 'checks-api' do
   action :install
 end
 

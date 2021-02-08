@@ -42,5 +42,5 @@ template ::File.join(Chef::Config[:file_cache_path], 'create_jenkins_user' + '.g
 end
 
 jenkins_script 'create_jenkins_user' do
-  groovy_path ::File.join(Chef::Config[:file_cache_path], 'create_jenkins_user' + '.groovy')
+  command lazy { ::File.read(::File.join(Chef::Config[:file_cache_path], 'create_jenkins_user' + '.groovy')) }
 end

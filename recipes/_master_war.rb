@@ -55,6 +55,8 @@ end
 # Include runit to setup the service
 include_recipe 'runit::default'
 
+package jenkins_font_packages
+
 # Download the remote WAR file
 remote_file File.join(node['jenkins']['master']['home'], 'jenkins.war') do
   source   node['jenkins']['master']['source']

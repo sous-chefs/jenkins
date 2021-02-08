@@ -38,7 +38,7 @@ class Chef
               kind_of: Integer,
               default: 22
     attribute :credentials,
-              kind_of: String
+              kind_of: [String, Resource::JenkinsCredentials]
     attribute :command_prefix,
               kind_of: String
     attribute :command_suffix,

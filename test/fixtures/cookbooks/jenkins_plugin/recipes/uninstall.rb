@@ -1,5 +1,5 @@
 # Test basic job deletion
-jenkins_plugin 'confluence-publisher' do
+jenkins_plugin 'checks-api' do
   action :uninstall
   notifies :restart, 'service[jenkins]', :immediately
 end

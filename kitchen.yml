@@ -14,12 +14,12 @@ provisioner:
   name: chef_zero
   data_path: test/fixtures/keys
   data_bags_path: test/fixtures/data_bags
-  chef_license: accept
+  deprecations_as_errors: true
   attributes:
     jenkins:
       master:
         host: localhost
-        install_method: war
+        install_method: package
         mirror: https://updates.jenkins.io
         runit:
           sv_timeout: 30
@@ -30,19 +30,13 @@ provisioner:
         jenkins_args: '--httpKeepAliveTimeout=300000'
 
 platforms:
-  - name: amazonlinux
-    driver_config:
-      box: mvbcoding/awslinux
   - name: amazonlinux-2
-  - name: centos-6
   - name: centos-7
+  - name: centos-8
   - name: debian-9
   - name: debian-10
-  - name: ubuntu-16.04
   - name: ubuntu-18.04
-  - name: windows-2012r2
-    driver:
-      box: tas50/windows_2012r2
+  - name: ubuntu-20.04
   - name: windows-2016
     driver:
       box: tas50/windows_2016
@@ -59,6 +53,10 @@ suites:
   #
   - name: smoke_package_stable
     run_list: jenkins_smoke::default
+    attributes:
+      jenkins:
+        master:
+          install_method: package
     excludes:
       - windows-2012r2
       - windows-2016
@@ -70,6 +68,7 @@ suites:
       jenkins:
         master:
           channel: current
+          install_method: package
     excludes:
       - windows-2012r2
       - windows-2016
@@ -82,6 +81,9 @@ suites:
         master:
           install_method: war
           source: https://updates.jenkins.io/stable/latest/jenkins.war
+    verifier:
+      inputs:
+        service_type: 'runit'
 
   - name: smoke_war_latest
     run_list: jenkins_smoke::default
@@ -90,11 +92,14 @@ suites:
         master:
           install_method: war
           source: https://updates.jenkins.io/latest/jenkins.war
+    verifier:
+      inputs:
+        service_type: 'runit'
 
   #
   # Authentication suites
   #
-  - name: authentication_private_key # Tested in smoke suite
+  - name: authentication_private_key  # Tested in smoke suite
     run_list: jenkins_authentication::private_key
 
   - name: authentication_username_password
@@ -109,7 +114,7 @@ suites:
   # Cannot be tested together
   # As the proxy settings are global
   #
-  - name: jenkins_proxy_config # Tested in smoke suite
+  - name: jenkins_proxy_config  # Tested in smoke suite
     run_list: jenkins_proxy::config
   - name: jenkins_proxy_remove
     run_list: jenkins_proxy::remove

@@ -1,6 +1,8 @@
 apt_update 'update' if platform_family?('debian')
 
-adoptopenjdk_install '8'
+adoptopenjdk_install '8' do
+  variant 'hotspot'
+end
 
 include_recipe 'jenkins::master'
 
@@ -12,6 +14,7 @@ jenkins_plugins = %w(
   jdk-tool
   display-url-api
   credentials
+  matrix-auth
 )
 
 jenkins_plugins.each do |plugin|
