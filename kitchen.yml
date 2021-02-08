@@ -37,9 +37,6 @@ platforms:
   - name: debian-10
   - name: ubuntu-18.04
   - name: ubuntu-20.04
-  - name: windows-2012r2
-    driver:
-      box: tas50/windows_2012r2
   - name: windows-2016
     driver:
       box: tas50/windows_2016
