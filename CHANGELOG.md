@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- Fix idempotency issue with `jenkins_user` when users have more than one public key
+
 ## 8.2.0 - *2021-02-08*
 
 - Sous Chefs Adoption
