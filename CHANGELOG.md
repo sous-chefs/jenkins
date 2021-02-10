@@ -2,6 +2,8 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
 ## 8.2.1 - *2021-02-10*
 
 - Fix idempotency issue with `jenkins_user` when users have more than one public key
