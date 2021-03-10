@@ -2,6 +2,8 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
 ## 8.2.2 - *2021-03-10*
 
 - Allow setting of `JENKINS_ENABLE_ACCESS_LOG` for Rhel based controllers - [@mbaitelman](https://github.com/mbaitelman)
