@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
-## Unreleased
+## 8.2.3 - *2021-03-25*
 
 - Cookstyle fixes
 
