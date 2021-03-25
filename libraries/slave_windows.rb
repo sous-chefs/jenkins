@@ -268,11 +268,9 @@ class Chef
     # @return [String]
     #
     def user_domain
-      @user_domain ||= begin
-        if (parts = new_resource.user.match(/(?<domain>.*)\\(?<account>.*)/))
-          parts[:domain]
-        end
-      end
+      @user_domain ||= if (parts = new_resource.user.match(/(?<domain>.*)\\(?<account>.*)/))
+                         parts[:domain]
+                       end
     end
 
     #
@@ -282,13 +280,11 @@ class Chef
     # @return [String]
     #
     def user_account
-      @user_account ||= begin
-        if (parts = new_resource.user.match(/(?<domain>.*)\\(?<account>.*)/))
-          parts[:account]
-        else
-          new_resource.user
-        end
-      end
+      @user_account ||= if (parts = new_resource.user.match(/(?<domain>.*)\\(?<account>.*)/))
+                          parts[:account]
+                        else
+                          new_resource.user
+                        end
     end
   end
 end
