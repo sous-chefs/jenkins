@@ -333,13 +333,11 @@ job must first exist on the Jenkins master!
     end
 
     def stdout_stream
-      @stdout_stream ||= begin
-        if formatter?
-          Chef::EventDispatch::EventsOutputStream.new(run_context.events, name: new_resource.name.to_sym)
-        elsif STDOUT.tty? && !Chef::Config[:daemon]
-          STDOUT
-        end
-      end
+      @stdout_stream ||= if formatter?
+                           Chef::EventDispatch::EventsOutputStream.new(run_context.events, name: new_resource.name.to_sym)
+                         elsif STDOUT.tty? && !Chef::Config[:daemon]
+                           STDOUT
+                         end
     end
   end
 end

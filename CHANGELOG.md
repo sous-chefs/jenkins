@@ -4,6 +4,25 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- resolved cookstyle error: libraries/job.rb:336:26 convention: `Style/RedundantBegin`
+- resolved cookstyle error: libraries/job.rb:337:11 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/job.rb:338:9 convention: `Layout/ElseAlignment`
+- resolved cookstyle error: libraries/job.rb:339:11 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/job.rb:340:9 warning: `Layout/EndAlignment`
+- resolved cookstyle error: libraries/job.rb:341:1 convention: `Layout/EmptyLinesAroundMethodBody`
+- resolved cookstyle error: libraries/job.rb:341:1 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: libraries/slave_windows.rb:271:24 convention: `Style/RedundantBegin`
+- resolved cookstyle error: libraries/slave_windows.rb:272:11 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/slave_windows.rb:273:9 warning: `Layout/EndAlignment`
+- resolved cookstyle error: libraries/slave_windows.rb:274:1 convention: `Layout/EmptyLinesAroundMethodBody`
+- resolved cookstyle error: libraries/slave_windows.rb:274:1 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: libraries/slave_windows.rb:285:11 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/slave_windows.rb:285:25 convention: `Style/RedundantBegin`
+- resolved cookstyle error: libraries/slave_windows.rb:286:9 convention: `Layout/ElseAlignment`
+- resolved cookstyle error: libraries/slave_windows.rb:287:11 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/slave_windows.rb:288:9 warning: `Layout/EndAlignment`
+- resolved cookstyle error: libraries/slave_windows.rb:289:1 convention: `Layout/EmptyLinesAroundMethodBody`
+- resolved cookstyle error: libraries/slave_windows.rb:289:1 convention: `Layout/TrailingWhitespace`
 ## 8.2.2 - *2021-03-10*
 
 - Allow setting of `JENKINS_ENABLE_ACCESS_LOG` for Rhel based controllers - [@mbaitelman](https://github.com/mbaitelman)
