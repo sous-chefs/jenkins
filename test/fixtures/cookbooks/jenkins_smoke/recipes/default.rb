@@ -77,36 +77,34 @@ end
 
 ruby_block 'wait for jenkins to start' do
   block do
-    begin
-      response = Chef::HTTP.new(node['jenkins']['master']['endpoint']).get('/')
+    response = Chef::HTTP.new(node['jenkins']['master']['endpoint']).get('/')
 
-      raise 'Jenkins is starting up' if response.include?('Starting Jenkins')
+    raise 'Jenkins is starting up' if response.include?('Starting Jenkins')
 
-      # After Jenkins has started the slaves will connect, but this can take some time
-      # So we check that the expected slaves are online before running Inspec
+    # After Jenkins has started the slaves will connect, but this can take some time
+    # So we check that the expected slaves are online before running Inspec
 
-      %w(
-        jnlp-builder
-        jnlp-executor
-        ssh-builder
-        ssh-executor
-        ssh-smoke
-        ssh-to-online
-        ssh-to-connect
-      ).each do |slave|
-        body = Chef::HTTP.new(node['jenkins']['master']['endpoint']).get("/computer/#{slave}/api/json?pretty=true")
-        json_body = JSON.parse(body, symbolize_names: true)
+    %w(
+      jnlp-builder
+      jnlp-executor
+      ssh-builder
+      ssh-executor
+      ssh-smoke
+      ssh-to-online
+      ssh-to-connect
+    ).each do |slave|
+      body = Chef::HTTP.new(node['jenkins']['master']['endpoint']).get("/computer/#{slave}/api/json?pretty=true")
+      json_body = JSON.parse(body, symbolize_names: true)
 
-        raise "cannot find slave: #{slave}" unless json_body
-        raise "slave: #{slave} isn't online" if json_body[:offline]
-      end
-
-      # NOTE: Testing that slaves are connected and/or online is prone to
-      # failure due to slow performance, different virtualization, etc
-    rescue StandardError
-      # re-raise exceptions so that the ruby_block triggers a retry
-      raise
+      raise "cannot find slave: #{slave}" unless json_body
+      raise "slave: #{slave} isn't online" if json_body[:offline]
     end
+
+    # NOTE: Testing that slaves are connected and/or online is prone to
+    # failure due to slow performance, different virtualization, etc
+  rescue StandardError
+    # re-raise exceptions so that the ruby_block triggers a retry
+    raise
   end
 
   retries 10

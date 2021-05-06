@@ -4,6 +4,20 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- resolved cookstyle error: libraries/_helper.rb:448:1 convention: `Layout/EmptyLinesAroundBlockBody`
+- resolved cookstyle error: libraries/_helper.rb:448:1 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: libraries/_helper.rb:448:9 convention: `Style/RedundantBegin`
+- resolved cookstyle error: libraries/_helper.rb:449:7 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/_helper.rb:450:9 convention: `Layout/RescueEnsureAlignment`
+- resolved cookstyle error: libraries/_helper.rb:465:1 convention: `Layout/EmptyLinesAroundBlockBody`
+- resolved cookstyle error: libraries/_helper.rb:465:1 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_smoke/recipes/default.rb:80:1 convention: `Layout/EmptyLinesAroundBlockBody`
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_smoke/recipes/default.rb:80:1 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_smoke/recipes/default.rb:80:5 convention: `Style/RedundantBegin`
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_smoke/recipes/default.rb:81:3 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_smoke/recipes/default.rb:106:5 convention: `Layout/RescueEnsureAlignment`
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_smoke/recipes/default.rb:109:1 convention: `Layout/EmptyLinesAroundBlockBody`
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_smoke/recipes/default.rb:109:1 convention: `Layout/TrailingWhitespace`
 ## 8.2.3 - *2021-03-25*
 
 - Cookstyle fixes
