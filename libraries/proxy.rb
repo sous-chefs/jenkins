@@ -43,6 +43,11 @@ class Chef
     attribute :noproxy,
               kind_of: Array,
               default: []
+    attribute :username,
+              kind_of: String
+
+    attribute :password,
+              kind_of: String
 
     attr_writer :configured
 
@@ -70,6 +75,8 @@ class Chef
       if current_proxy
         @current_resource.configured = true
         @current_resource.proxy(current_proxy[:proxy])
+        @current_resource.noproxy(current_proxy[:username])
+        @current_resource.noproxy(current_proxy[:password])
         @current_resource.noproxy(current_proxy[:noproxy])
       end
 
@@ -79,6 +86,8 @@ class Chef
     action(:config) do
       if current_resource.configured? &&
          current_resource.proxy == new_resource.proxy &&
+         current_resource.username == new_resource.username &&
+         current_resource.password == new_resource.password &&
          current_resource.noproxy == new_resource.noproxy
         Chef::Log.info("#{new_resource} already configured - skipping")
       else
@@ -88,10 +97,12 @@ class Chef
             executor.groovy! <<-EOH.gsub(/^ {14}/, '')
               name = #{convert_to_groovy(name)}
               port = #{convert_to_groovy(port.to_i)}
+              username = #{convert_to_groovy(username)}
+              password = #{convert_to_groovy(password)}
               noproxy = '#{new_resource.noproxy.join('\n')}'
 
               import hudson.ProxyConfiguration
-              def pc = new ProxyConfiguration(name, port, null, null, noproxy)
+              def pc = new ProxyConfiguration(name, port, username, password, noproxy)
               pc.save()
 
               import jenkins.model.Jenkins
