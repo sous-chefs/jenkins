@@ -12,5 +12,7 @@ jenkins_proxy '1.2.3.4:5678'
 
 # Test proxy configuration with attributes
 jenkins_proxy '5.6.7.8:9012' do
+  username 'test'
+  password 'test'
   noproxy ['nohost', '*.nodomain']
 end
