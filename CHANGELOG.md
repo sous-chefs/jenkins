@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- add user and password to jenkins_proxy
+
 ## 8.2.3 - *2021-03-25*
 
 - Cookstyle fixes
