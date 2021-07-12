@@ -7,7 +7,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Remove runit dependency
 - Use systemd units instead of runit services
 
-#### Breaking Changes / Deprecations
+### Breaking Changes / Deprecations
 
 - `jenkins_jnlp_slave`:
   - Renamed `runit_groups` property to `service_groups`
