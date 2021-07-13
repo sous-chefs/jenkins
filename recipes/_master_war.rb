@@ -63,6 +63,28 @@ remote_file File.join(node['jenkins']['master']['home'], 'jenkins.war') do
   notifies :restart, 'service[jenkins]'
 end
 
+# disable runit services before starting new service
+# TODO: remove in future version
+
+%w(
+  /etc/init.d/jenkins
+  /etc/service/jenkins
+).each do |f|
+  file f do
+    action :delete
+    notifies :stop, 'service[jenkins]', :before
+  end
+end
+
+# runit_service = if platform_family?('debian')
+#                   'runit'
+#                 else
+#                   'runsvdir-start'
+#                 end
+# service runit_service do
+#   action [:stop, :disable]
+# end
+
 systemd_unit 'jenkins.service' do
   content <<~EOU
     #
