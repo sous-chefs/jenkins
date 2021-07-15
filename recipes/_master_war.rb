@@ -85,6 +85,12 @@ end
 #   action [:stop, :disable]
 # end
 
+#
+# systemd ExecStart does not fully support shell-style quoting as
+# might be expected by jvm_options etc.  But it does support a leading
+# quote, trailing quote, and escaping in between, and we can ask
+# /bin/sh to make sense of the rest.
+#
 systemd_unit 'jenkins.service' do
   content <<~EOU
     #
@@ -103,7 +109,7 @@ systemd_unit 'jenkins.service' do
     Environment="JENKINS_HOME=#{node['jenkins']['master']['home']}"
     WorkingDirectory=#{node['jenkins']['master']['home']}
     #{ulimits_to_systemd(node['jenkins']['master']['ulimits'])}
-    ExecStart=#{node['jenkins']['java']} #{node['jenkins']['master']['jvm_options']} -jar jenkins.war --httpPort=#{node['jenkins']['master']['port']} --httpListenAddress=#{node['jenkins']['master']['listen_address']} #{node['jenkins']['master']['jenkins_args']}
+    ExecStart=/bin/sh -c 'exec #{"#{node['jenkins']['java']} #{node['jenkins']['master']['jvm_options']} -jar jenkins.war --httpPort=#{node['jenkins']['master']['port']} --httpListenAddress=#{node['jenkins']['master']['listen_address']} #{node['jenkins']['master']['jenkins_args']}".gsub("'", "\\\\'")}'
 
     [Install]
     WantedBy=multi-user.target
