@@ -16,17 +16,13 @@ This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of
 
 ### Platforms
 
-- Debian 7+ (Package installs require 9+ due to dependencies)
-- Ubuntu 14.04+ (Package installs require 16.04+ due to dependencies)
-- RHEL/CentOS/Scientific/Oracle 6+
+- Debian 9+
+- Ubuntu 18.04+
+- RHEL/CentOS 7+
 
 ### Chef
 
 - Chef 13.0+
-
-### Cookbooks
-
-- runit
 
 #### Java cookbook
 
@@ -47,7 +43,7 @@ Documentation and examples are provided inline using YARD. The tests and fixture
 The master recipe will create the required directory structure and install jenkins. There are two installation methods, controlled by the `node['jenkins']['master']['install_method']` attribute:
 
 - `package` - Install Jenkins from the official jenkins-ci.org packages
-- `war` - Download the latest version of the WAR file and configure it with Runit
+- `war` - Download the latest version of the WAR file and configure a systemd service
 
 ## Resources
 
@@ -456,19 +452,9 @@ end
 
 Depending on the plugin, you may need to restart the Jenkins instance for the plugin to take affect:
 
-Package installation method:
-
 ```ruby
 jenkins_plugin 'a_complicated_plugin' do
   notifies :restart, 'service[jenkins]', :immediately
-end
-```
-
-War installation method:
-
-```ruby
-jenkins_plugin 'a_complicated_plugin' do
-  notifies :restart, 'runit_service[jenkins]', :immediately
 end
 ```
 
@@ -504,7 +490,7 @@ jenkins_plugin 'greenballs' do
 end
 ```
 
-**NOTE** You may need to restart Jenkins after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins infrastructure differently) this LWRP does **NOT** restart Jenkins for you.
+**NOTE** You may need to restart Jenkins after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins infrastructure differently) this resource does **NOT** restart Jenkins for you.
 
 ### jenkins_slave
 
@@ -562,8 +548,8 @@ jenkins_jnlp_slave 'smoke' do
   idle_delay      3
   labels          ['runner', 'fast']
 
-  # User's groups to be configured with the runit service.
-  runit_groups    ['jenkins', 'docker']
+  # List of groups to run the slave service under
+  service_groups  ['jenkins', 'docker']
 end
 
 # Create a slave with a full environment

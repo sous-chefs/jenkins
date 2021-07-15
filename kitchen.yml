@@ -21,8 +21,6 @@ provisioner:
         host: localhost
         install_method: package
         mirror: https://updates.jenkins.io
-        runit:
-          sv_timeout: 30
         # This is to help slaves to connect to the master
         # Sometimes with slow performance the connection is dropped/cut too early
         # 30 seconds was too low, so I bumped it to 5 minutes
@@ -48,11 +46,9 @@ verifier:
   name: inspec
 
 suites:
-  #
-  # Smoke suite
-  #
   - name: smoke_package_stable
-    run_list: jenkins_smoke::default
+    run_list:
+      - jenkins_smoke::default
     attributes:
       jenkins:
         master:
@@ -63,7 +59,8 @@ suites:
       - windows-2019
 
   - name: smoke_package_current
-    run_list: jenkins_smoke::default
+    run_list:
+      - jenkins_smoke::default
     attributes:
       jenkins:
         master:
@@ -75,15 +72,13 @@ suites:
       - windows-2019
 
   - name: smoke_war_stable
-    run_list: jenkins_smoke::default
+    run_list:
+      - jenkins_smoke::default
     attributes:
       jenkins:
         master:
           install_method: war
           source: https://updates.jenkins.io/stable/latest/jenkins.war
-    verifier:
-      inputs:
-        service_type: 'runit'
 
   - name: smoke_war_latest
     run_list: jenkins_smoke::default
@@ -92,18 +87,17 @@ suites:
         master:
           install_method: war
           source: https://updates.jenkins.io/latest/jenkins.war
-    verifier:
-      inputs:
-        service_type: 'runit'
 
   #
   # Authentication suites
   #
   - name: authentication_private_key  # Tested in smoke suite
-    run_list: jenkins_authentication::private_key
+    run_list:
+      - jenkins_authentication::private_key
 
   - name: authentication_username_password
-    run_list: jenkins_authentication::username_password
+    run_list:
+      - jenkins_authentication::username_password
     excludes:
       - windows-2012r2
       - windows-2016
@@ -115,6 +109,8 @@ suites:
   # As the proxy settings are global
   #
   - name: jenkins_proxy_config  # Tested in smoke suite
-    run_list: jenkins_proxy::config
+    run_list:
+      - jenkins_proxy::config
   - name: jenkins_proxy_remove
-    run_list: jenkins_proxy::remove
+    run_list:
+      - jenkins_proxy::remove

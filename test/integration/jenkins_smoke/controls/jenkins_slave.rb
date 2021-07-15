@@ -34,14 +34,8 @@ control 'jenkins_slave-1.0' do
     it { should be_directory }
   end
 
-  describe.one do
-    describe service('jenkins-slave-builder') do
-      it { should be_running }
-    end
-
-    describe runit_service('jenkins-slave-builder') do
-      it { should be_running }
-    end
+  describe service('jenkins-slave-builder') do
+    it { should be_running }
   end
 
   #
@@ -75,14 +69,8 @@ control 'jenkins_slave-1.0' do
     it { should be_directory }
   end
 
-  describe.one do
-    describe service('jenkins-slave-smoke') do
-      it { should be_running }
-    end
-
-    describe runit_service('jenkins-slave-smoke') do
-      it { should be_running }
-    end
+  describe service('jenkins-slave-smoke') do
+    it { should be_running }
   end
 
   #
@@ -111,14 +99,8 @@ control 'jenkins_slave-1.0' do
     it { should be_directory }
   end
 
-  describe.one do
-    describe service('jenkins-slave-executor') do
-      it { should be_running }
-    end
-
-    describe runit_service('jenkins-slave-executor') do
-      it { should be_running }
-    end
+  describe service('jenkins-slave-executor') do
+    it { should be_running }
   end
 end
 

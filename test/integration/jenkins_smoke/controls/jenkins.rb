@@ -1,24 +1,15 @@
 # copyright: 2018, The Authors
 
 title 'Jenkins'
-service_type = input('service_type')
 
 control 'jenkins-1.0' do
   impact 0.7
   title 'Jenkins is running'
 
-  if service_type == 'systemd'
-    describe service 'jenkins' do
-      it { should be_installed }
-      it { should be_enabled }
-      it { should be_running }
-    end
-  else
-    describe runit_service 'jenkins' do
-      it { should be_installed }
-      it { should be_enabled }
-      it { should be_running }
-    end
+  describe service 'jenkins' do
+    it { should be_installed }
+    it { should be_enabled }
+    it { should be_running }
   end
 end
 
