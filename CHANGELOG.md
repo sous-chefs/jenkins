@@ -4,6 +4,18 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- Remove runit dependency
+- Use systemd units instead of runit services
+
+### Breaking Changes / Deprecations
+
+- `jenkins_jnlp_slave`:
+  - Renamed `runit_groups` property to `service_groups`
+  - New service created -- old Runit service will need manual cleanup
+
+- `jenkins::_master_war`:
+  - New service created -- old Runit service will need manual cleanup
+
 ## 8.2.3 - *2021-03-25*
 
 - Cookstyle fixes
