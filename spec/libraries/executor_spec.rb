@@ -61,6 +61,15 @@ describe Jenkins::Executor do
       end
     end
 
+    context 'when a :cli_credential_file option is given' do
+      it 'adds -auth option' do
+        subject.options[:cli_credential_file] = '/etc/cli_cred_file'
+        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -auth @/etc/cli_cred_file foo)
+        expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
+        subject.execute!('foo')
+      end
+    end
+
     context 'when a :key option is given' do
       it 'builds the correct command' do
         subject.options[:key] = '/key/path.pem'

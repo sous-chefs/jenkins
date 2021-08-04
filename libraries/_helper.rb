@@ -76,6 +76,7 @@ If this problem persists, check your Jenkins log files.
         h[:cli_user] = cli_user unless cli_user.nil?
         h[:cli_username] = cli_username unless cli_username.nil?
         h[:cli_password] = cli_password unless cli_password.nil?
+        h[:cli_credential_file] = cli_credential_file unless cli_credential_file.nil?
       end
 
       Jenkins::Executor.new(options)
@@ -400,6 +401,16 @@ If this problem persists, check your Jenkins log files.
     #
     def cli_password
       node['jenkins']['executor']['cli_password']
+    end
+
+    # cli_credential_file to pass to cli
+    # used with the http protocol
+    # is used as an alternative for the cli_username and cli_password combination
+    #
+    # @return [String]
+    #
+    def cli_credential_file
+      node['jenkins']['executor']['cli_credential_file']
     end
 
     #
