@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- Added option for jenkins-cli authentication with a credential file - [@amcappelli](https://github.com/amcappelli) and [@ddegoede](https://github.com/ddegoede)
+
 ## 9.0.0 - *2021-07-19*
 
 - Remove runit dependency
