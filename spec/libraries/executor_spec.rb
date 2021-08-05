@@ -18,6 +18,9 @@ describe Jenkins::Executor do
   describe '#execute!' do
     let(:shellout) { double(run_command: nil, error!: nil, stdout: '') }
     before { allow(Mixlib::ShellOut).to receive(:new).and_return(shellout) }
+    before do
+      allow(File).to receive(:exist?).with('/etc/cli_cred_file').and_return(true)
+    end
 
     it 'wraps the java and jar paths in quotes' do
       command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo)
