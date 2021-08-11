@@ -4,6 +4,11 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_authentication/recipes/credential_file.rb:38:14 refactor: `Chef/Style/AttributeKeys`
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_authentication/recipes/credential_file.rb:38:14 convention: `Style/StringLiterals`
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_authentication/recipes/credential_file.rb:38:24 refactor: `Chef/Style/AttributeKeys`
+- resolved cookstyle error: test/fixtures/cookbooks/jenkins_authentication/recipes/credential_file.rb:38:25 convention: `Style/StringLiterals`
+
 ## 9.2.0 - *2021-08-29*
 
 - Include yum-epel cookbook on RHEL platforms for new daemonize package dependency
