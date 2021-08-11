@@ -103,6 +103,14 @@ suites:
       - windows-2016
       - windows-2019
 
+  - name: authentication_credential_file
+    run_list:
+      - jenkins_authentication::credential_file
+    excludes:
+      - windows-2012r2
+      - windows-2016
+      - windows-2019
+
   #
   # Proxy suites
   # Cannot be tested together

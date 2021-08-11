@@ -18,6 +18,9 @@ describe Jenkins::Executor do
   describe '#execute!' do
     let(:shellout) { double(run_command: nil, error!: nil, stdout: '') }
     before { allow(Mixlib::ShellOut).to receive(:new).and_return(shellout) }
+    before do
+      allow(File).to receive(:file?).with('/etc/cli_cred_file').and_return(true)
+    end
 
     it 'wraps the java and jar paths in quotes' do
       command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" foo)
@@ -58,6 +61,15 @@ describe Jenkins::Executor do
           expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
           subject.execute!('foo')
         end
+      end
+    end
+
+    context 'when a :cli_credential_file option is given' do
+      it 'adds -auth option' do
+        subject.options[:cli_credential_file] = '/etc/cli_cred_file'
+        command = %("java" -jar "/usr/share/jenkins/cli/java/cli.jar" -auth @/etc/cli_cred_file foo)
+        expect(Mixlib::ShellOut).to receive(:new).with(command, timeout: 60)
+        subject.execute!('foo')
       end
     end
 
