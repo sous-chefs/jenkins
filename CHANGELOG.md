@@ -2,6 +2,8 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
 ## 9.1.0 - *2021-08-11*
 
 - Added option for jenkins-cli authentication with a credential file - [@amcappelli](https://github.com/amcappelli) and [@ddegoede](https://github.com/ddegoede)
