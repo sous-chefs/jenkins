@@ -551,7 +551,7 @@ If this problem persists, check your Jenkins log files.
 
         # Allow updates to quiesce in Jenkins so that we don't run into issues
         # with plugin installations which may happen directly after this.
-        sleep 5
+        sleep node['jenkins']['master']['update_center_sleep']
 
         true
       end

@@ -26,6 +26,8 @@ provisioner:
         # 30 seconds was too low, so I bumped it to 5 minutes
         # https://issues.jenkins-ci.org/browse/JENKINS-38623
         jenkins_args: '--httpKeepAliveTimeout=300000'
+        # This it to help issues we run into on the CI systems
+        update_center_sleep: 10
 
 platforms:
   - name: amazonlinux-2
