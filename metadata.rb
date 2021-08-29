@@ -17,3 +17,4 @@ supports 'scientific'
 supports 'ubuntu'
 
 depends 'dpkg_autostart'
+depends 'yum-epel'

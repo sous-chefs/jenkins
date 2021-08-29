@@ -240,6 +240,12 @@ default['jenkins']['master'].tap do |master|
   master['ulimits'] = nil
 
   #
+  # Sleep time in seconds to allow the update center data to quiesce in Jenkins.
+  # This is so that we don't run into issues with plugin installations which can
+  # happen depending on system load.
+  master['update_center_sleep'] = 5
+
+  #
   # Repository URL and key. Default is stable.
   #
   master['repository'], master['repository_key'] =
