@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
-## Unreleased
+## 9.2.0 - *2021-08-29*
 
 - Include yum-epel cookbook on RHEL platforms for new daemonize package dependency
 - Add new `update_center_sleep` attribute to set the time to wait for updates to quiesce in Jenkins
