@@ -4,19 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
-- resolved cookstyle error: libraries/job.rb:132:13 convention: `Style/ConditionalAssignment`
-- resolved cookstyle error: libraries/job.rb:133:13 convention: `Layout/CaseIndentation`
-- resolved cookstyle error: libraries/job.rb:134:15 convention: `Layout/IndentationWidth`
-- resolved cookstyle error: libraries/job.rb:135:13 convention: `Layout/ElseAlignment`
-- resolved cookstyle error: libraries/job.rb:136:15 convention: `Layout/IndentationWidth`
-- resolved cookstyle error: libraries/job.rb:137:15 convention: `Layout/IndentationWidth`
-- resolved cookstyle error: libraries/job.rb:138:31 convention: `Layout/ElseAlignment`
-- resolved cookstyle error: libraries/job.rb:139:31 convention: `Layout/IndentationWidth`
-- resolved cookstyle error: libraries/job.rb:140:31 warning: `Layout/EndAlignment`
-- resolved cookstyle error: test/fixtures/cookbooks/jenkins_authentication/recipes/credential_file.rb:38:14 refactor: `Chef/Style/AttributeKeys`
-- resolved cookstyle error: test/fixtures/cookbooks/jenkins_authentication/recipes/credential_file.rb:38:14 convention: `Style/StringLiterals`
-- resolved cookstyle error: test/fixtures/cookbooks/jenkins_authentication/recipes/credential_file.rb:38:24 refactor: `Chef/Style/AttributeKeys`
-- resolved cookstyle error: test/fixtures/cookbooks/jenkins_authentication/recipes/credential_file.rb:38:25 convention: `Style/StringLiterals`
+- Standardise files with files in sous-chefs/repo-management
+- Various Cookstyle fixes
 
 ## 9.2.0 - *2021-08-29*
 
