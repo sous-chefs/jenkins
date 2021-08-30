@@ -4,6 +4,9 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- Standardise files with files in sous-chefs/repo-management
+- Various Cookstyle fixes
+
 ## 9.2.0 - *2021-08-29*
 
 - Include yum-epel cookbook on RHEL platforms for new daemonize package dependency

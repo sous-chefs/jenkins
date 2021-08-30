@@ -35,7 +35,7 @@ file cred_file do
   mode '0444'
   action :create
 end
-node.default[:jenkins][:executor][:cli_credential_file] = cred_file
+node.default['jenkins']['executor'][:cli_credential_file] = cred_file
 
 jenkins_plugin 'pam-auth' do
   notifies :restart, 'service[jenkins]', :immediately
