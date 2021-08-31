@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
-## Unreleased
+## 9.3.0 - *2021-08-31*
 
 - Add `jnlp_options` for Windows agents
 
