@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
-## Unreleased
+## 9.4.0 - *2021-09-07*
 
 - add user and password to jenkins_proxy
 
