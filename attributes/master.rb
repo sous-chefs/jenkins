@@ -246,18 +246,18 @@ default['jenkins']['master'].tap do |master|
   master['update_center_sleep'] = 5
 
   #
-  # Repository URL and key. Default is stable.
+  # Repository name, URL and key. Default is stable.
   #
-  master['repository'], master['repository_key'] =
+  master['repository_name'], master['repository'], master['repository_key'] =
     case [node['platform_family'], node['jenkins']['master']['channel']]
     when %w(debian stable)
-      ['https://pkg.jenkins.io/debian-stable', 'https://pkg.jenkins.io/debian-stable/jenkins.io.key']
+      ['jenkins-ci-stable', 'https://pkg.jenkins.io/debian-stable', 'https://pkg.jenkins.io/debian-stable/jenkins.io.key']
     when %w(rhel stable), %w(amazon stable)
-      ['https://pkg.jenkins.io/redhat-stable', 'https://pkg.jenkins.io/redhat-stable/jenkins.io.key']
+      ['jenkins-ci-stable', 'https://pkg.jenkins.io/redhat-stable', 'https://pkg.jenkins.io/redhat-stable/jenkins.io.key']
     when %w(debian current)
-      ['https://pkg.jenkins.io/debian', 'https://pkg.jenkins.io/debian/jenkins.io.key']
+      ['jenkins-ci-current', 'https://pkg.jenkins.io/debian', 'https://pkg.jenkins.io/debian/jenkins.io.key']
     when %w(rhel current), %w(amazon current)
-      ['https://pkg.jenkins.io/redhat', 'https://pkg.jenkins.io/redhat/jenkins.io.key']
+      ['jenkins-ci-current', 'https://pkg.jenkins.io/redhat', 'https://pkg.jenkins.io/redhat/jenkins.io.key']
     end
 
   #
