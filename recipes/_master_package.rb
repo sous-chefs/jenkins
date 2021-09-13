@@ -25,7 +25,7 @@ case node['platform_family']
 when 'debian'
   package %w( apt-transport-https fontconfig )
 
-  apt_repository 'jenkins' do
+  apt_repository node['jenkins']['master']['repository_name'] do
     uri          node['jenkins']['master']['repository']
     distribution 'binary/'
     key          node['jenkins']['master']['repository_key']
@@ -39,7 +39,7 @@ when 'rhel', 'amazon'
   # Needed for installing deamonize package
   include_recipe 'yum-epel'
 
-  yum_repository 'jenkins-ci' do
+  yum_repository node['jenkins']['master']['repository_name'] do
     baseurl node['jenkins']['master']['repository']
     gpgkey  node['jenkins']['master']['repository_key']
   end
