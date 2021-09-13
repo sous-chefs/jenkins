@@ -2,6 +2,8 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
 ## 9.5.0 - *2021-09-13*
 
 - Add new attribute 'repository_name' to set the name of the repository
