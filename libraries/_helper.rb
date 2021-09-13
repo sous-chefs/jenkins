@@ -76,6 +76,7 @@ If this problem persists, check your Jenkins log files.
         h[:cli_user] = cli_user unless cli_user.nil?
         h[:cli_username] = cli_username unless cli_username.nil?
         h[:cli_password] = cli_password unless cli_password.nil?
+        h[:cli_credential_file] = cli_credential_file unless cli_credential_file.nil?
       end
 
       Jenkins::Executor.new(options)
@@ -402,6 +403,16 @@ If this problem persists, check your Jenkins log files.
       node['jenkins']['executor']['cli_password']
     end
 
+    # cli_credential_file to pass to cli
+    # used with the http protocol
+    # is used as an alternative for the cli_username and cli_password combination
+    #
+    # @return [String]
+    #
+    def cli_credential_file
+      node['jenkins']['executor']['cli_credential_file']
+    end
+
     #
     # The path to the +jenkins-cli.jar+ on disk (which may or may not exist).
     #
@@ -540,7 +551,7 @@ If this problem persists, check your Jenkins log files.
 
         # Allow updates to quiesce in Jenkins so that we don't run into issues
         # with plugin installations which may happen directly after this.
-        sleep 5
+        sleep node['jenkins']['master']['update_center_sleep']
 
         true
       end

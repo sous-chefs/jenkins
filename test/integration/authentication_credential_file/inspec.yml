@@ -1,4 +1,4 @@
-name: jenkins_smoke
+name: authentication_credential_file
 title: InSpec Profile
 maintainer: The Authors
 copyright: The Authors
@@ -8,4 +8,4 @@ summary: An InSpec Compliance Profile
 version: 0.1.0
 depends:
   - name: jenkins_inspec
-    path: ../helpers/jenkins_inspec
+    path: test/integration/helpers/jenkins_inspec

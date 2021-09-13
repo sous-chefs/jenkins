@@ -4,6 +4,42 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+## 9.4.0 - *2021-09-07*
+
+- add user and password to jenkins_proxy
+
+## 9.3.0 - *2021-08-31*
+
+- Add `jnlp_options` for Windows agents
+
+## 9.2.1 - *2021-08-30*
+
+- Standardise files with files in sous-chefs/repo-management
+- Various Cookstyle fixes
+
+## 9.2.0 - *2021-08-29*
+
+- Include yum-epel cookbook on RHEL platforms for new daemonize package dependency
+- Add new `update_center_sleep` attribute to set the time to wait for updates to quiesce in Jenkins
+
+## 9.1.0 - *2021-08-11*
+
+- Added option for jenkins-cli authentication with a credential file - [@amcappelli](https://github.com/amcappelli) and [@ddegoede](https://github.com/ddegoede)
+
+## 9.0.0 - *2021-07-19*
+
+- Remove runit dependency
+- Use systemd units instead of runit services
+
+### Breaking Changes / Deprecations
+
+- `jenkins_jnlp_slave`:
+  - Renamed `runit_groups` property to `service_groups`
+  - New service created -- old Runit service will need manual cleanup
+
+- `jenkins::_master_war`:
+  - New service created -- old Runit service will need manual cleanup
+
 ## 8.2.3 - *2021-03-25*
 
 - Cookstyle fixes

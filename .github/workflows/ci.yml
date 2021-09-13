@@ -53,6 +53,7 @@ jobs:
           - 'smoke-war-latest'
           - 'authentication-private-key'
           - 'authentication-username-password'
+          - 'authentication-credential-file'
           - 'jenkins-proxy-config'
           - 'jenkins-proxy-remove'
       fail-fast: false

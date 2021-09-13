@@ -36,6 +36,9 @@ when 'debian'
     allow false
   end
 when 'rhel', 'amazon'
+  # Needed for installing deamonize package
+  include_recipe 'yum-epel'
+
   yum_repository 'jenkins-ci' do
     baseurl node['jenkins']['master']['repository']
     gpgkey  node['jenkins']['master']['repository_key']

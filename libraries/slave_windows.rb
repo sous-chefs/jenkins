@@ -51,6 +51,8 @@ class Chef
     attribute :pre_run_cmds,
               kind_of: Array,
               default: []
+    attribute :jnlp_options,
+              kind_of: String
   end
 end
 

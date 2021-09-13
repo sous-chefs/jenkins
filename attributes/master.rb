@@ -232,25 +232,18 @@ default['jenkins']['master'].tap do |master|
   master['maxopenfiles'] = 8192
 
   #
-  # The groups of user under which Jenkins is running. Works for runit only.
-  #
-  master['runit']['groups'] = [node['jenkins']['master']['group']]
-
-  #
-  # The timeout passed to the runit cookbook's service resource. Override the
-  # default timeout of 7 seconds. This option implies verbose.
-  #
-  #   node.normal['jenkins']['master']['runit']['sv_timeout'] = 60
-  #
-  master['runit']['sv_timeout'] = 7
-
-  #
   # The limits for the Java process running the master server.
   # Example to configure the maximum number of open file descriptors:
   #
   #   node.set['jenkins']['master']['ulimits'] = { 'n' => 8192 }
   #
   master['ulimits'] = nil
+
+  #
+  # Sleep time in seconds to allow the update center data to quiesce in Jenkins.
+  # This is so that we don't run into issues with plugin installations which can
+  # happen depending on system load.
+  master['update_center_sleep'] = 5
 
   #
   # Repository URL and key. Default is stable.
