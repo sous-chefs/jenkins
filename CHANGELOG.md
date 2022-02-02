@@ -5,6 +5,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 ## Unreleased
 
 - Remove delivery folder
+- Standardise files with files in sous-chefs/repo-management
 
 ## 9.5.0 - *2021-09-13*
 
