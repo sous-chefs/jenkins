@@ -5,6 +5,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 ## Unreleased
 
 - Remove delivery and move to calling RSpec directly via a reusable workflow
+- Update tested platforms
 
 ## 9.5.0 - *2021-09-13*
 
