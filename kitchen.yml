@@ -11,7 +11,7 @@ driver:
         auto_correct: true
 
 provisioner:
-  name: chef_zero
+  name: chef_infra
   data_path: test/fixtures/keys
   data_bags_path: test/fixtures/data_bags
   deprecations_as_errors: true
@@ -30,11 +30,13 @@ provisioner:
         update_center_sleep: 10
 
 platforms:
+  - name: almalinux-8
   - name: amazonlinux-2
   - name: centos-7
-  - name: centos-8
-  - name: debian-9
+  - name: centos-stream-8
   - name: debian-10
+  - name: debian-11
+  - name: rockylinux-8
   - name: ubuntu-18.04
   - name: ubuntu-20.04
   - name: windows-2016

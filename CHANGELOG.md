@@ -4,9 +4,13 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
-- Fix unit test runner
-- Move to reusable workflows
-- Remove delivery folder
+- Fix permissions on reusable workflow
+
+## 9.5.1 - *2022-02-16*
+
+- Remove delivery and move to calling RSpec directly via a reusable workflow
+- Update tested platforms
+- Cookstyle fixes
 
 ## 9.5.0 - *2021-09-13*
 
