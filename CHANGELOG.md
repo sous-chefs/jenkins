@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- Fix unit test runner
+- Move to reusable workflows
 - Remove delivery folder
 
 ## 9.5.0 - *2021-09-13*
