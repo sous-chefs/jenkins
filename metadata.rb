@@ -6,7 +6,7 @@ description       'Installs and configures Jenkins CI master & slaves'
 version           '9.5.2'
 source_url        'https://github.com/sous-chefs/jenkins'
 issues_url        'https://github.com/sous-chefs/jenkins/issues'
-chef_version      '>= 13.0'
+chef_version      '>= 16'
 
 supports 'amazon'
 supports 'centos'

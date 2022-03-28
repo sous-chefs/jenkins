@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+- Require Chef 15.3 for custom resources unified_mode
+- Require Chef 16 for resource partials
 - Move credentials_file to a custom resource
 - Add the credentials partial for reuse for all credentials resources
 
