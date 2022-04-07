@@ -24,10 +24,10 @@ property :pre_run_cmds,
 property :jnlp_options,
           String
 
-
 class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJnlpSlave
     provides :jenkins_windows_slave, platform: %w(windows)
+    unified_mode true
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsWindowsSlave.new(new_resource.name)

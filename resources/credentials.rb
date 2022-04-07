@@ -1,3 +1,5 @@
+unified_mode true
+
 require 'json'
 require 'openssl'
 require 'securerandom'

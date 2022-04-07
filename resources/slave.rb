@@ -1,5 +1,6 @@
 require 'json'
 provides :jenkins_slave
+unified_mode true
 
 property :slave.name,
           String,

@@ -1,3 +1,4 @@
+unified_mode true
 use '_partials/slave'
 use '_partials/credentials'
 
@@ -57,7 +58,6 @@ def load_current_resource
 end
 
 action_class do
-
   #
   # @see Chef::Resource::JenkinsSlave#launcher_groovy
   # @see https://github.com/jenkinsci/ssh-credentials-plugin/blob/master/src/main/java/com/cloudbees/jenkins/plugins/sshcredentials/impl/BasicSSHUserPrivateKey.java

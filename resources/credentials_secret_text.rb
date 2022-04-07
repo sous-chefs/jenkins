@@ -1,3 +1,4 @@
+unified_mode true
 # require_relative 'credentials'
 
 property :description,
@@ -18,7 +19,6 @@ def load_current_resource
 end
 
 action_class do
-
   #
   # @see Chef::Resource::JenkinsCredentials#credentials_groovy
   # @see https://github.com/jenkinsci/plain-credentials-plugin/blob/master/src/main/java/org/jenkinsci/plugins/plaincredentials/impl/StringCredentialsImpl.java

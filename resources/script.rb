@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-require_relative 'command'
+# require_relative 'command'
 
 class Chef
   class Resource::JenkinsScript < Resource::JenkinsCommand

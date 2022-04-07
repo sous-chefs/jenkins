@@ -120,7 +120,6 @@ action :delete do
 end
 
 action_class do
-
   #
   # @see Chef::Resource::JenkinsSlave#launcher_groovy
   # @see http://javadoc.jenkins-ci.org/hudson/slaves/JNLPLauncher.html
