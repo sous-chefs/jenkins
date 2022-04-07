@@ -22,30 +22,30 @@
 
 require 'digest'
 
-require_relative '_helper'
+# require_relative '_helper'
 
 class Chef
   class Resource::JenkinsPlugin < Resource::LWRPBase
     resource_name :jenkins_plugin # Still needed for Chef 15 and below
     provides :jenkins_plugin
+    unified_mode true
 
     # Chef attributes
     identity_attr :name
 
     # Actions
-    actions :install, :uninstall, :enable, :disable
     default_action :install
 
     # Attributes
-    attribute :version,
+    property :version,
               kind_of: [String, Symbol],
               default: :latest
-    attribute :source,
+    property :source,
               kind_of: String
     # TODO: Remove in next major version release
-    attribute :install_deps,
+    property :install_deps,
               kind_of: [TrueClass, FalseClass]
-    attribute :options,
+    property :options,
               kind_of: String
 
     attr_writer :installed

@@ -25,20 +25,20 @@ class Chef
   class Resource::JenkinsScript < Resource::JenkinsCommand
     resource_name :jenkins_script # Still needed for Chef 15 and below
     provides :jenkins_script
+    unified_mode true
 
     # Chef attributes
     identity_attr :name
 
-    attribute :groovy_path,
+    property :groovy_path,
       kind_of: String,
       default: nil
-    attribute :name,
+    property :name,
       kind_of: String,
-      name_attribute: true,
+      name_property: true,
       required: false
 
     # Actions
-    actions :execute
     default_action :execute
   end
 end
