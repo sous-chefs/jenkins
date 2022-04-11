@@ -1,10 +1,19 @@
-include_recipe 'jenkins_server_wrapper::default'
+jenkins_ssh_slave 'ssh-to-disconnect' do
+  remote_fs   '/tmp/ssh-to-disconnect'
+  user        'jenkins-ssh-password'
+  # SSH specific attributes
+  host        'localhost'
+  credentials 'jenkins-ssh-password'
+  launch_timeout   node['jenkins_slave']['launch_timeout']
+  ssh_retries      5
+  ssh_wait_retries 60
+end
 
-# Include the create recipe so we have something to disconnect
-include_recipe 'jenkins_slave::create_ssh'
+jenkins_slave 'ssh-to-disconnect' do
+  action :disconnect
+end
 
-%w(ssh-builder ssh-executor ssh-smoke).each do |name|
-  jenkins_slave name do
-    action :disconnect
-  end
+jenkins_slave 'disconnect ssh slave again' do
+  slave_name 'ssh-to-disconnect'
+  action :disconnect
 end

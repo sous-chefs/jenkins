@@ -1,10 +1,10 @@
 #
 # Cookbook:: jenkins
-# HWRP:: command
+# Resource:: command
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,8 @@ require_relative '_helper'
 
 class Chef
   class Resource::JenkinsCommand < Resource::LWRPBase
-    resource_name :jenkins_command
+    resource_name :jenkins_command # Still needed for Chef 15 and below
+    provides :jenkins_command
 
     # Chef attributes
     identity_attr :command
@@ -41,20 +42,12 @@ end
 
 class Chef
   class Provider::JenkinsCommand < Provider::LWRPBase
-    use_inline_resources
     include Jenkins::Helper
 
     provides :jenkins_command
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsCommand.new(new_resource.command)
-    end
-
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
     end
 
     action :execute do

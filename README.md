@@ -1,25 +1,28 @@
 # jenkins Cookbook
 
-[![Build Status](https://travis-ci.org/chef-cookbooks/jenkins.svg?branch=master)](https://travis-ci.org/chef-cookbooks/jenkins) [![Cookbook Version](https://img.shields.io/cookbook/v/jenkins.svg)](https://supermarket.chef.io/cookbooks/jenkins)
+[![Cookbook Version](https://img.shields.io/cookbook/v/jenkins.svg)](https://supermarket.chef.io/cookbooks/jenkins)
+[![CI State](https://github.com/sous-chefs/jenkins/workflows/ci/badge.svg)](https://github.com/sous-chefs/jenkins/actions?query=workflow%3Aci)
+[![OpenCollective](https://opencollective.com/sous-chefs/backers/badge.svg)](#backers)
+[![OpenCollective](https://opencollective.com/sous-chefs/sponsors/badge.svg)](#sponsors)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Installs and configures Jenkins CI master & node slaves. Resource providers to support automation via jenkins-cli, including job create/update.
+
+## Maintainers
+
+This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of Chef cookbook maintainers working together to maintain important cookbooks. If you’d like to know more please visit [sous-chefs.org](https://sous-chefs.org/) or come chat with us on the Chef Community Slack in [#sous-chefs](https://chefcommunity.slack.com/messages/C2V7B88SF).
 
 ## Requirements
 
 ### Platforms
 
-- Debian 7+ (Package installs require 9+ due to dependencies)
-- Ubuntu 14.04+ (Package installs require 16.04+ due to dependencies)
-- RHEL/CentOS/Scientific/Oracle 6+
+- Debian 9+
+- Ubuntu 18.04+
+- RHEL/CentOS 7+
 
 ### Chef
 
-- Chef 12.1+
-
-### Cookbooks
-
-- compat_resource
-- runit
+- Chef 13.0+
 
 #### Java cookbook
 
@@ -40,17 +43,21 @@ Documentation and examples are provided inline using YARD. The tests and fixture
 The master recipe will create the required directory structure and install jenkins. There are two installation methods, controlled by the `node['jenkins']['master']['install_method']` attribute:
 
 - `package` - Install Jenkins from the official jenkins-ci.org packages
-- `war` - Download the latest version of the WAR file and configure it with Runit
+- `war` - Download the latest version of the WAR file and configure a systemd service
 
-## Resource/Provider
+## Resources
 
 ### jenkins_command
 
-This resource executes arbitrary commands against the [Jenkins CLI](https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI), supporting the following actions:
+This resource executes arbitrary commands against the [Jenkins CLI](https://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI)
 
-```
-:execute
-```
+#### Actions
+
+- :execute
+
+#### Examples
+
+To perform a restart
 
 ```ruby
 jenkins_command 'safe-restart'
@@ -74,9 +81,15 @@ jenkins_command 'quiet-down'
 
 This resource executes arbitrary Java or Groovy commands against the Jenkins master. By the nature of this command, it is **not** idempotent.
 
+#### Examples
+
+A simple inline Groovy script
+
 ```ruby
 jenkins_script 'println("This is Groovy code!")'
 ```
+
+More complex inline Groovy
 
 ```ruby
 jenkins_script 'add_authentication' do
@@ -103,37 +116,55 @@ jenkins_script 'add_authentication' do
 end
 ```
 
+Executing Groovy code on disk
+
+```ruby
+template ::File.join(Chef::Config[:file_cache_path], 'create_jenkins_user' + '.groovy') do
+  source "create_jenkins_user.groovy.erb"
+  mode '0644'
+  owner 'jenkins'
+  group 'jenkins'
+  variables(
+    users: users
+  )
+  notifies :execute, "jenkins_script[create_jenkins_user]", :immediately
+end
+
+jenkins_script 'create_jenkins_user' do
+  groovy_path ::File.join(Chef::Config[:file_cache_path], 'create_jenkins_user' + '.groovy')
+end
+```
+
 ### jenkins_credentials
 
-**NOTES**
+#### NOTES
 
 - Install version 1.6 or higher of the [credentials plugin](https://wiki.jenkins-ci.org/display/JENKINS/Credentials+Plugin) to use the Jenkins credentials resource.
 
 - In version `4.0.0` of this cookbook this resource was changed so that credentials are referenced by their ID instead of by their name. If you are upgrading your nodes from an earlier version of this cookbook ( <= 3.1.1 ), use the credentials resource and do not have explicit IDs assigned to credentials, you will need to go into the Jenkins UI, find the auto-generated UUIDs for your credentials, and add them to your cookbook resources.
 
---------------------------------------------------------------------------------
+#### Actions
 
-This resource uses the Jenkins Groovy API to manage credentials and supports the following actions:
-
-```
-:create, :delete
-```
+- :create
+- :delete
 
 Both actions operate on the credential resources idempotently. It also supports why-run mode.
 
 `jenkins_credentials` is a base resource that is not used directly. Instead there are resources for each specific type of credentials supported.
 
-### Common attributes
+### Properties
 
-Use of the credential resource requires a unique `id` attribute. The resource uses this ID to find the credential for future modifications, and it is an immutable resource once the resource is created within Jenkins. This ID is also how you reference the credentials in other Groovy scripts (i.e. Pipeline code).
+Use of the credential resource requires a unique `id` property. The resource uses this ID to find the credential for future modifications, and it is an immutable resource once the resource is created within Jenkins. This ID is also how you reference the credentials in other Groovy scripts (i.e. Pipeline code).
 
-The `username` attribute (also the name attribute) corresponds to the username of the credentials on the target node.
+The `username` property (also the name property) corresponds to the username of the credentials on the target node.
 
 You may also specify a `description` which is useful in credential identification.
 
 #### jenkins_password_credentials
 
 Basic username + password credentials.
+
+##### Examples
 
 ```ruby
 # Create password credentials
@@ -155,6 +186,8 @@ end
 #### jenkins_private_key_credentials
 
 Credentials that use a username + private key (optionally protected with a passphrase).
+
+##### Examples
 
 ```ruby
 # Create private key credentials
@@ -181,9 +214,11 @@ jenkins_private_key_credentials 'wcoyote' do
 end
 ```
 
-### jenkins_secret_text_credentials
+#### jenkins_secret_text_credentials
 
 Generic secret text. Requires the the `credentials-binding` plugin.
+
+##### Examples
 
 ```ruby
 # Create secret text credentials
@@ -202,6 +237,28 @@ jenkins_secret_text_credentials 'wcoyote' do
 end
 ```
 
+### jenkins_file_credentials
+
+Generic file credentials.
+
+```ruby
+# Create file credentials
+jenkins_file_credentials 'wcoyote' do
+  id          'wcoyote-file'
+  description 'Wile E Coyote File'
+  filename    'file.txt'
+  data        'my file content'
+end
+```
+
+```ruby
+# Delete file credentials
+jenkins_file_credentials 'wcoyote' do
+  id     'wcoyote-file'
+  action :delete
+end
+```
+
 #### Scopes
 
 Credentials in Jenkins can be created with 2 different "scopes" which determines where the credentials can be used:
@@ -213,11 +270,15 @@ The credentials created with the `jenkins_credentials` resources are assigned a 
 
 ### jenkins_job
 
-This resource manages Jenkins jobs, supporting the following actions:
+This resource manages Jenkins jobs
 
-```
-:create, :delete, :disable, :enable, :build
-```
+#### Actions
+
+- :create
+- :delete
+- :disable
+- :enable
+- :build
 
 The resource is fully idempotent and convergent. It also supports why-run mode.
 
@@ -276,56 +337,137 @@ jenkins_job 'my-parameterized-job' do
 end
 ```
 
+### jenkins_view
+
+This resource manages Jenkins view
+
+#### Actions
+
+- :create
+- :delete
+
+The resource is fully idempotent and convergent as long as you're not using free hand code. It also supports whyrun mode.
+
+The `:create` action requires an array of jobs:
+
+```ruby
+jenkins_view 'ham' do
+  jobs [ "pig", "giraffe" ]
+end
+```
+
+The `:delete` action deleted a configured view:
+
+```ruby
+jenkins_view 'ham' do
+  action :delete
+end
+```
+
+It is possible to pass a snippet of groovy code in order to create more sophisticated views, the idea is to override the `create_view` and `configure_view` groovy closures.
+
+```ruby
+code = <<-GROOVY
+create_view = { name ->
+  // Return a new view
+  return new BuildPipelineView(...)
+}
+
+configure_view = { view ->
+  // Configure view
+  view.setCssUrl("")
+}
+GROOVY
+
+jenkins_view 'pipline_view' do
+  code    code
+  action :create
+end
+```
+
+Please note that if you pass `code`, it will always run the `:create` action as the provider cannot determine when a change has to be made and when not.
+
+### jenkins_proxy
+
+This resource manages Jenkins HTTP proxy information
+
+#### Actions
+
+- :config
+- :remove
+
+This uses the Jenkins groovy API to configure the HTTP proxy information, that is provided on the _Advanced_ tab of the _Plugin Manager_.
+
+The `:config` action idempotently configure the Jenkins HTTP proxy information on the current node. The proxy attribute corresponds to the proxy server name and port number that have to use on the target node. You may also specify a list of no proxy host names with the noproxy attribute. The default is _localhost_ and _127.0.0.1_. If you need to authenticate you can set username and password attributes.
+
+```ruby
+# Basic proxy configuration
+jenkins_proxy '1.2.3.4:5678'
+
+# Basic proxy configuration with user/password
+jenkins_proxy '1.2.3.4:5678' do
+  username 'sous'
+  password 'chefs'
+end
+
+# Expanded proxy configuration
+jenkins_proxy '5.6.7.8:9012' do
+  noproxy ['localhost', '127.0.0.1', 'nohost', '*.nodomain']
+end
+
+# Expanded proxy configuration with user/password
+jenkins_proxy '5.6.7.8:9012' do
+  username 'sous'
+  password 'chefs'
+  noproxy ['localhost', '127.0.0.1', 'nohost', '*.nodomain']
+end
+```
+
+The `:remove` action removes the Jenkins HTTP proxy information from the system.
+
+```ruby
+jenkins_proxy '1.2.3.4:5678' do
+  action :remove
+end
+```
+
 ### jenkins_plugin
 
-This resource manages Jenkins plugins, supporting the following actions:
+This resource manages Jenkins plugins.
 
-```
-:install, :uninstall, :enable, :disable
-```
+#### Actions
+
+- :install
+- :uninstall
+- :enable
+- :disable
 
 This uses the Jenkins CLI to install plugins. By default, it does a cold deploy, meaning the plugin is installed while Jenkins is still running. Some plugins may require you restart the Jenkins instance for their changed to take affect.
 
-- **A plugin's dependencies are also installed by default, this behavior can be disabled by setting the `install_deps` attribute to `false`.**
-- **This resource does not install plugin dependencies from a a given hpi/jpi URL - you must specify all plugin dependencies or Jenkins may not startup correctly!**
+- **This resource does not install plugin dependencies from a a given hpi/jpi URL or a specific version - you must specify all plugin dependencies or Jenkins may not startup correctly!**
 
 The `:install` action idempotently installs a Jenkins plugin on the current node. The name attribute corresponds to the name of the plugin on the Jenkins Update Center. You can also specify a particular version of the plugin to install. Finally, you can specify a full source URL or local path (on the node) to a plugin.
 
 ```ruby
-# Install the latest version of the greenballs plugin
+# Install the latest version of the greenballs plugin and all dependencies
 jenkins_plugin 'greenballs'
 
-# Install version 1.3 of the greenballs plugin
+# Install version 1.3 of the greenballs plugin and no dependencies
 jenkins_plugin 'greenballs' do
   version '1.3'
 end
 
-# Install a plugin from a given hpi (or jpi)
+# Install a plugin from a given hpi (or jpi) and no dependencies
 jenkins_plugin 'greenballs' do
   source 'http://updates.jenkins-ci.org/download/plugins/greenballs/1.10/greenballs.hpi'
-end
-
-# Don't install a plugins dependencies
-jenkins_plugin 'github-oauth' do
-  install_deps false
 end
 ```
 
 Depending on the plugin, you may need to restart the Jenkins instance for the plugin to take affect:
 
-Package installation method:
-
 ```ruby
 jenkins_plugin 'a_complicated_plugin' do
   notifies :restart, 'service[jenkins]', :immediately
-end
-```
-
-War installation method:
-
-```ruby
-jenkins_plugin 'a_complicated_plugin' do
-  notifies :restart, 'runit_service[jenkins]', :immediately
 end
 ```
 
@@ -361,7 +503,7 @@ jenkins_plugin 'greenballs' do
 end
 ```
 
-**NOTE** You may need to restart Jenkins after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins infrastructure differently) this LWRP does **NOT** restart Jenkins for you.
+**NOTE** You may need to restart Jenkins after changing a plugin. Because this varies on a case-by-case basis (and because everyone chooses to manage their Jenkins infrastructure differently) this resource does **NOT** restart Jenkins for you.
 
 ### jenkins_slave
 
@@ -418,6 +560,9 @@ jenkins_jnlp_slave 'smoke' do
   in_demand_delay 1
   idle_delay      3
   labels          ['runner', 'fast']
+
+  # List of groups to run the slave service under
+  service_groups  ['jenkins', 'docker']
 end
 
 # Create a slave with a full environment
@@ -619,22 +764,27 @@ node.normal['jenkins']['executor']['proxy'] = '1.2.3.4:5678'
 
 Please see the [Contributing](CONTRIBUTING.md) and [Testing](TESTING.md) Guidelines.
 
-## Maintainers
+## Contributors
 
-This cookbook is maintained by Chef's Community Cookbook Engineering team. Our goal is to improve cookbook quality and to aid the community in contributing to cookbooks. To learn more about our team, process, and design goals see our [team documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/COOKBOOK_TEAM.MD). To learn more about contributing to cookbooks like this see our [contributing documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/CONTRIBUTING.MD), or if you have general questions about this cookbook come chat with us in #cookbok-engineering on the [Chef Community Slack](http://community-slack.chef.io/)
+This project exists thanks to all the people who [contribute.](https://opencollective.com/sous-chefs/contributors.svg?width=890&button=false)
 
-## License
+### Backers
 
-```text
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Thank you to all our backers!
 
-    http://www.apache.org/licenses/LICENSE-2.0
+![https://opencollective.com/sous-chefs#backers](https://opencollective.com/sous-chefs/backers.svg?width=600&avatarHeight=40)
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+### Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website.
+
+![https://opencollective.com/sous-chefs/sponsor/0/website](https://opencollective.com/sous-chefs/sponsor/0/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/1/website](https://opencollective.com/sous-chefs/sponsor/1/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/2/website](https://opencollective.com/sous-chefs/sponsor/2/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/3/website](https://opencollective.com/sous-chefs/sponsor/3/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/4/website](https://opencollective.com/sous-chefs/sponsor/4/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/5/website](https://opencollective.com/sous-chefs/sponsor/5/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/6/website](https://opencollective.com/sous-chefs/sponsor/6/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/7/website](https://opencollective.com/sous-chefs/sponsor/7/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/8/website](https://opencollective.com/sous-chefs/sponsor/8/avatar.svg?avatarHeight=100)
+![https://opencollective.com/sous-chefs/sponsor/9/website](https://opencollective.com/sous-chefs/sponsor/9/avatar.svg?avatarHeight=100)

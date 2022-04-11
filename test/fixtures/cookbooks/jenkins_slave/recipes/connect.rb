@@ -1,10 +1,19 @@
-include_recipe 'jenkins_server_wrapper::default'
+jenkins_ssh_slave 'ssh-to-connect' do
+  remote_fs   '/tmp/ssh-to-connect'
 
-# Include the disconnect recipe so we have something to connect
-include_recipe 'jenkins_slave::disconnect'
+  user        'jenkins-ssh-password'
+  # SSH specific attributes
+  host        'localhost'
+  credentials 'jenkins-ssh-password'
+  launch_timeout   node['jenkins_slave']['launch_timeout']
+  ssh_retries      5
+  ssh_wait_retries 60
+end
 
-%w(ssh-builder ssh-executor ssh-smoke).each do |name|
-  jenkins_slave name do
-    action :connect
-  end
+jenkins_slave 'ssh-to-connect' do
+  action :disconnect
+end
+
+jenkins_slave 'ssh-to-connect' do
+  action :connect
 end

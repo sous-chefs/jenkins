@@ -2,6 +2,204 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
+## 9.5.2 - *2022-03-28*
+
+- Fix permissions on reusable workflow
+
+## 9.5.1 - *2022-02-16*
+
+- Remove delivery and move to calling RSpec directly via a reusable workflow
+- Update tested platforms
+- Cookstyle fixes
+
+## 9.5.0 - *2021-09-13*
+
+- Add new attribute 'repository_name' to set the name of the repository
+
+## 9.4.0 - *2021-09-07*
+
+- add user and password to jenkins_proxy
+
+## 9.3.0 - *2021-08-31*
+
+- Add `jnlp_options` for Windows agents
+
+## 9.2.1 - *2021-08-30*
+
+- Standardise files with files in sous-chefs/repo-management
+- Various Cookstyle fixes
+
+## 9.2.0 - *2021-08-29*
+
+- Include yum-epel cookbook on RHEL platforms for new daemonize package dependency
+- Add new `update_center_sleep` attribute to set the time to wait for updates to quiesce in Jenkins
+
+## 9.1.0 - *2021-08-11*
+
+- Added option for jenkins-cli authentication with a credential file - [@amcappelli](https://github.com/amcappelli) and [@ddegoede](https://github.com/ddegoede)
+
+## 9.0.0 - *2021-07-19*
+
+- Remove runit dependency
+- Use systemd units instead of runit services
+
+### Breaking Changes / Deprecations
+
+- `jenkins_jnlp_slave`:
+  - Renamed `runit_groups` property to `service_groups`
+  - New service created -- old Runit service will need manual cleanup
+
+- `jenkins::_master_war`:
+  - New service created -- old Runit service will need manual cleanup
+
+## 8.2.3 - *2021-03-25*
+
+- Cookstyle fixes
+
+## 8.2.2 - *2021-03-10*
+
+- Allow setting of `JENKINS_ENABLE_ACCESS_LOG` for Rhel based controllers - [@mbaitelman](https://github.com/mbaitelman)
+
+## 8.2.1 - *2021-02-10*
+
+- Fix idempotency issue with `jenkins_user` when users have more than one public key
+
+## 8.2.0 - *2021-02-08*
+
+- Sous Chefs Adoption
+- Fix deprecation warnings
+- Cookstyle fixes
+- Install missing font packages
+- Remove Amazon Linux 1 and EL 6 testing
+- Allow anonymous admin access during testing
+- Add MAXOPENFILES to RHEL systems
+
+## 8.1.0 - *2020-12-01*
+
+- Fix the implementation of the cli user/password authentication method - [@ddegoede](https://github.com/ddegoede)
+
+## 8.0.4 - *2020-11-24*
+
+- Retry jenkins CLI command without authenticating after receiving an HTTP 401. - [@nuclearsandwich](https://github.com/nuclearsandwich)
+
+## 8.0.3 - *2020-11-23*
+
+- Remove touch command run as root from .war-based service definition - [@davidsainty](https://github.com/davidsainty)
+
+## 8.0.2 (2020-09-14)
+
+- jenkins_job: Dont quote param unnecessarily - [@mbaitelman](https://github.com/mbaitelman)
+
+## 8.0.1 (2020-08-27)
+
+- Remove .NET 2.0 from the Windows nodes as this is no longer supported by Jenkins- [@mbaitelman](https://github.com/mbaitelman)
+
+## 8.0.0 (2020-07-14)
+
+- Fixed groovy indentation errors in the generated code - [@ddegoede](https://github.com/ddegoede)
+- Set default CLI protocol attribute to http now that remoting is deprecated in newer Jenkins releases - [@rjbaker](https://github.com/rjbaker)
+- Adding support for SSH Slaves/SSH Build Agents plugin version >= 1.30 - [@joemillerr](https://github.com/joemillerr)
+- Added attribute value for directory mode for jenkins directories
+- Update resources so they can be found by chef 16 - [@codayblue](https://github.com/codayblue)
+- Remove support for EOL Ubuntu < 16.04 in the java recipe - [@tas50](https://github.com/tas50)
+- Update java recipe to install openjdk-1.8.0 on Debian - [@tas50](https://github.com/tas50)
+- resolved cookstyle error: spec/recipes/java_spec.rb:6:7 warning: `ChefDeprecations/DeprecatedChefSpecPlatform`
+- resolved cookstyle error: libraries/credentials_file.rb:91:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/credentials_secret_text.rb:114:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/credentials_user.rb:81:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/slave.rb:401:33 convention: `Style/HashEachMethods`
+- resolved cookstyle error: libraries/slave_jnlp.rb:64:14 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
+- resolved cookstyle error: libraries/slave_jnlp.rb:91:83 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
+- resolved cookstyle error: libraries/slave_jnlp.rb:95:17 warning: `ChefDeprecations/ChefWindowsPlatformHelper`
+
+## 7.1.2 (2020-03-05)
+
+- Add the actions back to the resources - [@tas50](https://github.com/tas50)
+- Add redundant name attributes - [@tas50](https://github.com/tas50)
+- Avoid chefspec deprecation warnings - [@tas50](https://github.com/tas50)
+
+## 7.1.1 (2020-03-05)
+
+- Simplify platform check logic - [@tas50](https://github.com/tas50)
+- Remove unnecessary foodcritic comments - [@tas50](https://github.com/tas50)
+- Cookstyle fixes - [@tas50](https://github.com/tas50)
+- Switch to install_adoptopenjdk resource in java cookbook 7.0 for testing - [@tas50](https://github.com/tas50)
+
+## 7.1.0 (2019-11-29)
+
+- Ajp13 Port from attributes - [@rnt](https://github.com/rnt)
+- Debug level for logs from attributes - [@rnt](https://github.com/rnt)
+- Maximum number of HTTP worker threads from attributes - [@rnt](https://github.com/rnt)
+- Maximum number of idle HTTP worker threads from attributes - [@rnt](https://github.com/rnt)
+- Fix typo in java.rb recipe. - [@jugatsu](https://github.com/jugatsu)
+- Auto accept Chef licenses when running tests - [@rjbaker](https://github.com/rjbaker)
+- Switch to openjdk in testing since Oracle jdk artifacts have been removed - [@rjbaker](https://github.com/rjbaker)
+- Cookstyle 5.10 fixes - [@tas50](https://github.com/tas50)
+- Additional cookstyle fixes - [@tas50](https://github.com/tas50)
+
+## 7.0.0 (2019-04-30)
+
+- Require Chef 13 or later - [@Stromweld](https://github.com/Stromweld)
+- Do not quote boolean parameters in the job resource - [@mbaitelman](https://github.com/mbaitelman)
+- Resolve ProviderNotFound error in jenkins_view resource - [@eitoball](https://github.com/eitoball)
+- Support installation on Debian 9 - [@mattray](https://github.com/mattray)
+- Wire up JENKINS_ENABLE_ACCESS_LOG to attributes in the config - [@mattray](https://github.com/mattray)
+- Fix the executor to -auth instead of --username, --password on the Jenkins CLI - Jakob Pfeiffer
+- JNLP slave is configured to not use all the groups of the jenkins user - [@jonathanan](https://github.com/jonathanan)
+- Update plugin resource to work with newer versions of Jenkins which handles dependencies and removes need for additional plugin method. This deprecated the install_deps property previously required  - [@Stromweld](https://github.com/Stromweld)
+
+## 6.2.1 (2018-11-14)
+
+- @josh-barker entirely rewrote our test suites. Suites have been consolidated, everything now passes, and all validation is performed with all new InSpec tests. Thanks Josh for this massive improvement.
+- Fix bug when remote plugin is not found in plugin universe
+- Fix broken delete action for jnlp slave
+- Fix cloning resources attributes for/var/lib/jenkins
+- Set httpKeepAliveTimeout to 5 minutes so that connections are not closed too early
+- Increase slave launch timeout to 2 minutes for slow systems
+- Add documentation about slave failure due to slow performance
+- Mark windows template sensitive if setting password, remove default '.' for windows users domain
+
+## 6.2.0 (2018-07-30)
+
+- Code improvement for custom plugin update centre
+- Don't fail on deprecations for now
+- Remove respond_to? on chef_version in metadata
+- Fix jenkins_view and jenkins_user resource errors
+
+## 6.1.0 (2018-07-24)
+
+- Added new jenkins_view resource
+- Added new jenkins_proxy resource
+- Allow jenkins_script to execute a groovy script on disk
+
+## 6.0.0 (2018-02-16)
+
+- Require Chef 12.14+ and remove compat_resource dependency
+
+## 5.0.6 (2018-01-15)
+
+- windows slave fixes
+
+## 5.0.5 (2017-11-22)
+
+- If the installed plugin version is a SNAPSHOT let it be instead of checking versions for updates
+- Allow Jenkins to read system environment variables
+- Fix permissions on /var/xxx/jenkins folders for Debian/CentOS
+- Plugins: User & Group should be read from attributes
+- Resolve Chef 13 failures by not passing new_resource into runit_service
+
+## 5.0.4 (2017-08-28)
+
+- Modified case statements to support package installation on Amazon Linux
+- Changes endpoint for 'wait_until_ready' helper
+- Fix permissions for plugin files downloaded from update center
+- Wait for Jenkins in case of EADDRNOTAVAIL
+- Change groovy scripts to use stdin instead of file. Fixes #620
+- And change test to expect new format
+- Ensure that we only reject the '-i key' part and not, for instance, parts that contain '-i' in larger strings.
+
 ## 5.0.3 (2017-07-04)
 
 - Removed mention of Amazon Linux support from the readme. We will support this in the future, but at the moment the cookbook does not actually support Amazon Linux
@@ -17,16 +215,18 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## 5.0.2 (2017-06-14)
 
-- Fix regex for falling back to anonymous for failed authentication 
+- Fix regex for falling back to anonymous for failed authentication
 
 ## 5.0.1 (2017-05-01)
 
 - Add -remoting option that is required due to [Jenkins issue](https://jenkins.io/blog/2017/04/26/security-advisory/). Attribute `['jenkins']['executor']['protocol']` has been added to allow for using the deprecated remoting option (default) or ssh/http in which attribute `['jenkins']['executor']['cli_user']` needs to be assigned.
 
 ## [5.0.0](https://github.com/chef-cookbooks/jenkins/tree/v5.0.0) (2017-03-08)
+
 [Full Changelog](https://github.com/chef-cookbooks/jenkins/compare/v4.2.1...v5.0.0)
 
-**Improvements**
+### Improvements
+
 - Add support for 2.x ([daften](https://github.com/daften))
 - Change default to stable, adding channel toggle [\#575](https://github.com/chef-cookbooks/jenkins/pull/575) ([cheeseplus](https://github.com/cheeseplus))
 - Use `dpkg_autostart` to prevent service from starting post install
@@ -59,12 +259,15 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Fix Issue #205 allow user groups of runit process owner
 
 ## 4.0.1 (2016-10-18)
+
 - Fix NotImplementedError by removing the use of the Chef::Resource::RESOURCENAME
 
 ## 4.0.0 (2016-10-17)
+
 - Changes how credentials are created, using the id rather than username to fix Issue #447
 
 ## 3.1.1 (2016-10-17)
+
 - Fix implicit argument passing of super Issue #524
 - Fix ECDSA check
 - include_recipe instead of using recipe_eval in slave_jnlp library

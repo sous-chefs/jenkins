@@ -1,21 +1,20 @@
-name             'jenkins'
-maintainer       'Chef Software, Inc.'
-maintainer_email 'cookbooks@chef.io'
-license          'Apache-2.0'
-description      'Installs and configures Jenkins CI master & slaves'
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '5.0.3'
+name              'jenkins'
+maintainer        'Sous Chefs'
+maintainer_email  'help@sous-chefs.org'
+license           'Apache-2.0'
+description       'Installs and configures Jenkins CI master & slaves'
+version           '9.5.2'
+source_url        'https://github.com/sous-chefs/jenkins'
+issues_url        'https://github.com/sous-chefs/jenkins/issues'
+chef_version      '>= 13.0'
 
-recipe 'jenkins::master', 'Installs a Jenkins master'
+supports 'amazon'
+supports 'centos'
+supports 'debian'
+supports 'oracle'
+supports 'redhat'
+supports 'scientific'
+supports 'ubuntu'
 
-%w(ubuntu debian redhat centos scientific oracle amazon).each do |os|
-  supports os
-end
-
-depends 'runit', '>= 1.7'
-depends 'compat_resource', '>= 12.16.3'
 depends 'dpkg_autostart'
-
-source_url 'https://github.com/chef-cookbooks/jenkins'
-issues_url 'https://github.com/chef-cookbooks/jenkins/issues'
-chef_version '>= 12.1' if respond_to?(:chef_version)
+depends 'yum-epel'

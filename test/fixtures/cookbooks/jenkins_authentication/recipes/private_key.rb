@@ -33,7 +33,8 @@ jenkins_script 'setup authentication' do
     def realm = new HudsonPrivateSecurityRealm(false)
     instance.setSecurityRealm(realm)
 
-    def strategy = new hudson.security.FullControlOnceLoggedInAuthorizationStrategy()
+    def strategy = new GlobalMatrixAuthorizationStrategy()
+    strategy.add(Jenkins.ADMINISTER, "anonymous")
     instance.setAuthorizationStrategy(strategy)
 
     instance.save()
