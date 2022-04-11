@@ -1,6 +1,3 @@
-include_recipe 'jenkins_server_wrapper::default'
-include_recipe 'jenkins_job::create'
-
 #########################################################################
 # execute simple job
 #########################################################################

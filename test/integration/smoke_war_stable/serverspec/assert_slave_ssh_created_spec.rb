@@ -1,1 +1,0 @@
-../../jenkins_slave_create/serverspec/assert_ssh_created_spec.rb

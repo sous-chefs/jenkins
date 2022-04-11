@@ -1,10 +1,10 @@
 #
 # Cookbook:: jenkins
-# HWRP:: script
+# Resource:: script
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2014-2017, Chef Software, Inc.
+# Copyright:: 2014-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,19 @@ require_relative 'command'
 
 class Chef
   class Resource::JenkinsScript < Resource::JenkinsCommand
-    resource_name :jenkins_script
+    resource_name :jenkins_script # Still needed for Chef 15 and below
+    provides :jenkins_script
+
+    # Chef attributes
+    identity_attr :name
+
+    attribute :groovy_path,
+      kind_of: String,
+      default: nil
+    attribute :name,
+      kind_of: String,
+      name_attribute: true,
+      required: false
 
     # Actions
     actions :execute
@@ -33,24 +45,26 @@ end
 
 class Chef
   class Provider::JenkinsScript < Provider::JenkinsCommand
-    use_inline_resources
     provides :jenkins_script
 
     def load_current_resource
-      @current_resource ||= Resource::JenkinsScript.new(new_resource.command)
+      if new_resource.groovy_path
+        @current_resource ||= Resource::JenkinsScript.new(new_resource.name)
+        @current_resource.name(new_resource.name)
+        @current_resource.groovy_path(new_resource.groovy_path)
+      else
+        @current_resource ||= Resource::JenkinsScript.new(new_resource.command)
+      end
       super
-    end
-
-    #
-    # This provider supports why-run mode.
-    #
-    def whyrun_supported?
-      true
     end
 
     action :execute do
       converge_by("Execute script #{new_resource}") do
-        executor.groovy!(new_resource.command)
+        if new_resource.groovy_path
+          executor.groovy_from_file!(new_resource.groovy_path)
+        else
+          executor.groovy!(new_resource.command)
+        end
       end
     end
   end

@@ -6,7 +6,7 @@
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
 # Copyright:: 2013-2016, Youscribe
-# Copyright:: 2014-2017, Chef Software, Inc.
+# Copyright:: 2014-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,26 +23,29 @@
 
 case node['platform_family']
 when 'debian'
-  package 'apt-transport-https'
+  package %w( apt-transport-https fontconfig )
 
-  apt_repository 'jenkins' do
+  apt_repository node['jenkins']['master']['repository_name'] do
     uri          node['jenkins']['master']['repository']
     distribution 'binary/'
     key          node['jenkins']['master']['repository_key']
-    unless node['jenkins']['master']['repository_keyserver'].nil?
-      keyserver    node['jenkins']['master']['repository_keyserver']
-    end
+    keyserver    node['jenkins']['master']['repository_keyserver'] unless node['jenkins']['master']['repository_keyserver'].nil?
   end
 
   dpkg_autostart 'jenkins' do
     allow false
   end
-when 'rhel'
-  yum_repository 'jenkins-ci' do
+when 'rhel', 'amazon'
+  # Needed for installing deamonize package
+  include_recipe 'yum-epel'
+
+  yum_repository node['jenkins']['master']['repository_name'] do
     baseurl node['jenkins']['master']['repository']
     gpgkey  node['jenkins']['master']['repository_key']
   end
 end
+
+package jenkins_font_packages
 
 package 'jenkins' do
   version node['jenkins']['master']['version']
@@ -51,8 +54,27 @@ end
 directory node['jenkins']['master']['home'] do
   owner     node['jenkins']['master']['user']
   group     node['jenkins']['master']['group']
+  mode      node['jenkins']['master']['mode']
+  recursive true
+end
+
+# Create the log directory
+directory node['jenkins']['master']['log_directory'] do
+  owner     node['jenkins']['master']['user']
+  group     node['jenkins']['master']['group']
   mode      '0755'
   recursive true
+end
+
+# Create/fix permissions on supplemental directories
+%w(cache lib run).each do |folder|
+  directory "fix permissions for /var/#{folder}/jenkins" do
+    path "/var/#{folder}/jenkins"
+    owner node['jenkins']['master']['user']
+    group node['jenkins']['master']['group']
+    mode node['jenkins']['master']['mode']
+    action :create
+  end
 end
 
 case node['platform_family']
@@ -62,7 +84,7 @@ when 'debian'
     mode     '0644'
     notifies :restart, 'service[jenkins]', :immediately
   end
-when 'rhel'
+when 'rhel', 'amazon'
   template '/etc/sysconfig/jenkins' do
     source   'jenkins-config-rhel.erb'
     mode     '0644'

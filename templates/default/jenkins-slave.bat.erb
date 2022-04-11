@@ -1,4 +1,0 @@
-<% for @arg in @pre_run_cmds -%>
-  <%= @arg %>
-<% end -%>
-"<%= @java_bin %>" -Xrs <%= @new_resource.jvm_options %> -jar "<%= @slave_jar %>" -jnlpUrl <%= @jnlp_url %> <%= @jnlp_secret.nil? ? '' : "-secret #{@jnlp_secret}" %> -jar-cache <%= @new_resource.remote_fs %>\cache

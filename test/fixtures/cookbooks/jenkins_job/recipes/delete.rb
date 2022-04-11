@@ -1,10 +1,13 @@
-include_recipe 'jenkins_server_wrapper::default'
+config = File.join(Chef::Config[:file_cache_path], 'simple-execute.xml')
 
-# Include the create recipe so we have something to delete
-include_recipe 'jenkins_job::create'
+# Test basic job creation
+jenkins_job 'delete-simple-execute' do
+  config config
+  action :create
+end
 
 # Test basic job deletion
-jenkins_job 'simple-execute' do
+jenkins_job 'delete-simple-execute' do
   action :delete
 end
 

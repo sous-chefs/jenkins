@@ -4,7 +4,7 @@
 #
 # Author:: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 require 'mixlib/shellout'
 require 'shellwords'
 require 'tempfile'
-require 'uri'
+require 'addressable/uri'
 
 module Jenkins
   class Executor
@@ -50,8 +50,8 @@ module Jenkins
     #
     def initialize(options = {})
       @options = {
-        cli:     '/usr/share/jenkins/cli/java/cli.jar',
-        java:    'java',
+        cli: '/usr/share/jenkins/cli/java/cli.jar',
+        java: 'java',
         timeout: 60,
       }.merge(options)
     end
@@ -72,14 +72,15 @@ module Jenkins
       command << %("#{options[:java]}")
       command << options[:jvm_options].to_s if options[:jvm_options]
       command << %(-jar "#{options[:cli]}")
-      command << %(-s #{URI.escape(options[:endpoint])}) if options[:endpoint]
+      command << %(-s #{Addressable::URI.escape(options[:endpoint])}) if options[:endpoint]
       command << %(-#{options[:protocol]})               if options[:protocol]
       command << %(-user "#{options[:cli_user]}")        if options[:cli_user]
       command << %(-i "#{options[:key]}")                if options[:key]
       command << %(-p #{uri_escape(options[:proxy])})    if options[:proxy]
-      command.push(pieces)
-      command << %(--username "#{options[:username]}")   if options[:username]
-      command << %(--password "#{options[:password]}")   if options[:password]
+      command << %(-auth #{options[:cli_username]}:#{options[:cli_password]}) if options[:cli_username] && options[:cli_password]
+      command << %(-auth "#{options[:username]}":"#{options[:password]}") if options[:username] && options[:password]
+      command << %(-auth @#{options[:cli_credential_file]}) if options[:cli_credential_file] && File.file?(options[:cli_credential_file])
+      command.push(*pieces)
 
       begin
         cmd = Mixlib::ShellOut.new(command.join(' '), command_options.merge(timeout: options[:timeout]))
@@ -101,10 +102,12 @@ module Jenkins
         if ((exitstatus == 255) && (stderr =~ /.*?Authentication failed\. No private key accepted\.$/)) ||
            ((exitstatus == 255) && (stderr =~ /^java\.io\.EOFException/)) ||
            ((exitstatus == 1) && (stderr =~ /^Exception in thread "main" java\.io\.EOFException/))
-          command.reject! { |c| c =~ /-i/ }
+          command.reject! { |c| c =~ /^-i / }
           retry
         elsif (exitstatus == 255) && (stderr =~ /^"--username" is not a valid option/)
           command.reject! { |c| c =~ /--username|--password/ }
+        elsif (exitstatus == 255) && (stderr =~ /java.io.IOException: Server returned HTTP response code: 401/)
+          command.reject! { |c| c =~ /-auth/ }
           retry
         end
         raise
@@ -134,12 +137,7 @@ module Jenkins
     #   the standard out from the command
     #
     def groovy!(script)
-      file = Tempfile.new('groovy')
-      file.write script
-      file.flush
-      execute!("groovy #{file.path}")
-    ensure
-      file.close! if file
+      execute!('groovy =', input: script)
     end
 
     #
@@ -148,12 +146,11 @@ module Jenkins
     # @see groovy!
     #
     def groovy(script)
-      file = Tempfile.new('groovy')
-      file.write script
-      file.flush
-      execute("groovy #{file.path}")
-    ensure
-      file.close! if file
+      execute('groovy =', input: script)
+    end
+
+    def groovy_from_file!(path)
+      execute!("groovy #{path}")
     end
 
     private
@@ -178,7 +175,7 @@ module Jenkins
     # @return [String]
     #
     def uri_escape(string)
-      URI.escape(string)
+      Addressable::URI.escape(string)
     end
   end
 end

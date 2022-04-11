@@ -1,10 +1,11 @@
-include_recipe 'jenkins_server_wrapper::default'
+jenkins_ssh_slave 'ssh-to-delete' do
+  action :create
+end
 
-# Include the create recipe so we have something to delete
-include_recipe 'jenkins_slave::create_ssh'
+jenkins_ssh_slave 'ssh-to-delete' do
+  action :delete
+end
 
-%w(ssh-builder ssh-executor ssh-smoke).each do |name|
-  jenkins_ssh_slave name do
-    action :delete
-  end
+jenkins_ssh_slave 'ssh-missing' do
+  action :delete
 end

@@ -4,7 +4,7 @@
 #
 # Author: Seth Vargo <sethvargo@chef.io>
 #
-# Copyright:: 2014-2017, Chef Software, Inc.
+# Copyright:: 2014-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,16 +33,12 @@
 # complex scenario, that is outside the scope of this cookbook.
 #
 
-Chef::Log.warn('The jenkins::java recipe has been deprecated. We recommend adding the Java coobook to the runlist of your jenkins node instead as it provides more tuneables')
+Chef::Log.warn('The jenkins::java recipe has been deprecated. We recommend adding the Java cookbook to the runlist of your jenkins node instead as it provides more tuneables')
 
 case node['platform_family']
 when 'debian'
-  if node['platform'] == 'ubuntu' && Chef::VersionConstraint.new('>= 15.10').include?(node['platform_version'])
-    package 'openjdk-8-jdk'
-  else
-    package 'openjdk-7-jdk'
-  end
-when 'rhel'
+  package 'openjdk-8-jdk'
+when 'rhel', 'amazon', 'fedora'
   package 'java-1.8.0-openjdk'
 else
   raise "`#{node['platform_family']}' is not supported!"

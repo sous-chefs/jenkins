@@ -1,10 +1,10 @@
 #
 # Cookbook:: jenkins
-# HWRP:: ssh_slave
+# Resource:: ssh_slave
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ require_relative 'credentials'
 
 class Chef
   class Resource::JenkinsSshSlave < Resource::JenkinsSlave
-    resource_name :jenkins_ssh_slave
+    resource_name :jenkins_ssh_slave # Still needed for Chef 15 and below
+    provides :jenkins_ssh_slave
 
     # Actions
     actions :create, :delete, :connect, :disconnect, :online, :offline
@@ -37,7 +38,7 @@ class Chef
               kind_of: Integer,
               default: 22
     attribute :credentials,
-              kind_of: [Resource::JenkinsCredentials, String]
+              kind_of: [String, Resource::JenkinsCredentials]
     attribute :command_prefix,
               kind_of: String
     attribute :command_suffix,
@@ -55,7 +56,7 @@ class Chef
     #
     # * username which maps to a valid Jenkins credentials instance.
     # * UUID of a Jenkins credentials instance.
-    # * A `Chef::Resource::JenkinsCredentials` instnace.
+    # * A `Chef::Resource::JenkinsCredentials` instance.
     #
     # @return [String]
     #
@@ -71,7 +72,6 @@ end
 
 class Chef
   class Provider::JenkinsSshSlave < Provider::JenkinsSlave
-    use_inline_resources
     provides :jenkins_ssh_slave
 
     def load_current_resource
@@ -101,20 +101,22 @@ class Chef
     # @see https://github.com/jenkinsci/ssh-slaves-plugin/blob/master/src/main/java/hudson/plugins/sshslaves/SSHLauncher.java
     #
     def launcher_groovy
-      <<-EOH.gsub(/ ^{8}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
+        import hudson.plugins.sshslaves.verifiers.*
         #{credential_lookup_groovy('credentials')}
         launcher =
           new hudson.plugins.sshslaves.SSHLauncher(
             #{convert_to_groovy(new_resource.host)},
             #{convert_to_groovy(new_resource.port)},
-            credentials,
+            #{convert_to_groovy(new_resource.credentials)},
             #{convert_to_groovy(new_resource.jvm_options)},
             #{convert_to_groovy(new_resource.java_path)},
             #{convert_to_groovy(new_resource.command_prefix)},
             #{convert_to_groovy(new_resource.command_suffix)},
             #{convert_to_groovy(new_resource.launch_timeout)},
             #{convert_to_groovy(new_resource.ssh_retries)},
-            #{convert_to_groovy(new_resource.ssh_wait_retries)}
+            #{convert_to_groovy(new_resource.ssh_wait_retries)},
+            new ManuallyTrustedKeyVerificationStrategy(false)
           )
       EOH
     end
@@ -149,7 +151,7 @@ class Chef
     # @return [String]
     #
     def credential_lookup_groovy(groovy_variable_name = 'credentials_id')
-      <<-EOH.gsub(/ ^{10}/, '')
+      <<-EOH.gsub(/^ {8}/, '')
         #{credentials_for_id_groovy(new_resource.parsed_credentials, groovy_variable_name)}
       EOH
     end

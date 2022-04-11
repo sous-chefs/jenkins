@@ -1,0 +1,128 @@
+driver:
+  name: vagrant
+  customize:
+    cpus: 2
+    memory: 1024
+  network:
+    # Allow access to the Jenkins webui which is useful when troubleshooting
+    - - forwarded_port
+      - guest: 8080
+        host: 9090
+        auto_correct: true
+
+provisioner:
+  name: chef_infra
+  data_path: test/fixtures/keys
+  data_bags_path: test/fixtures/data_bags
+  deprecations_as_errors: true
+  attributes:
+    jenkins:
+      master:
+        host: localhost
+        install_method: package
+        mirror: https://updates.jenkins.io
+        # This is to help slaves to connect to the master
+        # Sometimes with slow performance the connection is dropped/cut too early
+        # 30 seconds was too low, so I bumped it to 5 minutes
+        # https://issues.jenkins-ci.org/browse/JENKINS-38623
+        jenkins_args: '--httpKeepAliveTimeout=300000'
+        # This it to help issues we run into on the CI systems
+        update_center_sleep: 10
+
+platforms:
+  - name: almalinux-8
+  - name: amazonlinux-2
+  - name: centos-7
+  - name: centos-stream-8
+  - name: debian-10
+  - name: debian-11
+  - name: rockylinux-8
+  - name: ubuntu-18.04
+  - name: ubuntu-20.04
+  - name: windows-2016
+    driver:
+      box: tas50/windows_2016
+  - name: windows-2019
+    driver:
+      box: tas50/windows_2019
+
+verifier:
+  name: inspec
+
+suites:
+  - name: smoke_package_stable
+    run_list:
+      - jenkins_smoke::default
+    attributes:
+      jenkins:
+        master:
+          install_method: package
+    excludes:
+      - windows-2012r2
+      - windows-2016
+      - windows-2019
+
+  - name: smoke_package_current
+    run_list:
+      - jenkins_smoke::default
+    attributes:
+      jenkins:
+        master:
+          channel: current
+          install_method: package
+    excludes:
+      - windows-2012r2
+      - windows-2016
+      - windows-2019
+
+  - name: smoke_war_stable
+    run_list:
+      - jenkins_smoke::default
+    attributes:
+      jenkins:
+        master:
+          install_method: war
+          source: https://updates.jenkins.io/stable/latest/jenkins.war
+
+  - name: smoke_war_latest
+    run_list: jenkins_smoke::default
+    attributes:
+      jenkins:
+        master:
+          install_method: war
+          source: https://updates.jenkins.io/latest/jenkins.war
+
+  #
+  # Authentication suites
+  #
+  - name: authentication_private_key  # Tested in smoke suite
+    run_list:
+      - jenkins_authentication::private_key
+
+  - name: authentication_username_password
+    run_list:
+      - jenkins_authentication::username_password
+    excludes:
+      - windows-2012r2
+      - windows-2016
+      - windows-2019
+
+  - name: authentication_credential_file
+    run_list:
+      - jenkins_authentication::credential_file
+    excludes:
+      - windows-2012r2
+      - windows-2016
+      - windows-2019
+
+  #
+  # Proxy suites
+  # Cannot be tested together
+  # As the proxy settings are global
+  #
+  - name: jenkins_proxy_config  # Tested in smoke suite
+    run_list:
+      - jenkins_proxy::config
+  - name: jenkins_proxy_remove
+    run_list:
+      - jenkins_proxy::remove

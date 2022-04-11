@@ -4,7 +4,7 @@
 #
 # Author: Seth Vargo <sethvargo@gmail.com>
 #
-# Copyright:: 2013-2017, Chef Software, Inc.
+# Copyright:: 2013-2019, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,9 +52,9 @@ default['jenkins']['executor'].tap do |executor|
   executor['jvm_options'] = nil
 
   #
-  # CLI protocol [ssh|http|remoting]
+  # CLI protocol [ssh|http]
   #
-  executor['protocol'] = 'remoting'
+  executor['protocol'] = 'http'
 
   #
   # CLI user to pass for ssh/https protocol
