@@ -40,7 +40,7 @@ default['jenkins']['master'].tap do |master|
   # file to download from the Jenkins mirror.
   #
   # The current default is the last version of Jenkins which uses sysvinit scripts instead of systemd units.
-  master['version'] = 2.319.3
+  master['version'] = '2.319.3'
 
   #
   # The "channel" to use, default is stable
