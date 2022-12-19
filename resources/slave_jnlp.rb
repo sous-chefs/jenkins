@@ -1,5 +1,5 @@
 unified_mode true
-use '_partials/slave'
+use 'partials/slave'
 
 property :group, String,
           default: 'jenkins',

@@ -1,6 +1,6 @@
 unified_mode true
-use '_partials/slave'
-use '_partials/credentials'
+use 'partials/slave'
+use 'partials/credentials'
 
 property :host,
           String
@@ -8,7 +8,8 @@ property :port,
           Integer,
           default: 22
 property :credentials,
-          [String, Resource::JenkinsCredentials]
+         String
+          # [String, Resource::JenkinsCredentials]
 property :command_prefix,
           String
 property :command_suffix,

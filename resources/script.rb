@@ -1,5 +1,5 @@
 # require_relative 'command'
-use 'partial/_command'
+use 'partials/_command'
 unified_mode true
 
 property :groovy_path,
