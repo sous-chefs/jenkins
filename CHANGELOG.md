@@ -9,6 +9,14 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Move credentials_file to a custom resource
 - Add the credentials partial for reuse for all credentials resources
 
+## 9.5.4 - *2022-12-08*
+
+- Standardise files with files in sous-chefs/repo-management
+
+## 9.5.3 - *2022-12-02*
+
+- Standardise files with files in sous-chefs/repo-management
+
 ## 9.5.2 - *2022-03-28*
 
 - Fix permissions on reusable workflow
