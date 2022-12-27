@@ -51,6 +51,11 @@ package 'jenkins' do
   version node['jenkins']['master']['version']
 end
 
+service 'jenkins' do
+  supports status: true, restart: true, reload: true
+  action [:enable, :start]
+end
+
 directory node['jenkins']['master']['home'] do
   owner     node['jenkins']['master']['user']
   group     node['jenkins']['master']['group']
@@ -90,9 +95,4 @@ when 'rhel', 'amazon'
     mode     '0644'
     notifies :restart, 'service[jenkins]', :immediately
   end
-end
-
-service 'jenkins' do
-  supports status: true, restart: true, reload: true
-  action [:enable, :start]
 end
