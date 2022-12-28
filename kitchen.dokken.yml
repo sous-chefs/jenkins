@@ -1,7 +1,7 @@
 driver:
   name: dokken
   privileged: true  # because Docker and SystemD
-  chef_version: <%= ENV['CHEF_VERSION'] || 'current' %>
+  chef_version: <%= ENV['CHEF_VERSION'] || '17' %>
   env: [CHEF_LICENSE=accept]
   ## Uncomment to allow access to the Jenkins webui which is useful when troubleshooting
   # ports:

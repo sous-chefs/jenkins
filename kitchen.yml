@@ -1,5 +1,6 @@
 driver:
   name: vagrant
+  chef_version: <%= ENV['CHEF_VERSION'] || '17' %>
   customize:
     cpus: 2
     memory: 1024

@@ -16,13 +16,13 @@ This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of
 
 ### Platforms
 
-- Debian 9+
+- Debian 10+
 - Ubuntu 18.04+
 - RHEL/CentOS 7+
 
 ### Chef
 
-- Chef 13.0+
+- Chef 13.0+, < 18.0
 
 #### Java cookbook
 

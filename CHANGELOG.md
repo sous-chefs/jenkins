@@ -5,6 +5,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 ## Unreleased
 
 - Pin the last version of Jenkins LTS which uses sysvinit scripts that this cookbook expects.
+- Use Chef 17 or lower due to multiple issues
 
 ## 9.5.4 - *2022-12-08*
 
