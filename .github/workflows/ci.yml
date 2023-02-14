@@ -23,35 +23,35 @@ jobs:
     strategy:
       matrix:
         os:
-          - 'almalinux-8'
-          - 'amazonlinux-2'
-          - 'centos-7'
-          - 'centos-stream-8'
-          - 'debian-10'
+          - "almalinux-8"
+          - "amazonlinux-2"
+          - "centos-7"
+          - "centos-stream-8"
+          - "debian-10"
           # TODO: Not working and needs to be fixed
           # - 'debian-11'
-          - 'rockylinux-8'
-          - 'ubuntu-1804'
-          - 'ubuntu-2004'
+          - "rockylinux-8"
+          - "ubuntu-1804"
+          - "ubuntu-2004"
         suite:
-          - 'smoke-package-stable'
-          - 'smoke-package-current'
-          - 'smoke-war-stable'
-          - 'smoke-war-latest'
-          - 'authentication-private-key'
-          - 'authentication-username-password'
-          - 'authentication-credential-file'
-          - 'jenkins-proxy-config'
-          - 'jenkins-proxy-remove'
+          - "smoke-package-stable"
+          - "smoke-package-current"
+          - "smoke-war-stable"
+          - "smoke-war-latest"
+          - "authentication-private-key"
+          - "authentication-username-password"
+          - "authentication-credential-file"
+          - "jenkins-proxy-config"
+          - "jenkins-proxy-remove"
       fail-fast: false
 
     steps:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Install Chef
-        uses: actionshub/chef-install@main
+        uses: actionshub/chef-install@2.0.4
       - name: Dokken
-        uses: actionshub/test-kitchen@main
+        uses: actionshub/test-kitchen@2.1.0
         env:
           CHEF_LICENSE: accept-no-persist
           KITCHEN_LOCAL_YAML: kitchen.dokken.yml
@@ -61,6 +61,6 @@ jobs:
       - name: Print debug output on failure
         if: failure()
         run: |
-            set -x
-            sudo journalctl -l --since today
-            KITCHEN_LOCAL_YAML=kitchen.dokken.yml /usr/bin/kitchen exec ${{ matrix.suite }}-${{ matrix.os }} -c "journalctl -l"
+          set -x
+          sudo journalctl -l --since today
+          KITCHEN_LOCAL_YAML=kitchen.dokken.yml /usr/bin/kitchen exec ${{ matrix.suite }}-${{ matrix.os }} -c "journalctl -l"
