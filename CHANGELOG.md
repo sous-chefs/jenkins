@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+Standardise files with files in sous-chefs/repo-management
+
 ## 9.5.5 - *2023-02-14*
 
 - Require Chef 15.3 for custom resources unified_mode
