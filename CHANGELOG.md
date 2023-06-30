@@ -10,37 +10,37 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## 9.5.12 - *2023-04-07*
 
-Standardise files with files in sous-chefs/repo-management
+- Standardise files with files in sous-chefs/repo-management
 
 ## 9.5.11 - *2023-04-01*
 
 ## 9.5.10 - *2023-03-02*
 
-Standardise files with files in sous-chefs/repo-management
+- Standardise files with files in sous-chefs/repo-management
 
 ## 9.5.9 - *2023-02-20*
 
-Standardise files with files in sous-chefs/repo-management
+- Standardise files with files in sous-chefs/repo-management
 
 ## 9.5.8 - *2023-02-16*
 
-Standardise files with files in sous-chefs/repo-management
+- Standardise files with files in sous-chefs/repo-management
 
 ## 9.5.7 - *2023-02-15*
 
 ## 9.5.6 - *2023-02-15*
 
-Standardise files with files in sous-chefs/repo-management
+- Standardise files with files in sous-chefs/repo-management
 
 ## 9.5.5 - *2023-02-14*
 
 ## 9.5.4 - *2022-12-08*
 
-Standardise files with files in sous-chefs/repo-management
+- Standardise files with files in sous-chefs/repo-management
 
 ## 9.5.3 - *2022-12-02*
 
-Standardise files with files in sous-chefs/repo-management
+- Standardise files with files in sous-chefs/repo-management
 
 ## 9.5.2 - *2022-03-28*
 
