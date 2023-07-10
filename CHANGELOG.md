@@ -2,6 +2,8 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
 ## 9.5.15 - *2023-07-10*
 
 ## 9.5.14 - *2023-05-17*
