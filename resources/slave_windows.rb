@@ -1,64 +1,33 @@
-#
-# Cookbook:: jenkins
-# Resource:: windows_slave
-#
-# Author:: Seth Chisamore <schisamo@chef.io>
-#
-# Copyright:: 2013-2019, Chef Software, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
 require_relative 'slave'
 require_relative 'slave_jnlp'
+use 'partials/_jnlp_slave'
 
-class Chef
-  class Resource::JenkinsWindowsSlave < Resource::JenkinsJnlpSlave
-    resource_name :jenkins_windows_slave # Still needed for Chef 15 and below
-    provides :jenkins_windows_slave
-
-    # Actions
-    actions :create, :delete, :connect, :disconnect, :online, :offline
-    default_action :create
-
-    # Attributes
-    attribute :password,
-              kind_of: String
-    attribute :user,
-              kind_of: String,
-              default: 'LocalSystem'
-    attribute :remote_fs,
-              kind_of: String,
-              default: 'C:\jenkins'
-    attribute :winsw_url,
-              kind_of: String,
-              default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.17/winsw-1.17-bin.exe'
-    attribute :winsw_checksum,
-              kind_of: String,
-              default: '5859b114d96800a2b98ef9d19eaa573a786a422dad324547ef25be181389df01'
-    attribute :path,
-              kind_of: String
-    attribute :pre_run_cmds,
-              kind_of: Array,
-              default: []
-    attribute :jnlp_options,
-              kind_of: String
-  end
-end
+property :password,
+          String
+property :user,
+          String,
+          default: 'LocalSystem'
+property :remote_fs,
+          String,
+          default: 'C:\jenkins'
+property :winsw_url,
+          String,
+          default: 'http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/1.17/winsw-1.17-bin.exe'
+property :winsw_checksum,
+          String,
+          default: '5859b114d96800a2b98ef9d19eaa573a786a422dad324547ef25be181389df01'
+property :path,
+          String
+property :pre_run_cmds,
+          Array,
+          default: []
+property :jnlp_options,
+          String
 
 class Chef
   class Provider::JenkinsWindowsSlave < Provider::JenkinsJnlpSlave
     provides :jenkins_windows_slave, platform: %w(windows)
+    unified_mode true
 
     def load_current_resource
       @current_resource ||= Resource::JenkinsWindowsSlave.new(new_resource.name)

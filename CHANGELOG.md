@@ -46,6 +46,11 @@ Update Jenkins apt/rpm repository key urls.
 
 ## 9.5.5 - *2023-02-14*
 
+- Require Chef 15.3 for custom resources unified_mode
+- Require Chef 16 for resource partials
+- Move credentials_file to a custom resource
+- Add the credentials partial for reuse for all credentials resources
+
 ## 9.5.4 - *2022-12-08*
 
 - Standardise files with files in sous-chefs/repo-management
@@ -98,8 +103,8 @@ Update Jenkins apt/rpm repository key urls.
 ### Breaking Changes / Deprecations
 
 - `jenkins_jnlp_slave`:
-  - Renamed `runit_groups` property to `service_groups`
-  - New service created -- old Runit service will need manual cleanup
+   - Renamed `runit_groups` property to `service_groups`
+   - New service created -- old Runit service will need manual cleanup
 
 - `jenkins::_master_war`:
   - New service created -- old Runit service will need manual cleanup
@@ -537,22 +542,22 @@ s
 - Remove old TODO file
 - Refactor attributes into semantic groupings and namespaces
 
-  - `jenkins.cli` has been removed
-  - `jenkins.java_home` has been changed to `jenkins.java` and accepts the full path to the java binary, not the JAVA_HOME
-  - `jenkins.iptables_allow` has been removed
-  - `jenkins.mirror` -> `jenkins.master.mirror`
-  - `jenkins.executor` created
-  - `jenkins.executor.timeout` created
-  - `jenkins.executor.private_key` created
-  - `jenkins.executor.proxy` created
-  - `jenkins.master` created and only refers to the Jenkins master installation
-  - `jenkins.master.source` created to refer to the full URL of the war download
-  - `jenkins.master.jvm_options` created
-  - `jenkins.master.jenkins_args` added
-  - `jenkins.master.url` -> `jenkins.master.endpoint`
-  - `jenkins.master.log_directory` created
-  - `jenkins.node` attributes have all been removed
-  - `jenkins.server` attributes have all been removed
+   - `jenkins.cli` has been removed
+   - `jenkins.java_home` has been changed to `jenkins.java` and accepts the full path to the java binary, not the JAVA_HOME
+   - `jenkins.iptables_allow` has been removed
+   - `jenkins.mirror` -> `jenkins.master.mirror`
+   - `jenkins.executor` created
+   - `jenkins.executor.timeout` created
+   - `jenkins.executor.private_key` created
+   - `jenkins.executor.proxy` created
+   - `jenkins.master` created and only refers to the Jenkins master installation
+   - `jenkins.master.source` created to refer to the full URL of the war download
+   - `jenkins.master.jvm_options` created
+   - `jenkins.master.jenkins_args` added
+   - `jenkins.master.url` -> `jenkins.master.endpoint`
+   - `jenkins.master.log_directory` created
+   - `jenkins.node` attributes have all been removed
+   - `jenkins.server` attributes have all been removed
 
 - Removed Chef MiniTest handler
 - Created a new executor class for running commands through the CLI
