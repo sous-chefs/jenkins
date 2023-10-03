@@ -4,6 +4,8 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+Update Jenkins apt/rpm repository key urls.
+
 ## 9.5.18 - *2023-09-28*
 
 ## 9.5.17 - *2023-09-28*

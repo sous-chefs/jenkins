@@ -251,13 +251,13 @@ default['jenkins']['master'].tap do |master|
   master['repository_name'], master['repository'], master['repository_key'] =
     case [node['platform_family'], node['jenkins']['master']['channel']]
     when %w(debian stable)
-      ['jenkins-ci-stable', 'https://pkg.jenkins.io/debian-stable', 'https://pkg.jenkins.io/debian-stable/jenkins.io.key']
+      ['jenkins-ci-stable', 'https://pkg.jenkins.io/debian-stable', 'https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key']
     when %w(rhel stable), %w(amazon stable)
-      ['jenkins-ci-stable', 'https://pkg.jenkins.io/redhat-stable', 'https://pkg.jenkins.io/redhat-stable/jenkins.io.key']
+      ['jenkins-ci-stable', 'https://pkg.jenkins.io/redhat-stable', 'https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key']
     when %w(debian current)
-      ['jenkins-ci-current', 'https://pkg.jenkins.io/debian', 'https://pkg.jenkins.io/debian/jenkins.io.key']
+      ['jenkins-ci-current', 'https://pkg.jenkins.io/debian', 'https://pkg.jenkins.io/debian/jenkins.io-2023.key']
     when %w(rhel current), %w(amazon current)
-      ['jenkins-ci-current', 'https://pkg.jenkins.io/redhat', 'https://pkg.jenkins.io/redhat/jenkins.io.key']
+      ['jenkins-ci-current', 'https://pkg.jenkins.io/redhat', 'https://pkg.jenkins.io/redhat/jenkins.io-2023.key']
     end
 
   #
