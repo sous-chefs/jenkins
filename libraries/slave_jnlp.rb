@@ -85,13 +85,13 @@ class Chef
         action :create
       end
 
-      declare_resource(:remote_file, slave_jar).tap do |r|
-        # We need to use .tap() to access methods in the provider's scope.
-        r.source slave_jar_url
-        r.backup(false)
-        r.mode('0755')
-        r.atomic_update(false)
-        r.notifies :restart, "systemd_unit[#{new_resource.service_name}.service]" unless platform?('windows')
+      u = slave_jar_url
+      declare_resource(:remote_file, slave_jar) do
+        source(u)
+        backup(false)
+        mode('0755')
+        atomic_update(false)
+        notifies :restart, "systemd_unit[#{new_resource.service_name}.service]" unless platform?('windows')
       end
 
       # The Windows's specific child class manages it's own service
