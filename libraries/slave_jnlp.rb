@@ -97,28 +97,6 @@ class Chef
       # The Windows's specific child class manages it's own service
       return if platform?('windows')
 
-      # disable runit services before starting new service
-      # TODO: remove in future version
-
-      %W(
-        /etc/init.d/#{new_resource.service_name}
-        /etc/service/#{new_resource.service_name}
-      ).each do |f|
-        file f do
-          action :delete
-          notifies :stop, "service[#{new_resource.service_name}]", :before
-        end
-      end
-
-      # runit_service = if platform_family?('debian')
-      #                   'runit'
-      #                 else
-      #                   'runsvdir-start'
-      #                 end
-      # service runit_service do
-      #   action [:stop, :disable]
-      # end
-
       exec_string = "#{java} #{new_resource.jvm_options}"
       exec_string << " -jar #{slave_jar}" if slave_jar
       exec_string << " -secret #{jnlp_secret}" if jnlp_secret
