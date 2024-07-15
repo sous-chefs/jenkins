@@ -199,6 +199,7 @@ class Chef
 
         builder = new groovy.json.JsonBuilder(output)
         println(builder)
+        out.flush()
       EOH
       output = JSON.parse(json, symbolize_names: true)
       @jnlp_secret = output[:secret]
