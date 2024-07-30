@@ -1,20 +1,10 @@
 driver:
   name: dokken
-  privileged: true  # because Docker and SystemD
+  privileged: true
   chef_version: <%= ENV['CHEF_VERSION'] || 'current' %>
-  env: [CHEF_LICENSE=accept]
-  ## Uncomment to allow access to the Jenkins webui which is useful when troubleshooting
-  # ports:
-  #   - 8080:8080
 
-transport:
-  name: dokken
-
-provisioner:
-  name: dokken
-
-verifier:
-  name: inspec
+transport: { name: dokken }
+provisioner: { name: dokken }
 
 platforms:
   - name: almalinux-8
@@ -22,47 +12,72 @@ platforms:
       image: dokken/almalinux-8
       pid_one_command: /usr/lib/systemd/systemd
 
-  - name: amazonlinux-2
+  - name: almalinux-9
     driver:
-      image: dokken/amazonlinux-2
+      image: dokken/almalinux-9
       pid_one_command: /usr/lib/systemd/systemd
 
-  - name: debian-10
+  - name: amazonlinux-2023
     driver:
-      image: dokken/debian-10
-      pid_one_command: /bin/systemd
+      image: dokken/amazonlinux-2023
+      pid_one_command: /usr/lib/systemd/systemd
+
+  - name: centos-stream-9
+    driver:
+      image: dokken/centos-stream-9
+      pid_one_command: /usr/lib/systemd/systemd
 
   - name: debian-11
     driver:
       image: dokken/debian-11
       pid_one_command: /bin/systemd
 
-  - name: centos-7
+  - name: debian-12
     driver:
-      image: dokken/centos-7
-      pid_one_command: /usr/lib/systemd/systemd
-
-  - name: centos-stream-8
-    driver:
-      image: dokken/centos-stream-8
-      pid_one_command: /usr/lib/systemd/systemd
-
-  - name: ubuntu-18.04
-    driver:
-      image: dokken/ubuntu-18.04
+      image: dokken/debian-12
       pid_one_command: /bin/systemd
 
-  - name: ubuntu-20.04
+  - name: fedora-latest
     driver:
-      image: dokken/ubuntu-20.04
-      pid_one_command: /bin/systemd
+      image: dokken/fedora-latest
+      pid_one_command: /usr/lib/systemd/systemd
 
   - name: opensuse-leap-15
     driver:
       image: dokken/opensuse-leap-15
       pid_one_command: /usr/lib/systemd/systemd
 
+  - name: oraclelinux-8
+    driver:
+      image: dokken/oraclelinux-8
+      pid_one_command: /usr/lib/systemd/systemd
+
+  - name: oraclelinux-9
+    driver:
+      image: dokken/oraclelinux-9
+      pid_one_command: /usr/lib/systemd/systemd
+
   - name: rockylinux-8
     driver:
       image: dokken/rockylinux-8
       pid_one_command: /usr/lib/systemd/systemd
+
+  - name: rockylinux-9
+    driver:
+      image: dokken/rockylinux-9
+      pid_one_command: /usr/lib/systemd/systemd
+
+  - name: ubuntu-20.04
+    driver:
+      image: dokken/ubuntu-20.04
+      pid_one_command: /bin/systemd
+
+  - name: ubuntu-22.04
+    driver:
+      image: dokken/ubuntu-22.04
+      pid_one_command: /bin/systemd
+
+  - name: ubuntu-24.04
+    driver:
+      image: dokken/ubuntu-24.04
+      pid_one_command: /bin/systemd

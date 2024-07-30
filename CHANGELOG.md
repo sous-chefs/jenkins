@@ -4,6 +4,70 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+## 9.5.22 - *2024-07-15*
+
+Standardise files with files in sous-chefs/repo-management
+
+Standardise files with files in sous-chefs/repo-management
+
+Standardise files with files in sous-chefs/repo-management
+
+## 9.5.21 - *2024-05-02*
+
+## 9.5.20 - *2024-05-02*
+
+## 9.5.19 - *2023-10-03*
+
+Update Jenkins apt/rpm repository key urls.
+
+## 9.5.18 - *2023-09-28*
+
+## 9.5.17 - *2023-09-28*
+
+## 9.5.16 - *2023-08-01*
+
+- Clean up changelog formatting
+
+## 9.5.15 - *2023-07-10*
+
+## 9.5.14 - *2023-05-17*
+
+## 9.5.13 - *2023-04-17*
+
+## 9.5.12 - *2023-04-07*
+
+- Standardise files with files in sous-chefs/repo-management
+
+## 9.5.11 - *2023-04-01*
+
+## 9.5.10 - *2023-03-02*
+
+- Standardise files with files in sous-chefs/repo-management
+
+## 9.5.9 - *2023-02-20*
+
+- Standardise files with files in sous-chefs/repo-management
+
+## 9.5.8 - *2023-02-16*
+
+- Standardise files with files in sous-chefs/repo-management
+
+## 9.5.7 - *2023-02-15*
+
+## 9.5.6 - *2023-02-15*
+
+- Standardise files with files in sous-chefs/repo-management
+
+## 9.5.5 - *2023-02-14*
+
+## 9.5.4 - *2022-12-08*
+
+- Standardise files with files in sous-chefs/repo-management
+
+## 9.5.3 - *2022-12-02*
+
+- Standardise files with files in sous-chefs/repo-management
+
 ## 9.5.2 - *2022-03-28*
 
 - Fix permissions on reusable workflow
@@ -224,8 +288,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 ## [5.0.0](https://github.com/chef-cookbooks/jenkins/tree/v5.0.0) (2017-03-08)
 
 [Full Changelog](https://github.com/chef-cookbooks/jenkins/compare/v4.2.1...v5.0.0)
-
-### Improvements
+s
 
 - Add support for 2.x ([daften](https://github.com/daften))
 - Change default to stable, adding channel toggle [\#575](https://github.com/chef-cookbooks/jenkins/pull/575) ([cheeseplus](https://github.com/cheeseplus))
@@ -326,20 +389,14 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## v2.4.1 (2015-09-10)
 
-### Bug
-
 - Make slave_exe resource only get created if it is missing.
 
 ## v2.4.0 (2015-09-03)
-
-### Bug
 
 - Ensure Jenkins home directory has correct ownership after package installation
 - Fix for NPE when creating already registered slave with env vars defined
 - Fix ArgumentError when comparing two versions not of the same type
 - Don't mutate value when converting to Groovy; Fixes #371
-
-### Improvement
 
 - Automatically add "Logon As A Service" right to Windows slaves
 - Allow optional 'keyserver' attribute for apt
@@ -347,13 +404,9 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## v2.3.1 (2015-05-19)
 
-### Bug
-
 - Fix Travis badge
 - Re-enable lazy attribute defaults in LWRP workaround for Chef 11
 - Properly escape single quotes in Groovy code
-
-### Improvement
 
 - Download update center metadata every time
 
@@ -365,8 +418,6 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Add support for `jvm_options` on `slave_ssh` resource
 - Support executing commands prior to launching Jenkins Windows slave
 - Add username/password support to executor
-
-### Improvement
 
 - Remove EOL Ruby, update with current supported Rubies
 - Update `.kitchen.yml`
@@ -380,14 +431,10 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Re-install the Windows service if the winsw XML changes
 - Properly restart the service if the slave jar is updated
 
-### Bug
-
 - Instantiate Windows-specific resource class; Fixes #336
 - Need to escape the `\n` when there are multiple public keys.
 
 ## v2.2.2 (2015-01-15)
-
-### Bug
 
 - Gem::Version raising ArgumentError for weirdly versioned Jenkins plugins
 - Force UTF-8 encoding when parsing update center JSON
@@ -395,13 +442,9 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## v2.2.1 (2014-12-02)
 
-### Bug
-
 - Ensure Win service install command respects alternate service names
 
 ## v2.2.0 (2014-12-02)
-
-### Bug
 
 - Handle jobs that do not have a `disabled` attribute
 - Remove unneeded service restart in Windows slaves
@@ -412,8 +455,6 @@ This file is used to list changes made in each version of the jenkins cookbook.
 - Make sure Net::HTTP#use_ssl is turned on for https end-point
 - Wrap converted Groovy strings in single quotes
 - Recover from commands executed with unknown credentials. This should also fix some cases of JENKINS-22346.
-
-### Improvement
 
 - Use atomic updates when downloading the slave JAR
 - Create the `slave.jar` in a slave's JENKINS_HOME
@@ -528,99 +569,56 @@ This file is used to list changes made in each version of the jenkins cookbook.
   - `jenkins.server` attributes have all been removed
 
 - Removed Chef MiniTest handler
-
 - Created a new executor class for running commands through the CLI
-
 - Create `jenkins_command` resource for executing arbitrary commands against the Jenkins CLI
-
 - Create `jenkins_script` resource for executing arbitrary groovy scripts agains the Jenkins CLI
-
 - Create `jenkins_credentials` resource for creating and managing Jenkins credentials
-
 - Refactor `jenkins_job` resource for creating and managing jobs
-
 - Refactor `jenkins_plugin` resource for creating and managing plugins
-
 - Create `jenkins_slave` (and sub-resources) for managing Jenkins slaves (formerly called "nodes")
-
 - Add `jenkins_user` resource for creating and managing users
-
 - Remove dependencies on java, apache2, nginx, and iptables
-
 - Remove `jenkins_cli` resource (it's been replaced by `jenkins_command`)
-
 - Remove `jenkins_execute` resource (it's been replaced by `jenkins_command`)
-
 - Remove the pesky "block_until_operational" Ruby block
-
 - Remove `jenkins_node` resource (it's now a series of `jenkins_slave` resources)
-
 - Don't pin plugins (users should explictly provide a version to ensure pinning)
-
 - Upgrade apt and yum dependencies
-
 - Allow full customization of the war file download URL
-
 - Remove apache2 proxy, nginx proxy, and iptables support; they are outside the scope of this cookbook and add unnecessary complication
-
 - Default recipe has been removed
-
 - Iptables recipe has been removed
-
-- Added a _very_ basic Java recipe with caveats
-
+- Added a *very* basic Java recipe with caveats
 - Added a Jenkins master recipe (formerly called "server")
-
 - Removed "node" recipes - they have all been replaced by HWRPs
-
 - Removed proxy recipes
-
 - Updated Debian and RedHat templates to the latest version
-
 - Added the ability to add authentication
-
 - Added custom ServerSpec matchers
-
 - "node" renamed to "slave"
-
 - "server" renamed to "master"
 
 ## v1.2.2
 
-### Bug
-
-- **[COOK-3742](https://tickets.chef.io/browse/COOK-3742)** - Remove trailing comma (restores compatability with Ruby 1.8)
+- **COOK-3742** - Remove trailing comma (restores compatability with Ruby 1.8)
 
 ## v1.2.0
 
-### Improvement
-
-- **[COOK-3710](https://tickets.chef.io/browse/COOK-3710)** - Allow winsw url to be changed with a node attribute
-
-### Bug
-
-- **[COOK-3709](https://tickets.chef.io/browse/COOK-3709)** - Use correct attribute value for `java_home`
-- **[COOK-3701](https://tickets.chef.io/browse/COOK-3701)** - Fix a refactor bug where a template variable was removed that was used in a nested template
-- **[COOK-3594](https://tickets.chef.io/browse/COOK-3594)** - Fix MiniTest Chef Handler tests for directory permissions
+- **COOK-3710** - Allow winsw url to be changed with a node attribute
+- **COOK-3709** - Use correct attribute value for `java_home`
+- **COOK-3701** - Fix a refactor bug where a template variable was removed that was used in a nested template
+- **COOK-3594** - Fix MiniTest Chef Handler tests for directory permissions
 
 ## v1.1.0
 
-### Bug
-
-- **[COOK-3683](https://tickets.chef.io/browse/COOK-3683)** - Fix plugin provider failures finding the current plugin version
-- **[COOK-3667](https://tickets.chef.io/browse/COOK-3667)** - Unbreak Travis-CI integration
-- **[COOK-3623](https://tickets.chef.io/browse/COOK-3623)** - Fix issue where plugins were never updated even if you bump the plugin version in attributes
-- **[COOK-3620](https://tickets.chef.io/browse/COOK-3620)** - Fix Jenkins `_node_jnlp_test.rb` assumptions
-- **[COOK-3517](https://tickets.chef.io/browse/COOK-3517)** - Various bug fixes for `jenkins::windows`
-- **[COOK-3516](https://tickets.chef.io/browse/COOK-3516)** - Fix Jenkins slaves that use JNLP when Jenkins has security enabled
-
-### New Feature
-
-- **[COOK-3619](https://tickets.chef.io/browse/COOK-3619)** - Support intermediate SSL certificates
-
-### Improvement
-
-- **[COOK-3587](https://tickets.chef.io/browse/COOK-3587)** - Adding minitest-handler to the runlist for the node suite in Jenkins cookbook
+- **COOK-3683** - Fix plugin provider failures finding the current plugin version
+- **COOK-3667** - Unbreak Travis-CI integration
+- **COOK-3623** - Fix issue where plugins were never updated even if you bump the plugin version in attributes
+- **COOK-3620** - Fix Jenkins `_node_jnlp_test.rb` assumptions
+- **COOK-3517** - Various bug fixes for `jenkins::windows`
+- **COOK-3516** - Fix Jenkins slaves that use JNLP when Jenkins has security enabled
+- **COOK-3619** - Support intermediate SSL certificates
+- **COOK-3587** - Adding minitest-handler to the runlist for the node suite in Jenkins cookbook
 
 ## v1.0.0
 
