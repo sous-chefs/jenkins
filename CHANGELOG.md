@@ -4,6 +4,24 @@ This file is used to list changes made in each version of the jenkins cookbook.
 
 ## Unreleased
 
+## 9.5.23 - *2024-11-18*
+
+Standardise files with files in sous-chefs/repo-management
+
+Standardise files with files in sous-chefs/repo-management
+
+## 9.5.22 - *2024-07-15*
+
+Standardise files with files in sous-chefs/repo-management
+
+Standardise files with files in sous-chefs/repo-management
+
+Standardise files with files in sous-chefs/repo-management
+
+## 9.5.21 - *2024-05-02*
+
+## 9.5.20 - *2024-05-02*
+
 ## 9.5.19 - *2023-10-03*
 
 Update Jenkins apt/rpm repository key urls.
