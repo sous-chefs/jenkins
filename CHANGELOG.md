@@ -5,6 +5,7 @@ This file is used to list changes made in each version of the jenkins cookbook.
 ## Unreleased
 
 - Create `jenkins_githubapp_credentials` resource for creating and managing GitHub app Jenkins credentials
+- Fix `jenkins_slave_jnlp` by evaluating `slave_jar_url` correctly
 
 ## 9.5.23 - *2024-11-18*
 
