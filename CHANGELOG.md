@@ -2,6 +2,8 @@
 
 This file is used to list changes made in each version of the jenkins cookbook.
 
+## Unreleased
+
 ## 9.6.0 - *2025-03-17*
 
 - Create `jenkins_githubapp_credentials` resource for creating and managing GitHub app Jenkins credentials
