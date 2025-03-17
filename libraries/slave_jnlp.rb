@@ -97,7 +97,6 @@ class Chef
       # The Windows's specific child class manages it's own service
       return if platform?('windows')
 
-
       exec_string = "#{java} #{new_resource.jvm_options}"
       exec_string << " -jar #{slave_jar}" if slave_jar
       exec_string << " -secret #{jnlp_secret}" if jnlp_secret
