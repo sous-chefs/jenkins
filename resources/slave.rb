@@ -1,7 +1,5 @@
 require 'json'
 
-unified_mode true
-
 property :slave.name,
           String,
           name_property: true

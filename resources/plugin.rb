@@ -26,7 +26,6 @@ def installed?
   !@installed.nil? && @installed
 end
 
-
 include Jenkins::Helper
 
 class PluginNotInstalled < StandardError

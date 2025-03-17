@@ -9,7 +9,7 @@ property :port,
           default: 22
 property :credentials,
          String
-          # [String, Resource::JenkinsCredentials]
+# [String, Resource::JenkinsCredentials]
 property :command_prefix,
           String
 property :command_suffix,
