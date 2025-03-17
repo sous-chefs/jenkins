@@ -1,11 +1,13 @@
 require 'json'
+unified_mode true
 
-property :slave.name,
+property :name,
           String,
-          name_property: true
+          name_property: true,
+          required: true
 property :description,
           String,
-          default: lazy { |new_resource| "Jenkins slave #{new_resource.slave.name}" }
+          default: lazy { |new_resource| "Jenkins slave #{new_resource.name}" }
 property :remote_fs,
           String,
           default: '/home/jenkins'
