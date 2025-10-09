@@ -73,8 +73,8 @@ default['jenkins']['master'].tap do |master|
   # Warning: Setting this attribute will negate/ignore any values for +mirror+
   # and +version+.
   #
-  master['source'] = "#{node['jenkins']['master']['mirror']}/"\
-    "#{node['jenkins']['master']['version'] || node['jenkins']['master']['channel']}/"\
+  master['source'] = "#{node['jenkins']['master']['mirror']}/" \
+    "#{node['jenkins']['master']['version'] || node['jenkins']['master']['channel']}/" \
     'latest/jenkins.war'
 
   #

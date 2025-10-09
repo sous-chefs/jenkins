@@ -45,7 +45,6 @@ class JenkinsCredentials < Inspec.resource(1)
   end
 end
 
-# rubocop:disable Naming/PredicateName
 class JenkinsUserCredentials < JenkinsCredentials
   attr_reader :username
 
@@ -60,7 +59,7 @@ class JenkinsUserCredentials < JenkinsCredentials
   end
 
   def has_password?
-    !!(try { xml.elements['password'].text })
+    !!try { xml.elements['password'].text }
   end
 
   def has_private_key?
@@ -68,7 +67,7 @@ class JenkinsUserCredentials < JenkinsCredentials
   end
 
   def has_passphrase?
-    !!(try { xml.elements['passphrase'].text })
+    !!try { xml.elements['passphrase'].text }
   end
 
   def to_s

@@ -18,7 +18,7 @@ class JenkinsJob < Inspec.resource(1)
   end
 
   def disabled?
-    (try { xml.elements['//disabled'].text.to_s == 'true' }) != (nil || false)
+    try { xml.elements['//disabled'].text.to_s == 'true' } != false
   end
 
   def enabled?
