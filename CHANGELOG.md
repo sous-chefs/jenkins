@@ -8,6 +8,8 @@ Standardise files with files in sous-chefs/repo-management
 
 Standardise files with files in sous-chefs/repo-management
 
+Standardise files with files in sous-chefs/repo-management
+
 ## 9.6.1 - *2025-09-04*
 
 - Cookstyle fixes
