@@ -276,7 +276,7 @@ job must first exist on the Jenkins master!
       disabled = xml.elements['//disabled']
 
       @current_job = {
-        enabled: disabled.nil? ? true : disabled.text == 'false',
+        enabled: disabled.nil? || disabled.text == 'false',
         xml: xml,
         raw: response,
       }

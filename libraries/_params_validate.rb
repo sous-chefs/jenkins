@@ -33,7 +33,7 @@ if Gem::Requirement.new('< 12.0').satisfied_by?(Gem::Version.new(Chef::VERSION))
         if arg.nil? && instance_variable_defined?(iv_symbol) == true
           ivar = instance_variable_get(iv_symbol)
           if ivar.is_a?(DelayedEvaluator)
-            validate({ symbol => ivar.call }, { symbol => validation })[symbol] # rubocop:disable Style/BracesAroundHashParameters
+            validate({ symbol => ivar.call }, { symbol => validation })[symbol]
           else
             ivar
           end
@@ -41,10 +41,10 @@ if Gem::Requirement.new('< 12.0').satisfied_by?(Gem::Version.new(Chef::VERSION))
           if arg.is_a?(DelayedEvaluator)
             val = arg
           else
-            val = validate({ symbol => arg }, { symbol => validation })[symbol] # rubocop:disable Style/BracesAroundHashParameters
+            val = validate({ symbol => arg }, { symbol => validation })[symbol]
 
             # Handle the case where the "default" was a DelayedEvaluator
-            val = val.call(self) if val.is_a?(DelayedEvaluator) # rubocop:disable Metrics/BlockNesting
+            val = val.call(self) if val.is_a?(DelayedEvaluator)
           end
           instance_variable_set(iv_symbol, val)
         end
