@@ -175,9 +175,9 @@ If this problem persists, check your Jenkins log files.
       when String
         # This is ugly but it ensures any backslashes appear as
         # double-backslashes in the resulting Groovy code.
-        val = val.gsub(/\\/, '\\\\\\\\')
+        val = val.gsub('\\', '\\\\\\\\')
         # Escape single quotes
-        val = val.gsub(/'/, "\\\\'")
+        val = val.gsub('\'', "\\\\'")
         if val.include?("\n")
           "'''#{val}'''"
         else
@@ -236,7 +236,7 @@ If this problem persists, check your Jenkins log files.
       require 'win32ole'
       wmi = ::WIN32OLE.connect('winmgmts://')
       result = wmi.ExecQuery(wmi_query)
-      return unless result.each.count > 0
+      return unless result.each.any?
       result.each.next.send(wmi_property)
     end
 

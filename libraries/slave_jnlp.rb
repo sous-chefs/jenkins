@@ -136,7 +136,7 @@ class Chef
 
     action :delete do
       # Stop and remove the service
-      service "#{new_resource.service_name}" do
+      service new_resource.service_name.to_s do
         action [:disable, :stop]
       end
 
