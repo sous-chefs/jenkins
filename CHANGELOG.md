@@ -5,6 +5,13 @@ This file is used to list changes made in each version of the jenkins cookbook.
 Standardise files with files in sous-chefs/repo-management
 Standardise files with files in sous-chefs/repo-management
 
+## [9.6.2](https://github.com/sous-chefs/jenkins/compare/9.6.1...v9.6.2) (2025-10-15)
+
+
+### Bug Fixes
+
+* **ci:** Update workflows to use release pipeline ([#838](https://github.com/sous-chefs/jenkins/issues/838)) ([e0e30bc](https://github.com/sous-chefs/jenkins/commit/e0e30bcc0d69111120936bab7364e64eccb01eef))
+
 ## 9.6.1 - *2025-09-04*
 
 * Cookstyle fixes
