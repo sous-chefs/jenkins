@@ -1,6 +1,6 @@
 apt_update 'update' if platform_family?('debian')
 
-openjdk_pkg_install '11'
+openjdk_pkg_install '21'
 
 # node[java] is gone, so manually set java path since some platforms need absolute path for service
 node.default['jenkins']['java'] = '/usr/bin/java'
