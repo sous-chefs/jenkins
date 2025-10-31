@@ -32,7 +32,7 @@ property :public_keys, Array, default: []
 property :password, String
 
 load_current_value do |new_resource|
-  current_user = current_user_from_jenkins(new_resource)
+  current_user = current_user_from_jenkins
 
   if current_user
     full_name current_user[:full_name]
@@ -92,7 +92,7 @@ action_class do
   #
   # Loads the local user into a hash
   #
-  def current_user_from_jenkins(new_resource)
+  def current_user_from_jenkins
     return @current_user if @current_user
 
     Chef::Log.debug "Load #{new_resource} user information"
