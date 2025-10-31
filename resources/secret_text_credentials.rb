@@ -2,6 +2,7 @@ require 'json'
 
 unified_mode true
 
+resource_name :jenkins_secret_text_credentials
 provides :jenkins_secret_text_credentials
 
 property :id, String, name_property: true

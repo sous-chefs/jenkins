@@ -2,6 +2,7 @@ require 'json'
 
 unified_mode true
 
+resource_name :jenkins_user
 provides :jenkins_user
 
 property :id, String, name_property: true

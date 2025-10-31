@@ -2,6 +2,7 @@ require 'json'
 
 unified_mode true
 
+resource_name :jenkins_jnlp_slave
 provides :jenkins_jnlp_slave
 
 # Inherit properties from base slave resource

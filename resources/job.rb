@@ -2,6 +2,7 @@ require 'rexml/document'
 
 unified_mode true
 
+resource_name :jenkins_job
 provides :jenkins_job
 
 property :config, String

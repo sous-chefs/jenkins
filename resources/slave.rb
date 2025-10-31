@@ -2,6 +2,7 @@ require 'json'
 
 unified_mode true
 
+resource_name :jenkins_slave
 provides :jenkins_slave
 
 property :slave_name, String, name_property: true

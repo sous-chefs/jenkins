@@ -1,5 +1,6 @@
 unified_mode true
 
+resource_name :jenkins_script
 provides :jenkins_script
 
 property :command, String

@@ -2,6 +2,7 @@ require 'digest'
 
 unified_mode true
 
+resource_name :jenkins_plugin
 provides :jenkins_plugin
 
 property :version, [String, Symbol], default: :latest

@@ -1,5 +1,6 @@
 unified_mode true
 
+resource_name :jenkins_view
 provides :jenkins_view
 
 property :jobs, Array, default: []

@@ -2,6 +2,7 @@ require 'json'
 
 unified_mode true
 
+resource_name :jenkins_githubapp_credentials
 provides :jenkins_githubapp_credentials
 
 property :id, String, required: true

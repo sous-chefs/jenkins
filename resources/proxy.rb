@@ -2,6 +2,7 @@ require 'json'
 
 unified_mode true
 
+resource_name :jenkins_proxy
 provides :jenkins_proxy
 
 property :proxy, String, name_property: true

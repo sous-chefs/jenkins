@@ -2,6 +2,7 @@ require 'json'
 
 unified_mode true
 
+resource_name :jenkins_ssh_slave
 provides :jenkins_ssh_slave
 
 # Inherit properties from base slave resource

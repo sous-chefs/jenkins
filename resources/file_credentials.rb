@@ -2,6 +2,7 @@ require 'json'
 
 unified_mode true
 
+resource_name :jenkins_file_credentials
 provides :jenkins_file_credentials
 
 property :id, String, required: true

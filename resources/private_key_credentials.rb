@@ -3,6 +3,7 @@ require 'openssl'
 
 unified_mode true
 
+resource_name :jenkins_private_key_credentials
 provides :jenkins_private_key_credentials
 
 property :id, String, required: true
