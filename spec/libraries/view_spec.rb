@@ -7,7 +7,7 @@ describe 'jenkins_view custom resource' do
     # Mock the executor to avoid actual Jenkins CLI calls
     allow_any_instance_of(Jenkins::Helper).to receive(:executor)
       .and_return(double('executor').as_null_object)
-    
+
     # Mock the current_view_from_jenkins method to return a view
     allow_any_instance_of(Chef::Resource).to receive(:current_view_from_jenkins)
       .and_return({ jobs: [] })
