@@ -5,26 +5,6 @@ This file is used to list changes made in each version of the jenkins cookbook.
 Standardise files with files in sous-chefs/repo-management
 Standardise files with files in sous-chefs/repo-management
 
-## Unreleased
-
-### Changed
-
-* Converted 8 core resources from LWRPs to modern custom resources:
-  * `jenkins_command` - Execute Jenkins CLI commands
-  * `jenkins_script` - Execute Groovy scripts
-  * `jenkins_user` - Manage Jenkins users
-  * `jenkins_proxy` - Configure Jenkins proxy settings
-  * `jenkins_view` - Manage Jenkins views
-  * `jenkins_job` - Full Jenkins job lifecycle management
-  * `jenkins_plugin` - Plugin installation and management
-  * Updated test infrastructure for custom resource pattern
-
-### In Progress
-
-* Remaining credentials resources (8 variants with complex inheritance)
-* Remaining slave resources (4 variants with complex inheritance)
-* LWRP files will be removed once all resources are converted
-
 ## [9.6.2](https://github.com/sous-chefs/jenkins/compare/9.6.1...v9.6.2) (2025-10-15)
 
 
