@@ -31,14 +31,16 @@ provisioner:
 
 platforms:
   - name: almalinux-8
-  - name: amazonlinux-2
-  - name: centos-7
-  - name: centos-stream-8
-  - name: debian-10
-  - name: debian-11
+  - name: almalinux-9
+  - name: amazonlinux-2023
+  - name: centos-stream-9
+  - name: debian-12
+  - name: debian-13
   - name: rockylinux-8
-  - name: ubuntu-18.04
+  - name: rockylinux-9
   - name: ubuntu-20.04
+  - name: ubuntu-22.04
+  - name: ubuntu-24.04
   - name: windows-2016
     driver:
       box: tas50/windows_2016
@@ -50,7 +52,7 @@ verifier:
   name: inspec
 
 suites:
-  - name: smoke_package_stable
+  - name: smoke-package-stable
     run_list:
       - jenkins_smoke::default
     attributes:
@@ -62,7 +64,7 @@ suites:
       - windows-2016
       - windows-2019
 
-  - name: smoke_package_current
+  - name: smoke-package-current
     run_list:
       - jenkins_smoke::default
     attributes:
@@ -75,7 +77,7 @@ suites:
       - windows-2016
       - windows-2019
 
-  - name: smoke_war_stable
+  - name: smoke-war-stable
     run_list:
       - jenkins_smoke::default
     attributes:
@@ -84,7 +86,7 @@ suites:
           install_method: war
           source: https://updates.jenkins.io/stable/latest/jenkins.war
 
-  - name: smoke_war_latest
+  - name: smoke-war-latest
     run_list: jenkins_smoke::default
     attributes:
       jenkins:
@@ -95,11 +97,11 @@ suites:
   #
   # Authentication suites
   #
-  - name: authentication_private_key  # Tested in smoke suite
+  - name: authentication-private-key  # Tested in smoke suite
     run_list:
       - jenkins_authentication::private_key
 
-  - name: authentication_username_password
+  - name: authentication-username-password
     run_list:
       - jenkins_authentication::username_password
     excludes:
@@ -107,7 +109,7 @@ suites:
       - windows-2016
       - windows-2019
 
-  - name: authentication_credential_file
+  - name: authentication-credential-file
     run_list:
       - jenkins_authentication::credential_file
     excludes:
@@ -120,9 +122,9 @@ suites:
   # Cannot be tested together
   # As the proxy settings are global
   #
-  - name: jenkins_proxy_config  # Tested in smoke suite
+  - name: jenkins-proxy-config  # Tested in smoke suite
     run_list:
       - jenkins_proxy::config
-  - name: jenkins_proxy_remove
+  - name: jenkins-proxy-remove
     run_list:
       - jenkins_proxy::remove

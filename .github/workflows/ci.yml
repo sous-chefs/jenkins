@@ -24,15 +24,15 @@ jobs:
       matrix:
         os:
           - "almalinux-8"
-          - "amazonlinux-2"
-          - "centos-7"
-          - "centos-stream-8"
-          - "debian-10"
-          # TODO: Not working and needs to be fixed
-          # - 'debian-11'
+          - "almalinux-9"
+          - "amazonlinux-2023"
+          - "centos-stream-9"
+          - "debian-12"
           - "rockylinux-8"
-          - "ubuntu-1804"
+          - "rockylinux-9"
           - "ubuntu-2004"
+          - "ubuntu-2204"
+          - "ubuntu-2404"
         suite:
           - "smoke-package-stable"
           - "smoke-package-current"
