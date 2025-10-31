@@ -1,30 +1,29 @@
 require 'spec_helper'
 
-RSpec.describe Chef::Provider::JenkinsView do
-  describe 'provides :jenkins_view' do
-    before do
-      allow(described_class).to receive(:new).and_wrap_original do |m, *args|
-        view_double = double('view').tap do |d|
-          allow(d).to receive(:[]).with(:jobs).and_return([])
-        end
-        m.call(*args).tap do |v|
-          allow(v).to receive(:current_view).and_return(view_double)
-          allow(v).to receive(:executor)
-            .and_return(double('executor').as_null_object)
-        end
-      end
-    end
+describe 'jenkins_view custom resource' do
+  step_into :jenkins_view
 
-    step_into :jenkins_view
+  before do
+    # Mock the executor to avoid actual Jenkins CLI calls
+    allow_any_instance_of(Jenkins::Helper).to receive(:executor)
+      .and_return(double('executor').as_null_object)
+    
+    # Mock the current_view_from_jenkins method to return a view
+    allow_any_instance_of(Chef::Resource).to receive(:current_view_from_jenkins)
+      .and_return({ jobs: [] })
+  end
 
-    recipe do
-      jenkins_view 'ham' do
-        jobs %w(pig giraffe)
-      end
+  recipe do
+    jenkins_view 'ham' do
+      jobs %w(pig giraffe)
     end
+  end
 
-    it 'should not raise Chef::Exceptions::ProviderNotFound' do
-      expect { chef_run }.not_to raise_error
-    end
+  it 'creates a jenkins view without raising an error' do
+    expect { chef_run }.not_to raise_error
+  end
+
+  it 'converges successfully' do
+    expect(chef_run).to create_jenkins_view('ham').with(jobs: %w(pig giraffe))
   end
 end
