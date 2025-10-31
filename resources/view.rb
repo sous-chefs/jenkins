@@ -24,7 +24,7 @@ provides :jenkins_view
 property :jobs, Array, default: []
 property :code, String, default: ''
 
-load_current_value do |new_resource|
+load_current_value do |_new_resource|
   current_view = current_view_from_jenkins
 
   if current_view && !current_view.empty?

@@ -30,7 +30,7 @@ property :noproxy, Array, default: []
 property :username, String
 property :password, String
 
-load_current_value do |new_resource|
+load_current_value do |_new_resource|
   current_proxy = current_proxy_from_jenkins
 
   if current_proxy

@@ -31,7 +31,7 @@ property :email, String
 property :public_keys, Array, default: []
 property :password, String
 
-load_current_value do |new_resource|
+load_current_value do |_new_resource|
   current_user = current_user_from_jenkins
 
   if current_user
