@@ -1,6 +1,6 @@
 #
 # Cookbook:: jenkins
-# Resource:: password_credentials
+# Resource:: secret_text_credentials
 #
 # Author:: Seth Chisamore <schisamo@chef.io>
 #
@@ -23,13 +23,12 @@ require 'json'
 
 unified_mode true
 
-provides :jenkins_password_credentials
+provides :jenkins_secret_text_credentials
 
-property :id, String, required: true
-property :username, String, name_property: true
-property :password, String, required: true, sensitive: true
+property :id, String, name_property: true
+property :secret, String, required: true, sensitive: true
 property :description, String,
-         default: lazy { |r| "Credentials for #{r.username} - created by Chef" }
+         default: lazy { |r| "Secret text #{r.id} - created by Chef" }
 
 # Mark resource as sensitive by default
 def initialize(name, run_context = nil)
@@ -43,8 +42,7 @@ load_current_value do
   if current_creds
     id current_creds[:id]
     description current_creds[:description]
-    username current_creds[:username]
-    password current_creds[:password] if current_creds[:password]
+    secret current_creds[:secret] if current_creds[:secret]
   else
     current_value_does_not_exist!
   end
@@ -59,7 +57,8 @@ action :create do
         import jenkins.model.*
         import com.cloudbees.plugins.credentials.*
         import com.cloudbees.plugins.credentials.domains.*
-        import com.cloudbees.plugins.credentials.impl.*
+        import hudson.util.Secret;
+        import org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl;
 
         global_domain = Domain.global()
         credentials_store =
@@ -67,12 +66,11 @@ action :create do
             'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
           )[0].getStore()
 
-        credentials = new UsernamePasswordCredentialsImpl(
+        credentials = new StringCredentialsImpl(
           CredentialsScope.GLOBAL,
           #{convert_to_groovy(new_resource.id)},
           #{convert_to_groovy(new_resource.description)},
-          #{convert_to_groovy(new_resource.username)},
-          #{convert_to_groovy(new_resource.password)}
+          new Secret(#{convert_to_groovy(new_resource.secret)})
         )
 
         #{credentials_for_id_groovy(new_resource.id, 'existing_credentials')}
@@ -129,7 +127,7 @@ action_class do
     Chef::Log.debug "Load #{new_resource} credentials information"
 
     json = executor.groovy! <<-EOH.gsub(/^ {6}/, '')
-      import com.cloudbees.plugins.credentials.impl.*;
+      import org.jenkinsci.plugins.plaincredentials.impl.*;
 
       #{credentials_for_id_groovy(new_resource.id, 'credentials')}
 
@@ -140,10 +138,10 @@ action_class do
       current_credentials = [
         id:credentials.id,
         description:credentials.description,
-        username:credentials.username
+        secret:credentials.secret
       ]
 
-      current_credentials['password'] = credentials.password.plainText
+      current_credentials['secret'] = credentials.secret.plainText
 
       builder = new groovy.json.JsonBuilder(current_credentials)
       println(builder)
@@ -158,8 +156,7 @@ action_class do
   def correct_config?
     wanted_credentials = {
       description: new_resource.description,
-      username: new_resource.username,
-      password: new_resource.password,
+      secret: new_resource.secret,
     }
 
     # Don't compare the ID as it is generated
