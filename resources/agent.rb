@@ -2,10 +2,10 @@ require 'json'
 
 unified_mode true
 
-resource_name :jenkins_ssh_slave
-provides :jenkins_ssh_slave
+resource_name :jenkins_agent
+provides :jenkins_agent
+provides :jenkins_slave  # Backwards compatibility alias
 
-# Inherit properties from base agent resource
 property :slave_name, String, name_property: true
 property :description, String,
          default: lazy { |r| "Jenkins agent #{r.slave_name}" }
@@ -22,16 +22,6 @@ property :user, String, regex: [Chef::Config[:user_valid_regex]], default: 'jenk
 property :jvm_options, String
 property :java_path, String
 
-# SSH-specific properties
-property :host, String
-property :port, Integer, default: 22
-property :credentials, String
-property :command_prefix, String
-property :command_suffix, String
-property :launch_timeout, Integer
-property :ssh_retries, Integer
-property :ssh_wait_retries, Integer
-
 load_current_value do
   current_slave_data = current_slave_from_jenkins
 
@@ -41,9 +31,8 @@ load_current_value do
     remote_fs current_slave_data[:remote_fs]
     executors current_slave_data[:executors]
     labels current_slave_data[:labels]
-    host current_slave_data[:host] if current_slave_data[:host]
-    port current_slave_data[:port] if current_slave_data[:port]
 
+    # Store state for status checks
     @exists = true
     @connected = current_slave_data[:connected]
     @online = current_slave_data[:online]
@@ -124,6 +113,7 @@ action_class do
   end
 
   def do_create
+    # Preserve some labels...
     merge_preserved_labels!
     if current_resource && correct_config?
       Chef::Log.info("#{new_resource} exists - skipping")
@@ -134,7 +124,6 @@ action_class do
           import hudson.slaves.*
           import jenkins.model.*
           import jenkins.slaves.*
-          import hudson.plugins.sshslaves.*
 
           props = []
           availability = #{convert_to_groovy(new_resource.availability)}
@@ -142,16 +131,19 @@ action_class do
           env_map = #{convert_to_groovy(new_resource.environment)}
           labels = #{convert_to_groovy(new_resource.labels.sort.join(' '))}
 
+          // Compute the usage mode
           if (usage_mode == 'normal') {
             mode = Node.Mode.NORMAL
           } else {
             mode = Node.Mode.EXCLUSIVE
           }
 
+          // Compute the retention strategy
           if (availability == 'demand') {
-            retention_strategy = new RetentionStrategy.Demand(
-              #{new_resource.in_demand_delay},
-              #{new_resource.idle_delay}
+            retention_strategy =
+              new RetentionStrategy.Demand(
+                #{new_resource.in_demand_delay},
+                #{new_resource.idle_delay}
             )
           } else if (availability == 'always') {
             retention_strategy = new RetentionStrategy.Always()
@@ -159,6 +151,7 @@ action_class do
             retention_strategy = RetentionStrategy.NOOP
           }
 
+          // Create an entry in the prop list for all env vars
           if (env_map != null) {
             env_vars = new hudson.EnvVars(env_map)
             entries = env_vars.collect {
@@ -167,19 +160,10 @@ action_class do
             props << new EnvironmentVariablesNodeProperty(entries)
           }
 
-          launcher = new SSHLauncher(
-            #{convert_to_groovy(new_resource.host)},
-            #{new_resource.port},
-            #{convert_to_groovy(parsed_credentials)},
-            #{convert_to_groovy(new_resource.jvm_options)},
-            #{convert_to_groovy(new_resource.java_path)},
-            #{convert_to_groovy(new_resource.command_prefix)},
-            #{convert_to_groovy(new_resource.command_suffix)},
-            #{convert_to_groovy(new_resource.launch_timeout)},
-            #{convert_to_groovy(new_resource.ssh_retries)},
-            #{convert_to_groovy(new_resource.ssh_wait_retries)}
-          )
+          // Launcher
+          #{launcher_groovy}
 
+          // Build the agent object
           slave = new DumbSlave(
             #{convert_to_groovy(new_resource.name)},
             #{convert_to_groovy(new_resource.description)},
@@ -192,6 +176,7 @@ action_class do
             props
           )
 
+          // Create or update the agent in the Jenkins instance
           nodes = new ArrayList(Jenkins.instance.getNodes())
           ix = nodes.indexOf(slave)
           (ix >= 0) ? nodes.set(ix, slave) : nodes.add(slave)
@@ -211,16 +196,12 @@ action_class do
     end
   end
 
-  def parsed_credentials
-    new_resource.credentials.to_s
+  def launcher_groovy
+    'launcher = new hudson.slaves.JNLPLauncher()'
   end
 
   def attribute_to_property_map
-    {
-      host: 'launcher.host',
-      port: 'launcher.port',
-      credentials: 'launcher.credentialsId',
-    }
+    {}
   end
 
   def current_slave_from_jenkins
@@ -262,6 +243,7 @@ action_class do
         online:slave.computer.online
       ]
 
+      // Determine retention strategy
       if (slave.retentionStrategy instanceof RetentionStrategy.Always) {
         current_slave['availability'] = 'always'
       } else if (slave.retentionStrategy instanceof RetentionStrategy.Demand) {
@@ -306,6 +288,7 @@ action_class do
       wanted_slave[key] = new_resource.send(key)
     end
 
+    # Don't include connected/online values in the comparison
     current_slave_from_jenkins.dup.tap do |c|
       c.delete(:connected)
       c.delete(:online)

@@ -2,8 +2,9 @@ require 'json'
 
 unified_mode true
 
-resource_name :jenkins_windows_slave
-provides :jenkins_windows_slave
+resource_name :jenkins_windows_agent
+provides :jenkins_windows_agent
+provides :jenkins_windows_slave  # Backwards compatibility alias
 
 # Inherit properties from base agent resource
 property :slave_name, String, name_property: true

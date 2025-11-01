@@ -2,8 +2,9 @@ require 'json'
 
 unified_mode true
 
-resource_name :jenkins_jnlp_slave
-provides :jenkins_jnlp_slave
+resource_name :jenkins_ssh_agent
+provides :jenkins_ssh_agent
+provides :jenkins_ssh_slave  # Backwards compatibility alias
 
 # Inherit properties from base agent resource
 property :slave_name, String, name_property: true
@@ -22,15 +23,15 @@ property :user, String, regex: [Chef::Config[:user_valid_regex]], default: 'jenk
 property :jvm_options, String
 property :java_path, String
 
-# JNLP-specific properties
-property :group, String, default: 'jenkins',
-         regex: [Chef::Config[:group_valid_regex]]
-property :service_name, String, default: 'jenkins-slave'
-property :service_groups, Array,
-         default: lazy { |r| [r.group] }
-
-deprecated_property_alias 'runit_groups', 'service_groups',
-  '`runit_groups` was renamed to `service_groups` with the move to systemd services'
+# SSH-specific properties
+property :host, String
+property :port, Integer, default: 22
+property :credentials, String
+property :command_prefix, String
+property :command_suffix, String
+property :launch_timeout, Integer
+property :ssh_retries, Integer
+property :ssh_wait_retries, Integer
 
 load_current_value do
   current_slave_data = current_slave_from_jenkins
@@ -41,6 +42,8 @@ load_current_value do
     remote_fs current_slave_data[:remote_fs]
     executors current_slave_data[:executors]
     labels current_slave_data[:labels]
+    host current_slave_data[:host] if current_slave_data[:host]
+    port current_slave_data[:port] if current_slave_data[:port]
 
     @exists = true
     @connected = current_slave_data[:connected]
@@ -52,35 +55,6 @@ end
 
 action :create do
   do_create
-
-  directory ::File.expand_path(new_resource.remote_fs, '..') do
-    recursive true
-    action :create
-  end
-
-  unless platform?('windows')
-    group new_resource.group do
-      system node['jenkins']['master']['use_system_accounts']
-    end
-
-    user new_resource.user do
-      gid new_resource.group
-      comment 'Jenkins agent user - Created by Chef'
-      home new_resource.remote_fs
-      system node['jenkins']['master']['use_system_accounts']
-      action :create
-    end
-  end
-
-  directory new_resource.remote_fs do
-    owner new_resource.user
-    group new_resource.group
-    recursive true
-    action :create
-  end
-
-  # NOTE: Full service management (systemd) integration would go here
-  # but is omitted for simplicity in this conversion
 end
 
 action :delete do
@@ -161,6 +135,7 @@ action_class do
           import hudson.slaves.*
           import jenkins.model.*
           import jenkins.slaves.*
+          import hudson.plugins.sshslaves.*
 
           props = []
           availability = #{convert_to_groovy(new_resource.availability)}
@@ -193,7 +168,18 @@ action_class do
             props << new EnvironmentVariablesNodeProperty(entries)
           }
 
-          launcher = new hudson.slaves.JNLPLauncher()
+          launcher = new SSHLauncher(
+            #{convert_to_groovy(new_resource.host)},
+            #{new_resource.port},
+            #{convert_to_groovy(parsed_credentials)},
+            #{convert_to_groovy(new_resource.jvm_options)},
+            #{convert_to_groovy(new_resource.java_path)},
+            #{convert_to_groovy(new_resource.command_prefix)},
+            #{convert_to_groovy(new_resource.command_suffix)},
+            #{convert_to_groovy(new_resource.launch_timeout)},
+            #{convert_to_groovy(new_resource.ssh_retries)},
+            #{convert_to_groovy(new_resource.ssh_wait_retries)}
+          )
 
           slave = new DumbSlave(
             #{convert_to_groovy(new_resource.name)},
@@ -226,10 +212,27 @@ action_class do
     end
   end
 
+  def parsed_credentials
+    new_resource.credentials.to_s
+  end
+
+  def attribute_to_property_map
+    {
+      host: 'launcher.host',
+      port: 'launcher.port',
+      credentials: 'launcher.credentialsId',
+    }
+  end
+
   def current_slave_from_jenkins
     return @current_slave if @current_slave
 
     Chef::Log.debug "Load #{new_resource} agent information"
+
+    launcher_attributes = []
+    attribute_to_property_map.each_pair do |resource_attribute, groovy_property|
+      launcher_attributes << "current_slave['#{resource_attribute}'] = #{groovy_property}"
+    end
 
     json = executor.groovy! <<-EOH.gsub(/^ {6}/, '')
       import hudson.model.*
@@ -271,6 +274,8 @@ action_class do
         current_slave['availability'] = null
       }
 
+      #{launcher_attributes.join("\n")}
+
       builder = new groovy.json.JsonBuilder(current_slave)
       println(builder)
     EOH
@@ -296,6 +301,10 @@ action_class do
     if new_resource.availability.to_s == 'demand'
       wanted_slave[:in_demand_delay] = new_resource.in_demand_delay
       wanted_slave[:idle_delay] = new_resource.idle_delay
+    end
+
+    attribute_to_property_map.each_key do |key|
+      wanted_slave[key] = new_resource.send(key)
     end
 
     current_slave_from_jenkins.dup.tap do |c|
