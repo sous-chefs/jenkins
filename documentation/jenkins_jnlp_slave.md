@@ -1,6 +1,6 @@
 # jenkins_jnlp_slave
 
-Manages Jenkins JNLP (Java Network Launch Protocol) slaves. JNLP slaves are initiated from the slave node itself, making them ideal for nodes behind firewalls or with restricted network access.
+Manages Jenkins JNLP (Java Network Launch Protocol) agents. JNLP agents are initiated from the agent node itself, making them ideal for nodes behind firewalls or with restricted network access.
 
 ## Actions
 
@@ -15,43 +15,43 @@ Manages Jenkins JNLP (Java Network Launch Protocol) slaves. JNLP slaves are init
 
 ### Basic Properties
 
-- `slave_name` - (name property) The name of the slave
-- `description` - Description for the slave (default: "Jenkins slave {slave_name}")
-- `remote_fs` - Remote filesystem root for the slave (default: '/home/jenkins')
+- `slave_name` - (name property) The name of the agent
+- `description` - Description for the agent (default: "Jenkins agent {slave_name}")
+- `remote_fs` - Remote filesystem root for the agent (default: '/home/jenkins')
 - `executors` - Number of executors (default: 1)
 - `usage_mode` - How Jenkins schedules builds on this node: 'exclusive' or 'normal' (default: 'normal')
-- `labels` - Array of labels for the slave (default: [])
+- `labels` - Array of labels for the agent (default: [])
 - `environment` - Hash of environment variables
-- `offline_reason` - Reason for taking the slave offline
+- `offline_reason` - Reason for taking the agent offline
 
 ### Availability Properties
 
-- `availability` - When to bring the slave online: 'always' or 'demand'
-- `in_demand_delay` - Number of minutes to wait before starting the slave when demand occurs (default: 0)
-- `idle_delay` - Number of minutes to wait before stopping the slave when idle (default: 1)
+- `availability` - When to bring the agent online: 'always' or 'demand'
+- `in_demand_delay` - Number of minutes to wait before starting the agent when demand occurs (default: 0)
+- `idle_delay` - Number of minutes to wait before stopping the agent when idle (default: 1)
 
 ### JNLP-Specific Properties
 
-- `user` - System user to run the slave service (default: 'jenkins')
-- `group` - System group for the slave service (default: 'jenkins')
+- `user` - System user to run the agent service (default: 'jenkins')
+- `group` - System group for the agent service (default: 'jenkins')
 - `service_name` - Name of the systemd service (default: 'jenkins-slave')
 - `service_groups` - Array of groups the service should run under (default: [group])
-- `jvm_options` - JVM options for the slave
+- `jvm_options` - JVM options for the agent
 - `java_path` - Path to Java executable
 
 ## Examples
 
 ```ruby
-# Create a basic JNLP slave
+# Create a basic JNLP agent
 jenkins_jnlp_slave 'builder' do
-  description 'A generic slave builder'
+  description 'A generic agent builder'
   remote_fs   '/home/jenkins'
   labels      ['builder', 'linux']
 end
 ```
 
 ```ruby
-# Create a JNLP slave with multiple executors
+# Create a JNLP agent with multiple executors
 jenkins_jnlp_slave 'executor' do
   description 'Multi-threaded executor'
   remote_fs   '/home/jenkins'
@@ -61,7 +61,7 @@ end
 ```
 
 ```ruby
-# Create a slave with exclusive usage and demand availability
+# Create an agent with exclusive usage and demand availability
 jenkins_jnlp_slave 'smoke' do
   description     'Runs a series of high-level smoke tests'
   remote_fs       '/home/jenkins'
@@ -75,9 +75,9 @@ end
 ```
 
 ```ruby
-# Create a slave with custom service groups (e.g., for Docker access)
+# Create an agent with custom service groups (e.g., for Docker access)
 jenkins_jnlp_slave 'docker-builder' do
-  description    'Slave with Docker access'
+  description    'Agent with Docker access'
   remote_fs      '/home/jenkins'
   service_groups ['jenkins', 'docker']
   labels         ['docker', 'builder']
@@ -85,7 +85,7 @@ end
 ```
 
 ```ruby
-# Create a slave with environment variables
+# Create an agent with environment variables
 jenkins_jnlp_slave 'integration' do
   description 'Runs the high-level integration suite'
   remote_fs   '/home/jenkins'
@@ -98,14 +98,14 @@ end
 ```
 
 ```ruby
-# Delete a JNLP slave
+# Delete a JNLP agent
 jenkins_jnlp_slave 'builder' do
   action :delete
 end
 ```
 
 ```ruby
-# Connect/disconnect a slave
+# Connect/disconnect an agent
 jenkins_jnlp_slave 'builder' do
   action :connect
 end
@@ -116,7 +116,7 @@ end
 ```
 
 ```ruby
-# Take a slave offline/online
+# Take an agent offline/online
 jenkins_jnlp_slave 'builder' do
   offline_reason 'Maintenance window'
   action :offline
@@ -127,6 +127,6 @@ jenkins_jnlp_slave 'builder' do
 end
 ```
 
-**NOTE** JNLP slaves are initiated from the slave node, so this resource should be part of the **slave node's** run list. The slave needs network access to the Jenkins master's JNLP port (typically 50000).
+**NOTE** JNLP agents are initiated from the agent node, so this resource should be part of the **agent node's** run list. The agent needs network access to the Jenkins controller's JNLP port (typically 50000).
 
-**NOTE** The `:create` action creates a systemd service on Linux to manage the JNLP slave process.
+**NOTE** The `:create` action creates a systemd service on Linux to manage the JNLP agent process.
