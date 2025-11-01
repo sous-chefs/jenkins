@@ -5,10 +5,10 @@ unified_mode true
 resource_name :jenkins_ssh_slave
 provides :jenkins_ssh_slave
 
-# Inherit properties from base slave resource
+# Inherit properties from base agent resource
 property :slave_name, String, name_property: true
 property :description, String,
-         default: lazy { |r| "Jenkins slave #{r.slave_name}" }
+         default: lazy { |r| "Jenkins agent #{r.slave_name}" }
 property :remote_fs, String, default: '/home/jenkins'
 property :executors, Integer, default: 1
 property :usage_mode, String, equal_to: %w(exclusive normal), default: 'normal'
@@ -226,7 +226,7 @@ action_class do
   def current_slave_from_jenkins
     return @current_slave if @current_slave
 
-    Chef::Log.debug "Load #{new_resource} slave information"
+    Chef::Log.debug "Load #{new_resource} agent information"
 
     launcher_attributes = []
     attribute_to_property_map.each_pair do |resource_attribute, groovy_property|
