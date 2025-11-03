@@ -19,13 +19,6 @@ provisioner:
     jenkins:
       master:
         host: localhost
-        install_method: package
-        mirror: https://updates.jenkins.io
-        # This is to help slaves to connect to the master
-        # Sometimes with slow performance the connection is dropped/cut too early
-        # 30 seconds was too low, so I bumped it to 5 minutes
-        # https://issues.jenkins-ci.org/browse/JENKINS-38623
-        jenkins_args: '--httpKeepAliveTimeout=300000'
         # This it to help issues we run into on the CI systems
         update_center_sleep: 10
 
@@ -52,79 +45,23 @@ verifier:
   name: inspec
 
 suites:
-  - name: smoke-package-stable
+  - name: default
     run_list:
-      - jenkins_smoke::default
-    attributes:
-      jenkins:
-        master:
-          install_method: package
+      - test::default
     excludes:
-      - windows-2012r2
       - windows-2016
       - windows-2019
 
-  - name: smoke-package-current
+  - name: plugins
     run_list:
-      - jenkins_smoke::default
-    attributes:
-      jenkins:
-        master:
-          channel: current
-          install_method: package
+      - test::plugins
     excludes:
-      - windows-2012r2
       - windows-2016
       - windows-2019
 
-  - name: smoke-war-stable
+  - name: authentication
     run_list:
-      - jenkins_smoke::default
-    attributes:
-      jenkins:
-        master:
-          install_method: war
-          source: https://updates.jenkins.io/stable/latest/jenkins.war
-
-  - name: smoke-war-latest
-    run_list: jenkins_smoke::default
-    attributes:
-      jenkins:
-        master:
-          install_method: war
-          source: https://updates.jenkins.io/latest/jenkins.war
-
-  #
-  # Authentication suites
-  #
-  - name: authentication-private-key  # Tested in smoke suite
-    run_list:
-      - jenkins_authentication::private_key
-
-  - name: authentication-username-password
-    run_list:
-      - jenkins_authentication::username_password
+      - test::authentication
     excludes:
-      - windows-2012r2
       - windows-2016
       - windows-2019
-
-  - name: authentication-credential-file
-    run_list:
-      - jenkins_authentication::credential_file
-    excludes:
-      - windows-2012r2
-      - windows-2016
-      - windows-2019
-
-  #
-  # Proxy suites
-  # Cannot be tested together
-  # As the proxy settings are global
-  #
-  - name: jenkins-proxy-config  # Tested in smoke suite
-    run_list:
-      - jenkins_proxy::config
-  - name: jenkins-proxy-remove
-    run_list:
-      - jenkins_proxy::remove

@@ -11,14 +11,49 @@ property :source, String
 property :install_deps, [true, false]
 property :options, String
 
-load_current_value do
-  current_plugin = plugin_installation_manifest(name)
+def master_home_directory
+  master_attributes = node.attribute?('jenkins') ? node['jenkins'] : nil
+  master_attributes = master_attributes['master'] if master_attributes.respond_to?(:[]) && master_attributes['master']
 
-  if current_plugin
-    version current_plugin['plugin_version']
-  else
+  home = master_attributes && master_attributes['home']
+  return home unless home.nil? || home.to_s.empty?
+
+  '/var/lib/jenkins'
+rescue NoMethodError
+  '/var/lib/jenkins'
+end
+
+load_current_value do
+  manifest = ::File.join(
+    master_home_directory,
+    'plugins',
+    name,
+    'META-INF',
+    'MANIFEST.MF'
+  )
+
+  Chef::Log.debug "Load #{name} plugin information from #{manifest}"
+
+  unless ::File.exist?(manifest)
     current_value_does_not_exist!
+    next
   end
+
+  plugin_manifest = {}
+
+  ::File.open(manifest, 'r', encoding: 'utf-8') do |file|
+    file.each_line do |line|
+      next if line.strip.empty?
+
+      config, value = line.split(/:\s/, 2)
+      config = config.tr('-', '_').downcase
+      value = value.strip if value
+
+      plugin_manifest[config] = value
+    end
+  end
+
+  version plugin_manifest['plugin_version']
 end
 
 action :install do
@@ -171,7 +206,7 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
     version = new_resource.version if version.nil?
 
     if version.to_sym == :latest
-      remote_plugin_data = plugin_universe[name]
+      remote_plugin_data = safe_plugin_universe[name]
 
       return :latest unless remote_plugin_data
 
@@ -191,20 +226,44 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
   # @option opts [Boolean] :cli_opts additional flags to pass the jenkins cli command
   #
   def install_plugin(source_url, plugin_name, plugin_version, opts = {})
-    test = (source_url || plugin_version != :latest) ? true : false
-    if test
-      url = if source_url
-              source_url
-            else
-              remote_plugin_data = plugin_universe[plugin_name]
-              # Compute some versions; Parse them as `Gem::Version` instances for easy comparisons.
-              latest_version = plugin_version(remote_plugin_data['version'])
-              # Replace the latest version with the desired version in the URL
-              remote_plugin_data['url'].gsub!(latest_version.to_s, desired_version(plugin_name, plugin_version).to_s)
-            end
+    desired = desired_version(plugin_name, plugin_version)
+    latest_requested = latest_requested?(plugin_version)
+
+    use_url = false
+    url = nil
+
+    if source_url
+      url = source_url
+      use_url = true
+    else
+      remote_plugin_data = safe_plugin_universe[plugin_name]
+
+      if remote_plugin_data && remote_plugin_data['url']
+        latest_version = plugin_version(remote_plugin_data['version'])
+        url = remote_plugin_data['url'].gsub(latest_version.to_s, desired.to_s)
+        use_url = true
+      else
+        use_url = !latest_requested
+      end
     end
-    ensure_update_center_present!
-    executor.execute!('install-plugin', escape(test ? url : plugin_name), opts[:cli_opts])
+
+    # Download plugin directly to plugins directory to avoid auth issues
+    if use_url
+      plugin_file_path = plugin_file(plugin_name)
+      
+      remote_file plugin_file_path do
+        source url
+        owner node['jenkins']['master']['user']
+        group node['jenkins']['master']['group']
+        mode '0644'
+        action :create
+      end
+      # Note: Jenkins restart should be done manually after all plugins are installed
+      # to avoid systemd rate limiting
+    else
+      # For plugin names without URL, still need to use CLI
+      executor.execute!('install-plugin', escape(plugin_name), opts[:cli_opts])
+    end
   end
 
   #
@@ -229,7 +288,7 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
   # @return [String]
   #
   def plugins_directory
-    ::File.join(node['jenkins']['master']['home'], 'plugins')
+    ::File.join(master_home_directory, 'plugins')
   end
 
   #
@@ -271,33 +330,6 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
   # @param [String] name of the plugin to be installed
   # @return [Hash]
   #
-  def plugin_installation_manifest(plugin_name)
-    manifest = ::File.join(plugins_directory, plugin_name, 'META-INF', 'MANIFEST.MF')
-    Chef::Log.debug "Load #{plugin_name} plugin information from #{manifest}"
-
-    return unless ::File.exist?(manifest)
-
-    plugin_manifest = {}
-
-    ::File.open(manifest, 'r', encoding: 'utf-8') do |file|
-      file.each_line do |line|
-        next if line.strip.empty?
-
-        #
-        # Example Data:
-        #   Plugin-Version: 1.4
-        #
-        config, value = line.split(/:\s/, 2)
-        config = config.tr('-', '_').downcase
-        value = value.strip if value # remove trailing \r\n
-
-        plugin_manifest[config] = value
-      end
-    end
-
-    plugin_manifest
-  end
-
   #
   # Return whether plugin should be upgraded to desired version
   # (i.e. that current < desired).
@@ -330,5 +362,17 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
     gem_version.prerelease? ? version : gem_version
   rescue ArgumentError
     version
+  end
+
+  def latest_requested?(version)
+    return false if version.nil?
+
+    version.respond_to?(:to_sym) && version.to_sym == :latest
+  end
+
+  def safe_plugin_universe
+    plugin_universe
+  rescue NoMethodError, Chef::Exceptions::ValidationFailed, Errno::ENOENT
+    {}
   end
 end

@@ -11,10 +11,47 @@ property :email, String
 property :public_keys, Array, default: []
 property :password, String
 
-load_current_value do |_new_resource|
-  current_user = current_user_from_jenkins
+load_current_value do |new_resource|
+  require_relative '../libraries/_helper'
+  extend Jenkins::Helper
 
-  if current_user
+  Chef::Log.debug "Load #{new_resource.id} user information"
+
+  json = executor.groovy <<-EOH.gsub(/^ {4}/, '')
+    user = hudson.model.User.get('#{new_resource.id}', false)
+
+    if(user == null) {
+      return null
+    }
+
+    id = user.getId()
+    name = user.getFullName()
+
+    email = null
+    emailProperty = user.getProperty(hudson.tasks.Mailer.UserProperty)
+    if(emailProperty != null) {
+      email = emailProperty.getAddress()
+    }
+
+    keys = null
+    keysProperty = user.getProperty(org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl)
+    if(keysProperty != null) {
+      keys = keysProperty.authorizedKeys.split('\\n') - "" // Remove empty strings
+    }
+
+    builder = new groovy.json.JsonBuilder()
+    builder {
+      id id
+      full_name name
+      email email
+      public_keys keys
+    }
+
+    println(builder)
+  EOH
+
+  if json && !json.empty?
+    current_user = JSON.parse(json, symbolize_names: true)
     full_name current_user[:full_name]
     email current_user[:email]
     public_keys current_user[:public_keys]
@@ -68,51 +105,4 @@ end
 
 action_class do
   include Jenkins::Helper
-
-  #
-  # Loads the local user into a hash
-  #
-  def current_user_from_jenkins
-    return @current_user if @current_user
-
-    Chef::Log.debug "Load #{new_resource} user information"
-
-    json = executor.groovy <<-EOH.gsub(/^ {6}/, '')
-      user = hudson.model.User.get('#{new_resource.id}', false)
-
-      if(user == null) {
-        return null
-      }
-
-      id = user.getId()
-      name = user.getFullName()
-
-      email = null
-      emailProperty = user.getProperty(hudson.tasks.Mailer.UserProperty)
-      if(emailProperty != null) {
-        email = emailProperty.getAddress()
-      }
-
-      keys = null
-      keysProperty = user.getProperty(org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl)
-      if(keysProperty != null) {
-        keys = keysProperty.authorizedKeys.split('\\n') - "" // Remove empty strings
-      }
-
-      builder = new groovy.json.JsonBuilder()
-      builder {
-        id id
-        full_name name
-        email email
-        public_keys keys
-      }
-
-      println(builder)
-    EOH
-
-    return if json.nil? || json.empty?
-
-    @current_user = JSON.parse(json, symbolize_names: true)
-    @current_user
-  end
 end

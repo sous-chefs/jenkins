@@ -280,9 +280,17 @@ If this problem persists, check your Jenkins log files.
     # @return [Boolean]
     #
     def private_key_given?
+      return false if security_disabled?
+
       # @todo remove in 3.0.0
       !node['jenkins']['executor']['private_key'].nil? ||
         !node.run_state[:jenkins_private_key].nil?
+    end
+
+    def security_disabled?
+      node['jenkins']['master']['disable_security']
+    rescue NoMethodError
+      false
     end
 
     #
@@ -555,6 +563,60 @@ If this problem persists, check your Jenkins log files.
 
         true
       end
+    end
+
+    #
+    # Get Jenkins crumb for CSRF protection
+    #
+    # @return [Hash] crumb field and value
+    #
+    def get_crumb
+      uri = URI.parse(uri_join(endpoint, 'crumbIssuer', 'api', 'json'))
+      
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == 'https')
+      
+      response = http.get(uri.path)
+      return nil unless response.is_a?(Net::HTTPSuccess)
+      
+      require 'json'
+      data = JSON.parse(response.body)
+      { field: data['crumbRequestField'], value: data['crumb'] }
+    rescue
+      nil
+    end
+
+    #
+    # Install a plugin via REST API
+    # Requires anonymous to have Overall/Administer permission or proper auth
+    #
+    # @param [String] plugin_url
+    #   the URL to the plugin .hpi file
+    #
+    # @return [Boolean]
+    #
+    def install_plugin_via_rest(plugin_url)
+      uri = URI.parse(uri_join(endpoint, 'pluginManager', 'installNecessaryPlugins'))
+      
+      request = Net::HTTP::Post.new(uri.path)
+      request['Content-Type'] = 'text/xml'
+      request.body = "<jenkins><install plugin='#{plugin_url}' /></jenkins>"
+      
+      # Add CSRF crumb if available
+      crumb = get_crumb
+      request[crumb[:field]] = crumb[:value] if crumb
+      
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == 'https')
+      http.read_timeout = 30
+      
+      response = http.request(request)
+      
+      unless response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
+        raise "Failed to install plugin via REST API: #{response.code} #{response.message}"
+      end
+      
+      true
     end
   end
 end
