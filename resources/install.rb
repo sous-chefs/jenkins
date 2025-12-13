@@ -447,11 +447,7 @@ if (strategy == AuthorizationStrategy.UNSECURED) {
     when 'debian'
       %w(fontconfig)
     when 'rhel', 'amazon'
-      if node['platform_version'].to_i >= 8
-        %w(fontconfig dejavu-sans-fonts)
-      else
-        %w(fontconfig dejavu-sans-fonts)
-      end
+      %w(fontconfig dejavu-sans-fonts)
     else
       []
     end

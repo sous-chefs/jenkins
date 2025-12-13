@@ -1,3 +1,2 @@
-# require cookstyle
-plugins:
+require:
   - cookstyle

@@ -9,7 +9,7 @@ public_key = jenkins_keys['public_key']
 # Set private key IMMEDIATELY before any CLI operations
 # This ensures the key file is written correctly
 node.run_state[:jenkins_private_key] = private_key
-node.run_state[:jenkins_private_key_path] = nil  # Clear any cached path
+node.run_state[:jenkins_private_key_path] = nil # Clear any cached path
 
 # Debug: verify key is set
 ruby_block 'verify key before init script' do
@@ -75,7 +75,7 @@ ruby_block 'wait for jenkins after auth setup' do
   block do
     require 'net/http'
     require 'uri'
-    
+
     30.times do
       begin
         uri = URI.parse('http://localhost:8080/api/json')
@@ -98,7 +98,7 @@ ruby_block 'check key file' do
       Chef::Log.warn("=== DEBUG: Key file exists, length: #{content.length}")
       Chef::Log.warn("=== DEBUG: Key file starts with: #{content[0..50]}")
     else
-      Chef::Log.warn("=== DEBUG: Key file does NOT exist!")
+      Chef::Log.warn('=== DEBUG: Key file does NOT exist!')
     end
   end
 end

@@ -572,13 +572,13 @@ If this problem persists, check your Jenkins log files.
     #
     def get_crumb
       uri = URI.parse(uri_join(endpoint, 'crumbIssuer', 'api', 'json'))
-      
+
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = (uri.scheme == 'https')
-      
+
       response = http.get(uri.path)
-      return nil unless response.is_a?(Net::HTTPSuccess)
-      
+      return unless response.is_a?(Net::HTTPSuccess)
+
       require 'json'
       data = JSON.parse(response.body)
       { field: data['crumbRequestField'], value: data['crumb'] }
@@ -597,25 +597,25 @@ If this problem persists, check your Jenkins log files.
     #
     def install_plugin_via_rest(plugin_url)
       uri = URI.parse(uri_join(endpoint, 'pluginManager', 'installNecessaryPlugins'))
-      
+
       request = Net::HTTP::Post.new(uri.path)
       request['Content-Type'] = 'text/xml'
       request.body = "<jenkins><install plugin='#{plugin_url}' /></jenkins>"
-      
+
       # Add CSRF crumb if available
       crumb = get_crumb
       request[crumb[:field]] = crumb[:value] if crumb
-      
+
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = (uri.scheme == 'https')
       http.read_timeout = 30
-      
+
       response = http.request(request)
-      
+
       unless response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
         raise "Failed to install plugin via REST API: #{response.code} #{response.message}"
       end
-      
+
       true
     end
   end

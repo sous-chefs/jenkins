@@ -250,7 +250,7 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
     # Download plugin directly to plugins directory to avoid auth issues
     if use_url
       plugin_file_path = plugin_file(plugin_name)
-      
+
       remote_file plugin_file_path do
         source url
         owner node['jenkins']['master']['user']
@@ -258,7 +258,7 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
         mode '0644'
         action :create
       end
-      # Note: Jenkins restart should be done manually after all plugins are installed
+      # NOTE: Jenkins restart should be done manually after all plugins are installed
       # to avoid systemd rate limiting
     else
       # For plugin names without URL, still need to use CLI

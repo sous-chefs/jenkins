@@ -7,8 +7,8 @@ describe 'jenkins_install' do
   context 'when installing via war method' do
     context 'with default system account settings' do
       recipe do
-        node.normal['jenkins']['java'] = '/usr/bin/java'
-        
+        node.override['jenkins']['java'] = '/usr/bin/java'
+
         jenkins_install 'default' do
           install_method 'war'
           home '/opt/bacon'
@@ -60,8 +60,8 @@ describe 'jenkins_install' do
 
     context 'with system account enabled' do
       recipe do
-        node.normal['jenkins']['java'] = '/usr/bin/java'
-        
+        node.override['jenkins']['java'] = '/usr/bin/java'
+
         jenkins_install 'default' do
           install_method 'war'
           home '/opt/bacon'
@@ -90,8 +90,8 @@ describe 'jenkins_install' do
     platform 'ubuntu', '20.04'
 
     recipe do
-      node.normal['jenkins']['java'] = '/usr/bin/java'
-      
+      node.override['jenkins']['java'] = '/usr/bin/java'
+
       jenkins_install 'default' do
         install_method 'package'
       end
