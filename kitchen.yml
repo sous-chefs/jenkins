@@ -17,7 +17,7 @@ provisioner:
   deprecations_as_errors: true
   attributes:
     jenkins:
-      master:
+      controller:
         host: localhost
         # This it to help issues we run into on the CI systems
         update_center_sleep: 10

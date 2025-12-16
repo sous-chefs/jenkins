@@ -1,6 +1,6 @@
 # jenkins_ssh_agent
 
-Manages Jenkins SSH agents. SSH agents are initiated from the Jenkins master via SSH connection, making them ideal for Unix/Linux nodes with SSH access.
+Manages Jenkins SSH agents. SSH agents are initiated from the Jenkins controller via SSH connection, making them ideal for Unix/Linux nodes with SSH access.
 
 ## Actions
 
@@ -119,7 +119,7 @@ end
 ```
 
 ```ruby
-# Connect/disconnect a agent
+# Connect/disconnect an agent
 jenkins_ssh_agent 'builder' do
   action :connect
 end
@@ -130,7 +130,7 @@ end
 ```
 
 ```ruby
-# Take a agent offline/online
+# Take an agent offline/online
 jenkins_ssh_agent 'builder' do
   offline_reason 'Maintenance window'
   action :offline
@@ -141,6 +141,6 @@ jenkins_ssh_agent 'builder' do
 end
 ```
 
-**NOTE** SSH agents are initiated from the Jenkins master, so this resource should be part of the **master node's** run list. The master must have SSH access to the agent node.
+**NOTE** SSH agents are initiated from the Jenkins controller, so this resource should be part of the **controller node's** run list. The controller must have SSH access to the agent node.
 
 **NOTE** The `credentials` property must reference valid SSH credentials stored in Jenkins (created via `jenkins_private_key_credentials` or similar resources).
