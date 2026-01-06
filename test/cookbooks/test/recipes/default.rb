@@ -1,6 +1,12 @@
 # Basic Jenkins installation test - no plugins, no auth
 apt_update 'update' if platform_family?('debian')
 
+# Disable epel-next for EL10 - the repository doesn't exist yet in Fedora infrastructure
+# See: https://mirrors.fedoraproject.org/mirrorlist?repo=epel-next-10 returns 404
+if platform_family?('rhel') && node['platform_version'].to_i >= 10
+  node.default['yum']['epel-next']['managed'] = false
+end
+
 # Install Amazon Corretto 21 LTS
 # The java cookbook's corretto_install resource supports custom URLs
 # This allows us to use Java 21 LTS which is not yet in the cookbook's defaults

@@ -45,7 +45,7 @@ property :channel, String,
   description: 'Release channel to use'
 
 property :mirror, String,
-  default: 'https://updates.jenkins.io',
+  default: 'https://get.jenkins.io',
   description: 'Mirror to download Jenkins from'
 
 property :source, String,
@@ -265,14 +265,13 @@ action_class do
       notifies :restart, 'service[jenkins]'
     end
 
-    # Disable old runit services
+    # Disable old runit services (clean up legacy init scripts)
     %w(
       /etc/init.d/jenkins
       /etc/service/jenkins
     ).each do |f|
       file f do
         action :delete
-        notifies :stop, 'service[jenkins]', :before
       end
     end
 
@@ -387,7 +386,13 @@ if (strategy == AuthorizationStrategy.UNSECURED) {
   def computed_source
     return new_resource.source if new_resource.source
 
-    "#{new_resource.mirror}/#{new_resource.version || new_resource.channel}/latest/jenkins.war"
+    channel_path = case new_resource.channel
+                   when 'stable'
+                     'war-stable'
+                   when 'current', 'latest'
+                     'war'
+                   end
+    "#{new_resource.mirror}/#{channel_path}/#{new_resource.version || 'latest'}/jenkins.war"
   end
 
   def computed_repository_name
