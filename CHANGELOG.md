@@ -5,6 +5,11 @@ This file is used to list changes made in each version of the jenkins cookbook.
 Standardise files with files in sous-chefs/repo-management
 Standardise files with files in sous-chefs/repo-management
 
+## Unreleased
+
+Standardise files with files in sous-chefs/repo-management
+
+
 ## [9.6.2](https://github.com/sous-chefs/jenkins/compare/9.6.1...v9.6.2) (2025-10-15)
 
 
