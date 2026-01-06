@@ -1,9 +1,10 @@
 # Basic Jenkins installation test - no plugins, no auth
 apt_update 'update' if platform_family?('debian')
 
-# Disable epel-next for EL10 - the repository doesn't exist yet in Fedora infrastructure
-# See: https://mirrors.fedoraproject.org/mirrorlist?repo=epel-next-10 returns 404
+# Disable EPEL repos for EL10 - the repositories are not fully available yet in Fedora infrastructure
+# epel-next-10 returns 404, epel-10 returns 503
 if platform_family?('rhel') && node['platform_version'].to_i >= 10
+  node.default['yum']['epel']['managed'] = false
   node.default['yum']['epel-next']['managed'] = false
 end
 
@@ -25,5 +26,8 @@ corretto_install '21' do
 end
 
 node.default['jenkins']['java'] = '/usr/bin/java'
+
+# Increase timeout for Jenkins to become ready - first boot takes longer
+node.default['jenkins']['executor']['timeout'] = 300
 
 jenkins_install 'default'

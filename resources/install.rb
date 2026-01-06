@@ -451,8 +451,10 @@ if (strategy == AuthorizationStrategy.UNSECURED) {
     case node['platform_family']
     when 'debian'
       %w(fontconfig)
-    when 'rhel', 'amazon'
+    when 'rhel', 'amazon', 'fedora'
       %w(fontconfig dejavu-sans-fonts)
+    when 'suse'
+      %w(fontconfig dejavu-fonts)
     else
       []
     end
