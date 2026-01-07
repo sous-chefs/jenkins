@@ -9,6 +9,14 @@ admin_password = 'chefadmin123'
 # Install mailer plugin (required by jenkins_user resource)
 jenkins_plugin 'mailer'
 
+# Ensure init.groovy.d directory exists (may not exist on WAR installations)
+directory '/var/lib/jenkins/init.groovy.d' do
+  owner 'jenkins'
+  group 'jenkins'
+  mode '0755'
+  recursive true
+end
+
 # Create init script to set up security and admin user
 # This runs on Jenkins startup and creates the admin user with password
 file '/var/lib/jenkins/init.groovy.d/setup-security.groovy' do
