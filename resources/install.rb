@@ -275,6 +275,8 @@ action_class do
       end
     end
 
+    create_init_groovy_directory
+
     systemd_unit 'jenkins.service' do
       content <<~EOU
         #

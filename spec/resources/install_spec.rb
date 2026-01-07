@@ -56,6 +56,13 @@ describe 'jenkins_install' do
         expect(chef_run).to enable_service('jenkins')
         expect(chef_run).to start_service('jenkins')
       end
+
+      it 'creates init.groovy.d directory' do
+        expect(chef_run).to create_directory('/opt/bacon/init.groovy.d')
+          .with_owner('bacon')
+          .with_group('meats')
+          .with_mode('0755')
+      end
     end
 
     context 'with system account enabled' do
