@@ -1,0 +1,11 @@
+name: authentication
+title: Jenkins Authentication Test
+maintainer: Sous Chefs
+copyright: Sous Chefs
+copyright_email: help@sous-chefs.org
+license: Apache-2.0
+summary: Test Jenkins user and plugin management
+version: 0.1.0
+depends:
+  - name: jenkins_inspec
+    path: test/integration/helpers/jenkins_inspec

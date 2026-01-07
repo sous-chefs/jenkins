@@ -1,0 +1,10 @@
+pre-commit:
+  commands:
+    cookstyle:
+      run: chef exec cookstyle
+    rspec:
+      run: chef exec rspec
+    yamllint:
+      run: yamllint .
+    markdownlint:
+      run: markdownlint-cli2 "**/*.md" --fix

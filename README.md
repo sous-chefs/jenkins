@@ -47,18 +47,31 @@ The master recipe will create the required directory structure and install jenki
 
 ## Resources
 
+### Core Resources
+
 - [jenkins_command](./documentation/jenkins_command.md)
-- [jenkins_credentials](./documentation/jenkins_credentials.md)
 - [jenkins_job](./documentation/jenkins_job.md)
-- [jenkins_password_credentials](./documentation/jenkins_password_credentials.md)
 - [jenkins_plugin](./documentation/jenkins_plugin.md)
-- [jenkins_private_key_credentials](./documentation/jenkins_private_key_credentials.md)
 - [jenkins_proxy](./documentation/jenkins_proxy.md)
 - [jenkins_script](./documentation/jenkins_script.md)
-- [jenkins_secret_text_credentials](./documentation/jenkins_secret_text_credentials.md)
-- [jenkins_slave](./documentation/jenkins_slave.md)
 - [jenkins_user](./documentation/jenkins_user.md)
 - [jenkins_view](./documentation/jenkins_view.md)
+
+### Credential Resources
+
+- [jenkins_credentials](./documentation/jenkins_credentials.md)
+- [jenkins_file_credentials](./documentation/jenkins_file_credentials.md)
+- [jenkins_githubapp_credentials](./documentation/jenkins_githubapp_credentials.md)
+- [jenkins_password_credentials](./documentation/jenkins_password_credentials.md)
+- [jenkins_private_key_credentials](./documentation/jenkins_private_key_credentials.md)
+- [jenkins_secret_text_credentials](./documentation/jenkins_secret_text_credentials.md)
+
+### Slave Resources
+
+- [jenkins_slave](./documentation/jenkins_slave.md)
+- [jenkins_jnlp_slave](./documentation/jenkins_jnlp_slave.md)
+- [jenkins_ssh_slave](./documentation/jenkins_ssh_slave.md)
+- [jenkins_windows_slave](./documentation/jenkins_windows_slave.md)
 
 ## Caveats
 
@@ -70,7 +83,7 @@ If you use or plan to use authentication for your Jenkins cluster (which we high
 node.run_state[:jenkins_private_key]
 ```
 
-The underlying executor class (which all HWRPs use) intelligently adds authentication information to the Jenkins CLI commands if this value is set. The method used to generate and populate this key-pair is left to the user:
+The underlying executor class (which all custom resources use) intelligently adds authentication information to the Jenkins CLI commands if this value is set. The method used to generate and populate this key-pair is left to the user:
 
 ```ruby
 # Using search

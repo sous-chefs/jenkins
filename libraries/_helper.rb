@@ -280,9 +280,27 @@ If this problem persists, check your Jenkins log files.
     # @return [Boolean]
     #
     def private_key_given?
+      return false if security_disabled?
+
       # @todo remove in 3.0.0
       !node['jenkins']['executor']['private_key'].nil? ||
         !node.run_state[:jenkins_private_key].nil?
+    end
+
+    def runtime_config
+      node.run_state[:jenkins_runtime_config] || {}
+    end
+
+    def security_disabled?
+      disabled = runtime_config[:disable_security]
+      return disabled unless disabled.nil?
+
+      controller_disabled = node['jenkins']['controller']['disable_security']
+      return controller_disabled unless controller_disabled.nil?
+
+      node['jenkins']['master']['disable_security']
+    rescue NoMethodError
+      false
     end
 
     #
@@ -291,7 +309,12 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def proxy
+      proxy_value = runtime_config[:proxy]
+      return proxy_value unless proxy_value.nil? || proxy_value.to_s.empty?
+
       node['jenkins']['executor']['proxy']
+    rescue NoMethodError
+      nil
     end
 
     #
@@ -300,7 +323,12 @@ If this problem persists, check your Jenkins log files.
     # @return [Boolean]
     #
     def proxy_given?
+      proxy_value = runtime_config[:proxy]
+      return true unless proxy_value.nil? || proxy_value.to_s.empty?
+
       !node['jenkins']['executor']['proxy'].nil?
+    rescue NoMethodError
+      false
     end
 
     #
@@ -309,7 +337,15 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def endpoint
+      runtime_endpoint = runtime_config[:endpoint]
+      return runtime_endpoint unless runtime_endpoint.nil? || runtime_endpoint.to_s.empty?
+
+      controller_endpoint = node['jenkins']['controller']['endpoint']
+      return controller_endpoint unless controller_endpoint.nil? || controller_endpoint.to_s.empty?
+
       node['jenkins']['master']['endpoint']
+    rescue NoMethodError
+      nil
     end
 
     #
@@ -503,16 +539,16 @@ If this problem persists, check your Jenkins log files.
     #
     def ensure_update_center_present!
       node.run_state[:jenkins_update_center_present] ||= begin
-        source = uri_join(node['jenkins']['master']['mirror'], node['jenkins']['master']['channel'], 'update-center.json')
+        mirror = node['jenkins']['controller']['mirror']
+        mirror = node['jenkins']['master']['mirror'] if mirror.nil? || mirror.to_s.empty?
+
+        channel = node['jenkins']['controller']['channel']
+        channel = node['jenkins']['master']['channel'] if channel.nil? || channel.to_s.empty?
+
+        source = uri_join(mirror, channel, 'update-center.json')
         remote_file = Chef::Resource::RemoteFile.new(update_center_json, run_context)
         remote_file.source(source)
         remote_file.backup(false)
-
-        # Setting sensitive(true) will suppress the long diff output, but this
-        # functionality is not available in older versions of Chef, so we need
-        # check if the resource responds to the method before calling it.
-        remote_file.sensitive(true) if remote_file.respond_to?(:sensitive)
-        remote_file.mode('0644')
         remote_file.run_action(:create)
 
         extracted_json = ''
@@ -551,10 +587,67 @@ If this problem persists, check your Jenkins log files.
 
         # Allow updates to quiesce in Jenkins so that we don't run into issues
         # with plugin installations which may happen directly after this.
-        sleep node['jenkins']['master']['update_center_sleep']
+        update_center_sleep = node['jenkins']['controller']['update_center_sleep']
+        update_center_sleep = node['jenkins']['master']['update_center_sleep'] if update_center_sleep.nil?
+
+        sleep update_center_sleep
 
         true
       end
+    end
+
+    #
+    # Get Jenkins crumb for CSRF protection
+    #
+    # @return [Hash] crumb field and value
+    #
+    def get_crumb
+      uri = URI.parse(uri_join(endpoint, 'crumbIssuer', 'api', 'json'))
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == 'https')
+
+      response = http.get(uri.path)
+      return unless response.is_a?(Net::HTTPSuccess)
+
+      require 'json'
+      data = JSON.parse(response.body)
+      { field: data['crumbRequestField'], value: data['crumb'] }
+    rescue
+      nil
+    end
+
+    #
+    # Install a plugin via REST API
+    # Requires anonymous to have Overall/Administer permission or proper auth
+    #
+    # @param [String] plugin_url
+    #   the URL to the plugin .hpi file
+    #
+    # @return [Boolean]
+    #
+    def install_plugin_via_rest(plugin_url)
+      uri = URI.parse(uri_join(endpoint, 'pluginManager', 'installNecessaryPlugins'))
+
+      request = Net::HTTP::Post.new(uri.path)
+      request['Content-Type'] = 'text/xml'
+      request.body = "<jenkins><install plugin='#{plugin_url}' /></jenkins>"
+
+      # Add CSRF crumb if available
+      crumb = get_crumb
+      request[crumb[:field]] = crumb[:value] if crumb
+
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == 'https')
+      http.read_timeout = 30
+
+      response = http.request(request)
+
+      unless response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
+        raise "Failed to install plugin via REST API: #{response.code} #{response.message}"
+      end
+
+      true
     end
   end
 end
