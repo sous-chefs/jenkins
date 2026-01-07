@@ -189,15 +189,4 @@ action_class do
     # Don't compare the ID as it is generated
     current.tap { |c| c.delete(:id) } == convert_blank_values_to_nil(wanted_credentials)
   end
-
-  def credentials_for_id_groovy(id, groovy_variable_name)
-    <<-EOH.gsub(/^ {6}/, '')
-      #{groovy_variable_name} = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-        com.cloudbees.plugins.credentials.Credentials.class,
-        Jenkins.instance,
-        null,
-        null
-      ).find { it.id == #{convert_to_groovy(id)} }
-    EOH
-  end
 end
