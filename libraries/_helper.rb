@@ -446,7 +446,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def cli_credential_file
-      node['jenkins']['executor']['cli_credential_file']
+      node.run_state[:jenkins_cli_credential_file] || node['jenkins']['executor']['cli_credential_file']
     end
 
     #
