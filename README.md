@@ -6,7 +6,7 @@
 [![OpenCollective](https://opencollective.com/sous-chefs/sponsors/badge.svg)](#sponsors)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Installs and configures Jenkins CI master & node slaves. Resource providers to support automation via jenkins-cli, including job create/update.
+Installs and configures Jenkins CI controller & agents. Resource providers to support automation via jenkins-cli, including job create/update.
 
 ## Maintainers
 
@@ -16,13 +16,16 @@ This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of
 
 ### Platforms
 
-- Debian 9+
-- Ubuntu 18.04+
-- RHEL/CentOS 7+
+- Amazon Linux 2023
+- Debian 12+
+- Ubuntu 20.04+
+- RHEL/CentOS Stream 9+
+- AlmaLinux 8+
+- Rocky Linux 8+
 
 ### Chef
 
-- Chef 13.0+
+- Chef Infra Client 13.0+
 
 #### Java cookbook
 
@@ -34,13 +37,13 @@ In order to keep the README manageable and in sync with the attributes, this coo
 
 ## Examples
 
-Documentation and examples are provided inline using YARD. The tests and fixture cookbooks in `tests` and `tests/fixtures` are intended to be a further source of examples.
+Documentation and examples are provided inline using YARD. The tests and fixture cookbooks in `test` and `test/fixtures` are intended to be a further source of examples.
 
 ## Recipes
 
-### master
+### controller
 
-The master recipe will create the required directory structure and install jenkins. There are two installation methods, controlled by the `node['jenkins']['master']['install_method']` attribute:
+The controller recipe will create the required directory structure and install Jenkins. There are two installation methods, controlled by the `node['jenkins']['controller']['install_method']` attribute:
 
 - `package` - Install Jenkins from the official jenkins-ci.org packages
 - `war` - Download the latest version of the WAR file and configure a systemd service
@@ -66,7 +69,7 @@ The master recipe will create the required directory structure and install jenki
 - [jenkins_private_key_credentials](./documentation/jenkins_private_key_credentials.md)
 - [jenkins_secret_text_credentials](./documentation/jenkins_secret_text_credentials.md)
 
-### Slave Resources
+### Agent Resources
 
 - [jenkins_slave](./documentation/jenkins_slave.md)
 - [jenkins_jnlp_slave](./documentation/jenkins_jnlp_slave.md)
@@ -153,14 +156,14 @@ Please note that older versions of Jenkins (< 1.555) permitted login via CLI for
 Jenkins 2 enables an install wizard by default. To make sure you can manipulate the jenkins instance, you need to disable the wizard. You can do this by setting an attribute:
 
 ```ruby
-default['jenkins']['master']['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
+default['jenkins']['controller']['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
 ```
 
 This is done by default, but must be kept when overriding the jvm_options!
 
 ### Proxies
 
-If you need to pass through a proxy to communicate between your masters and slaves, you will need to set a special node attribute:
+If you need to pass through a proxy to communicate between your controllers and agents, you will need to set a special node attribute:
 
 ```ruby
 node['jenkins']['executor']['proxy']
