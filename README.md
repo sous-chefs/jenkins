@@ -6,7 +6,7 @@
 [![OpenCollective](https://opencollective.com/sous-chefs/sponsors/badge.svg)](#sponsors)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Installs and configures Jenkins CI master & node slaves. Resource providers to support automation via jenkins-cli, including job create/update.
+Installs and configures Jenkins CI controller & agents. Resource providers to support automation via jenkins-cli, including job create/update.
 
 ## Maintainers
 
@@ -16,13 +16,16 @@ This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of
 
 ### Platforms
 
-- Debian 9+
-- Ubuntu 18.04+
-- RHEL/CentOS 7+
+- Amazon Linux 2023
+- Debian 12+
+- Ubuntu 20.04+
+- RHEL/CentOS Stream 9+
+- AlmaLinux 8+
+- Rocky Linux 8+
 
 ### Chef
 
-- Chef 13.0+
+- Chef Infra Client 13.0+
 
 #### Java cookbook
 
@@ -34,13 +37,13 @@ In order to keep the README manageable and in sync with the attributes, this coo
 
 ## Examples
 
-Documentation and examples are provided inline using YARD. The tests and fixture cookbooks in `tests` and `tests/fixtures` are intended to be a further source of examples.
+Documentation and examples are provided inline using YARD. The tests and fixture cookbooks in `test` and `test/fixtures` are intended to be a further source of examples.
 
 ## Recipes
 
-### master
+### controller
 
-The master recipe will create the required directory structure and install jenkins. There are two installation methods, controlled by the `node['jenkins']['master']['install_method']` attribute:
+The controller recipe will create the required directory structure and install Jenkins. There are two installation methods, controlled by the `node['jenkins']['controller']['install_method']` attribute:
 
 - `package` - Install Jenkins from the official jenkins-ci.org packages
 - `war` - Download the latest version of the WAR file and configure a systemd service
@@ -66,7 +69,7 @@ The master recipe will create the required directory structure and install jenki
 - [jenkins_private_key_credentials](./documentation/jenkins_private_key_credentials.md)
 - [jenkins_secret_text_credentials](./documentation/jenkins_secret_text_credentials.md)
 
-### Slave Resources
+### Agent Resources
 
 - [jenkins_slave](./documentation/jenkins_slave.md)
 - [jenkins_jnlp_slave](./documentation/jenkins_jnlp_slave.md)
@@ -77,7 +80,37 @@ The master recipe will create the required directory structure and install jenki
 
 ### Authentication
 
-If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to set a special value in the `run_context`:
+If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to configure CLI authentication. Jenkins 2.332.1+ requires authentication for CLI commands by default.
+
+#### Username/Password Authentication (Recommended for Jenkins 2.332.1+)
+
+For modern Jenkins installations, the recommended approach is to use username/password authentication via the `-auth` flag. This can be configured using node attributes:
+
+```ruby
+node.normal['jenkins']['executor']['cli_username'] = 'admin'
+node.normal['jenkins']['executor']['cli_password'] = 'admin_api_token_or_password'
+```
+
+Or via `run_state` (useful when credentials come from encrypted data bags):
+
+```ruby
+node.run_state[:jenkins_username] = 'admin'
+node.run_state[:jenkins_password] = 'admin_api_token_or_password'
+```
+
+You can also use a credentials file:
+
+```ruby
+node.normal['jenkins']['executor']['cli_credential_file'] = '/path/to/credentials_file'
+```
+
+The credentials file should contain `username:password` or `username:api_token`.
+
+**Note:** Using an API token instead of a password is recommended for security. You can generate an API token from the Jenkins user configuration page.
+
+#### SSH Key Authentication (Legacy)
+
+For older Jenkins installations or when SSH-based authentication is preferred, you can set a private key in the `run_state`:
 
 ```ruby
 node.run_state[:jenkins_private_key]
@@ -118,26 +151,19 @@ node.run_state[:jenkins_private_key] = private_key
 
 Please note that older versions of Jenkins (< 1.555) permitted login via CLI for a user defined in Jenkins configuration with an SSH public key but not present in the actual SecurityRealm, and this is no longer permitted. If an operation requires any special permission at all, you must authenticate as a real user. This means that if you have LDAP or GitHub OAuth based authn/authz enabled the user you are using for configuration tasks must have an associated account in the external services. Please see [JENKINS-22346](https://issues.jenkins-ci.org/browse/JENKINS-22346) for more details.
 
-If (and **only if**) you have your Jenkins instance configured to use the PAM (Unix user/group database) security realm you can set the username and password the CLI uses via these two `run_context` values:
-
-```ruby
-node.run_state[:jenkins_username]
-node.run_state[:jenkins_password]
-```
-
 ### Jenkins 2
 
 Jenkins 2 enables an install wizard by default. To make sure you can manipulate the jenkins instance, you need to disable the wizard. You can do this by setting an attribute:
 
 ```ruby
-default['jenkins']['master']['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
+default['jenkins']['controller']['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
 ```
 
 This is done by default, but must be kept when overriding the jvm_options!
 
 ### Proxies
 
-If you need to pass through a proxy to communicate between your masters and slaves, you will need to set a special node attribute:
+If you need to pass through a proxy to communicate between your controllers and agents, you will need to set a special node attribute:
 
 ```ruby
 node['jenkins']['executor']['proxy']
