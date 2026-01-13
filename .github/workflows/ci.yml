@@ -9,7 +9,7 @@ name: ci
 
 jobs:
   lint-unit:
-    uses: sous-chefs/.github/.github/workflows/lint-unit.yml@5.0.3
+    uses: sous-chefs/.github/.github/workflows/lint-unit.yml@5.0.8
     permissions:
       actions: write
       checks: write
@@ -24,25 +24,27 @@ jobs:
       matrix:
         os:
           - "almalinux-8"
-          - "amazonlinux-2"
-          - "centos-7"
-          - "centos-stream-8"
-          - "debian-10"
-          # TODO: Not working and needs to be fixed
-          # - 'debian-11'
+          - "almalinux-9"
+          - "almalinux-10"
+          - "amazonlinux-2023"
+          - "centos-stream-9"
+          - "centos-stream-10"
+          - "debian-12"
+          - "debian-13"
+          - "fedora-latest"
+          - "opensuse-leap-15"
+          - "oraclelinux-8"
+          - "oraclelinux-9"
           - "rockylinux-8"
-          - "ubuntu-1804"
+          - "rockylinux-9"
+          - "rockylinux-10"
           - "ubuntu-2004"
+          - "ubuntu-2204"
+          - "ubuntu-2404"
         suite:
-          - "smoke-package-stable"
-          - "smoke-package-current"
-          - "smoke-war-stable"
-          - "smoke-war-latest"
-          - "authentication-private-key"
-          - "authentication-username-password"
-          - "authentication-credential-file"
-          - "jenkins-proxy-config"
-          - "jenkins-proxy-remove"
+          - "default"
+          - "plugins"
+          - "authentication"
       fail-fast: false
 
     steps:

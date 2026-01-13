@@ -1,5 +1,5 @@
 ---
-extends: default
+extends: relaxed
 rules:
   line-length:
     max: 256
@@ -13,3 +13,5 @@ rules:
     max-spaces-inside-empty: -1
   comments:
     min-spaces-from-content: 1
+
+ignore-from-file: .gitignore

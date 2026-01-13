@@ -1,6 +1,0 @@
-include_recipe '::create'
-include_recipe '::create_folder'
-include_recipe '::build'
-include_recipe '::disable'
-include_recipe '::enable'
-include_recipe '::delete'
