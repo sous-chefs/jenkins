@@ -77,7 +77,37 @@ The master recipe will create the required directory structure and install jenki
 
 ### Authentication
 
-If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to set a special value in the `run_context`:
+If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to configure CLI authentication. Jenkins 2.332.1+ requires authentication for CLI commands by default.
+
+#### Username/Password Authentication (Recommended for Jenkins 2.332.1+)
+
+For modern Jenkins installations, the recommended approach is to use username/password authentication via the `-auth` flag. This can be configured using node attributes:
+
+```ruby
+node.normal['jenkins']['executor']['cli_username'] = 'admin'
+node.normal['jenkins']['executor']['cli_password'] = 'admin_api_token_or_password'
+```
+
+Or via `run_state` (useful when credentials come from encrypted data bags):
+
+```ruby
+node.run_state[:jenkins_username] = 'admin'
+node.run_state[:jenkins_password] = 'admin_api_token_or_password'
+```
+
+You can also use a credentials file:
+
+```ruby
+node.normal['jenkins']['executor']['cli_credential_file'] = '/path/to/credentials_file'
+```
+
+The credentials file should contain `username:password` or `username:api_token`.
+
+**Note:** Using an API token instead of a password is recommended for security. You can generate an API token from the Jenkins user configuration page.
+
+#### SSH Key Authentication (Legacy)
+
+For older Jenkins installations or when SSH-based authentication is preferred, you can set a private key in the `run_state`:
 
 ```ruby
 node.run_state[:jenkins_private_key]
@@ -117,13 +147,6 @@ node.run_state[:jenkins_private_key] = private_key
 ```
 
 Please note that older versions of Jenkins (< 1.555) permitted login via CLI for a user defined in Jenkins configuration with an SSH public key but not present in the actual SecurityRealm, and this is no longer permitted. If an operation requires any special permission at all, you must authenticate as a real user. This means that if you have LDAP or GitHub OAuth based authn/authz enabled the user you are using for configuration tasks must have an associated account in the external services. Please see [JENKINS-22346](https://issues.jenkins-ci.org/browse/JENKINS-22346) for more details.
-
-If (and **only if**) you have your Jenkins instance configured to use the PAM (Unix user/group database) security realm you can set the username and password the CLI uses via these two `run_context` values:
-
-```ruby
-node.run_state[:jenkins_username]
-node.run_state[:jenkins_password]
-```
 
 ### Jenkins 2
 
