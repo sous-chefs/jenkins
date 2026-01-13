@@ -93,20 +93,9 @@ property :port, Integer,
   default: 8080,
   description: 'Port Jenkins listens on'
 
-property :ajp_port, Integer,
-  description: 'AJP13 port (-1 to disable)'
-
 property :debug_level, Integer,
   default: 5,
   description: 'Debug level for logs'
-
-property :handler_max, Integer,
-  default: 100,
-  description: 'Maximum number of HTTP worker threads'
-
-property :handler_idle, Integer,
-  default: 20,
-  description: 'Maximum number of idle HTTP worker threads'
 
 property :access_log, String,
   equal_to: %w(yes no),
@@ -192,10 +181,6 @@ action_class do
           log_directory: new_resource.log_directory,
           listen_address: new_resource.listen_address,
           port: new_resource.port,
-          ajp_port: computed_ajp_port,
-          debug_level: new_resource.debug_level,
-          handler_max: new_resource.handler_max,
-          handler_idle: new_resource.handler_idle,
           access_log: new_resource.access_log,
           maxopenfiles: new_resource.maxopenfiles,
           jvm_options: new_resource.jvm_options,
@@ -216,10 +201,7 @@ action_class do
           log_directory: new_resource.log_directory,
           listen_address: new_resource.listen_address,
           port: new_resource.port,
-          ajp_port: computed_ajp_port,
           debug_level: new_resource.debug_level,
-          handler_max: new_resource.handler_max,
-          handler_idle: new_resource.handler_idle,
           access_log: new_resource.access_log,
           maxopenfiles: new_resource.maxopenfiles,
           jvm_options: new_resource.jvm_options,
@@ -435,17 +417,6 @@ if (strategy == AuthorizationStrategy.UNSECURED) {
       'https://pkg.jenkins.io/debian/jenkins.io-2023.key'
     when %w(rhel current), %w(amazon current)
       'https://pkg.jenkins.io/redhat/jenkins.io-2023.key'
-    end
-  end
-
-  def computed_ajp_port
-    return new_resource.ajp_port if new_resource.ajp_port
-
-    case node['platform_family']
-    when 'debian'
-      -1
-    when 'rhel', 'amazon'
-      8009
     end
   end
 
