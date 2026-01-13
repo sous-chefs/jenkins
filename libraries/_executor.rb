@@ -150,7 +150,7 @@ module Jenkins
     end
 
     def groovy_from_file!(path)
-      execute!("groovy #{path}")
+      execute!("groovy = < #{path}")
     end
 
     private
