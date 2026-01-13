@@ -5,6 +5,22 @@ This file is used to list changes made in each version of the jenkins cookbook.
 Standardise files with files in sous-chefs/repo-management
 Standardise files with files in sous-chefs/repo-management
 
+## [10.0.0](https://github.com/sous-chefs/jenkins/compare/v9.6.2...v10.0.0) (2026-01-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* The following properties have been removed from jenkins_install resource: debug_level, access_log. Configuration is now done via systemd override.conf.
+* The following properties have been removed from jenkins_install resource: ajp_port, handler_max, handler_idle.
+
+### Bug Fixes
+
+* **ci:** Update workflows to use release pipeline ([#838](https://github.com/sous-chefs/jenkins/issues/838)) ([e0e30bc](https://github.com/sous-chefs/jenkins/commit/e0e30bcc0d69111120936bab7364e64eccb01eef))
+* **docs:** add username/password CLI authentication documentation ([#845](https://github.com/sous-chefs/jenkins/issues/845)) ([fb4fc24](https://github.com/sous-chefs/jenkins/commit/fb4fc2428bf98d4bf8f3e24ea3400a205466425d))
+* remove deprecated Jenkins options removed in 2.375 ([#846](https://github.com/sous-chefs/jenkins/issues/846)) ([c172504](https://github.com/sous-chefs/jenkins/commit/c1725044d14dd077f9cd8cf9615f67ea2a411188)), closes [#792](https://github.com/sous-chefs/jenkins/issues/792)
+* use stdin redirection for groovy_from_file to avoid -remoting mode ([#848](https://github.com/sous-chefs/jenkins/issues/848)) ([8423733](https://github.com/sous-chefs/jenkins/commit/84237330119557955fad2acf49a08f2fa21992f7)), closes [#779](https://github.com/sous-chefs/jenkins/issues/779)
+* use systemd override.conf for Jenkins 2.332.1+ ([#847](https://github.com/sous-chefs/jenkins/issues/847)) ([8102f10](https://github.com/sous-chefs/jenkins/commit/8102f108a51203b4d553f31b805cf835f8cd59fa)), closes [#783](https://github.com/sous-chefs/jenkins/issues/783)
+
 ## [9.6.2](https://github.com/sous-chefs/jenkins/compare/9.6.1...v9.6.2) (2025-10-15)
 
 
