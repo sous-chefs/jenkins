@@ -93,15 +93,6 @@ property :port, Integer,
   default: 8080,
   description: 'Port Jenkins listens on'
 
-property :debug_level, Integer,
-  default: 5,
-  description: 'Debug level for logs'
-
-property :access_log, String,
-  equal_to: %w(yes no),
-  default: 'no',
-  description: 'Enable web access logging'
-
 property :maxopenfiles, Integer,
   default: 8192,
   description: 'Maximum number of open files'
@@ -168,48 +159,39 @@ action_class do
 
     create_directories
 
-    case node['platform_family']
-    when 'debian'
-      template '/etc/default/jenkins' do
-        source   'jenkins-config-debian.erb'
-        cookbook 'jenkins'
-        mode     '0644'
-        variables(
-          user: new_resource.user,
-          group: new_resource.group,
-          home: new_resource.home,
-          log_directory: new_resource.log_directory,
-          listen_address: new_resource.listen_address,
-          port: new_resource.port,
-          access_log: new_resource.access_log,
-          maxopenfiles: new_resource.maxopenfiles,
-          jvm_options: new_resource.jvm_options,
-          jenkins_args: new_resource.jenkins_args,
-          extra_variables: new_resource.extra_variables
-        )
-        notifies :restart, 'service[jenkins]', :immediately
-      end
-    when 'rhel', 'amazon'
-      template '/etc/sysconfig/jenkins' do
-        source   'jenkins-config-rhel.erb'
-        cookbook 'jenkins'
-        mode     '0644'
-        variables(
-          user: new_resource.user,
-          group: new_resource.group,
-          home: new_resource.home,
-          log_directory: new_resource.log_directory,
-          listen_address: new_resource.listen_address,
-          port: new_resource.port,
-          debug_level: new_resource.debug_level,
-          access_log: new_resource.access_log,
-          maxopenfiles: new_resource.maxopenfiles,
-          jvm_options: new_resource.jvm_options,
-          jenkins_args: new_resource.jenkins_args,
-          extra_variables: new_resource.extra_variables
-        )
-        notifies :restart, 'service[jenkins]', :immediately
-      end
+    # Create systemd override directory and configuration
+    # Jenkins 2.332.1+ uses systemd and reads configuration from override.conf
+    # See https://www.jenkins.io/doc/book/system-administration/systemd-services/
+    directory '/etc/systemd/system/jenkins.service.d' do
+      owner 'root'
+      group 'root'
+      mode '0755'
+      action :create
+    end
+
+    template '/etc/systemd/system/jenkins.service.d/override.conf' do
+      source   'jenkins-systemd-override.conf.erb'
+      cookbook 'jenkins'
+      owner    'root'
+      group    'root'
+      mode     '0644'
+      variables(
+        user: new_resource.user,
+        group: new_resource.group,
+        home: new_resource.home,
+        listen_address: new_resource.listen_address,
+        port: new_resource.port,
+        jvm_options: new_resource.jvm_options,
+        jenkins_args: new_resource.jenkins_args,
+        extra_variables: new_resource.extra_variables
+      )
+      notifies :run, 'execute[systemctl daemon-reload]', :immediately
+      notifies :restart, 'service[jenkins]', :immediately
+    end
+
+    execute 'systemctl daemon-reload' do
+      command 'systemctl daemon-reload'
+      action :nothing
     end
 
     create_init_groovy_directory
