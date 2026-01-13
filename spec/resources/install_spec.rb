@@ -145,9 +145,16 @@ describe 'jenkins_install' do
       end
     end
 
-    it 'creates debian config file' do
-      expect(chef_run).to create_template('/etc/default/jenkins')
-        .with_source('jenkins-config-debian.erb')
+    it 'creates systemd override directory' do
+      expect(chef_run).to create_directory('/etc/systemd/system/jenkins.service.d')
+        .with_owner('root')
+        .with_group('root')
+        .with_mode('0755')
+    end
+
+    it 'creates systemd override config file' do
+      expect(chef_run).to create_template('/etc/systemd/system/jenkins.service.d/override.conf')
+        .with_source('jenkins-systemd-override.conf.erb')
         .with_mode('0644')
     end
 
