@@ -104,6 +104,12 @@ You can also use a credentials file:
 node.normal['jenkins']['executor']['cli_credential_file'] = '/path/to/credentials_file'
 ```
 
+Or via `run_state`:
+
+```ruby
+node.run_state[:jenkins_cli_credential_file] = '/path/to/credentials_file'
+```
+
 The credentials file should contain `username:password` or `username:api_token`.
 
 **Note:** Using an API token instead of a password is recommended for security. You can generate an API token from the Jenkins user configuration page.
