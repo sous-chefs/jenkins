@@ -87,24 +87,6 @@ JENKINS_HTTPS_PORT=""
 #
 JENKINS_HTTPS_LISTEN_ADDRESS=""
 
-## Type:        integer(0:65535)
-## Default:     8009
-## ServiceRestart: jenkins
-#
-# Ajp13 Port Jenkins is listening on.
-# Set to -1 to disable
-#
-JENKINS_AJP_PORT="<%= node['jenkins']['master']['ajp_port'] %>"
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: jenkins
-#
-# IP address Jenkins listens on for Ajp13 requests.
-# Default is all interfaces (0.0.0.0).
-#
-JENKINS_AJP_LISTEN_ADDRESS=""
-
 ## Type:        integer(1:9)
 ## Default:     5
 ## ServiceRestart: jenkins
@@ -121,22 +103,6 @@ JENKINS_DEBUG_LEVEL="<%= node['jenkins']['master']['debug_level'] %>"
 # Whether to enable access logging or not.
 #
 JENKINS_ENABLE_ACCESS_LOG="<%= node['jenkins']['master']['access_log'] %>"
-
-## Type:        integer
-## Default:     100
-## ServiceRestart: jenkins
-#
-# Maximum number of HTTP worker threads.
-#
-JENKINS_HANDLER_MAX="<%= node['jenkins']['master']['handler_max'] %>"
-
-## Type:        integer
-## Default:     20
-## ServiceRestart: jenkins
-#
-# Maximum number of idle HTTP worker threads.
-#
-JENKINS_HANDLER_IDLE="<%= node['jenkins']['master']['handler_idle'] %>"
 
 ## Type:        string
 ## Default:     ""
