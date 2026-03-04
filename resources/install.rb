@@ -392,13 +392,13 @@ if (strategy == AuthorizationStrategy.UNSECURED) {
 
     case [node['platform_family'], new_resource.channel]
     when %w(debian stable)
-      'https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key'
+      'https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key'
     when %w(rhel stable), %w(amazon stable)
-      'https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key'
+      'https://pkg.jenkins.io/rpm-stable/jenkins.io-2026.key'
     when %w(debian current)
-      'https://pkg.jenkins.io/debian/jenkins.io-2023.key'
+      'https://pkg.jenkins.io/debian/jenkins.io-2026.key'
     when %w(rhel current), %w(amazon current)
-      'https://pkg.jenkins.io/redhat/jenkins.io-2023.key'
+      'https://pkg.jenkins.io/rpm/jenkins.io-2026.key'
     end
   end
 
