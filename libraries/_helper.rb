@@ -252,10 +252,10 @@ If this problem persists, check your Jenkins log files.
     def private_key_path
       node.run_state[:jenkins_private_key_path] ||= begin
         # @todo remove in 3.0.0
-        if node['jenkins']['executor']['private_key']
+        if legacy_executor_private_key
           Chef::Log.warn("Using node['jenkins']['executor']['private_key'] is deprecated!")
           Chef::Log.warn('Persisting sensitive information in node attributes is not recommended.')
-          node.run_state[:jenkins_private_key] = node['jenkins']['executor']['private_key']
+          node.run_state[:jenkins_private_key] = legacy_executor_private_key
         end
 
         content = node.run_state[:jenkins_private_key]
@@ -280,27 +280,12 @@ If this problem persists, check your Jenkins log files.
     # @return [Boolean]
     #
     def private_key_given?
-      return false if security_disabled?
-
       # @todo remove in 3.0.0
-      !node['jenkins']['executor']['private_key'].nil? ||
-        !node.run_state[:jenkins_private_key].nil?
+      !legacy_executor_private_key.nil? || !node.run_state[:jenkins_private_key].nil?
     end
 
     def runtime_config
-      node.run_state[:jenkins_runtime_config] || {}
-    end
-
-    def security_disabled?
-      disabled = runtime_config[:disable_security]
-      return disabled unless disabled.nil?
-
-      controller_disabled = node['jenkins']['controller']['disable_security']
-      return controller_disabled unless controller_disabled.nil?
-
-      node['jenkins']['master']['disable_security']
-    rescue NoMethodError
-      false
+      node.run_state[:jenkins_runtime_config] ||= {}
     end
 
     #
@@ -309,12 +294,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def proxy
-      proxy_value = runtime_config[:proxy]
-      return proxy_value unless proxy_value.nil? || proxy_value.to_s.empty?
-
-      node['jenkins']['executor']['proxy']
-    rescue NoMethodError
-      nil
+      runtime_config[:proxy]
     end
 
     #
@@ -323,12 +303,7 @@ If this problem persists, check your Jenkins log files.
     # @return [Boolean]
     #
     def proxy_given?
-      proxy_value = runtime_config[:proxy]
-      return true unless proxy_value.nil? || proxy_value.to_s.empty?
-
-      !node['jenkins']['executor']['proxy'].nil?
-    rescue NoMethodError
-      false
+      !proxy.nil?
     end
 
     #
@@ -337,15 +312,19 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def endpoint
-      runtime_endpoint = runtime_config[:endpoint]
-      return runtime_endpoint unless runtime_endpoint.nil? || runtime_endpoint.to_s.empty?
+      runtime_config[:endpoint] || 'http://localhost:8080'
+    end
 
-      controller_endpoint = node['jenkins']['controller']['endpoint']
-      return controller_endpoint unless controller_endpoint.nil? || controller_endpoint.to_s.empty?
+    def controller_home
+      runtime_config[:home] || '/var/lib/jenkins'
+    end
 
-      node['jenkins']['master']['endpoint']
-    rescue NoMethodError
-      nil
+    def controller_user
+      runtime_config[:user] || 'jenkins'
+    end
+
+    def controller_group
+      runtime_config[:group] || 'jenkins'
     end
 
     #
@@ -354,7 +333,7 @@ If this problem persists, check your Jenkins log files.
     # @return [Fixnum]
     #
     def timeout
-      node['jenkins']['executor']['timeout']
+      runtime_config[:timeout] || 120
     end
 
     #
@@ -363,7 +342,7 @@ If this problem persists, check your Jenkins log files.
     # @return [Boolean]
     #
     def timeout_given?
-      !node['jenkins']['executor']['timeout'].nil?
+      true
     end
 
     # Username used when invoking cli
@@ -371,7 +350,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def username
-      node.run_state[:jenkins_username]
+      runtime_config[:username] || node.run_state[:jenkins_username]
     end
 
     #
@@ -380,7 +359,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def password
-      node.run_state[:jenkins_password]
+      runtime_config[:password] || node.run_state[:jenkins_password]
     end
 
     #
@@ -389,7 +368,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def java
-      node['jenkins']['java']
+      runtime_config[:java] || default_java_path
     end
 
     #
@@ -398,7 +377,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def jvm_options
-      node['jenkins']['executor']['jvm_options']
+      runtime_config[:jvm_options]
     end
 
     #
@@ -408,7 +387,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def protocol
-      node['jenkins']['executor']['protocol']
+      runtime_config[:protocol] || 'http'
     end
 
     #
@@ -418,7 +397,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def cli_user
-      node['jenkins']['executor']['cli_user']
+      runtime_config[:cli_user]
     end
 
     #
@@ -427,7 +406,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def cli_username
-      node['jenkins']['executor']['cli_username']
+      runtime_config[:cli_username]
     end
 
     #
@@ -436,7 +415,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def cli_password
-      node['jenkins']['executor']['cli_password']
+      runtime_config[:cli_password]
     end
 
     # cli_credential_file to pass to cli
@@ -446,7 +425,7 @@ If this problem persists, check your Jenkins log files.
     # @return [String]
     #
     def cli_credential_file
-      node.run_state[:jenkins_cli_credential_file] || node['jenkins']['executor']['cli_credential_file']
+      runtime_config[:cli_credential_file] || node.run_state[:jenkins_cli_credential_file]
     end
 
     #
@@ -539,12 +518,8 @@ If this problem persists, check your Jenkins log files.
     #
     def ensure_update_center_present!
       node.run_state[:jenkins_update_center_present] ||= begin
-        mirror = node['jenkins']['controller']['mirror']
-        mirror = node['jenkins']['master']['mirror'] if mirror.nil? || mirror.to_s.empty?
-
-        channel = node['jenkins']['controller']['channel']
-        channel = node['jenkins']['master']['channel'] if channel.nil? || channel.to_s.empty?
-
+        mirror = runtime_config[:update_center_mirror] || 'https://updates.jenkins.io'
+        channel = runtime_config[:update_center_channel] || 'stable'
         source = uri_join(mirror, channel, 'update-center.json')
         remote_file = Chef::Resource::RemoteFile.new(update_center_json, run_context)
         remote_file.source(source)
@@ -580,17 +555,17 @@ If this problem persists, check your Jenkins log files.
         # update-center data and can handle the plugin installation through CLI exactly
         # in the same way as through the user interface.
         uri = URI(uri_join(endpoint, 'updateCenter', 'byId', 'default', 'postBack'))
-        headers = { 'Accept' => 'application/json' }
+        request = Net::HTTP::Post.new(uri.request_uri, { 'Accept' => 'application/json' })
+        request.body = extracted_json
+        apply_basic_auth(request)
+
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true if uri.scheme == 'https'
-        http.post(uri.path, extracted_json, headers)
+        http.request(request)
 
         # Allow updates to quiesce in Jenkins so that we don't run into issues
         # with plugin installations which may happen directly after this.
-        update_center_sleep = node['jenkins']['controller']['update_center_sleep']
-        update_center_sleep = node['jenkins']['master']['update_center_sleep'] if update_center_sleep.nil?
-
-        sleep update_center_sleep
+        sleep(runtime_config[:update_center_sleep] || 5)
 
         true
       end
@@ -607,7 +582,9 @@ If this problem persists, check your Jenkins log files.
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = (uri.scheme == 'https')
 
-      response = http.get(uri.path)
+      request = Net::HTTP::Get.new(uri.request_uri)
+      apply_basic_auth(request)
+      response = http.request(request)
       return unless response.is_a?(Net::HTTPSuccess)
 
       require 'json'
@@ -629,9 +606,10 @@ If this problem persists, check your Jenkins log files.
     def install_plugin_via_rest(plugin_url)
       uri = URI.parse(uri_join(endpoint, 'pluginManager', 'installNecessaryPlugins'))
 
-      request = Net::HTTP::Post.new(uri.path)
+      request = Net::HTTP::Post.new(uri.request_uri)
       request['Content-Type'] = 'text/xml'
       request.body = "<jenkins><install plugin='#{plugin_url}' /></jenkins>"
+      apply_basic_auth(request)
 
       # Add CSRF crumb if available
       crumb = get_crumb
@@ -648,6 +626,39 @@ If this problem persists, check your Jenkins log files.
       end
 
       true
+    end
+
+    def default_java_path
+      if node.dig('java', 'java_home')
+        File.join(node['java']['java_home'], 'bin', 'java')
+      elsif node.dig('java', 'home')
+        File.join(node['java']['home'], 'bin', 'java')
+      elsif ENV['JAVA_HOME']
+        File.join(ENV['JAVA_HOME'], 'bin', 'java')
+      else
+        'java'
+      end
+    rescue NoMethodError
+      ENV['JAVA_HOME'] ? File.join(ENV['JAVA_HOME'], 'bin', 'java') : 'java'
+    end
+
+    def apply_basic_auth(request)
+      user, secret = basic_auth_credentials
+      request.basic_auth(user, secret) if user && secret
+    end
+
+    def basic_auth_credentials
+      return [cli_username, cli_password] if cli_username && cli_password
+      return [username, password] if username && password
+      return unless cli_credential_file && ::File.file?(cli_credential_file)
+
+      ::File.read(cli_credential_file).strip.split(':', 2)
+    end
+
+    def legacy_executor_private_key
+      node.dig('jenkins', 'executor', 'private_key')
+    rescue NoMethodError
+      nil
     end
   end
 end

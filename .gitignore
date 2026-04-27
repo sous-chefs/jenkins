@@ -18,6 +18,7 @@ _Store
 # editor files
 .idea
 .*.sw[a-z]
+.windsurf/
 
 # ruby/bundler/rspec files
 .ruby-version

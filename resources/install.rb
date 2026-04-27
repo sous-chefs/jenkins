@@ -31,6 +31,8 @@ unified_mode true
 resource_name :jenkins_install
 provides :jenkins_install
 
+include Jenkins::Helper
+
 property :install_method, String,
   equal_to: %w(package war),
   default: lazy { platform_family?('debian', 'rhel', 'amazon') ? 'package' : 'war' },
@@ -53,6 +55,10 @@ property :source, String,
 
 property :checksum, String,
   description: 'SHA-256 checksum of the WAR file'
+
+property :java, String,
+  default: lazy { default_java_path },
+  description: 'Path to the Java executable used to launch Jenkins and the CLI'
 
 property :jvm_options, String,
   default: '-Djenkins.install.runSetupWizard=false',
@@ -93,6 +99,10 @@ property :port, Integer,
   default: 8080,
   description: 'Port Jenkins listens on'
 
+property :endpoint, String,
+  default: lazy { |r| "http://localhost:#{r.port}" },
+  description: 'Controller endpoint used by subsequent Jenkins resources'
+
 property :maxopenfiles, Integer,
   default: 8192,
   description: 'Maximum number of open files'
@@ -116,7 +126,21 @@ property :extra_variables, Hash,
   default: {},
   description: 'Extra environment variables'
 
+property :update_center_mirror, String,
+  default: 'https://updates.jenkins.io',
+  description: 'Mirror used for update center metadata'
+
+property :update_center_channel, String,
+  default: 'stable',
+  description: 'Update center channel used for plugin metadata'
+
+property :update_center_sleep, Integer,
+  default: 5,
+  description: 'Seconds to wait after posting update center metadata to Jenkins'
+
 action :install do
+  persist_runtime_configuration
+
   case new_resource.install_method
   when 'package'
     install_package
@@ -193,9 +217,7 @@ action_class do
       command 'systemctl daemon-reload'
       action :nothing
     end
-
     create_init_groovy_directory
-    create_anonymous_read_script
 
     service 'jenkins' do
       supports status: true, restart: true, reload: true
@@ -259,7 +281,7 @@ action_class do
         Environment="JENKINS_HOME=#{new_resource.home}"
         WorkingDirectory=#{new_resource.home}
         #{ulimits_to_systemd(new_resource.ulimits)}
-        ExecStart=/bin/sh -c 'exec #{"#{node['jenkins']['java']} #{new_resource.jvm_options} -jar jenkins.war --httpPort=#{new_resource.port} --httpListenAddress=#{new_resource.listen_address} #{new_resource.jenkins_args}".gsub("'", "\\\\'")}'
+        ExecStart=/bin/sh -c 'exec #{"#{new_resource.java} #{new_resource.jvm_options} -jar jenkins.war --httpPort=#{new_resource.port} --httpListenAddress=#{new_resource.listen_address} #{new_resource.jenkins_args}".gsub("'", "\\\\'")}'
 
         [Install]
         WantedBy=multi-user.target
@@ -310,43 +332,18 @@ action_class do
     end
   end
 
-  def create_anonymous_read_script
-    file "#{new_resource.home}/init.groovy.d/grant-anonymous-read.groovy" do
-      content <<-EOH
-import jenkins.model.*
-import hudson.security.*
-
-def instance = Jenkins.getInstance()
-def strategy = instance.getAuthorizationStrategy()
-
-// Grant anonymous ADMINISTER for testing (allows plugin installation via REST API)
-// In production, you should use proper authentication
-if (strategy == AuthorizationStrategy.UNSECURED) {
-  def newStrategy = new GlobalMatrixAuthorizationStrategy()
-  newStrategy.add(Jenkins.ADMINISTER, "authenticated")
-  newStrategy.add(Jenkins.ADMINISTER, "anonymous")  // For testing only!
-  instance.setAuthorizationStrategy(newStrategy)
-  instance.save()
-  println("INFO: Created new authorization strategy with anonymous admin (TESTING ONLY)")
-} else if (strategy instanceof GlobalMatrixAuthorizationStrategy) {
-  // Add anonymous admin for testing
-  strategy.add(Jenkins.ADMINISTER, "anonymous")
-  instance.save()
-  println("INFO: Added anonymous admin to existing GlobalMatrixAuthorizationStrategy (TESTING ONLY)")
-} else if (strategy instanceof ProjectMatrixAuthorizationStrategy) {
-  // Add anonymous admin for testing
-  strategy.add(Jenkins.ADMINISTER, "anonymous")
-  instance.save()
-  println("INFO: Added anonymous admin to existing ProjectMatrixAuthorizationStrategy (TESTING ONLY)")
-} else {
-  println("WARN: Unknown authorization strategy type: " + strategy.getClass().getName())
-}
-      EOH
-      owner new_resource.user
-      group new_resource.group
-      mode '0644'
-      notifies :restart, 'service[jenkins]', :immediately
-    end
+  def persist_runtime_configuration
+    node.run_state[:jenkins_runtime_config] ||= {}
+    node.run_state[:jenkins_runtime_config].merge!(
+      endpoint: new_resource.endpoint,
+      home: new_resource.home,
+      java: new_resource.java,
+      update_center_mirror: new_resource.update_center_mirror,
+      update_center_channel: new_resource.update_center_channel,
+      update_center_sleep: new_resource.update_center_sleep,
+      user: new_resource.user,
+      group: new_resource.group
+    )
   end
 
   def computed_source
@@ -379,11 +376,11 @@ if (strategy == AuthorizationStrategy.UNSECURED) {
     when %w(debian stable)
       'https://pkg.jenkins.io/debian-stable'
     when %w(rhel stable), %w(amazon stable)
-      'https://pkg.jenkins.io/redhat-stable'
+      'https://pkg.jenkins.io/rpm-stable'
     when %w(debian current)
       'https://pkg.jenkins.io/debian'
     when %w(rhel current), %w(amazon current)
-      'https://pkg.jenkins.io/redhat'
+      'https://pkg.jenkins.io/rpm'
     end
   end
 
@@ -392,13 +389,13 @@ if (strategy == AuthorizationStrategy.UNSECURED) {
 
     case [node['platform_family'], new_resource.channel]
     when %w(debian stable)
-      'https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key'
+      'https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key'
     when %w(rhel stable), %w(amazon stable)
-      'https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key'
+      'https://pkg.jenkins.io/rpm-stable/jenkins.io-2026.key'
     when %w(debian current)
-      'https://pkg.jenkins.io/debian/jenkins.io-2023.key'
+      'https://pkg.jenkins.io/debian/jenkins.io-2026.key'
     when %w(rhel current), %w(amazon current)
-      'https://pkg.jenkins.io/redhat/jenkins.io-2023.key'
+      'https://pkg.jenkins.io/rpm/jenkins.io-2026.key'
     end
   end
 

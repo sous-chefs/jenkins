@@ -6,22 +6,7 @@ resource_name :jenkins_jnlp_agent
 provides :jenkins_jnlp_agent
 provides :jenkins_jnlp_slave  # Backwards compatibility alias
 
-# Inherit properties from base agent resource
-property :slave_name, String, name_property: true
-property :description, String,
-         default: lazy { |r| "Jenkins agent #{r.slave_name}" }
-property :remote_fs, String, default: '/home/jenkins'
-property :executors, Integer, default: 1
-property :usage_mode, String, equal_to: %w(exclusive normal), default: 'normal'
-property :labels, Array, default: []
-property :availability, String, equal_to: %w(always demand)
-property :in_demand_delay, Integer, default: 0
-property :idle_delay, Integer, default: 1
-property :environment, Hash
-property :offline_reason, String
-property :user, String, regex: [Chef::Config[:user_valid_regex]], default: 'jenkins'
-property :jvm_options, String
-property :java_path, String
+use '_partial/_agent'
 
 # JNLP-specific properties
 property :group, String, default: 'jenkins',
@@ -29,6 +14,7 @@ property :group, String, default: 'jenkins',
 property :service_name, String, default: 'jenkins-slave'
 property :service_groups, Array,
          default: lazy { |r| [r.group] }
+property :use_system_accounts, [true, false], default: true
 
 deprecated_property_alias 'runit_groups', 'service_groups',
   '`runit_groups` was renamed to `service_groups` with the move to systemd services'
@@ -61,14 +47,14 @@ action :create do
 
   unless platform?('windows')
     group new_resource.group do
-      system node['jenkins']['master']['use_system_accounts']
+      system new_resource.use_system_accounts
     end
 
     user new_resource.user do
       gid new_resource.group
       comment 'Jenkins agent user - Created by Chef'
       home new_resource.remote_fs
-      system node['jenkins']['master']['use_system_accounts']
+      system new_resource.use_system_accounts
       action :create
     end
   end
