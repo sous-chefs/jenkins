@@ -4,13 +4,13 @@ unified_mode true
 
 resource_name :jenkins_jnlp_agent
 provides :jenkins_jnlp_agent
-provides :jenkins_jnlp_slave  # Backwards compatibility alias
+provides :jenkins_jnlp_slave # Backwards compatibility alias
 
 use '_partial/_agent'
 
 # JNLP-specific properties
 property :group, String, default: 'jenkins',
-         regex: [Chef::Config[:group_valid_regex]]
+                        regex: [Chef::Config[:group_valid_regex]]
 property :service_name, String, default: 'jenkins-slave'
 property :service_groups, Array,
          default: lazy { |r| [r.group] }

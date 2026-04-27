@@ -4,7 +4,7 @@ unified_mode true
 
 resource_name :jenkins_ssh_agent
 provides :jenkins_ssh_agent
-provides :jenkins_ssh_slave  # Backwards compatibility alias
+provides :jenkins_ssh_slave # Backwards compatibility alias
 
 use '_partial/_agent'
 

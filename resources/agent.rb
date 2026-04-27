@@ -4,7 +4,7 @@ unified_mode true
 
 resource_name :jenkins_agent
 provides :jenkins_agent
-provides :jenkins_slave  # Backwards compatibility alias
+provides :jenkins_slave # Backwards compatibility alias
 
 use '_partial/_agent'
 
