@@ -5,13 +5,33 @@ unified_mode true
 resource_name :jenkins_job
 provides :jenkins_job
 
+default_action :create
+
 property :config, String
 property :parameters, Hash, default: {}
 property :stream_job_output, [true, false], default: true
 property :wait_for_completion, [true, false], default: true
 
-load_current_value do |_new_resource|
-  current_job = current_job_from_jenkins
+load_current_value do |new_resource|
+  require_relative '../libraries/_helper'
+  extend Jenkins::Helper
+
+  Chef::Log.debug "Load #{new_resource} job information"
+
+  response = executor.execute('get-job', escape(new_resource.name))
+  current_job = if response.nil? || response =~ /No such job/
+                  nil
+                else
+                  Chef::Log.debug "Parse #{new_resource} as XML"
+                  xml = REXML::Document.new(response)
+                  disabled = xml.elements['//disabled']
+
+                  {
+                    enabled: disabled.nil? || disabled.text == 'false',
+                    xml: xml,
+                    raw: response,
+                  }
+                end
 
   if current_job
     # Store enabled state
@@ -166,6 +186,10 @@ end
 action_class do
   include Jenkins::Helper
 
+  def job_resource
+    respond_to?(:new_resource) ? new_resource : self
+  end
+
   # After some careful discussions internally, it was decided that
   # raising an exception when the job does not exist is the best
   # developer experience.
@@ -197,12 +221,12 @@ job must first exist on the Jenkins master!
   def current_job_from_jenkins
     return @current_job if @current_job
 
-    Chef::Log.debug "Load #{new_resource} job information"
+    Chef::Log.debug "Load #{job_resource} job information"
 
-    response = executor.execute('get-job', escape(new_resource.name))
+    response = executor.execute('get-job', escape(job_resource.name))
     return if response.nil? || response =~ /No such job/
 
-    Chef::Log.debug "Parse #{new_resource} as XML"
+    Chef::Log.debug "Parse #{job_resource} as XML"
     xml = REXML::Document.new(response)
     disabled = xml.elements['//disabled']
 
@@ -229,7 +253,7 @@ job must first exist on the Jenkins master!
     wanted  = StringIO.new
 
     current_job_from_jenkins[:xml].write(current, 2)
-    REXML::Document.new(::File.read(new_resource.config)).write(wanted, 2)
+    REXML::Document.new(::File.read(job_resource.config)).write(wanted, 2)
 
     current.string == wanted.string
   end
@@ -241,16 +265,16 @@ job must first exist on the Jenkins master!
   # and verifies it is valid XML.
   #
   def validate_config!
-    Chef::Log.debug "Validate #{new_resource} configuration"
+    Chef::Log.debug "Validate #{job_resource} configuration"
 
-    raise("#{new_resource} must specify a configuration file!") if new_resource.config.nil?
+    raise("#{job_resource} must specify a configuration file!") if job_resource.config.nil?
 
-    raise("#{new_resource} config `#{new_resource.config}` does not exist!") unless ::File.exist?(new_resource.config)
+    raise("#{job_resource} config `#{job_resource.config}` does not exist!") unless ::File.exist?(job_resource.config)
 
     begin
-      REXML::Document.new(::File.read(new_resource.config))
+      REXML::Document.new(::File.read(job_resource.config))
     rescue REXML::ParseException
-      raise("#{new_resource} config `#{new_resource.config}` is not valid XML!")
+      raise("#{job_resource} config `#{job_resource.config}` is not valid XML!")
     end
   end
 
@@ -265,7 +289,7 @@ job must first exist on the Jenkins master!
 
   def stdout_stream
     @stdout_stream ||= if formatter?
-                         Chef::EventDispatch::EventsOutputStream.new(run_context.events, name: new_resource.name.to_sym)
+                         Chef::EventDispatch::EventsOutputStream.new(run_context.events, name: job_resource.name.to_sym)
                        elsif STDOUT.tty? && !Chef::Config[:daemon]
                          STDOUT
                        end

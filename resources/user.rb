@@ -34,9 +34,13 @@ load_current_value do |new_resource|
     }
 
     keys = null
-    keysProperty = user.getProperty(org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl)
-    if(keysProperty != null) {
-      keys = keysProperty.authorizedKeys.split('\\n') - "" // Remove empty strings
+    try {
+      sshPropertyClass = this.class.classLoader.loadClass('org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl')
+      keysProperty = user.getProperty(sshPropertyClass)
+      if(keysProperty != null) {
+        keys = keysProperty.authorizedKeys.split('\\n') - "" // Remove empty strings
+      }
+    } catch (ClassNotFoundException ignored) {
     }
 
     builder = new groovy.json.JsonBuilder()
@@ -69,20 +73,44 @@ action :create do
   else
     converge_by("Create #{new_resource}") do
       executor.groovy! <<-EOH.gsub(/^ {8}/, '')
-        user = hudson.model.User.get('#{new_resource.id}')
-        user.setFullName('#{new_resource.full_name}')
+        import hudson.security.HudsonPrivateSecurityRealm
+        import jenkins.model.Jenkins
 
-        if (jenkins.model.Jenkins.instance.pluginManager.getPlugin('mailer')) {
+        instance = Jenkins.instance
+        securityRealm = instance.getSecurityRealm()
+
+        user = hudson.model.User.get('#{new_resource.id}', false)
+        if (user == null) {
+          if (securityRealm instanceof HudsonPrivateSecurityRealm && #{!new_resource.password.nil?}) {
+            user = securityRealm.getUser('#{new_resource.id}')
+            if (user == null) {
+              user = securityRealm.createAccount('#{new_resource.id}', '#{new_resource.password}')
+            }
+          else
+            user = hudson.model.User.get('#{new_resource.id}')
+          }
+        }
+
+        if (#{!new_resource.full_name.nil?}) {
+          user.setFullName('#{new_resource.full_name}')
+        }
+
+        if (#{!new_resource.email.nil?} && instance.pluginManager.getPlugin('mailer')) {
           propertyClass = this.class.classLoader.loadClass('hudson.tasks.Mailer$UserProperty')
           email = propertyClass.newInstance('#{new_resource.email}')
           user.addProperty(email)
         }
 
-        password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
-        user.addProperty(password)
+        if (#{!new_resource.password.nil?}) {
+          password = HudsonPrivateSecurityRealm.Details.fromPlainPassword('#{new_resource.password}')
+          user.addProperty(password)
+        }
 
-        keys = new org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl('#{new_resource.public_keys.join('\n')}')
-        user.addProperty(keys)
+        if (#{new_resource.public_keys.any?}) {
+          sshPropertyClass = this.class.classLoader.loadClass('org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl')
+          keys = sshPropertyClass.newInstance('#{new_resource.public_keys.join('\n')}')
+          user.addProperty(keys)
+        }
 
         user.save()
       EOH

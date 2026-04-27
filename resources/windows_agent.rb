@@ -4,24 +4,12 @@ unified_mode true
 
 resource_name :jenkins_windows_agent
 provides :jenkins_windows_agent
-provides :jenkins_windows_slave  # Backwards compatibility alias
+provides :jenkins_windows_slave # Backwards compatibility alias
 
-# Inherit properties from base agent resource
-property :slave_name, String, name_property: true
-property :description, String,
-         default: lazy { |r| "Jenkins agent #{r.slave_name}" }
+use '_partial/_agent'
+
 property :remote_fs, String, default: 'C:\\Jenkins'
-property :executors, Integer, default: 1
-property :usage_mode, String, equal_to: %w(exclusive normal), default: 'normal'
-property :labels, Array, default: []
-property :availability, String, equal_to: %w(always demand)
-property :in_demand_delay, Integer, default: 0
-property :idle_delay, Integer, default: 1
-property :environment, Hash
-property :offline_reason, String
 property :user, String, default: 'Administrator'
-property :jvm_options, String
-property :java_path, String
 
 # Windows-specific properties
 property :password, String, sensitive: true

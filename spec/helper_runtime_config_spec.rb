@@ -25,8 +25,18 @@ describe Jenkins::Helper do
     expect(harness.new(node).send(:endpoint)).to eq('http://controller.example:8080')
   end
 
-  it 'prefers runtime config for disable_security' do
-    node.run_state[:jenkins_runtime_config] = { disable_security: true }
-    expect(harness.new(node).send(:security_disabled?)).to eq(true)
+  it 'defaults the controller home when runtime config is absent' do
+    expect(harness.new(node).send(:controller_home)).to eq('/var/lib/jenkins')
+  end
+
+  it 'defaults timeout to 120 seconds when runtime config is absent' do
+    expect(harness.new(node).send(:timeout)).to eq(120)
+  end
+
+  it 'only treats timeout as given when runtime config includes timeout' do
+    expect(harness.new(node).send(:timeout_given?)).to eq(false)
+
+    node.run_state[:jenkins_runtime_config] = { timeout: 300 }
+    expect(harness.new(node).send(:timeout_given?)).to eq(true)
   end
 end

@@ -15,53 +15,56 @@ provisioner:
   data_path: test/fixtures/keys
   data_bags_path: test/fixtures/data_bags
   deprecations_as_errors: true
-  attributes:
-    jenkins:
-      controller:
-        host: localhost
-        # This it to help issues we run into on the CI systems
-        update_center_sleep: 10
 
 platforms:
   - name: almalinux-8
   - name: almalinux-9
+  - name: almalinux-10
   - name: amazonlinux-2023
   - name: centos-stream-9
+  - name: centos-stream-10
   - name: debian-12
   - name: debian-13
+  - name: fedora-latest
+  - name: oraclelinux-8
+  - name: oraclelinux-9
   - name: rockylinux-8
   - name: rockylinux-9
-  - name: ubuntu-20.04
+  - name: rockylinux-10
   - name: ubuntu-22.04
   - name: ubuntu-24.04
-  - name: windows-2016
-    driver:
-      box: tas50/windows_2016
-  - name: windows-2019
-    driver:
-      box: tas50/windows_2019
 
 verifier:
   name: inspec
 
+x-run_lists:
+  default: &default_run_list
+    - test::default
+  auth_credential_file: &auth_credential_file_run_list
+    - test::authentication_credential_file
+  auth_username_password: &auth_username_password_run_list
+    - test::authentication_username_password
+
+x-verifiers:
+  secure_controller: &secure_controller_verifier
+    inspec_tests:
+      - path: test/integration/authentication
+  credential_file: &credential_file_verifier
+    inspec_tests:
+      - path: test/integration/authentication_credential_file
+  username_password: &username_password_verifier
+    inspec_tests:
+      - path: test/integration/authentication_username_password
+
 suites:
   - name: default
-    run_list:
-      - test::default
-    excludes:
-      - windows-2016
-      - windows-2019
+    run_list: *default_run_list
+    verifier: *secure_controller_verifier
 
-  - name: plugins
-    run_list:
-      - test::plugins
-    excludes:
-      - windows-2016
-      - windows-2019
+  - name: authentication_credential_file
+    run_list: *auth_credential_file_run_list
+    verifier: *credential_file_verifier
 
-  - name: authentication
-    run_list:
-      - test::authentication
-    excludes:
-      - windows-2016
-      - windows-2019
+  - name: authentication_username_password
+    run_list: *auth_username_password_run_list
+    verifier: *username_password_verifier

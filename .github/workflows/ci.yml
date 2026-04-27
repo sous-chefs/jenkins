@@ -9,7 +9,7 @@ name: ci
 
 jobs:
   lint-unit:
-    uses: sous-chefs/.github/.github/workflows/lint-unit.yml@5.0.8
+    uses: sous-chefs/.github/.github/workflows/lint-unit.yml@6.0.0
     permissions:
       actions: write
       checks: write
@@ -32,26 +32,24 @@ jobs:
           - "debian-12"
           - "debian-13"
           - "fedora-latest"
-          - "opensuse-leap-15"
           - "oraclelinux-8"
           - "oraclelinux-9"
           - "rockylinux-8"
           - "rockylinux-9"
           - "rockylinux-10"
-          - "ubuntu-2004"
           - "ubuntu-2204"
           - "ubuntu-2404"
         suite:
           - "default"
-          - "plugins"
-          - "authentication"
+          - "authentication-credential-file"
+          - "authentication-username-password"
       fail-fast: false
 
     steps:
       - name: Check out code
         uses: actions/checkout@v6
-      - name: Install Chef
-        uses: actionshub/chef-install@6.0.0
+      - name: Install Cinc Workstation
+        uses: sous-chefs/.github/.github/actions/install-workstation@6.0.0
       - name: Dokken
         uses: actionshub/test-kitchen@3.0.0
         env:
