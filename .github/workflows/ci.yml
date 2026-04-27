@@ -41,8 +41,8 @@ jobs:
           - "ubuntu-2404"
         suite:
           - "default"
-          - "authentication_credential_file"
-          - "authentication_username_password"
+          - "authentication-credential-file"
+          - "authentication-username-password"
       fail-fast: false
 
     steps:
