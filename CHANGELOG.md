@@ -5,6 +5,17 @@ This file is used to list changes made in each version of the jenkins cookbook.
 Standardise files with files in sous-chefs/repo-management
 Standardise files with files in sous-chefs/repo-management
 
+## [11.0.0](https://github.com/sous-chefs/jenkins/compare/v10.0.0...v11.0.0) (2026-04-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* finish Jenkins custom resource migration ([#855](https://github.com/sous-chefs/jenkins/issues/855))
+
+### Features
+
+* finish Jenkins custom resource migration ([#855](https://github.com/sous-chefs/jenkins/issues/855)) ([b7ad15f](https://github.com/sous-chefs/jenkins/commit/b7ad15f5a6dee7492e26b4e83c4fbc3bcf46928f))
+
 ## [10.0.0](https://github.com/sous-chefs/jenkins/compare/v9.6.2...v10.0.0) (2026-01-13)
 
 
