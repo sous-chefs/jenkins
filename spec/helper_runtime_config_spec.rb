@@ -32,4 +32,11 @@ describe Jenkins::Helper do
   it 'defaults timeout to 120 seconds when runtime config is absent' do
     expect(harness.new(node).send(:timeout)).to eq(120)
   end
+
+  it 'only treats timeout as given when runtime config includes timeout' do
+    expect(harness.new(node).send(:timeout_given?)).to eq(false)
+
+    node.run_state[:jenkins_runtime_config] = { timeout: 300 }
+    expect(harness.new(node).send(:timeout_given?)).to eq(true)
+  end
 end

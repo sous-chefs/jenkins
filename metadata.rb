@@ -6,7 +6,7 @@ description       'Installs and configures Jenkins CI Controller & Agent'
 version           '10.0.0'
 source_url        'https://github.com/sous-chefs/jenkins'
 issues_url        'https://github.com/sous-chefs/jenkins/issues'
-chef_version      '>= 15.3'
+chef_version      '>= 16'
 
 supports 'almalinux', '>= 8.0'
 supports 'amazon', '>= 2023.0'

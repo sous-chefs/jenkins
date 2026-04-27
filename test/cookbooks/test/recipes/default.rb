@@ -77,15 +77,22 @@ ruby_block 'wait for secured jenkins controller' do
     require 'net/http'
     require 'uri'
 
+    ready = false
+
     120.times do
       begin
         response = Net::HTTP.get_response(URI.parse('http://127.0.0.1:8080/login'))
-        break if %w(200 403).include?(response.code)
+        if %w(200 403).include?(response.code)
+          ready = true
+          break
+        end
       rescue StandardError => e
         Chef::Log.debug("Waiting for Jenkins security bootstrap: #{e.message}")
       end
 
       sleep 2
     end
+
+    raise 'Jenkins did not become reachable after security bootstrap' unless ready
   end
 end

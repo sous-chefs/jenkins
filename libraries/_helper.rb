@@ -342,7 +342,7 @@ If this problem persists, check your Jenkins log files.
     # @return [Boolean]
     #
     def timeout_given?
-      true
+      runtime_config.key?(:timeout)
     end
 
     # Username used when invoking cli

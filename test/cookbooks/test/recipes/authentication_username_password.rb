@@ -64,15 +64,22 @@ ruby_block 'wait for jenkins after username password plugin install' do
     require 'net/http'
     require 'uri'
 
+    ready = false
+
     120.times do
       begin
         response = Net::HTTP.get_response(URI.parse('http://127.0.0.1:8080/login'))
-        break if %w(200 403).include?(response.code)
+        if %w(200 403).include?(response.code)
+          ready = true
+          break
+        end
       rescue StandardError => e
         Chef::Log.debug("Waiting for Jenkins plugin restart: #{e.message}")
       end
 
       sleep 2
     end
+
+    raise 'Jenkins did not become reachable after username/password plugin restart' unless ready
   end
 end
