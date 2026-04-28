@@ -5,6 +5,13 @@ This file is used to list changes made in each version of the jenkins cookbook.
 Standardise files with files in sous-chefs/repo-management
 Standardise files with files in sous-chefs/repo-management
 
+## [11.0.1](https://github.com/sous-chefs/jenkins/compare/v11.0.0...v11.0.1) (2026-04-28)
+
+
+### Bug Fixes
+
+* share Jenkins current value helpers ([#857](https://github.com/sous-chefs/jenkins/issues/857)) ([e43e6ed](https://github.com/sous-chefs/jenkins/commit/e43e6ed122d98288c26bacc22d27d54af4aeda48))
+
 ## [11.0.0](https://github.com/sous-chefs/jenkins/compare/v10.0.0...v11.0.0) (2026-04-27)
 
 
