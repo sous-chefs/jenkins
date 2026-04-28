@@ -5,13 +5,15 @@ unified_mode true
 resource_name :jenkins_proxy
 provides :jenkins_proxy
 
+include Jenkins::ProxyHelpers
+
 property :proxy, String, name_property: true
 property :noproxy, Array, default: []
 property :username, String
 property :password, String
 
-load_current_value do |_new_resource|
-  current_proxy = current_proxy_from_jenkins
+load_current_value do |new_resource|
+  current_proxy = current_proxy_from_jenkins(new_resource)
 
   if current_proxy
     proxy current_proxy[:proxy]
@@ -76,47 +78,5 @@ action :remove do
 end
 
 action_class do
-  include Jenkins::Helper
-
-  #
-  # Loads the local proxy into a hash
-  #
-  def current_proxy_from_jenkins
-    return @current_proxy if @current_proxy
-
-    Chef::Log.debug "Load #{new_resource} proxy information"
-
-    json = executor.groovy <<-EOH.gsub(/^ {6}/, '')
-      import java.util.Collections
-      import java.util.List
-
-      import jenkins.model.Jenkins
-      def instance = Jenkins.getInstance()
-
-      def pc = instance.proxy
-      if (pc == null) {
-        return null
-      }
-
-      def no_proxy = pc.noProxyHost
-      if (no_proxy != null) {
-        no_proxy = no_proxy.tokenize('[ \\t\\n,|]+')
-      } else {
-        no_proxy = Collections.emptyList()
-      }
-
-      def builder = new groovy.json.JsonBuilder()
-      builder {
-        proxy pc.name + ':' + pc.port.toString()
-        noproxy no_proxy
-      }
-
-      println(builder)
-    EOH
-
-    return if json.nil? || json.empty?
-
-    @current_proxy = JSON.parse(json, symbolize_names: true)
-    @current_proxy
-  end
+  include Jenkins::ProxyHelpers
 end

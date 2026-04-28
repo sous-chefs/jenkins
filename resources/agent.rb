@@ -7,9 +7,10 @@ provides :jenkins_agent
 provides :jenkins_slave # Backwards compatibility alias
 
 use '_partial/_agent'
+include Jenkins::AgentHelpers
 
-load_current_value do
-  current_slave_data = current_slave_from_jenkins
+load_current_value do |new_resource|
+  current_slave_data = current_slave_from_jenkins(new_resource)
 
   if current_slave_data
     slave_name current_slave_data[:name]
@@ -78,7 +79,7 @@ action :offline do
 end
 
 action_class do
-  include Jenkins::Helper
+  include Jenkins::AgentHelpers
 
   def exists?
     !@exists.nil? && @exists
@@ -188,69 +189,6 @@ action_class do
 
   def attribute_to_property_map
     {}
-  end
-
-  def current_slave_from_jenkins
-    return @current_slave if @current_slave
-
-    Chef::Log.debug "Load #{new_resource} agent information"
-
-    launcher_attributes = []
-    attribute_to_property_map.each_pair do |resource_attribute, groovy_property|
-      launcher_attributes << "current_slave['#{resource_attribute}'] = #{groovy_property}"
-    end
-
-    json = executor.groovy! <<-EOH.gsub(/^ {6}/, '')
-      import hudson.model.*
-      import hudson.slaves.*
-      import jenkins.model.*
-      import jenkins.slaves.*
-
-      slave = Jenkins.instance.getNode('#{new_resource.slave_name}') as Slave
-
-      if(slave == null) {
-        return null
-      }
-
-      def slave_environment = null
-      slave_env_vars = slave.nodeProperties.get(EnvironmentVariablesNodeProperty.class)?.envVars
-      if (slave_env_vars)
-        slave_environment = new java.util.HashMap<String,String>(slave_env_vars)
-
-      current_slave = [
-        name:slave.name,
-        description:slave.nodeDescription,
-        remote_fs:slave.remoteFS,
-        executors:slave.numExecutors.toInteger(),
-        usage_mode:slave.mode.toString().toLowerCase(),
-        labels:slave.labelString.split().sort(),
-        environment:slave_environment,
-        connected:(slave.computer.connectTime > 0),
-        online:slave.computer.online
-      ]
-
-      // Determine retention strategy
-      if (slave.retentionStrategy instanceof RetentionStrategy.Always) {
-        current_slave['availability'] = 'always'
-      } else if (slave.retentionStrategy instanceof RetentionStrategy.Demand) {
-        current_slave['availability'] = 'demand'
-        retention = slave.retentionStrategy as RetentionStrategy.Demand
-        current_slave['in_demand_delay'] = retention.inDemandDelay
-        current_slave['idle_delay'] = retention.idleDelay
-      } else {
-        current_slave['availability'] = null
-      }
-
-      #{launcher_attributes.join("\n")}
-
-      builder = new groovy.json.JsonBuilder(current_slave)
-      println(builder)
-    EOH
-
-    return if json.nil? || json.empty?
-
-    @current_slave = JSON.parse(json, symbolize_names: true)
-    @current_slave = convert_blank_values_to_nil(@current_slave)
   end
 
   def correct_config?

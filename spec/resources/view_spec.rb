@@ -3,15 +3,13 @@ require 'spec_helper'
 describe 'jenkins_view custom resource' do
   platform 'ubuntu'
   step_into :jenkins_view
+  let(:executor) { instance_double(Jenkins::Executor) }
 
   before do
     # Mock the executor to avoid actual Jenkins CLI calls
     allow_any_instance_of(Jenkins::Helper).to receive(:executor)
-      .and_return(double('executor').as_null_object)
-
-    # Mock the current_view_from_jenkins method
-    allow_any_instance_of(Object).to receive(:current_view_from_jenkins)
-      .and_return({ jobs: [] })
+      .and_return(executor)
+    allow(executor).to receive(:groovy!).and_return('{"jobs":[]}', nil)
   end
 
   context 'when creating a view' do
