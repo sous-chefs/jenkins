@@ -5,27 +5,17 @@ unified_mode true
 resource_name :jenkins_plugin
 provides :jenkins_plugin
 
+include Jenkins::Helper
+
 property :version, [String, Symbol], default: :latest
 property :source, String
 # TODO: Remove in next major version release
 property :install_deps, [true, false]
 property :options, String
 
-def master_home_directory
-  master_attributes = node.attribute?('jenkins') ? node['jenkins'] : nil
-  master_attributes = master_attributes['master'] if master_attributes.respond_to?(:[]) && master_attributes['master']
-
-  home = master_attributes && master_attributes['home']
-  return home unless home.nil? || home.to_s.empty?
-
-  '/var/lib/jenkins'
-rescue NoMethodError
-  '/var/lib/jenkins'
-end
-
 load_current_value do
   manifest = ::File.join(
-    master_home_directory,
+    controller_home,
     'plugins',
     name,
     'META-INF',
@@ -227,42 +217,29 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
   #
   def install_plugin(source_url, plugin_name, plugin_version, opts = {})
     desired = desired_version(plugin_name, plugin_version)
-    latest_requested = latest_requested?(plugin_version)
-
-    use_url = false
-    url = nil
-
     if source_url
-      url = source_url
-      use_url = true
+      download_plugin(plugin_name, source_url)
+    elsif latest_requested?(plugin_version)
+      ensure_update_center_present!
+      executor.execute!('install-plugin', escape(plugin_name), opts[:cli_opts])
     else
       remote_plugin_data = safe_plugin_universe[plugin_name]
-
-      if remote_plugin_data && remote_plugin_data['url']
+      if remote_plugin_data&.fetch('url', nil)
         latest_version = plugin_version(remote_plugin_data['version'])
-        url = remote_plugin_data['url'].gsub(latest_version.to_s, desired.to_s)
-        use_url = true
+        download_plugin(plugin_name, remote_plugin_data['url'].gsub(latest_version.to_s, desired.to_s))
       else
-        use_url = !latest_requested
+        executor.execute!('install-plugin', escape("#{plugin_name}:#{desired}"), opts[:cli_opts])
       end
     end
+  end
 
-    # Download plugin directly to plugins directory to avoid auth issues
-    if use_url
-      plugin_file_path = plugin_file(plugin_name)
-
-      remote_file plugin_file_path do
-        source url
-        owner node['jenkins']['master']['user']
-        group node['jenkins']['master']['group']
-        mode '0644'
-        action :create
-      end
-      # NOTE: Jenkins restart should be done manually after all plugins are installed
-      # to avoid systemd rate limiting
-    else
-      # For plugin names without URL, still need to use CLI
-      executor.execute!('install-plugin', escape(plugin_name), opts[:cli_opts])
+  def download_plugin(plugin_name, url)
+    remote_file plugin_file(plugin_name) do
+      source url
+      owner controller_user
+      group controller_group
+      mode '0644'
+      action :create
     end
   end
 
@@ -288,7 +265,7 @@ The Jenkins plugin `#{plugin}' is not installed. In order to #{action}
   # @return [String]
   #
   def plugins_directory
-    ::File.join(master_home_directory, 'plugins')
+    ::File.join(controller_home, 'plugins')
   end
 
   #

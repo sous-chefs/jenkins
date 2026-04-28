@@ -8,8 +8,12 @@ describe 'jenkins_executor_config custom resource' do
     recipe do
       jenkins_executor_config 'default' do
         endpoint 'http://controller.example:8080'
+        home '/srv/jenkins'
         proxy 'proxy.example:3128'
-        disable_security true
+        timeout 300
+        java '/usr/bin/java'
+        protocol 'http'
+        cli_credential_file '/var/lib/jenkins/.cli-credentials'
       end
     end
 
@@ -18,8 +22,12 @@ describe 'jenkins_executor_config custom resource' do
 
       expect(chef_run.node.run_state[:jenkins_runtime_config]).to eq(
         endpoint: 'http://controller.example:8080',
+        home: '/srv/jenkins',
         proxy: 'proxy.example:3128',
-        disable_security: true
+        timeout: 300,
+        java: '/usr/bin/java',
+        protocol: 'http',
+        cli_credential_file: '/var/lib/jenkins/.cli-credentials'
       )
     end
   end

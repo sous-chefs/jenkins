@@ -8,6 +8,8 @@
 
 Installs and configures Jenkins CI controller & agents. Resource providers to support automation via jenkins-cli, including job create/update.
 
+Breaking migration notes live in [migration.md](./migration.md).
+
 ## Maintainers
 
 This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of Chef cookbook maintainers working together to maintain important cookbooks. If you’d like to know more please visit [sous-chefs.org](https://sous-chefs.org/) or come chat with us on the Chef Community Slack in [#sous-chefs](https://chefcommunity.slack.com/messages/C2V7B88SF).
@@ -16,37 +18,48 @@ This cookbook is maintained by the Sous Chefs. The Sous Chefs are a community of
 
 ### Platforms
 
-- Amazon Linux 2023
-- Debian 12+
-- Ubuntu 20.04+
-- RHEL/CentOS Stream 9+
 - AlmaLinux 8+
+- Amazon Linux 2023
+- CentOS Stream 9+
+- Debian 12+
+- Fedora latest
+- Oracle Linux 8+
 - Rocky Linux 8+
+- Ubuntu 22.04+
 
 ### Chef
 
-- Chef Infra Client 13.0+
+- Chef Infra Client 15.3+
 
 #### Java cookbook
 
 This cookbook does not install, manage, or manipulate a JDK, as that is outside of the scope of Jenkins. The `package` installation method will automatically pull in a valid Java if one does not exist on Debian. RHEL jenkins packages do not depend on java as there are far too many options for a package to do the right thing. We recommend including the java cookbook on your system which allows for either openJDK or Oracle JDK installations.
 
-## Attributes
+## Migration
 
-In order to keep the README manageable and in sync with the attributes, this cookbook documents attributes inline. The usage instructions and default values for attributes can be found in the individual attribute files.
+The legacy attribute interface has been removed. Configure controller install defaults on `jenkins_install`, and configure runtime overrides for CLI-driven resources with `jenkins_executor_config` or `node.run_state[:jenkins_runtime_config]`.
+
+See [migration.md](./migration.md) for the breaking mappings.
 
 ## Examples
 
 Documentation and examples are provided inline using YARD. The tests and fixture cookbooks in `test` and `test/fixtures` are intended to be a further source of examples.
 
-## Recipes
+## Install
 
-### controller
+Use `jenkins_install` to install a controller. Package and WAR installs are both supported.
 
-The controller recipe will create the required directory structure and install Jenkins. There are two installation methods, controlled by the `node['jenkins']['controller']['install_method']` attribute:
-
-- `package` - Install Jenkins from the official jenkins-ci.org packages
-- `war` - Download the latest version of the WAR file and configure a systemd service
+```ruby
+jenkins_install 'controller' do
+  install_method 'package'
+  endpoint 'https://jenkins.example.com'
+  home '/var/lib/jenkins'
+  java '/usr/bin/java'
+  update_center_mirror 'https://updates.jenkins.io'
+  update_center_channel 'stable'
+  update_center_sleep 10
+end
+```
 
 ## Resources
 
@@ -71,10 +84,12 @@ The controller recipe will create the required directory structure and install J
 
 ### Agent Resources
 
-- [jenkins_slave](./documentation/jenkins_slave.md)
-- [jenkins_jnlp_slave](./documentation/jenkins_jnlp_slave.md)
-- [jenkins_ssh_slave](./documentation/jenkins_ssh_slave.md)
-- [jenkins_windows_slave](./documentation/jenkins_windows_slave.md)
+- [jenkins_agent](./documentation/jenkins_agent.md)
+- [jenkins_jnlp_agent](./documentation/jenkins_jnlp_slave.md)
+- [jenkins_ssh_agent](./documentation/jenkins_ssh_agent.md)
+- [jenkins_windows_agent](./documentation/jenkins_windows_slave.md)
+
+Legacy slave-named aliases remain for compatibility.
 
 ## Caveats
 
@@ -82,29 +97,30 @@ The controller recipe will create the required directory structure and install J
 
 If you use or plan to use authentication for your Jenkins cluster (which we highly recommend), you will need to configure CLI authentication. Jenkins 2.332.1+ requires authentication for CLI commands by default.
 
-#### Username/Password Authentication (Recommended for Jenkins 2.332.1+)
-
-For modern Jenkins installations, the recommended approach is to use username/password authentication via the `-auth` flag. This can be configured using node attributes:
+#### Username/Password Authentication
 
 ```ruby
-node.normal['jenkins']['executor']['cli_username'] = 'admin'
-node.normal['jenkins']['executor']['cli_password'] = 'admin_api_token_or_password'
+jenkins_executor_config 'controller auth' do
+  endpoint 'https://jenkins.example.com'
+  cli_username 'admin'
+  cli_password 'admin_api_token_or_password'
+  timeout 300
+end
 ```
 
-Or via `run_state` (useful when credentials come from encrypted data bags):
+#### Credential File Authentication
+
+For credential-file auth, point the runtime config at a `username:password` or `username:api_token` file:
 
 ```ruby
-node.run_state[:jenkins_username] = 'admin'
-node.run_state[:jenkins_password] = 'admin_api_token_or_password'
+jenkins_executor_config 'controller auth' do
+  endpoint 'https://jenkins.example.com'
+  cli_credential_file '/path/to/credentials_file'
+  timeout 300
+end
 ```
 
-You can also use a credentials file:
-
-```ruby
-node.normal['jenkins']['executor']['cli_credential_file'] = '/path/to/credentials_file'
-```
-
-Or via `run_state`:
+You can also continue to set the value directly in `run_state`:
 
 ```ruby
 node.run_state[:jenkins_cli_credential_file] = '/path/to/credentials_file'
@@ -159,26 +175,24 @@ Please note that older versions of Jenkins (< 1.555) permitted login via CLI for
 
 ### Jenkins 2
 
-Jenkins 2 enables an install wizard by default. To make sure you can manipulate the jenkins instance, you need to disable the wizard. You can do this by setting an attribute:
+Jenkins 2 enables an install wizard by default. To make sure you can manipulate the jenkins instance, keep the setup-wizard JVM flag when overriding JVM options:
 
 ```ruby
-default['jenkins']['controller']['jvm_options'] = '-Djenkins.install.runSetupWizard=false'
+jenkins_install 'controller' do
+  jvm_options '-Djenkins.install.runSetupWizard=false'
+end
 ```
 
 This is done by default, but must be kept when overriding the jvm_options!
 
 ### Proxies
 
-If you need to pass through a proxy to communicate between your controllers and agents, you will need to set a special node attribute:
+If you need to pass through a proxy to communicate between your controllers and agents, configure it on the executor runtime:
 
 ```ruby
-node['jenkins']['executor']['proxy']
-```
-
-The underlying executor class (which all HWRPs use) intelligently passes proxy information to the Jenkins CLI commands if this attribute is set. It should be set in the form `HOST:PORT`:
-
-```ruby
-node.normal['jenkins']['executor']['proxy'] = '1.2.3.4:5678'
+jenkins_executor_config 'controller proxy' do
+  proxy '1.2.3.4:5678'
+end
 ```
 
 ## Development

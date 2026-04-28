@@ -7,14 +7,13 @@ describe 'jenkins_install' do
   context 'when installing via war method' do
     context 'with default system account settings' do
       recipe do
-        node.override['jenkins']['java'] = '/usr/bin/java'
-
         jenkins_install 'default' do
           install_method 'war'
           home '/opt/bacon'
           log_directory '/opt/bacon/log'
           user 'bacon'
           group 'meats'
+          java '/usr/bin/java'
         end
       end
 
@@ -67,14 +66,13 @@ describe 'jenkins_install' do
 
     context 'with system account enabled' do
       recipe do
-        node.override['jenkins']['java'] = '/usr/bin/java'
-
         jenkins_install 'default' do
           install_method 'war'
           home '/opt/bacon'
           log_directory '/opt/bacon/log'
           user 'bacon'
           group 'meats'
+          java '/usr/bin/java'
           use_system_accounts true
         end
       end
@@ -97,10 +95,9 @@ describe 'jenkins_install' do
     platform 'ubuntu', '20.04'
 
     recipe do
-      node.override['jenkins']['java'] = '/usr/bin/java'
-
       jenkins_install 'default' do
         install_method 'package'
+        java '/usr/bin/java'
       end
     end
 
@@ -163,13 +160,6 @@ describe 'jenkins_install' do
         .with_owner('jenkins')
         .with_group('jenkins')
         .with_mode('0755')
-    end
-
-    it 'creates anonymous read groovy script' do
-      expect(chef_run).to create_file('/var/lib/jenkins/init.groovy.d/grant-anonymous-read.groovy')
-        .with_owner('jenkins')
-        .with_group('jenkins')
-        .with_mode('0644')
     end
 
     it 'enables and starts jenkins service' do

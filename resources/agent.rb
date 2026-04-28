@@ -4,23 +4,9 @@ unified_mode true
 
 resource_name :jenkins_agent
 provides :jenkins_agent
-provides :jenkins_slave  # Backwards compatibility alias
+provides :jenkins_slave # Backwards compatibility alias
 
-property :slave_name, String, name_property: true
-property :description, String,
-         default: lazy { |r| "Jenkins agent #{r.slave_name}" }
-property :remote_fs, String, default: '/home/jenkins'
-property :executors, Integer, default: 1
-property :usage_mode, String, equal_to: %w(exclusive normal), default: 'normal'
-property :labels, Array, default: []
-property :availability, String, equal_to: %w(always demand)
-property :in_demand_delay, Integer, default: 0
-property :idle_delay, Integer, default: 1
-property :environment, Hash
-property :offline_reason, String
-property :user, String, regex: [Chef::Config[:user_valid_regex]], default: 'jenkins'
-property :jvm_options, String
-property :java_path, String
+use '_partial/_agent'
 
 load_current_value do
   current_slave_data = current_slave_from_jenkins
