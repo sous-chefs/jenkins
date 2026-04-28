@@ -5,6 +5,8 @@ unified_mode true
 resource_name :jenkins_file_credentials
 provides :jenkins_file_credentials
 
+include Jenkins::FileCredentialsHelpers
+
 property :id, String, required: true
 property :filename, String, name_property: true
 property :data, String, required: true, sensitive: true
@@ -17,8 +19,8 @@ def initialize(name, run_context = nil)
   @sensitive = true
 end
 
-load_current_value do
-  current_creds = current_credentials_from_jenkins
+load_current_value do |new_resource|
+  current_creds = current_credentials_from_jenkins(new_resource)
 
   if current_creds
     id current_creds[:id]
@@ -99,38 +101,7 @@ action :delete do
 end
 
 action_class do
-  include Jenkins::Helper
-  include Jenkins::CredentialsHelpers
-
-  def current_credentials_from_jenkins
-    return @current_credentials if @current_credentials
-
-    Chef::Log.debug "Load #{new_resource} credentials information"
-
-    json = executor.groovy! <<-EOH.gsub(/^ {6}/, '')
-      import org.jenkinsci.plugins.plaincredentials.impl.*;
-
-      #{credentials_for_id_groovy(new_resource.id, 'credentials')}
-
-      if(credentials == null) {
-        return null
-      }
-
-      current_credentials = [
-        id:credentials.id,
-        description:credentials.description,
-        filename:credentials.filename
-      ]
-
-      builder = new groovy.json.JsonBuilder(current_credentials)
-      println(builder)
-    EOH
-
-    return if json.nil? || json.empty?
-
-    @current_credentials = JSON.parse(json, symbolize_names: true)
-    @current_credentials = convert_blank_values_to_nil(@current_credentials)
-  end
+  include Jenkins::FileCredentialsHelpers
 
   def correct_config?
     wanted_credentials = {

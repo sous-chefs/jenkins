@@ -3,11 +3,13 @@ unified_mode true
 resource_name :jenkins_view
 provides :jenkins_view
 
+include Jenkins::ViewHelpers
+
 property :jobs, Array, default: []
 property :code, String, default: ''
 
-load_current_value do |_new_resource|
-  current_view = current_view_from_jenkins
+load_current_value do |new_resource|
+  current_view = current_view_from_jenkins(new_resource)
 
   if current_view && !current_view.empty?
     jobs current_view[:jobs] || []
@@ -86,47 +88,5 @@ action :delete do
 end
 
 action_class do
-  include Jenkins::Helper
-
-  #
-  # The view in a hash format
-  #
-  # @return [Hash]
-  #   Empty hash if the job does not exist, or a hash of important information
-  #   if it does
-  #
-  def current_view_from_jenkins
-    return @current_view if @current_view
-
-    Chef::Log.debug "Load #{new_resource} view information"
-
-    get_view_as_json =
-      <<-GROOVY
-        import hudson.model.*
-        import jenkins.model.*
-        view_name = '#{new_resource.name}'
-        jenkins = Jenkins.instance
-
-        def view_variables = new groovy.json.JsonBuilder()
-        view_variables {}
-
-        // Output view as JSON, easily parse-able by ruby
-        view = jenkins.getView(view_name)
-        if (view) {
-          view_variables {
-            name view_name
-            jobs view.getItems().collect { it.name }
-          }
-        }
-
-        println view_variables.toString()
-      GROOVY
-
-    response = executor.groovy!(get_view_as_json)
-    return if response.nil?
-
-    Chef::Log.debug "Parse #{new_resource} as JSON"
-    @current_view = JSON.parse(response, object_class: Mash)
-    @current_view
-  end
+  include Jenkins::ViewHelpers
 end
