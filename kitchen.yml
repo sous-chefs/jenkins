@@ -62,9 +62,13 @@ suites:
     verifier: *secure_controller_verifier
 
   - name: authentication_credential_file
+    provisioner:
+      named_run_list: authentication_credential_file
     run_list: *auth_credential_file_run_list
     verifier: *credential_file_verifier
 
   - name: authentication_username_password
+    provisioner:
+      named_run_list: authentication_username_password
     run_list: *auth_username_password_run_list
     verifier: *username_password_verifier

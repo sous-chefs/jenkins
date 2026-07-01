@@ -167,7 +167,7 @@ action_class do
       end
     when 'rhel', 'amazon'
       # Needed for installing daemonize package
-      include_recipe 'yum-epel'
+      yum_epel 'default'
 
       yum_repository computed_repository_name do
         baseurl computed_repository
