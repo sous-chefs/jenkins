@@ -39,4 +39,16 @@ describe Jenkins::Helper do
     node.run_state[:jenkins_runtime_config] = { timeout: 300 }
     expect(harness.new(node).send(:timeout_given?)).to eq(true)
   end
+
+  it 'only removes update center wrapper lines from the JSON' do
+    helper = harness.new(node)
+    allow(helper).to receive(:update_center_json).and_return('/tmp/update-center.json')
+    allow(IO).to receive(:readlines).with('/tmp/update-center.json').and_return([
+      "updateCenter.post(\n",
+      "{\"excerpt\":\"text); more text\"}\n",
+      ');',
+    ])
+
+    expect(helper.send(:extract_update_center_json)).to eq("{\"excerpt\":\"text); more text\"}\n")
+  end
 end
