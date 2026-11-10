@@ -526,14 +526,7 @@ If this problem persists, check your Jenkins log files.
         remote_file.backup(false)
         remote_file.run_action(:create)
 
-        extracted_json = ''
-
-        # The downloaded file is composed of 3 lines. The first and the last line
-        # are containing some javascript, the line in between contains the relevant
-        # JSON data. That is the one that must be extracted.
-        IO.readlines(update_center_json).map do |line|
-          extracted_json << line unless line.include?('updateCenter.post(') || line.include?(');')
-        end
+        extracted_json = extract_update_center_json
 
         # Write the extracted JSON to a file so `jenkins_plugin` can read it.
         extracted_json_file = Chef::Resource::File.new(extracted_update_center_json, run_context)
@@ -569,6 +562,12 @@ If this problem persists, check your Jenkins log files.
 
         true
       end
+    end
+
+    def extract_update_center_json
+      IO.readlines(update_center_json).reject do |line|
+        ['updateCenter.post(', ');'].include?(line.strip)
+      end.join
     end
 
     #
